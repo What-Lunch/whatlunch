@@ -1,0 +1,56 @@
+$primary-color: #0070f3;
+$text-color: #333;
+$background-color: #fff;
+$font-stack: sans-serif;
+$spacing-md: 20px;
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin reset-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0;
+  padding: $spacing-md;
+  background-color: $background-color;
+  font-family: $font-stack;
+  color: $text-color;
+
+  h1 {
+    color: $primary-color;
+    margin-bottom: $spacing-md;
+  }
+
+  p {
+    line-height: 1.5;
+  }
+
+  .button {
+    @include flex-center;
+    padding: 10px 15px;
+    background-color: $primary-color;
+    color: $background-color;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  ul {
+    @include reset-list;
+    li {
+      margin-bottom: 10px;
+    }
+  }
+}
