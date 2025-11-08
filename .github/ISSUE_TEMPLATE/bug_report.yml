@@ -1,0 +1,36 @@
+name: "🐛 Bug Report"
+description: "컴포넌트에서 발견된 버그"
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+    label: "버그 설명"
+    description: "발견한 문제를 구체적으로 작성"
+    placeholder: "예: Button 컴포넌트에서 disabled 상태에서도 클릭 이벤트가 발생"
+    validations:
+    required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+    label: "재현 방법"
+    description: "버그를 재현할 수 있는 단계"
+    placeholder: "1. Button 클릭\n2. ..."
+    validations:
+    required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+    label: "예상 동작"
+    description: "원래 기대했던 올바른 동작은?"
+    validations:
+    required: true
+
+  - type: input
+    id: env
+    attributes:
+    label: "환경"
+    description: "사용한 환경 정보를 알려주세요."
+    placeholder: "예: Chrome 116, Windows 10"
