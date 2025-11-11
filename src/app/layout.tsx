@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import "./globals.scss";
+import type { Metadata } from 'next';
+import './globals.scss';
 
 export const metadata: Metadata = {
-  title: "오늘 뭐먹지?",
+  title: '오늘 뭐먹지?',
 };
 
 export default function RootLayout({
