@@ -1,0 +1,10 @@
+@use 'sass:map';
+@use 'variables' as v;
+
+@function color($name) {
+  $val: map.get(v.$colors, $name);
+  @if $val == null {
+    @error "Unknown color token: #{$name}";
+  }
+  @return $val;
+}

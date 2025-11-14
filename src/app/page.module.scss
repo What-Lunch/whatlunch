@@ -1,56 +1,40 @@
-$primary-color: #0070f3;
-$text-color: #333;
-$background-color: #fff;
-$font-stack: sans-serif;
-$spacing-md: 20px;
-
-@mixin flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-@mixin reset-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
+@use 'utils/mixins' as m; // 반응형, 타이포, flex 등 사용하는 믹스인
+@use 'utils/functions' as f; // 컬러 함수
 
 .container {
-  max-width: 1200px;
-  margin: 0;
-  padding: $spacing-md;
-  background-color: $background-color;
-  font-family: $font-stack;
-  color: $text-color;
+  // 자동으로 FLEX 적용이고 justify, align center, flex-direction 순서입니다
+  @include m.flex-box(center, center, column);
+  padding: 20px;
+  color: f.color(red-900); // 컬러 함수를 이용해서  variables의 색상은 이렇게 불러오면 됩니다
+  @include m.text-style-extended(md, 600, blue-700); // 확장 타이포 믹스인 사용 예시
 
+  // 이런식으로 h1 등도 스타일링 가능하지만 보통은 스타일을 다 지정합니다.
+  // 잘못하면 해당 스타일 안에 있는 h1이 다 적용되는 문제가 있습니다. 밑처럼 하면 bad입니다
   h1 {
-    color: $primary-color;
-    margin-bottom: $spacing-md;
+    // 텍스트 스타일 중 3xl등 숫자가 앞에 오면 ''로 감싸줘야 합니다
+    @include m.text-style-extended('3xl', 700, blue-900);
+    margin-bottom: 10px;
   }
 
-  p {
-    line-height: 1.5;
+  &__title {
+    @include m.text-style-extended('2xl', 500, blue-800);
+    margin-bottom: 15px;
+  }
+}
+
+.button {
+  @include m.flex-box(center, center);
+  padding: 10px 20px;
+  background-color: f.color(blue-500);
+  color: f.color(white);
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: f.color(blue-700);
   }
 
-  .button {
-    @include flex-center;
-    padding: 10px 15px;
-    background-color: $primary-color;
-    color: $background-color;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
-  ul {
-    @include reset-list;
-    li {
-      margin-bottom: 10px;
-    }
+  &:active {
+    background-color: f.color(blue-900);
   }
 }

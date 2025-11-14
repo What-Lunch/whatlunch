@@ -1,0 +1,75 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+img {
+  border: none;
+}
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  background: none;
+}
+
+button:disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+input,
+textarea,
+select {
+  border: none;
+  outline: none;
+}
+
+select::-ms-expand {
+  display: none;
+}
+select {
+  -o-appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+textarea {
+  resize: none;
+}
+
+div,
+article {
+  outline: 0;
+}
+
+// input[type='search']의 x 표시 제거
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button,
+input::-webkit-search-results-button,
+input::-webkit-search-results-decoration {
+  display: none;
+}
+
+ins {
+  overflow: hidden;
+  text-decoration: none;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+svg:focus {
+  outline: none;
+}
