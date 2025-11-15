@@ -1,56 +1,36 @@
-$primary-color: #0070f3;
-$text-color: #333;
-$background-color: #fff;
-$font-stack: sans-serif;
-$spacing-md: 20px;
-
-@mixin flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-@mixin reset-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
 
 .container {
-  max-width: 1200px;
-  margin: 0;
-  padding: $spacing-md;
-  background-color: $background-color;
-  font-family: $font-stack;
-  color: $text-color;
+  @include m.flex-box(center, center, column);
+  padding: 20px;
+  color: f.color(red-900);
+  @include m.text-style-extended(md, 600, blue-700);
 
   h1 {
-    color: $primary-color;
-    margin-bottom: $spacing-md;
+    @include m.text-style-extended('3xl', 700, blue-900);
+    margin-bottom: 10px;
   }
 
-  p {
-    line-height: 1.5;
+  &__title {
+    @include m.text-style-extended('2xl', 500, blue-800);
+    margin-bottom: 15px;
+  }
+}
+
+.button {
+  @include m.flex-box(center, center);
+  padding: 10px 20px;
+  background-color: f.color(blue-500);
+  color: f.color(white);
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: f.color(blue-700);
   }
 
-  .button {
-    @include flex-center;
-    padding: 10px 15px;
-    background-color: $primary-color;
-    color: $background-color;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
-  ul {
-    @include reset-list;
-    li {
-      margin-bottom: 10px;
-    }
+  &:active {
+    background-color: f.color(blue-900);
   }
 }
