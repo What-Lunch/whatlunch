@@ -17,7 +17,7 @@ export default function HomePage() {
   //     margin-bottom: 15px;
   //   }
   // }
-  // 위처럼 쓰면 .container__title 클래스가 적용됩니다.ㅇ
+  // 위처럼 쓰면 .container__title 클래스가 적용됩니다.
   return (
     <div className={styles['container']}>
       <h1>오늘 뭐먹지?</h1>
