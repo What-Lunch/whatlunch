@@ -1,36 +1,75 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
 
-.container {
-  @include m.flex-box(center, center, column);
-  padding: 20px;
-  color: f.color(red-900);
-  @include m.text-style-extended(md, 600, blue-700);
-
-  h1 {
-    @include m.text-style-extended('3xl', 700, blue-900);
-    margin-bottom: 10px;
-  }
-
-  &__title {
-    @include m.text-style-extended('2xl', 500, blue-800);
-    margin-bottom: 15px;
-  }
+// 재사용
+@mixin bordered-box {
+  @include m.flex-box(center, center);
+  width: 100%;
+  border: 1px solid f.color(black);
 }
 
-.button {
-  @include m.flex-box(center, center);
-  padding: 10px 20px;
-  background-color: f.color(blue-500);
-  color: f.color(white);
-  border-radius: 5px;
-  cursor: pointer;
+.container {
+  @include m.flex-box(center, flex-start, row);
+  gap: 40px;
+  width: 100%;
+  padding: 50px 20px;
 
-  &:hover {
-    background-color: f.color(blue-700);
+  @include m.mq(lg) {
+    padding: 100px 160px;
   }
 
-  &:active {
-    background-color: f.color(blue-900);
+  &__left {
+    @include m.flex-box(center, center, column);
+    gap: 40px;
+    width: 180%;
+
+    &__slice {
+      @include m.flex-box(center, center, column);
+      width: 100%;
+      border: 1px solid f.color(black);
+      height: 200px;
+    }
+
+    &__main {
+      @include m.flex-box(center, center, column);
+      width: 100%;
+      gap: 30px;
+
+      &__roulette {
+        @include bordered-box;
+        height: 800px;
+      }
+
+      &__option {
+        @include bordered-box;
+        height: 90px;
+      }
+
+      &__map {
+        @include bordered-box;
+        height: 350px;
+      }
+    }
+  }
+
+  &__right {
+    @include m.flex-box(center, center, column);
+    gap: 30px;
+    width: 100%;
+
+    &__clock {
+      @include bordered-box;
+      height: 120px;
+    }
+
+    &__weather {
+      @include bordered-box;
+      height: 400px;
+    }
+
+    &__chat {
+      @include bordered-box;
+      height: 500px;
+    }
   }
 }
