@@ -2,45 +2,64 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 18px;
   margin-top: 20px;
 
   /* 룰렛 바디 (canvas) */
   canvas {
     border-radius: 50%;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow:
+      0 10px 25px rgba(0, 0, 0, 0.25),
+      inset 0 0 25px rgba(0, 0, 0, 0.2);
+    background: radial-gradient(circle, #ffffff 0%, #e5e5e5 100%);
+    transition: box-shadow 0.25s ease;
+
+    /* 돌릴 때 glow 효과 */
+    &.spinning {
+      box-shadow:
+        0 0 35px rgba(255, 255, 0, 0.7),
+        0 0 60px rgba(255, 100, 0, 0.5),
+        inset 0 0 25px rgba(0, 0, 0, 0.2);
+    }
   }
 
   /* 돌리기 버튼 */
   button {
-    background: #333;
+    background: linear-gradient(180deg, #444, #222);
     color: #fff;
-    padding: 12px 26px;
-    border-radius: 10px;
+    padding: 14px 30px;
+    border-radius: 12px;
     font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s ease;
-
     border: none;
     outline: none;
 
+    transition:
+      background 0.15s ease,
+      transform 0.1s ease;
+
     &:focus {
       outline: none;
-      box-shadow: none;
     }
 
-    &:hover {
-      background: #555;
+    &:hover:not(:disabled) {
+      background: linear-gradient(180deg, #666, #333);
+      transform: translateY(-2px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
     }
 
     &:disabled {
       background: #777;
       cursor: not-allowed;
+      transform: none;
     }
   }
 }
 
-/* 옵션: 겉에서 wrapper로 사용할 때 */
 .wrapper {
   display: flex;
   flex-direction: column;
