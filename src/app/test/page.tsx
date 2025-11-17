@@ -1,6 +1,6 @@
 'use client';
 
-import RoulettePanel from '@/components/roulette/roluette-pannel/RoulettePanel';
+import RoulettePanel from '@/components/roulette/roluette-panel/RoulettePanel';
 
 export default function TestPage() {
   return (

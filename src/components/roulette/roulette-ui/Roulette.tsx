@@ -14,6 +14,7 @@ export default function Roulette({ items, onResult, size = 480 }: RouletteProps)
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const radius = size / 2;
+
   /** 색상 생성 */
   const generatePalette = (count: number) => {
     if (count === 0) return [];
@@ -178,9 +179,19 @@ export default function Roulette({ items, onResult, size = 480 }: RouletteProps)
   }, [angle, items]);
 
   return (
-    <div className={styles.container}>
-      <canvas ref={canvasRef} width={size} height={size} />
-      <button onClick={spin} disabled={spinning} className={styles.spinButton}>
+    <div className={styles['container']}>
+      <canvas
+        ref={canvasRef}
+        width={size}
+        height={size}
+        className={
+          spinning
+            ? `${styles['container__canvas']} ${styles['container__canvas--spinning']}`
+            : styles['container__canvas']
+        }
+      />
+
+      <button onClick={spin} disabled={spinning} className={styles['container__button']}>
         {spinning ? '돌리는 중...' : '돌리기'}
       </button>
     </div>
