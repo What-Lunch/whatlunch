@@ -1,9 +1,11 @@
 import styles from './page.module.scss';
+import Carousel from '@/components/Carousel/Carousel';
 
 export default function HomePage() {
   return (
     <div className={styles['container']}>
       <div className={styles['container__left']}>
+        <Carousel />
         <section className={styles['container__left__slice']}>오늘 인기있는 음식</section>
         <div className={styles['container__left__main']}>
           <section className={styles['container__left__main__roulette']}>룰렛</section>
