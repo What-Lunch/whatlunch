@@ -8,7 +8,7 @@ describe('Carousel Component', () => {
   });
 
   it('렌더링 테스트', () => {
-    render(<Carousel />);
+    render(<Carousel items={[]} />);
     expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
     expect(screen.queryByText('여긴어디지고기집')).not.toBeInTheDocument();
     expect(screen.queryByText('메가메가메가커피')).not.toBeInTheDocument();
@@ -16,7 +16,7 @@ describe('Carousel Component', () => {
 
   it('자동 슬라이드 전환 테스트', async () => {
     jest.useFakeTimers();
-    render(<Carousel />);
+    render(<Carousel items={[]} />);
 
     // 3초마다 슬라이드가 전환되는지 확인
     expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
@@ -48,7 +48,7 @@ describe('Carousel Component', () => {
 
   it('페이지 네비게이션 테스트', async () => {
     jest.useFakeTimers();
-    render(<Carousel />);
+    render(<Carousel items={[]} />);
 
     expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
 
@@ -82,14 +82,14 @@ describe('Carousel Component', () => {
   });
 
   it('현재 슬라이드 이미지 렌더링 테스트', () => {
-    render(<Carousel />);
+    render(<Carousel items={[]} />);
 
     const images = screen.getAllByRole('img', { name: /Carousel Image/i });
     expect(images.length).toBe(5);
   });
 
   it('같은 슬라이드 클릭시 애니메이션 동작하지 않음', () => {
-    render(<Carousel />);
+    render(<Carousel items={[]} />);
 
     expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
 
@@ -101,7 +101,7 @@ describe('Carousel Component', () => {
   });
 
   it('도트 네비게이션이 올바르게 활성화됨', () => {
-    render(<Carousel />);
+    render(<Carousel items={[]} />);
 
     const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
 
@@ -111,7 +111,7 @@ describe('Carousel Component', () => {
   });
 
   it('접근성 테스트', () => {
-    render(<Carousel />);
+    render(<Carousel items={[]} />);
 
     const images = screen.getAllByRole('img', { name: /Carousel Image/i });
     images.forEach((img, index) => {

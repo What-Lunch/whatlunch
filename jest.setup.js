@@ -5,5 +5,5 @@ jest.mock('next/image', () => {
     return <img {...props} />;
   };
   MockNextImage.displayName = 'NextImage';
-  return MockNextImage;
+  return { __esModule: true, default: MockNextImage };
 });
