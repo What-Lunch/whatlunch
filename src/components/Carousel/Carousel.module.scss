@@ -1,2 +1,76 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
+
+@mixin dot {
+  height: 10px;
+  width: 10px;
+  margin: 0 5px;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.carousel {
+  @include m.flex-box(center, center, column);
+  width: 100%;
+  padding: 16px;
+  border: 1px solid f.color(black);
+  gap: 20px;
+  overflow: hidden;
+
+  &__container {
+    @include m.flex-box(center, flex-start, column);
+    width: 100%;
+    gap: 12px;
+
+    &__info {
+      @include m.flex-box(center, flex-start, column);
+      gap: 8px;
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+
+      &.fadeOut {
+        opacity: 0;
+      }
+    }
+
+    &__images {
+      @include m.flex-box(center, center, row);
+      width: 100%;
+      justify-content: space-between;
+      transform: translateX(0);
+      transition:
+        transform 0.6s ease-in-out,
+        opacity 0.5s ease-in-out;
+
+      &.slideIn {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      &.slideOut {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+    }
+  }
+
+  &__dotActive {
+    @include dot;
+
+    background-color: f.color(black);
+  }
+
+  &__dotInactive {
+    @include dot;
+
+    background-color: f.color(gray-500);
+
+    &:hover {
+      transition: background-color 0.3s ease-in-out;
+      background-color: f.color(gray-400);
+      transform: scale(1.1);
+    }
+  }
+}

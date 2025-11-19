@@ -1,5 +1,5 @@
 import styles from './page.module.scss';
-import Carousel from '@/components/Carousel/Carousel';
+import Carousel from '@/components/Carousel';
 
 export default function HomePage() {
   return (
