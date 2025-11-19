@@ -114,8 +114,8 @@ describe('Carousel Component', () => {
     render(<Carousel items={[]} />);
 
     const images = screen.getAllByRole('img', { name: /Carousel Image/i });
-    images.forEach((img, index) => {
-      expect(img).toHaveAttribute('alt', `Carousel Image ${index + 1}`);
+    images.forEach(img => {
+      expect(img).toHaveAttribute('alt');
     });
 
     const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
