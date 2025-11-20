@@ -8,11 +8,11 @@
   border-radius: 50%;
   display: inline-block;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  transition: background-color 0.25s ease-in-out;
 }
 
 .carousel {
-  @include m.flex-box(center, center, column);
+  @include m.flex-box(center, '', column);
   width: 100%;
   padding: 16px;
   border: 1px solid f.color(black);
@@ -27,53 +27,36 @@
     &__info {
       @include m.flex-box(center, flex-start, column);
       gap: 8px;
-      opacity: 1;
-      transition:
-        opacity 0.5s ease-in-out,
-        transform 0.3s ease-in-out;
-
-      &.fadeOut {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
     }
 
     &__images {
       @include m.flex-box(center, center, row);
       width: 100%;
       justify-content: space-between;
-      transform: translateX(0);
-      transition:
-        opacity 0.5s ease-in-out,
-        transform 0.3s ease-in-out;
-
-      // &.slideOut {
-      //   opacity: 0;
-      //   transform: translateX(-20px);
-      // }
-
-      // &.slideIn {
-      //   opacity: 1;
-      //   transform: translateX(0);
-      // }
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      display: flex;
     }
   }
 
-  &__dotActive {
-    @include dot;
+  &__dots {
+    width: 100%;
+    @include m.flex-box(center, center, row);
+    &__active {
+      @include dot;
+      background-color: f.color(black);
+    }
 
-    background-color: f.color(black);
-  }
+    &__inactive {
+      @include dot;
+      background-color: f.color(gray-500);
 
-  &__dotInactive {
-    @include dot;
-
-    background-color: f.color(gray-500);
-
-    &:hover {
-      transition: background-color 0.3s ease-in-out;
-      background-color: f.color(gray-400);
-      transform: scale(1.1);
+      &:hover {
+        transition: background-color 0.3s ease-in-out;
+        background-color: f.color(gray-400);
+        transform: scale(1.1);
+      }
     }
   }
 }

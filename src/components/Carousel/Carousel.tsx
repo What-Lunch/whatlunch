@@ -1,20 +1,9 @@
 'use client';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import styles from './Carousel.module.scss';
 import Image from 'next/image';
 
-import { CarouselProps, CarouselItemsProps } from './type';
-
-import One1 from '../../../public/images/test/1.jpeg';
-import One2 from '../../../public/images/test/2.jpeg';
-import One5 from '../../../public/images/test/15.jpeg';
-import Two1 from '../../../public/images/test/6.jpeg';
-import Two2 from '../../../public/images/test/7.jpeg';
-import Two3 from '../../../public/images/test/8.jpeg';
-import Two4 from '../../../public/images/test/9.jpeg';
-import Two5 from '../../../public/images/test/5.jpeg';
-import Three1 from '../../../public/images/test/10.jpeg';
-import Three4 from '../../../public/images/test/14.jpeg';
+import { CarouselProps } from './type';
 
 /* 추후 고쳐야 할 점
 1. 이미지 - 추후 그냥 img태그를 쓰거나 next.config.js에 src 경로 추가해야 됨 
@@ -22,53 +11,23 @@ import Three4 from '../../../public/images/test/14.jpeg';
 */
 export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [imageCounter, setImageCounter] = useState(5);
+  const slideRef = useRef<HTMLDivElement>(null);
 
-  // 테스트용 이미지 데이터
-  const pendingData: CarouselItemsProps[] = useMemo(() => {
-    const TestImage = [One1, One2, One1, One2, One5];
-    const TestImage2 = [Two1, Two2, Two3, Two4, Two5];
-    const TestImage3 = [Three1, Three1, Three4, Three4, Three1];
+  const handleScroll = useCallback(() => {
+    if (slideRef.current) {
+      const { scrollLeft, offsetWidth } = slideRef.current;
+      const index = Math.round(scrollLeft / offsetWidth);
+      setCurrentIndex(index);
+    }
+  }, []);
 
-    return items && items.length > 0
-      ? items
-      : [
-          {
-            src: TestImage,
-            title: '너무맛있는곰장어집',
-            category: '식당',
-            rating: 4.5,
-            location: '서울 마포',
-          },
-          {
-            src: TestImage2,
-            title: '여긴어디지고기집',
-            category: '식당',
-            rating: 4.0,
-            location: '서울 강남',
-          },
-          {
-            src: TestImage3,
-            title: '메가메가메가커피',
-            category: '카페',
-            rating: 3.5,
-            location: '충남 대전',
-          },
-        ];
-  }, [items]);
-
-  // 아래부터 실제 로직
   const handleSlideChange = useCallback((newIndex: number) => {
     setCurrentIndex(prevIndex => {
       if (newIndex === prevIndex) return prevIndex;
       return newIndex;
     });
-
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 300);
   }, []);
 
   const handlePageChange = useCallback(
@@ -82,47 +41,67 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
     if (isPaused) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex(prevIndex => (prevIndex + 1) % pendingData.length);
-
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 300);
+      setCurrentIndex(prevIndex => (prevIndex + 1) % items.length);
     }, duration);
 
     return () => clearInterval(interval);
-  }, [pendingData.length, duration, isPaused]);
+  }, [items.length, duration, isPaused]);
+
+  useEffect(() => {
+    if (slideRef.current) {
+      slideRef.current.scrollTo({
+        left: slideRef.current.offsetWidth * 100 * currentIndex,
+        behavior: 'smooth',
+      });
+    }
+  }, [currentIndex]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setImageCounter(3);
+      } else {
+        setImageCounter(5);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handlePause = useCallback(() => setIsPaused(true), []);
+  const handleResume = useCallback(() => setIsPaused(false), []);
+
   return (
     <section
       className={styles['carousel']}
       aria-label="캐러셀 식당과 카페"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocus={() => setIsPaused(true)}
-      onBlur={() => setIsPaused(false)}
+      onMouseEnter={handlePause}
+      onMouseLeave={handleResume}
+      onFocus={handlePause}
+      onBlur={handleResume}
     >
       <div className={styles['carousel__container']}>
-        <div
-          className={`${styles['carousel__container__info']} ${isTransitioning ? styles['fadeOut'] : ''}`}
-        >
-          <h2>{pendingData[currentIndex].title}</h2>
+        <div className={styles['carousel__container__info']}>
+          <h2>{items[currentIndex].title}</h2>
           <div>
-            <span>{pendingData[currentIndex].category}</span>
-            <span> • {pendingData[currentIndex].rating}</span>
+            <span>{items[currentIndex].category}</span>
+            <span> • {items[currentIndex].rating}</span>
           </div>
-          <span>{pendingData[currentIndex].location}</span>
+          <span>{items[currentIndex].location}</span>
         </div>
         <div
-          className={`${styles['carousel__container__images']} ${
-            isTransitioning ? styles['slideOut'] : styles['slideIn']
-          }`}
+          className={styles['carousel__container__images']}
+          ref={slideRef}
+          onScroll={handleScroll}
         >
-          {pendingData[currentIndex].src.map((imageSrc, index) => (
+          {items[currentIndex].src.slice(0, imageCounter).map((imageSrc, index) => (
             <Image
               aria-label={`Carousel Image ${index + 1}`}
               key={imageSrc ? imageSrc.toString() : index}
               src={imageSrc}
-              alt={`${pendingData[currentIndex].title} - Image ${index + 1}`}
+              alt={`${items[currentIndex].title} - Image ${index + 1}`}
               width={120}
               height={120}
               loading={index === 0 ? 'eager' : 'lazy'}
@@ -130,8 +109,8 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
           ))}
         </div>
       </div>
-      <div aria-label="Carousel navigation">
-        {pendingData.map((_, index) => (
+      <div aria-label="Carousel navigation" className={styles['carousel__dots']}>
+        {items.map((_, index) => (
           <button
             type="button"
             aria-label={`Go to slide ${index + 1}`}
@@ -139,8 +118,8 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
             onClick={() => handlePageChange(index)}
             className={
               currentIndex === index
-                ? styles['carousel__dotActive']
-                : styles['carousel__dotInactive']
+                ? styles['carousel__dots__active']
+                : styles['carousel__dots__inactive']
             }
           />
         ))}
