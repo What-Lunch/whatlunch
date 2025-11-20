@@ -5,7 +5,7 @@ import styles from './Button.module.scss';
 
 type Variant = 'primary' | 'secondary' | 'danger';
 type Mode = 'fill' | 'outline';
-type Size = 'sm' | 'md' | 'lg';
+type Size = 'sm' | 'md' | 'lg' | null;
 type ButtonType = 'button' | 'submit' | 'reset';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -30,13 +30,13 @@ export default function Button({
 }: ButtonProps) {
   const base = styles.button;
 
-  // 팀원 구조: button__primary, button__primary__outline
   const variantClass =
     mode === 'outline' ? styles[`button__${variant}__outline`] : styles[`button__${variant}`];
 
-  const sizeClass = styles[`button__${size}`];
+  // size가 null이면 sizeClass를 적용하지 않음
+  const sizeClass = size ? styles[`button__${size}`] : '';
 
-  const disabledClass = disabled ? styles[`button__disabled`] : '';
+  const disabledClass = disabled ? styles['button__disabled'] : '';
 
   const classes = [base, variantClass, sizeClass, disabledClass, className]
     .filter(Boolean)
