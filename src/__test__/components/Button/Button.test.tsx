@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import Button from '@/components/Button/Button';
 import '@testing-library/jest-dom';
+import Button from '@/components/common/Button';
 
 describe('Common Button Component', () => {
   it('기본 렌더링 — primary + md + fill', () => {
@@ -10,8 +10,8 @@ describe('Common Button Component', () => {
 
     expect(button).toBeInTheDocument();
     expect(button.classList).toContain('button');
-    expect(button.classList).toContain('button__primary');
-    expect(button.classList).toContain('button__md');
+    expect(button.classList).toContain('button--primary');
+    expect(button.classList).toContain('button--md');
   });
 
   it('outline 모드일 경우 outline 클래스 적용', () => {
@@ -23,7 +23,8 @@ describe('Common Button Component', () => {
 
     const button = screen.getByRole('button');
 
-    expect(button.classList).toContain('button__secondary__outline');
+    expect(button.classList).toContain('button--secondary');
+    expect(button.classList).toContain('button--outline');
   });
 
   it('disabled 일 경우 disabled 클래스 + onClick 차단', () => {
@@ -38,7 +39,7 @@ describe('Common Button Component', () => {
     const button = screen.getByRole('button');
 
     expect(button).toBeDisabled();
-    expect(button.classList).toContain('button__disabled');
+    expect(button.classList).toContain('button--disabled');
 
     fireEvent.click(button);
     expect(handleClick).not.toHaveBeenCalled();
@@ -72,9 +73,9 @@ describe('Common Button Component', () => {
 
     const button = screen.getByRole('button');
 
-    expect(button.classList.contains('button__sm')).toBe(false);
-    expect(button.classList.contains('button__md')).toBe(false);
-    expect(button.classList.contains('button__lg')).toBe(false);
+    expect(button.classList.contains('button--sm')).toBe(false);
+    expect(button.classList.contains('button--md')).toBe(false);
+    expect(button.classList.contains('button--lg')).toBe(false);
 
     expect(button.classList).toContain('user-size');
   });

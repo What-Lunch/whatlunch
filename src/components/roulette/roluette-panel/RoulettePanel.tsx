@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import styles from './RoulettePanel.module.scss';
-import ResultModal from '../result-modal/ResultModal';
-import Roulette from '../roulette-ui/Roulette';
+import ResultModal from '../Result-modal/ResultModal';
+import Roulette from '../Roulette-ui/Roulette';
 
 export default function RoulettePanel() {
   const [items, setItems] = useState(['부대찌개', '닭개장', '동태찌개', '감자탕']);
