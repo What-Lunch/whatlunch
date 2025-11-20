@@ -1,0 +1,110 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
+.button {
+  @include m.flex-box(center, center);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s ease;
+  border: none;
+  color: f.color(white);
+
+  &--sm {
+    padding: 6px 14px;
+    font-size: map-get(map-get(v.$typography, xs), fontSize);
+  }
+
+  &--md {
+    padding: 10px 20px;
+    font-size: map-get(map-get(v.$typography, md), fontSize);
+  }
+
+  &--lg {
+    padding: 14px 24px;
+    font-size: map-get(map-get(v.$typography, '2lg'), fontSize);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &--primary {
+    background: f.color(brand-primary);
+
+    &:hover:not(.button--disabled) {
+      background: f.color(interaction-hover);
+    }
+
+    &:active:not(.button--disabled) {
+      background: f.color(interaction-pressed);
+    }
+
+    &:focus-visible {
+      outline: 2px solid f.color(interaction-focus);
+    }
+  }
+
+  &--secondary {
+    background: f.color(brand-secondary);
+
+    &:hover:not(.button--disabled) {
+      background: f.color(brand-tertiary);
+    }
+  }
+
+  &--tertiary {
+    background: f.color(brand-tertiary);
+
+    &:hover:not(.button--disabled) {
+      background: f.color(brand-primary);
+    }
+  }
+
+  &--gradient {
+    background: f.color(brand-gradient);
+
+    &:hover:not(.button--disabled) {
+      opacity: 0.9;
+    }
+  }
+
+  &--outline {
+    background: transparent;
+    border-width: 2px;
+    border-style: solid;
+
+    &.button--primary {
+      color: f.color(brand-primary);
+      border-color: f.color(brand-primary);
+
+      &:hover:not(.button--disabled) {
+        background: f.color(brand-primary);
+        color: f.color(white);
+      }
+    }
+
+    &.button--secondary {
+      color: f.color(brand-secondary);
+      border-color: f.color(brand-secondary);
+
+      &:hover:not(.button--disabled) {
+        background: f.color(brand-secondary);
+        color: f.color(white);
+      }
+    }
+
+    &.button--tertiary {
+      color: f.color(brand-tertiary);
+      border-color: f.color(brand-tertiary);
+
+      &:hover:not(.button--disabled) {
+        background: f.color(brand-tertiary);
+        color: f.color(white);
+      }
+    }
+  }
+}
