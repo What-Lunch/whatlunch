@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import styles from './RoulettePanel.module.scss';
-import ResultModal from '@/components/roulette/result-modal/ResultModal';
+import ResultModal from '@/components/Roulette/result-modal/ResultModal';
 import Roulette from '../roulette-ui/Roulette';
 
 export default function RoulettePanel() {
