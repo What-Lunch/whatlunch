@@ -1,0 +1,76 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.button {
+  @include m.flex-box(center, center);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s ease;
+  border: none;
+
+  &__sm {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  &__md {
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+
+  &__lg {
+    padding: 14px 24px;
+    font-size: 18px;
+  }
+
+  &__disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &__primary {
+    background: f.color(brand-primary);
+    color: f.color(white);
+
+    &:hover {
+      background: f.color(interaction-hover);
+    }
+
+    &__outline {
+      background: f.color(white);
+      color: f.color(brand-primary);
+      border: 2px solid f.color(brand-primary);
+    }
+  }
+
+  &__secondary {
+    background: f.color(gray-500);
+    color: f.color(white);
+
+    &:hover {
+      background: f.color(gray-600);
+    }
+
+    &__outline {
+      background: f.color(white);
+      color: f.color(gray-600);
+      border: 2px solid f.color(gray-500);
+    }
+  }
+
+  &__danger {
+    background: f.color(status-danger);
+    color: f.color(white);
+
+    &:hover {
+      background: f.color(red-700);
+    }
+
+    &__outline {
+      background: f.color(white);
+      color: f.color(status-danger);
+      border: 2px solid f.color(status-danger);
+    }
+  }
+}
