@@ -8,3 +8,13 @@
   }
   @return $val;
 }
+
+@function typography($size, $key) {
+  $typo-map: map-get(v.$typography, $size);
+
+  @if $typo-map == null {
+    @error "Unkown typography size: #{$size}";
+  }
+
+  @return map-get($typo-map, $key);
+}

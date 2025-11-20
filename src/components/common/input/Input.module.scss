@@ -1,0 +1,91 @@
+@use '~/src/styles/utils/mixins' as m;
+@use '~/src/styles/utils/functions' as f;
+@use '~/src/styles/utils/variables' as v;
+
+// 전체 컴포넌트
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+// 입력 필드와 아이콘을 감싸는 영역
+.wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid f.color(gray-400);
+  background-color: f.color(bg-inverse);
+  border-radius: 4px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  position: relative;
+
+  &.focused {
+    border-color: f.color(interaction-focus);
+    box-shadow: 0 0 0 1px f.color(interaction-focus);
+  }
+
+  &.error {
+    border-color: f.color(status-danger);
+
+    .input {
+      &::placeholder {
+        color: f.color(status-danger);
+        opacity: 0.8;
+      }
+    }
+
+    // error + focused 조합일 때도 빨간색 유지(오버라이드)
+    &.focused {
+      border-color: f.color(status-danger) !important;
+      box-shadow: 0 0 0 1px f.color(status-danger) !important;
+    }
+  }
+
+  &.disabled {
+    background-color: f.color(gray-200);
+    cursor: not-allowed;
+    border-color: f.color(gray-300);
+
+    .input {
+      color: f.color(text-disabled);
+      cursor: not-allowed;
+    }
+  }
+}
+
+.input {
+  flex-grow: 1;
+  padding: 10px 12px;
+  border: none;
+  outline: none;
+  font-size: f.typography(md, 'fontSize');
+  line-height: f.typography(md, lineHeight);
+  color: f.color(text-default);
+  background-color: transparent;
+}
+
+.leftIcon,
+.rightIcon {
+  display: flex;
+  align-items: center;
+  color: f.color(icon-primary);
+  padding: 0 8px;
+  font-size: 18px;
+}
+
+.clickable {
+  cursor: pointer;
+
+  &:hover {
+    color: f.color(icon-brand);
+  }
+}
+
+.errorMessage {
+  margin-top: 4px;
+  font-size: f.typography(xs, fontSize);
+  color: f.color(status-danger);
+  padding-left: 4px;
+}
