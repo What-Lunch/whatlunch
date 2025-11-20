@@ -8,13 +8,11 @@ import { CarouselProps, CarouselItemsProps } from './type';
 import One1 from '../../../public/images/test/1.jpeg';
 import One2 from '../../../public/images/test/2.jpeg';
 import One5 from '../../../public/images/test/15.jpeg';
-
 import Two1 from '../../../public/images/test/6.jpeg';
 import Two2 from '../../../public/images/test/7.jpeg';
 import Two3 from '../../../public/images/test/8.jpeg';
 import Two4 from '../../../public/images/test/9.jpeg';
 import Two5 from '../../../public/images/test/5.jpeg';
-
 import Three1 from '../../../public/images/test/10.jpeg';
 import Three4 from '../../../public/images/test/14.jpeg';
 
@@ -61,19 +59,17 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   }, [items]);
 
   // 아래부터 실제 로직
-  const handleSlideChange = useCallback(
-    (newIndex: number) => {
-      if (newIndex === currentIndex) return;
+  const handleSlideChange = useCallback((newIndex: number) => {
+    setCurrentIndex(prevIndex => {
+      if (newIndex === prevIndex) return prevIndex;
+      return newIndex;
+    });
 
-      setIsTransitioning(true);
-
-      setTimeout(() => {
-        setCurrentIndex(newIndex);
-        setIsTransitioning(false);
-      }, 300);
-    },
-    [currentIndex]
-  );
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
+  }, []);
 
   const handlePageChange = useCallback(
     (index: number) => {
@@ -84,13 +80,18 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
 
   useEffect(() => {
     if (isPaused) return;
+
     const interval = setInterval(() => {
-      handleSlideChange((currentIndex + 1) % pendingData.length);
+      setCurrentIndex(prevIndex => (prevIndex + 1) % pendingData.length);
+
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 300);
     }, duration);
 
     return () => clearInterval(interval);
-  }, [currentIndex, pendingData.length, handleSlideChange, duration, isPaused]);
-
+  }, [pendingData.length, duration, isPaused]);
   return (
     <section
       className={styles['carousel']}
@@ -111,7 +112,11 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
           </div>
           <span>{pendingData[currentIndex].location}</span>
         </div>
-        <div className={styles['carousel__container__images']}>
+        <div
+          className={`${styles['carousel__container__images']} ${
+            isTransitioning ? styles['slideOut'] : styles['slideIn']
+          }`}
+        >
           {pendingData[currentIndex].src.map((imageSrc, index) => (
             <Image
               aria-label={`Carousel Image ${index + 1}`}
