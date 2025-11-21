@@ -64,28 +64,19 @@ describe('Common Button Component', () => {
     expect(button.classList).toContain('custom-class');
   });
 
-  it('size=null 이면 내부 size 클래스가 적용되지 않는다', () => {
-    render(
-      <Button size={null} className="user-size">
-        Custom Size
-      </Button>
-    );
+  it('size prop을 전달하지 않으면 size 클래스가 적용되지 않는다', () => {
+    render(<Button className="user-size">Custom Size</Button>);
 
     const button = screen.getByRole('button');
-
+    expect(button.classList.contains('button--md')).toBe(true);
     expect(button.classList.contains('button--sm')).toBe(false);
-    expect(button.classList.contains('button--md')).toBe(false);
     expect(button.classList.contains('button--lg')).toBe(false);
 
     expect(button.classList).toContain('user-size');
   });
 
-  it('size=null 일 때 inline style padding이 적용된다', () => {
-    render(
-      <Button size={null} style={{ padding: '30px 20px' }}>
-        Inline Padding
-      </Button>
-    );
+  it('size prop 없이 inline style padding이 적용된다', () => {
+    render(<Button style={{ padding: '30px 20px' }}>Inline Padding</Button>);
 
     const button = screen.getByRole('button');
     expect(button).toHaveStyle('padding: 30px 20px');

@@ -1,15 +1,19 @@
 import React from 'react';
 
-export type Variant = 'primary' | 'secondary' | 'tertiary' | 'gradient' | 'danger';
-export type Mode = 'fill' | 'outline';
-export type Size = 'sm' | 'md' | 'lg' | null;
-export type ButtonType = 'button' | 'submit' | 'reset';
+// Variant 리스트를 const 배열로 관리
+export const VARIANTS = ['primary', 'secondary', 'tertiary', 'neutral', 'blue', 'danger'] as const;
+export type Variant = (typeof VARIANTS)[number];
 
+export const SIZES = ['sm', 'md', 'lg'] as const;
+export type Size = (typeof SIZES)[number];
+
+export type Mode = 'fill' | 'outline';
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   mode?: Mode;
   size?: Size;
-  type?: ButtonType;
+  padding?: string;
+  fontSize?: string;
   className?: string;
   children: React.ReactNode;
 }

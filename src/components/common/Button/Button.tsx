@@ -10,19 +10,22 @@ export default function Button({
   size = 'md',
   type = 'button',
   disabled = false,
+  padding,
+  fontSize,
   className = '',
   children,
   onClick,
+  style,
   ...rest
 }: ButtonProps) {
-  const base = styles.button;
-
-  const variantClass = styles[`button--${variant}`];
-  const modeClass = mode === 'outline' ? styles['button--outline'] : '';
-  const sizeClass = size ? styles[`button--${size}`] : '';
-  const disabledClass = disabled ? styles['button--disabled'] : '';
-
-  const classes = [base, variantClass, modeClass, sizeClass, disabledClass, className]
+  const classes = [
+    styles.button,
+    styles[`button--${variant}`],
+    styles[`button--${mode}`],
+    size && styles[`button--${size}`],
+    disabled && styles['button--disabled'],
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
 
@@ -35,8 +38,21 @@ export default function Button({
     onClick?.(e);
   };
 
+  const finalStyle = {
+    padding,
+    fontSize,
+    ...style,
+  };
+
   return (
-    <button type={type} className={classes} disabled={disabled} onClick={handleClick} {...rest}>
+    <button
+      type={type}
+      className={classes}
+      disabled={disabled}
+      onClick={handleClick}
+      style={finalStyle}
+      {...rest}
+    >
       {children}
     </button>
   );
