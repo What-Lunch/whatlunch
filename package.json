@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
-    "scan": "react-scan http://localhost:3000"
+    "test": "jest"
   },
   "dependencies": {
     "js-yaml": "^4.1.1",
