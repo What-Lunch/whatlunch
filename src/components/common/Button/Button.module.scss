@@ -2,14 +2,68 @@
 @use 'utils/functions' as f;
 @use 'utils/variables' as v;
 
+$variant-colors: (
+  primary: brand-primary,
+  secondary: brand-secondary,
+  tertiary: brand-tertiary,
+  neutral: gray-400,
+  danger: status-danger,
+  blue: point-blue,
+);
+
+@function fill-text-color($variant) {
+  @return f.color(white);
+}
+
+@mixin fill-style($variant, $color) {
+  background: f.color($color);
+  color: fill-text-color($variant);
+
+  &:hover:not(.button--disabled) {
+    background: darken(f.color($color), 8%);
+  }
+
+  &:active:not(.button--disabled) {
+    background: darken(f.color($color), 15%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid f.color(interaction-focus);
+  }
+}
+
+@mixin outline-style($variant, $color) {
+  background: transparent;
+  border: 2px solid f.color($color);
+  color: f.color(black);
+
+  &:hover:not(.button--disabled) {
+    background: transparent;
+    border-color: f.color($color);
+    color: f.color(black);
+  }
+
+  &:active:not(.button--disabled) {
+    $dark: darken(f.color($color), 15%);
+    border-color: $dark;
+    color: f.color(black);
+  }
+
+  &:focus-visible {
+    outline: 2px solid f.color(interaction-focus);
+  }
+}
+
 .button {
   @include m.flex-box(center, center);
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
-  transition: 0.2s ease;
   border: none;
-  color: f.color(white);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
 
   &--sm {
     padding: 6px 14px;
@@ -23,7 +77,7 @@
 
   &--lg {
     padding: 14px 24px;
-    font-size: map-get(map-get(v.$typography, '2lg'), fontSize);
+    font-size: map-get(map-get(v.$typography, lg), fontSize);
   }
 
   &--disabled {
@@ -32,79 +86,13 @@
     pointer-events: none;
   }
 
-  &--primary {
-    background: f.color(brand-primary);
-
-    &:hover:not(.button--disabled) {
-      background: f.color(interaction-hover);
+  @each $variant, $color in $variant-colors {
+    &--#{$variant} {
+      @include fill-style($variant, $color);
     }
 
-    &:active:not(.button--disabled) {
-      background: f.color(interaction-pressed);
-    }
-
-    &:focus-visible {
-      outline: 2px solid f.color(interaction-focus);
-    }
-  }
-
-  &--secondary {
-    background: f.color(brand-secondary);
-
-    &:hover:not(.button--disabled) {
-      background: f.color(brand-tertiary);
-    }
-  }
-
-  &--tertiary {
-    background: f.color(brand-tertiary);
-
-    &:hover:not(.button--disabled) {
-      background: f.color(brand-primary);
-    }
-  }
-
-  &--gradient {
-    background: f.color(brand-gradient);
-
-    &:hover:not(.button--disabled) {
-      opacity: 0.9;
-    }
-  }
-
-  &--outline {
-    background: transparent;
-    border-width: 2px;
-    border-style: solid;
-
-    &.button--primary {
-      color: f.color(brand-primary);
-      border-color: f.color(brand-primary);
-
-      &:hover:not(.button--disabled) {
-        background: f.color(brand-primary);
-        color: f.color(white);
-      }
-    }
-
-    &.button--secondary {
-      color: f.color(brand-secondary);
-      border-color: f.color(brand-secondary);
-
-      &:hover:not(.button--disabled) {
-        background: f.color(brand-secondary);
-        color: f.color(white);
-      }
-    }
-
-    &.button--tertiary {
-      color: f.color(brand-tertiary);
-      border-color: f.color(brand-tertiary);
-
-      &:hover:not(.button--disabled) {
-        background: f.color(brand-tertiary);
-        color: f.color(white);
-      }
+    &--outline.button--#{$variant} {
+      @include outline-style($variant, $color);
     }
   }
 }
