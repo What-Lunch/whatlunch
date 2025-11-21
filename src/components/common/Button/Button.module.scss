@@ -1,0 +1,98 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
+$variant-colors: (
+  primary: brand-primary,
+  secondary: brand-secondary,
+  tertiary: brand-tertiary,
+  neutral: gray-400,
+  danger: status-danger,
+  blue: point-blue,
+);
+
+@function fill-text-color($variant) {
+  @return f.color(white);
+}
+
+@mixin fill-style($variant, $color) {
+  background: f.color($color);
+  color: fill-text-color($variant);
+
+  &:hover:not(.button--disabled) {
+    background: darken(f.color($color), 8%);
+  }
+
+  &:active:not(.button--disabled) {
+    background: darken(f.color($color), 15%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid f.color(interaction-focus);
+  }
+}
+
+@mixin outline-style($variant, $color) {
+  background: transparent;
+  border: 2px solid f.color($color);
+  color: f.color(black);
+
+  &:hover:not(.button--disabled) {
+    background: transparent;
+    border-color: f.color($color);
+    color: f.color(black);
+  }
+
+  &:active:not(.button--disabled) {
+    $dark: darken(f.color($color), 15%);
+    border-color: $dark;
+    color: f.color(black);
+  }
+
+  &:focus-visible {
+    outline: 2px solid f.color(interaction-focus);
+  }
+}
+
+.button {
+  @include m.flex-box(center, center);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+
+  &--sm {
+    padding: 6px 14px;
+    font-size: map-get(map-get(v.$typography, xs), fontSize);
+  }
+
+  &--md {
+    padding: 10px 20px;
+    font-size: map-get(map-get(v.$typography, md), fontSize);
+  }
+
+  &--lg {
+    padding: 14px 24px;
+    font-size: map-get(map-get(v.$typography, lg), fontSize);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  @each $variant, $color in $variant-colors {
+    &--#{$variant} {
+      @include fill-style($variant, $color);
+    }
+
+    &--outline.button--#{$variant} {
+      @include outline-style($variant, $color);
+    }
+  }
+}
