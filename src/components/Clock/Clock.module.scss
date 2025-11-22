@@ -1,0 +1,32 @@
+@use '~/src/styles/utils/mixins' as m;
+@use '~/src/styles/utils/functions' as f;
+@use '~/src/styles/utils/variables' as v;
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid f.color(border-primary);
+  background: f.color(bg-secondary);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.text {
+  @include m.text-style(lg, 500);
+  color: f.color(text-primary);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.time {
+  @include m.text-style('2xl', 600);
+  color: f.color(text-primary);
+}
