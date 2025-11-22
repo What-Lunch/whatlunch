@@ -4,82 +4,61 @@ import { useState } from 'react';
 import Input from '@/components/common/input/Input';
 
 export default function InputTestPage() {
-  const [value, setValue] = useState('');
+  const [normalValue, setNormalValue] = useState('');
   const [errorValue, setErrorValue] = useState('');
-  const [iconValue, setIconValue] = useState('');
+  const [pwd, setPwd] = useState('');
+  const [disabledValue] = useState('비활성 상태');
 
   return (
-    <main style={{ padding: '24px', maxWidth: '480px', margin: '0 auto' }}>
-      <h1>Input 컴포넌트 테스트 페이지</h1>
+    <div
+      style={{
+        padding: '40px',
+        maxWidth: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '32px',
+      }}
+    >
+      <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>Input 디자인 확인</h1>
 
-      {/* 기본 */}
-      <section style={{ marginTop: '24px' }}>
-        <h2>기본(Default)</h2>
-        <Input value={value} onChange={e => setValue(e.target.value)} placeholder="기본 Input" />
-      </section>
+      {/* 기본 입력 */}
+      <div>
+        <p style={{ marginBottom: '8px', fontWeight: 500 }}>기본 입력</p>
+        <Input
+          value={normalValue}
+          onChange={e => setNormalValue(e.target.value)}
+          placeholder="입력해보세요"
+        />
+      </div>
 
-      {/* 에러 */}
-      <section style={{ marginTop: '24px' }}>
-        <h2>에러 상태(Error)</h2>
+      {/* 오류 입력 */}
+      <div>
+        <p style={{ marginBottom: '8px', fontWeight: 500 }}>오류 상태 테스트</p>
         <Input
           value={errorValue}
           onChange={e => setErrorValue(e.target.value)}
-          isError={true} // false시, 초록색 테두리 & 문구 뜨지 않음
-          errorMessage="오류가 발생했습니다."
-          placeholder="에러 Input"
+          placeholder="잘못 입력해보세요"
+          isError={errorValue.length > 0 && errorValue.length < 4}
+          errorMessage="4글자 이상 입력해야 합니다."
         />
-      </section>
+      </div>
 
-      {/* Disabled */}
-      <section style={{ marginTop: '24px' }}>
-        <h2>비활성화(Disabled)</h2>
-        <Input value="" onChange={() => {}} disabled placeholder="test@test.com" />
-      </section>
-
-      {/* Left Icon */}
-      <section style={{ marginTop: '24px' }}>
-        <h2>Left Icon</h2>
+      {/* 비밀번호 입력 */}
+      <div>
+        <p style={{ marginBottom: '8px', fontWeight: 500 }}>Password 입력</p>
         <Input
-          value={iconValue}
-          onChange={e => setIconValue(e.target.value)}
-          leftIcon={<span>🔍</span>}
-          placeholder="왼쪽 아이콘"
-        />
-      </section>
-
-      {/* Right Icon */}
-      <section style={{ marginTop: '24px' }}>
-        <h2>Right Icon</h2>
-        <Input
-          value={iconValue}
-          onChange={e => setIconValue(e.target.value)}
-          rightIcon={<span>❌</span>}
-          placeholder="오른쪽 아이콘"
-        />
-      </section>
-
-      {/* Right Icon + onClick */}
-      <section style={{ marginTop: '24px' }}>
-        <h2>Right Icon + Clickable</h2>
-        <Input
-          value={iconValue}
-          onChange={e => setIconValue(e.target.value)}
-          rightIcon={<span>🗑️</span>}
-          onRightIconClick={() => alert('아이콘 클릭됨!')}
-          placeholder="클릭 가능한 아이콘"
-        />
-      </section>
-
-      {/* Password type */}
-      <section style={{ marginTop: '24px' }}>
-        <h2>Password Input</h2>
-        <Input
-          value={value}
-          onChange={e => setValue(e.target.value)}
           type="password"
+          value={pwd}
+          onChange={e => setPwd(e.target.value)}
           placeholder="비밀번호 입력"
         />
-      </section>
-    </main>
+      </div>
+
+      {/* 비활성화 - ex. 회원정보나 프로필 화면에서 수정 불가능한 항목(이메일, 가입일) */}
+      <div>
+        <p style={{ marginBottom: '8px', fontWeight: 500 }}>비활성 상태</p>
+        <Input value={disabledValue} onChange={() => {}} disabled />
+      </div>
+    </div>
   );
 }

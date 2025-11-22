@@ -2,90 +2,77 @@
 @use '~/src/styles/utils/functions' as f;
 @use '~/src/styles/utils/variables' as v;
 
-// 전체 컴포넌트
 .container {
   display: flex;
   flex-direction: column;
-  width: 100%;
 }
 
-// 입력 필드와 아이콘을 감싸는 영역
 .wrapper {
-  display: flex;
-  align-items: center;
-  border: 1px solid f.color(gray-400);
-  background-color: f.color(bg-inverse);
-  border-radius: 4px;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  @include m.flex-box(flex-start, center);
   position: relative;
+  border: 1px solid f.color(border-primary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+  background: f.color(bg-secondary);
+}
 
-  &.focused {
-    border-color: f.color(interaction-focus);
-    box-shadow: 0 0 0 1px f.color(interaction-focus);
-  }
+.focused {
+  border-width: 2px;
+  border-color: f.color(interaction-focus);
+}
 
-  &.error {
-    border-color: f.color(status-danger);
+.error {
+  border-width: 2px;
+  border-color: f.color(status-danger);
+}
 
-    .input {
-      &::placeholder {
-        color: f.color(status-danger);
-        opacity: 0.8;
-      }
-    }
-
-    // error + focused 조합일 때도 빨간색 유지(오버라이드)
-    &.focused {
-      border-color: f.color(status-danger) !important;
-      box-shadow: 0 0 0 1px f.color(status-danger) !important;
-    }
-  }
-
-  &.disabled {
-    background-color: f.color(gray-200);
-    cursor: not-allowed;
-    border-color: f.color(gray-300);
-
-    .input {
-      color: f.color(text-disabled);
-      cursor: not-allowed;
-    }
-  }
+.disabled {
+  background: f.color(bg-secondary);
+  border-color: f.color(bg-secondary);
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 .input {
-  flex-grow: 1;
-  padding: 10px 12px;
-  border: none;
+  flex: 1;
   outline: none;
-  font-size: f.typography(md, 'fontSize');
-  line-height: f.typography(md, lineHeight);
-  color: f.color(text-default);
-  background-color: transparent;
-}
+  border: none;
+  background: transparent;
 
-.leftIcon,
-.rightIcon {
-  display: flex;
-  align-items: center;
-  color: f.color(icon-primary);
-  padding: 0 8px;
-  font-size: 18px;
-}
-
-.clickable {
-  cursor: pointer;
-
-  &:hover {
-    color: f.color(icon-brand);
-  }
+  @include m.text-style(md, 400); // typography(md)
+  color: f.color(text-primary);
 }
 
 .errorMessage {
   margin-top: 4px;
-  font-size: f.typography(xs, fontSize);
+  @include m.text-style(sm);
   color: f.color(status-danger);
-  padding-left: 4px;
+}
+
+.icon-left,
+.icon-right {
+  position: absolute;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+
+  color: f.color(icon-primary);
+}
+
+.icon-left {
+  left: 8px;
+}
+
+.icon-right {
+  right: 8px;
+}
+
+.wrapper.icon-left .input {
+  padding-left: 30px;
+}
+
+.wrapper.icon-right .input {
+  padding-right: 30px;
 }
