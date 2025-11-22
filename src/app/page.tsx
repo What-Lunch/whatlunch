@@ -1,4 +1,5 @@
 import styles from './page.module.scss';
+import Clock from '@/components/Clock/Clock';
 
 export default function HomePage() {
   return (
@@ -12,7 +13,9 @@ export default function HomePage() {
         </div>
       </div>
       <div className={styles['container__right']}>
-        <section className={styles['container__right__clock']}>시계</section>
+        <section className={styles['container__right__clock']}>
+          <Clock />
+        </section>
         <section className={styles['container__right__weather']}>날씨에 따른 기분에 따른</section>
         <section className={styles['container__right__chat']}>채팅창</section>
       </div>
