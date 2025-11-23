@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 import styles from './WeatherRecommend.module.scss';
 import { getFinalRecommend } from '@/utils/recommend/weather';
 import type { WeatherData } from '@/types/weather';
@@ -74,11 +75,14 @@ export default function WeatherRecommend() {
   return (
     <div className={styles['container']}>
       <div className={styles['weatherInfo']}>
-        <img
+        <Image
           src={`https://openweathermap.org/img/wn/${iconCode}@2x.png`}
           alt="weather icon"
+          width={90}
+          height={90}
           className={styles['icon']}
         />
+
         <p className={styles['weatherText']}>
           {name} / {description} {temperature}°
         </p>

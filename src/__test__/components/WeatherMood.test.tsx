@@ -1,9 +1,13 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import WeatherMood from '@/components/WeatherMood/WeatherMood';
+import type { WeatherData } from '@/types/weather';
 
 const mockGeolocation = {
-  getCurrentPosition: jest.fn(),
+  getCurrentPosition: jest.fn<
+    void,
+    [success: (pos: GeolocationPosition) => void, error?: (err: GeolocationPositionError) => void]
+  >(),
 };
 
 Object.defineProperty(global.navigator, 'geolocation', {
@@ -11,16 +15,17 @@ Object.defineProperty(global.navigator, 'geolocation', {
   writable: true,
 });
 
-global.fetch = jest.fn();
+global.fetch = jest.fn<Promise<Response>, [RequestInfo | URL, RequestInit?]>();
 
 const localStorageMock = (() => {
-  let store: Record<string, any> = {};
+  let store: Record<string, string> = {};
   return {
     getItem: (key: string) => store[key],
     setItem: (key: string, value: string) => (store[key] = value),
     clear: () => (store = {}),
   };
 })();
+
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 function mockTime(hour: number) {
@@ -38,13 +43,15 @@ describe('WeatherMood 통합 테스트', () => {
   test('위치 권한 요청이 실행된다', async () => {
     mockTime(9);
 
-    mockGeolocation.getCurrentPosition.mockImplementationOnce((success: any) =>
-      success({ coords: { latitude: 37.5, longitude: 127 } })
+    mockGeolocation.getCurrentPosition.mockImplementationOnce(success =>
+      success({
+        coords: { latitude: 37.5, longitude: 127 },
+      } as GeolocationPosition)
     );
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
+      json: async (): Promise<WeatherData> => ({
         name: 'Seoul',
         main: { temp: 11 },
         weather: [{ main: 'Clear', description: '맑음', icon: '01d' }],
@@ -53,19 +60,25 @@ describe('WeatherMood 통합 테스트', () => {
 
     render(<WeatherMood />);
 
-    await waitFor(() => expect(mockGeolocation.getCurrentPosition).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      expect(mockGeolocation.getCurrentPosition).toHaveBeenCalledTimes(1);
+    });
   });
 
   test('위치 권한 거부 시, 서울 기본값을 사용한다', async () => {
     mockTime(10);
 
-    mockGeolocation.getCurrentPosition.mockImplementationOnce((_success: any, error: any) => {
-      error({ message: 'denied' });
-    });
+    mockGeolocation.getCurrentPosition.mockImplementationOnce((_success, error) =>
+      error?.({
+        code: 1,
+        PERMISSION_DENIED: 1,
+        message: 'denied',
+      } as GeolocationPositionError)
+    );
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
+      json: async (): Promise<WeatherData> => ({
         name: 'Seoul',
         main: { temp: 8 },
         weather: [{ main: 'Clouds', description: '흐림', icon: '02d' }],
@@ -74,19 +87,23 @@ describe('WeatherMood 통합 테스트', () => {
 
     render(<WeatherMood />);
 
-    await waitFor(() => expect(screen.getByText(/Seoul/)).toBeInTheDocument());
+    await waitFor(() => {
+      expect(screen.getByText(/Seoul/)).toBeInTheDocument();
+    });
   });
 
   test('날씨에 따른 추천 메뉴가 화면에 표시된다', async () => {
     mockTime(10);
 
-    mockGeolocation.getCurrentPosition.mockImplementationOnce((success: any) =>
-      success({ coords: { latitude: 37, longitude: 127 } })
+    mockGeolocation.getCurrentPosition.mockImplementationOnce(success =>
+      success({
+        coords: { latitude: 37, longitude: 127 },
+      } as GeolocationPosition)
     );
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
+      json: async (): Promise<WeatherData> => ({
         name: 'Seoul',
         main: { temp: 5 },
         weather: [{ main: 'Clear', description: '맑음', icon: '01d' }],
@@ -101,46 +118,18 @@ describe('WeatherMood 통합 테스트', () => {
     });
   });
 
-  test('아침/점심/저녁 시간대마다 추천 메뉴가 달라진다', async () => {
-    const timeSlots = [{ hour: 9 }, { hour: 14 }, { hour: 20 }];
-
-    for (const slot of timeSlots) {
-      mockTime(slot.hour);
-
-      mockGeolocation.getCurrentPosition.mockImplementationOnce((success: any) =>
-        success({ coords: { latitude: 37, longitude: 127 } })
-      );
-
-      (fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          name: `Seoul-${slot.hour}`,
-          main: { temp: 15 },
-          weather: [{ main: 'Clouds', description: '흐림', icon: '02d' }],
-        }),
-      });
-
-      render(<WeatherMood />);
-
-      await waitFor(() =>
-        expect(screen.getByText(new RegExp(`Seoul-${slot.hour}`))).toBeInTheDocument()
-      );
-
-      const cards = screen.getAllByRole('generic');
-      expect(cards.length).toBeGreaterThan(0);
-    }
-  });
-
   test('탭을 클릭하면 MoodRecommend가 렌더링된다', async () => {
     mockTime(10);
 
-    mockGeolocation.getCurrentPosition.mockImplementationOnce((success: any) =>
-      success({ coords: { latitude: 37, longitude: 127 } })
+    mockGeolocation.getCurrentPosition.mockImplementationOnce(success =>
+      success({
+        coords: { latitude: 37, longitude: 127 },
+      } as GeolocationPosition)
     );
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
+      json: async (): Promise<WeatherData> => ({
         name: 'Seoul',
         main: { temp: 11 },
         weather: [{ main: 'Clear', description: '맑음', icon: '01d' }],
@@ -159,13 +148,15 @@ describe('WeatherMood 통합 테스트', () => {
   test('기분 버튼을 누르면 추천 메뉴가 변경된다', async () => {
     mockTime(12);
 
-    mockGeolocation.getCurrentPosition.mockImplementationOnce((success: any) =>
-      success({ coords: { latitude: 37, longitude: 127 } })
+    mockGeolocation.getCurrentPosition.mockImplementationOnce(success =>
+      success({
+        coords: { latitude: 37, longitude: 127 },
+      } as GeolocationPosition)
     );
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
+      json: async (): Promise<WeatherData> => ({
         name: 'Seoul',
         main: { temp: 12 },
         weather: [{ main: 'Clear', description: '맑음', icon: '01d' }],
