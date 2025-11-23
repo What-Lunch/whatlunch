@@ -1,4 +1,5 @@
 import styles from './page.module.scss';
+import { WeatherMood } from '@/components/WeatherMood';
 
 export default function HomePage() {
   return (
@@ -11,9 +12,14 @@ export default function HomePage() {
           <section className={styles['container__left__main__map']}>지도</section>
         </div>
       </div>
+
       <div className={styles['container__right']}>
         <section className={styles['container__right__clock']}>시계</section>
-        <section className={styles['container__right__weather']}>날씨에 따른 기분에 따른</section>
+
+        <section className={styles['container__right__weather']}>
+          <WeatherMood />
+        </section>
+
         <section className={styles['container__right__chat']}>채팅창</section>
       </div>
     </div>
