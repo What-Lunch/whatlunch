@@ -1,6 +1,7 @@
 import styles from './Header.module.scss';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 
 import WhatLunchLogo from '../../../../public/icons/what-lunch-logo.svg';
 /**
@@ -8,7 +9,7 @@ import WhatLunchLogo from '../../../../public/icons/what-lunch-logo.svg';
  * 헤더를 학교 홈페이지처럼 하고 싶다고 했는데 아직 메뉴가 없어 하기가 어렵네요
  * 버튼 컴포넌트가 머지되면 로그인, 회원가입도 버튼 컴포넌트로 바꿀게요
  */
-export default function Header() {
+export function Header() {
   return (
     <header className={styles['header']}>
       <section className={styles['header__menu']}>
@@ -35,3 +36,5 @@ export default function Header() {
     </header>
   );
 }
+
+export default React.memo(Header);
