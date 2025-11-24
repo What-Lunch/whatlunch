@@ -17,7 +17,7 @@
 
 .header {
   @include m.flex-box(space-between, center, row);
-  padding: 32px;
+  padding: 10px 20px;
   background-color: f.color(bg-primary);
   @include m.text-style-extended('2lg', 600, text-primary);
   &__menu {
