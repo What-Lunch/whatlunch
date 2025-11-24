@@ -30,13 +30,15 @@
     }
 
     &__images {
-      @include m.flex-box(center, center, row);
+      @include m.flex-box(space-between, center, row);
+
       width: 100%;
-      justify-content: space-between;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      display: flex;
+      gap: 12px;
+
+      transition: transform 0.5s ease;
+      user-select: none;
+
+      overflow: hidden;
     }
   }
 
