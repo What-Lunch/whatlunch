@@ -30,8 +30,7 @@
     gap: 8px;
 
     img {
-      position: relative;
-      top: 5px;
+      transform: translateY(5px);
     }
     span {
       @include m.text-style-extended('3xl', 700, text-primary);

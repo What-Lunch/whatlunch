@@ -12,7 +12,7 @@ import WhatLunchLogo from '../../../../public/icons/what-lunch-logo.svg';
 export function Header() {
   return (
     <header className={styles['header']}>
-      <section className={styles['header__menu']}>
+      <div className={styles['header__menu']}>
         <Link href="/">
           <span>룰렛 돌리기</span>
         </Link>
@@ -20,19 +20,19 @@ export function Header() {
         <Link href="/faq">
           <span>고객센터</span>
         </Link>
-      </section>
+      </div>
 
-      <section>
+      <div>
         <Link href="/" className={styles['header__logo']}>
           <Image src={WhatLunchLogo} alt="What Lunch Logo" width={60} height={60} />
           <span>What Lunch</span>
         </Link>
-      </section>
+      </div>
 
-      <section className={styles['header__auth']}>
-        <span>로그인</span>
-        <span>회원가입</span>
-      </section>
+      <div className={styles['header__auth']}>
+        <button type="button">로그인</button>
+        <button type="button">회원가입</button>
+      </div>
     </header>
   );
 }
