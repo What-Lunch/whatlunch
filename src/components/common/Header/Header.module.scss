@@ -1,0 +1,38 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+@mixin menu-auth {
+  @include m.flex-box(center, center, row);
+  gap: 24px;
+  span {
+    cursor: pointer;
+  }
+}
+
+.header {
+  @include m.flex-box(space-between, center, row);
+  padding: 32px;
+  background-color: f.color(bg-primary);
+  @include m.text-style-extended('2lg', 600, text-primary);
+  &__menu {
+    @include menu-auth;
+  }
+
+  &__logo {
+    cursor: pointer;
+    @include m.flex-box(center, center, row);
+    gap: 8px;
+
+    img {
+      position: relative;
+      top: 5px;
+    }
+    span {
+      @include m.text-style-extended('3xl', 700, text-primary);
+    }
+  }
+
+  &__auth {
+    @include menu-auth;
+  }
+}
