@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './WeatherRecommend.module.scss';
 import { getFinalRecommend } from '@/utils/recommend/weather';
-import type { WeatherData } from '@/types/weather';
 
 export default function WeatherRecommend() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
