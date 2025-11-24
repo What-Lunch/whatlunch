@@ -6,6 +6,12 @@
   gap: 24px;
   span {
     cursor: pointer;
+    @include m.text-style-extended('2lg', 500, text-primary);
+
+    &:hover {
+      color: f.color(brand-secondary);
+      transition: color 0.2s ease-in-out;
+    }
   }
 }
 
