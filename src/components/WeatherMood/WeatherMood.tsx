@@ -5,7 +5,7 @@ import styles from './WeatherMood.module.scss';
 
 import WeatherRecommend from './WeatherRecommend';
 import MoodRecommend from './MoodRecommend';
-import type { RecommendTab } from '@/types/recommend';
+import type { RecommendTab } from '@/components/WeatherMood/recommend';
 
 const DEFAULT_TAB: RecommendTab = 'weather';
 

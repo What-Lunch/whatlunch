@@ -1,4 +1,4 @@
-import type { MoodOption, MoodId } from '@/types/mood';
+import type { MoodOption, MoodId } from '@/components/WeatherMood/mood';
 
 export const moods: MoodOption[] = [
   { id: 'happy', label: '기쁨', icon: '😊' },

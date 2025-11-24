@@ -1,4 +1,4 @@
-export interface WeatherData {
+interface WeatherData {
   name: string;
   main: {
     temp: number;

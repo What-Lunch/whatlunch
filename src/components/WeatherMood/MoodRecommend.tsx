@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import styles from './MoodRecommend.module.scss';
 
-import type { MoodId } from '@/types/mood';
+import type { MoodId } from '@/components/WeatherMood/mood';
 import { moods, recommendMenu } from '@/utils/recommend/mood';
 
 const DEFAULT_MOOD: MoodId = 'happy';

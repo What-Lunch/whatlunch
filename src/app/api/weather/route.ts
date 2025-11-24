@@ -1,9 +1,6 @@
-export const runtime = 'nodejs';
-
 import { NextResponse } from 'next/server';
-import type { WeatherData } from '@/types/weather';
 
-const CACHE_DURATION = 2 * 60 * 60 * 1000;
+const CACHE_DURATION = 6 * 60 * 60 * 1000;
 
 type TimeSlot = 'morning' | 'afternoon' | 'evening';
 
