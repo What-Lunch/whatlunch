@@ -2,7 +2,7 @@ import styles from './Header.module.scss';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-
+import Button from '@/components/common/Button';
 import WhatLunchLogo from '../../../../public/icons/what-lunch-logo.svg';
 /**
  * 로그인 및 회원가입 모달로 관리
@@ -30,8 +30,8 @@ export function Header() {
       </div>
 
       <div className={styles['header__auth']}>
-        <button type="button">로그인</button>
-        <button type="button">회원가입</button>
+        <Button variant="primary">로그인</Button>
+        <Button variant="primary">회원가입</Button>
       </div>
     </header>
   );
