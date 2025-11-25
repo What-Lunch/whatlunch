@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import styles from './ResultModal.module.scss';
 
 interface Props {
@@ -47,7 +48,15 @@ export default function ResultModal({ menu, onClose }: Props) {
         role="dialog"
         aria-modal="true"
       >
-        {image && <img className={styles['modal__image']} src={image} alt={menu} />}
+        {image && (
+          <Image
+            src={image}
+            alt={menu}
+            width={300}
+            height={200}
+            className={styles['modal__image']}
+          />
+        )}
 
         <p className={styles['modal__name']}>{menu}</p>
 
