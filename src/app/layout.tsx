@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
 import Header from '@/components/common/Header';
-
+import Main from '@/components/common/Main';
 import '@/styles/main.scss';
 
 export const metadata: Metadata = {
   title: '오늘 뭐먹지?',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface LayoutProps {
   children: React.ReactNode;
-}>) {
+}
+
+export default function RootLayout({ children }: Readonly<LayoutProps>) {
   return (
     <html lang="ko">
       {process.env.NODE_ENV === 'development' ? (
@@ -23,7 +23,7 @@ export default function RootLayout({
 
       <body>
         <Header />
-        {children}
+        <Main>{children}</Main>
       </body>
     </html>
   );

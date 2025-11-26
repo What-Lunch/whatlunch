@@ -8,3 +8,11 @@
   }
   @return $val;
 }
+
+@function main($property) {
+  $val: map.get(v.$main, $property);
+  @if $val == null {
+    @error "Unknown main property: #{$property}";
+  }
+  @return $val;
+}
