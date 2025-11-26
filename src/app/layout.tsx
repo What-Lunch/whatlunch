@@ -11,7 +11,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: Readonly<LayoutProps>) {
+export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="ko">
       {process.env.NODE_ENV === 'development' ? (
