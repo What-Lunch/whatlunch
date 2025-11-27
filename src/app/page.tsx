@@ -16,7 +16,6 @@ import Three4 from '../../public/images/test/14.jpeg';
 import Clock from '@/components/Clock/Clock';
 import { WeatherMood } from '@/components/WeatherMood';
 
-
 export default function HomePage() {
   const TestImage = [One1, One2, One1, One2, One5];
   const TestImage2 = [Two1, Two2, Two3, Two4, Two5];
@@ -49,7 +48,7 @@ export default function HomePage() {
   return (
     <div className={styles['container']}>
       <div className={styles['container__left']}>
-        <Carousel duration={20000} items={pendingData} />
+        <Carousel duration={2000} items={pendingData} />
         <section className={styles['container__left__slice']}>오늘 인기있는 음식</section>
         <div className={styles['container__left__main']}>
           <section className={styles['container__left__main__roulette']}>룰렛</section>

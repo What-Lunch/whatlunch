@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import styles from './Carousel.module.scss';
 import Image from 'next/image';
 
@@ -8,12 +8,21 @@ import { CarouselProps } from './type';
 
 export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [imageCounter, setImageCounter] = useState(5);
+
   const [isPaused, setIsPaused] = useState(false);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [viewportWidth, setViewportWidth] = useState(0);
 
   const slideRef = useRef<HTMLDivElement>(null);
   const startX = useRef(0);
   const isDragging = useRef(false);
+
+  useLayoutEffect(() => {
+    const measure = () => setViewportWidth(viewportRef.current?.clientWidth ?? 0);
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
 
   const handleSlideChange = useCallback((newIndex: number) => {
     setCurrentIndex(prev => {
@@ -48,7 +57,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   // 반응형 이미지 개수 조절
   useEffect(() => {
     const handleResize = () => {
-      setImageCounter(window.innerWidth < 768 ? 3 : 5);
+      // setImageCounter(window.innerWidth < 768 ? 3 : 5);
     };
 
     handleResize();
@@ -94,10 +103,10 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   if (!items || items.length === 0) {
     return null;
   }
-
+  console.log('viewportWidth', viewportWidth);
   return (
     <section
-      className={styles['carousel']}
+      className={styles['container']}
       aria-label="캐러셀 식당과 카페"
       onMouseEnter={handlePause}
       onMouseLeave={handleResume}
@@ -108,31 +117,46 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
       onTouchMove={onDragMove}
       onTouchEnd={onDragEnd}
     >
-      <div className={styles['carousel__container']}>
-        <div className={styles['carousel__container__info']}>
-          <h2>{items[currentIndex].title}</h2>
-          <div>
-            <span>{items[currentIndex].category}</span>
-            <span> • {items[currentIndex].rating}</span>
-          </div>
-          <span>{items[currentIndex].location}</span>
-        </div>
+      <div className={styles['carousel']} ref={viewportRef}>
+        <div
+          className={styles['carousel__track']}
+          style={{
+            transform: `translateX(-${currentIndex * viewportWidth}px)`,
+            width: `${viewportWidth}px`,
+          }}
+          ref={slideRef}
+        >
+          {items.map(item => (
+            <article className={styles['carousel__container']} key={item.title}>
+              <div className={styles['carousel__container__info']}>
+                <h2>{item.title}</h2>
+                <div>
+                  <span>{item.category}</span>
+                  <span> • {item.rating}</span>
+                </div>
+                <span>{item.location}</span>
+              </div>
 
-        <div className={styles['carousel__container__images']} onClick={handleImageSlideClick}>
-          {items[currentIndex].src.slice(0, imageCounter).map((imageSrc, index) => (
-            <Image
-              aria-label={`Carousel Image ${index + 1}`}
-              key={`${currentIndex}-${index}`}
-              src={imageSrc}
-              alt={`${items[currentIndex].title} - Image ${index + 1}`}
-              width={120}
-              height={120}
-              loading={index === 0 ? 'eager' : 'lazy'}
-            />
+              <div
+                className={styles['carousel__container__images']}
+                onClick={handleImageSlideClick}
+              >
+                {item.src.map((imageSrc, imageIndex) => (
+                  <Image
+                    aria-label={`Carousel Image ${imageIndex + 1}`}
+                    key={`${item.title}-${imageIndex}`}
+                    src={imageSrc}
+                    alt={`${item.title} - Image ${imageIndex + 1}`}
+                    width={120}
+                    height={120}
+                    loading={imageIndex === 0 ? 'eager' : 'lazy'}
+                  />
+                ))}
+              </div>
+            </article>
           ))}
         </div>
       </div>
-
       <div aria-label="Carousel navigation" className={styles['carousel__dots']}>
         {items.map((_, index) => (
           <button
