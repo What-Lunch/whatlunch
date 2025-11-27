@@ -53,10 +53,10 @@ export default function Clock() {
   }, [remain, message]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.wrapper}>
-        <div className={styles.text}>{message}</div>
-        <div className={styles.time}>{currentTime}</div>
+    <div className={styles[`container`]}>
+      <div className={styles[`wrapper`]}>
+        <span className={styles[`text`]}>{message}</span>
+        <span className={styles[`time`]}>{currentTime}</span>
       </div>
     </div>
   );
