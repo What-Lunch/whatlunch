@@ -1,4 +1,5 @@
 import styles from './page.module.scss';
+
 import Carousel from '@/components/Carousel';
 
 import One1 from '../../public/images/test/1.jpeg';
@@ -11,6 +12,10 @@ import Two4 from '../../public/images/test/9.jpeg';
 import Two5 from '../../public/images/test/5.jpeg';
 import Three1 from '../../public/images/test/10.jpeg';
 import Three4 from '../../public/images/test/14.jpeg';
+
+import Clock from '@/components/Clock/Clock';
+import { WeatherMood } from '@/components/WeatherMood';
+
 
 export default function HomePage() {
   const TestImage = [One1, One2, One1, One2, One5];
@@ -52,9 +57,14 @@ export default function HomePage() {
           <section className={styles['container__left__main__map']}>지도</section>
         </div>
       </div>
+
       <div className={styles['container__right']}>
-        <section className={styles['container__right__clock']}>시계</section>
-        <section className={styles['container__right__weather']}>날씨에 따른 기분에 따른</section>
+        <section className={styles['container__right__clock']}>
+          <Clock />
+        </section>
+        <section className={styles['container__right__weather']}>
+          <WeatherMood />
+        </section>
         <section className={styles['container__right__chat']}>채팅창</section>
       </div>
     </div>
