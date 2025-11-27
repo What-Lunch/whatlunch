@@ -55,7 +55,7 @@ export default function Clock() {
 
     if (remain === 'passed') {
       setMessage(getAfterLunchMessage());
-    } else if (remain !== '') {
+    } else {
       setMessage(getBeforeLunchMessage(remain));
     }
   }, [remain, message]);
