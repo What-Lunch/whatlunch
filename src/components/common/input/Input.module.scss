@@ -15,6 +15,33 @@
   border-radius: 6px;
   transition: border-color 0.2s;
   background: f.color(bg-secondary);
+
+  @mixin iconBase {
+    position: absolute;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    color: f.color(icon-primary);
+  }
+
+  &__icon-left {
+    @include iconBase;
+    left: 8px;
+  }
+
+  &__icon-right {
+    @include iconBase;
+    right: 8px;
+  }
+
+  &.icon-left .input {
+    padding-left: 30px;
+  }
+
+  &.icon-right .input {
+    padding-right: 30px;
+  }
 }
 
 .focused {
@@ -48,31 +75,4 @@
   margin-top: 4px;
   @include m.text-style(sm);
   color: f.color(status-danger);
-}
-
-.icon-left,
-.icon-right {
-  position: absolute;
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 0;
-
-  color: f.color(icon-primary);
-}
-
-.icon-left {
-  left: 8px;
-}
-
-.icon-right {
-  right: 8px;
-}
-
-.wrapper.icon-left .input {
-  padding-left: 30px;
-}
-
-.wrapper.icon-right .input {
-  padding-right: 30px;
 }

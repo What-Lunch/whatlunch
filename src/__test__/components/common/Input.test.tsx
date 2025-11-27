@@ -31,7 +31,7 @@ describe('Input Component 기본 기능 테스트', () => {
     render(<Input value="" onChange={() => {}} isError={true} errorMessage="에러 발생" />);
 
     const input = screen.getByRole('textbox');
-    const wrapper = input.parentElement as HTMLElement; // ★ 핵심 수정
+    const wrapper = input.parentElement as HTMLElement;
     const errorText = screen.getByText('에러 발생');
 
     expect(wrapper.className).toContain('error');

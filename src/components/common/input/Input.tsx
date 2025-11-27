@@ -22,13 +22,13 @@ export default function Input({
   const handleBlur = () => setIsFocused(false);
 
   return (
-    <div className={styles.container}>
+    <div className={styles[`container`]}>
       <div
         className={[
-          styles.wrapper,
-          isFocused ? styles.focused : '',
-          isError ? styles.error : '',
-          disabled ? styles.disabled : '',
+          styles['wrapper'],
+          isFocused ? styles[`focused`] : '',
+          isError ? styles[`error`] : '',
+          disabled ? styles[`disabled`] : '',
           icon ? styles[`icon-${iconPosition}`] : '',
         ].join(' ')}
       >
@@ -45,7 +45,7 @@ export default function Input({
         )}
 
         <input
-          className={styles.input}
+          className={styles['input']}
           value={value}
           onChange={onChange}
           disabled={disabled}
@@ -55,7 +55,7 @@ export default function Input({
         />
       </div>
 
-      {isError && errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
+      {isError && errorMessage && <p className={styles['errorMessage']}>{errorMessage}</p>}
     </div>
   );
 }
