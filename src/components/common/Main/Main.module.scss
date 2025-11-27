@@ -4,7 +4,7 @@
 // 이거는 건들지 마세요잉 + 반응형일 때 추가 설정 필요
 .main {
   max-width: 100vw;
-  padding: 50px 20px;
+  padding: 100px 20px;
   transition: margin-left 0.3s ease;
   overflow: hidden;
   @include m.mq(lg) {

@@ -3,16 +3,16 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import styles from './Carousel.module.scss';
 import Image from 'next/image';
-
 import { CarouselProps } from './type';
 
 export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [imageCounter, setImageCounter] = useState(5);
   const [isPaused, setIsPaused] = useState(false);
-  const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportWidth, setViewportWidth] = useState(0);
+  const [carouselHeight, setCarouselHeight] = useState(0);
 
+  const viewportRef = useRef<HTMLDivElement>(null);
   const slideRef = useRef<HTMLDivElement>(null);
   const startX = useRef(0);
   const isDragging = useRef(false);
@@ -57,13 +57,28 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   // 반응형 이미지 개수 조절
   useEffect(() => {
     const handleResize = () => {
-      // setImageCounter(window.innerWidth < 768 ? 3 : 5);
+      if (window.innerWidth < 768) {
+        setImageCounter(3);
+        setCarouselHeight(viewportWidth / (3 + 1));
+      } else if (window.innerWidth < 1024) {
+        setImageCounter(3);
+        setCarouselHeight(viewportWidth / (3 + 1));
+      } else if (window.innerWidth < 1280) {
+        setImageCounter(3);
+        setCarouselHeight(viewportWidth / (3 + 1));
+      } else if (window.innerWidth < 1536) {
+        setImageCounter(3);
+        setCarouselHeight(viewportWidth / (3 + 1));
+      } else {
+        setImageCounter(3);
+        setCarouselHeight(viewportWidth / 4);
+      }
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [viewportWidth]);
 
   const handlePause = useCallback(() => setIsPaused(true), []);
   const handleResume = useCallback(() => setIsPaused(false), []);
@@ -103,7 +118,9 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   if (!items || items.length === 0) {
     return null;
   }
-  console.log('viewportWidth', viewportWidth);
+
+  const trackWidth = viewportWidth - viewportWidth * currentIndex;
+
   return (
     <section
       className={styles['container']}
@@ -121,7 +138,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
         <div
           className={styles['carousel__track']}
           style={{
-            transform: `translateX(-${currentIndex * viewportWidth}px)`,
+            transform: `translateX(${trackWidth - viewportWidth}px)`,
             width: `${viewportWidth}px`,
           }}
           ref={slideRef}
@@ -141,14 +158,14 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                 className={styles['carousel__container__images']}
                 onClick={handleImageSlideClick}
               >
-                {item.src.map((imageSrc, imageIndex) => (
+                {item.src.slice(0, imageCounter).map((imageSrc, imageIndex) => (
                   <Image
                     aria-label={`Carousel Image ${imageIndex + 1}`}
                     key={`${item.title}-${imageIndex}`}
                     src={imageSrc}
                     alt={`${item.title} - Image ${imageIndex + 1}`}
-                    width={120}
-                    height={120}
+                    width={carouselHeight ? carouselHeight : 200} // 스켈레톤 필요
+                    height={carouselHeight ? carouselHeight : 200} // 스켈레톤 필요
                     loading={imageIndex === 0 ? 'eager' : 'lazy'}
                   />
                 ))}
