@@ -22,6 +22,14 @@ function calcRemain() {
   return `${h}:${m}:${s}`;
 }
 
+// 브라우저에 영향받지 않는 고정 HH:mm:ss 포맷
+function formatCurrentTime(date: Date) {
+  const h = String(date.getHours()).padStart(2, '0');
+  const m = String(date.getMinutes()).padStart(2, '0');
+  const s = String(date.getSeconds()).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
 export default function Clock() {
   const [currentTime, setCurrentTime] = useState('');
   const [remain, setRemain] = useState('');
@@ -30,7 +38,7 @@ export default function Clock() {
   useEffect(() => {
     const tick = () => {
       const now = new Date();
-      setCurrentTime(now.toLocaleTimeString());
+      setCurrentTime(formatCurrentTime(now));
       setRemain(calcRemain());
     };
 
