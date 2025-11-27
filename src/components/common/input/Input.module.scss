@@ -1,0 +1,78 @@
+@use '~/src/styles/utils/mixins' as m;
+@use '~/src/styles/utils/functions' as f;
+@use '~/src/styles/utils/variables' as v;
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  @include m.flex-box(flex-start, center);
+  position: relative;
+  border: 1px solid f.color(border-primary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+  background: f.color(bg-secondary);
+
+  @mixin iconBase {
+    position: absolute;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    color: f.color(icon-primary);
+  }
+
+  &__icon-left {
+    @include iconBase;
+    left: 8px;
+  }
+
+  &__icon-right {
+    @include iconBase;
+    right: 8px;
+  }
+
+  &.icon-left .input {
+    padding-left: 30px;
+  }
+
+  &.icon-right .input {
+    padding-right: 30px;
+  }
+}
+
+.focused {
+  border-width: 2px;
+  border-color: f.color(interaction-focus);
+}
+
+.error {
+  border-width: 2px;
+  border-color: f.color(status-danger);
+}
+
+.disabled {
+  background: f.color(bg-secondary);
+  border-color: f.color(bg-secondary);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.input {
+  flex: 1;
+  outline: none;
+  border: none;
+  background: transparent;
+
+  @include m.text-style(md, 400); // typography(md)
+  color: f.color(text-primary);
+}
+
+.errorMessage {
+  margin-top: 4px;
+  @include m.text-style(sm);
+  color: f.color(status-danger);
+}

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Header from '@/components/common/Header';
+
 import '@/styles/main.scss';
 
 export const metadata: Metadata = {
@@ -12,7 +14,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      {process.env.NODE_ENV === 'development' ? (
+        <head>
+          {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+          <script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+        </head>
+      ) : null}
+
+      <body>
+        <Header />
+        {children}
+      </body>
     </html>
   );
 }
