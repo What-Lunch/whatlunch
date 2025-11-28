@@ -1,0 +1,64 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+@mixin bordered-box {
+  @include m.flex-box(center, center);
+  height: 300px;
+  width: 100%;
+  border: 1px solid f.color(black);
+
+  @include m.mq(lg) {
+    width: 300px;
+    height: 400px;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.myprofile {
+  @include bordered-box;
+  width: 100%;
+  height: 200px;
+  @include m.flex-box(center, center);
+}
+
+.mymenu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  &__top {
+    @include m.flex-box(center, center, column);
+    gap: 30px;
+    @include m.mq(lg) {
+      @include m.flex-box(space-between, center, row);
+    }
+    width: 100%;
+    &__meal {
+      @include bordered-box;
+    }
+    &__favorite {
+      @include bordered-box;
+    }
+    &__preference {
+      @include bordered-box;
+    }
+  }
+  &__bottom {
+    @include m.flex-box(center, center, column);
+    gap: 30px;
+    @include m.mq(lg) {
+      @include m.flex-box(space-around, center, row);
+    }
+    &__profile {
+      @include bordered-box;
+    }
+    &__faq {
+      @include bordered-box;
+    }
+  }
+}

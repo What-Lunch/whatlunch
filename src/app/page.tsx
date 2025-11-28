@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styles from './page.module.scss';
+import Clock from '@/components/Clock/Clock';
 
 import { TopTabs } from '@/components/common/TopTabs';
 import { WeatherMood } from '@/components/WeatherMood';
@@ -87,12 +88,12 @@ export default function HomePage() {
       </div>
 
       <div className={styles['container__right']}>
-        <section className={styles['container__right__clock']}>시계</section>
-
+        <section className={styles['container__right__clock']}>
+          <Clock />
+        </section>
         <section className={styles['container__right__weather']}>
           <WeatherMood />
         </section>
-
         <section className={styles['container__right__chat']}>채팅창</section>
       </div>
     </div>
