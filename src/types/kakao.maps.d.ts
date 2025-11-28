@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare namespace kakao {
   namespace maps {
     function load(callback: () => void): void;
@@ -20,6 +21,7 @@ declare namespace kakao {
       constructor(options: any);
       setImage(image: MarkerImage | null): void;
       getPosition(): LatLng;
+      setMap(map: Map | null): void;
     }
 
     class MarkerImage {

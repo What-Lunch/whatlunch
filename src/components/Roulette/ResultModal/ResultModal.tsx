@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './ResultModal.module.scss';
 import Button from '@/components/common/Button';
 
@@ -14,8 +13,6 @@ interface Props {
 const DEFAULT_IMAGE = '/foods/noimg.png';
 
 export default function ResultModal({ menu, onClose }: Props) {
-  const router = useRouter();
-
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -40,7 +37,9 @@ export default function ResultModal({ menu, onClose }: Props) {
         title: '오늘의 메뉴',
         text: `오늘의 메뉴는 ${menu}입니다!`,
       });
-    } catch (err) {}
+    } catch {
+      // ignore
+    }
   };
 
   return (

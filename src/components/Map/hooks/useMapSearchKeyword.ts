@@ -23,30 +23,26 @@ export function useMapSearchKeyword(
 
       const ps = new kakao.maps.services.Places();
 
-      ps.keywordSearch(text, (data: any[], status: string) => {
+      ps.keywordSearch(text, (data: MapPlace[], status: kakao.maps.services.Status) => {
         const { Status } = kakao.maps.services;
 
         if (status === Status.OK) {
-          const places = data as MapPlace[];
-
-          setPlaces(places);
-          createMarkers(places);
-
+          setPlaces(data);
+          createMarkers(data);
           // 첫 결과 중심으로 이동
-          if (places.length > 0) {
-            map.setCenter(new kakao.maps.LatLng(Number(places[0].y), Number(places[0].x)));
+          if (data.length > 0) {
+            map.setCenter(new kakao.maps.LatLng(Number(data[0].y), Number(data[0].x)));
           }
+
           return;
         }
 
-        // 결과 없음
         if (status === 'ZERO_RESULT') {
           setPlaces([]);
           createMarkers([]);
           return;
         }
 
-        // 기타 오류
         console.warn('[Kakao Places] Keyword search failed:', status);
         setPlaces([]);
         createMarkers([]);

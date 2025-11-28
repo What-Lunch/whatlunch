@@ -24,7 +24,7 @@ export function useMapSearchCategory(
 
       ps.categorySearch(
         categoryCode,
-        (data: any[], status: string) => {
+        (data: MapPlace[], status: kakao.maps.services.Status) => {
           const { Status } = kakao.maps.services;
 
           if (status === Status.OK) {
@@ -39,14 +39,12 @@ export function useMapSearchCategory(
             return;
           }
 
-          // 검색 결과 없음
           if (status === 'ZERO_RESULT') {
             setPlaces([]);
             createMarkers([]);
             return;
           }
 
-          // 오류 처리
           console.warn('[Kakao Places] categorySearch failed:', status);
           setPlaces([]);
           createMarkers([]);
