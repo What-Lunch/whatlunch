@@ -1,7 +1,6 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import WeatherMood from '@/components/WeatherMood/WeatherMood';
-import type { WeatherData } from '@/types/weather';
 
 const mockGeolocation = {
   getCurrentPosition: jest.fn<

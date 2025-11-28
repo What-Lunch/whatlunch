@@ -1,13 +1,28 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
 
-// 재사용
+// -----------------------------------------
+// ⭐ bordered-box: flex 제거 (지도 깨짐 방지)
+// -----------------------------------------
 @mixin bordered-box {
-  @include m.flex-box(center, center);
   width: 100%;
   border: 1px solid f.color(black);
 }
 
+// -----------------------------------------
+.today {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: #222;
+
+  span {
+    color: f.color(brand-primary);
+    font-weight: 800;
+  }
+}
+
+// -----------------------------------------
 .container {
   @include m.flex-box(center, flex-start, row);
   gap: 40px;
@@ -18,6 +33,7 @@
     padding: 100px 160px;
   }
 
+  // LEFT
   &__left {
     @include m.flex-box(center, center, column);
     gap: 40px;
@@ -35,23 +51,52 @@
       width: 100%;
       gap: 30px;
 
+      // -----------------------
+      // 룰렛 영역
+      // -----------------------
       &__roulette {
         @include bordered-box;
-        height: 800px;
+
+        display: flex; // flex는 여기서 직접 적용
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 14px;
+
+        height: auto;
+        min-height: 860px;
       }
 
+      // -----------------------
+      // 찬성/반대
+      // -----------------------
       &__option {
         @include bordered-box;
+
         height: 90px;
+        display: flex; // flex 직접 적용
+        align-items: center;
+        justify-content: center;
       }
 
+      // -----------------------
+      // ⭐ 지도 섹션 (MapResult)
+      // -----------------------
       &__map {
-        @include bordered-box;
-        height: 350px;
+        width: 100%;
+        height: 450px;
+        min-height: 450px;
+
+        border: 1px solid f.color(black);
+
+        display: block !important; // ❗ flex 금지
+        position: relative; // kakao map 내부 계산에 필수
+        overflow: hidden; // kakao canvas 깜박임 방지
       }
     }
   }
 
+  // RIGHT
   &__right {
     @include m.flex-box(center, center, column);
     gap: 30px;
@@ -60,16 +105,84 @@
     &__clock {
       @include bordered-box;
       height: 120px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     &__weather {
       @include bordered-box;
       height: 400px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     &__chat {
       @include bordered-box;
       height: 500px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  // ---------------------------
+  // 내부 유틸
+  // ---------------------------
+  .rouletteWrapper {
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  .resultBtnWrapper {
+    width: 100%;
+    margin-top: 10px;
+
+    display: flex;
+    justify-content: center;
+  }
+
+  .shuffleBtn {
+    position: absolute;
+    top: 20px;
+    right: -10px;
+    z-index: 10;
+
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    padding: 0 !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f2f2f2 !important;
+    border: 1px solid #ddd !important;
+
+    cursor: pointer;
+
+    transition:
+      background 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: #e6e6e6 !important;
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    svg {
+      color: #333;
     }
   }
 }

@@ -1,22 +1,33 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './ResultModal.module.scss';
+import Button from '@/components/common/Button';
 
 interface Props {
   menu: string;
   onClose: () => void;
 }
 
-export default function ResultModal({ menu, onClose }: Props) {
-  const MENU_IMAGES: Record<string, string> = {
-    부대찌개: '/foods/food.jpg',
-    닭개장: '/foods/food.jpg',
-    동태찌개: '/foods/food.jpg',
-    감자탕: '/foods/food.jpg',
-  };
+const DEFAULT_IMAGE = '/foods/noimg.png';
 
-  const image = MENU_IMAGES[menu];
+export default function ResultModal({ menu, onClose }: Props) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleEsc);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [onClose]);
 
   const share = async () => {
     if (!navigator.share) {
@@ -29,43 +40,39 @@ export default function ResultModal({ menu, onClose }: Props) {
         title: '오늘의 메뉴',
         text: `오늘의 메뉴는 ${menu}입니다!`,
       });
-    } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
-        console.log('사용자가 공유를 취소했습니다.');
-        return;
-      }
-
-      console.error('공유 중 오류 발생:', err);
-      alert('공유 중 문제가 발생했습니다.');
-    }
+    } catch (err) {}
   };
 
   return (
-    <div className={styles['overlay']} onClick={onClose}>
+    <div className={styles.overlay} onClick={onClose}>
       <div
-        className={styles['modal']}
+        className={styles.modal}
         onClick={e => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
-        {image && (
-          <Image
-            src={image}
-            alt={menu}
-            width={300}
-            height={200}
-            className={styles['modal__image']}
-          />
-        )}
+        <Image
+          src={DEFAULT_IMAGE}
+          alt={menu}
+          width={300}
+          height={200}
+          className={styles['modal__image']}
+        />
 
         <p className={styles['modal__name']}>{menu}</p>
 
         <div className={styles['modal__buttons']}>
-          <button onClick={share}>공유하기</button>
-          <button>자세히 보기</button>
-          <button className={styles['modal__close-btn']} onClick={onClose}>
+          <Button variant="primary" size="md" onClick={share}>
+            공유하기
+          </Button>
+
+          <Button variant="neutral" size="md">
+            지도 보기
+          </Button>
+
+          <Button variant="danger" size="md" onClick={onClose}>
             닫기
-          </button>
+          </Button>
         </div>
       </div>
     </div>

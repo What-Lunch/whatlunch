@@ -1,0 +1,84 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
+$border-default: 1px solid f.color(gray-300);
+$list-max-height: 200px;
+
+.wrapper {
+  @include m.flex-box(column, center);
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.panel {
+  @include m.flex-box(row, flex-start);
+  gap: 10px;
+  margin-top: 10px;
+
+  &__input {
+    padding: 10px;
+    font-size: map-get(map-get(v.$typography, md), fontSize);
+    border: $border-default;
+    border-radius: 8px;
+    width: 160px;
+    transition:
+      border-color 0.15s ease,
+      background-color 0.15s ease;
+  }
+
+  &__input--error {
+    border: 2px solid f.color(status-danger);
+    background: rgba(f.color(status-danger), 0.08);
+  }
+
+  &__button {
+    padding: 10px 16px;
+    border: $border-default;
+    border-radius: 6px;
+    font-size: map-get(map-get(v.$typography, sm), fontSize);
+    background: f.color(bg-inverse);
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: f.color(gray-200);
+    }
+  }
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+
+  max-height: $list-max-height;
+  overflow-y: auto;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+
+  &__item {
+    background: f.color(gray-100);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: $border-default;
+    @include m.flex-box(row, space-between);
+    gap: 10px;
+  }
+
+  &__delete-btn {
+    background: f.color(status-danger);
+    color: f.color(text-inverse);
+    border: $border-default;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: f.color(red-600);
+    }
+  }
+}

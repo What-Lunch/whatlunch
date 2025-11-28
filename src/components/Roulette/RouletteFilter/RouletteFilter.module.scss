@@ -1,0 +1,67 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
+.filter__mode {
+  @include m.flex-box(row, center);
+  width: fit-content;
+  margin: 0 auto;
+  padding: 4px;
+
+  background: f.color(gray-100);
+  border-radius: 999px;
+
+  gap: 0;
+  overflow: visible;
+}
+
+.mode__tab {
+  width: 260px;
+  height: 48px;
+
+  @include m.flex-box(center, center);
+
+  border-radius: 999px;
+  cursor: pointer;
+
+  font-size: map-get(map-get(v.$typography, lg), fontSize);
+  font-weight: 600;
+
+  background: transparent;
+  color: f.color(text-default);
+
+  position: relative;
+  z-index: 1;
+
+  transition: all 0.25s ease;
+}
+
+.mode__tab--active {
+  background: f.color(point-blue);
+  color: f.color(text-inverse);
+
+  z-index: 3;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+}
+
+.filter__options {
+  margin-top: 20px;
+
+  @include m.flex-box(row, center);
+  flex-wrap: wrap;
+
+  gap: 12px;
+  width: 100%;
+  padding: 0 12px;
+}
+
+.pill {
+  border-radius: 16px !important;
+  height: 40px;
+  padding: 0 18px;
+
+  @include m.flex-box(center, center);
+
+  box-sizing: border-box;
+}

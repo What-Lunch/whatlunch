@@ -6,10 +6,11 @@ import styles from './Roulette.module.scss';
 interface RouletteProps {
   items: string[];
   onResult?: (item: string) => void;
+  onStart?: () => void;
   size?: number;
 }
 
-export default function Roulette({ items, onResult, size = 480 }: RouletteProps) {
+export default function Roulette({ items, onResult, onStart, size = 480 }: RouletteProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -21,11 +22,8 @@ export default function Roulette({ items, onResult, size = 480 }: RouletteProps)
 
     const palette = [];
     for (let i = 0; i < count; i++) {
-      const hue = (360 / count) * i + Math.random() * 12;
-      const saturation = 65 + Math.random() * 10;
-      const lightness = 70 + Math.random() * 10;
-
-      palette.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+      const hue = (360 / count) * i;
+      palette.push(`hsl(${hue}, 70%, 65%)`);
     }
     return palette;
   };
@@ -37,7 +35,7 @@ export default function Roulette({ items, onResult, size = 480 }: RouletteProps)
     sectorColors.current = generatePalette(items.length);
   }, [items]);
 
-  /** 룰렛 그리기 - useCallback으로 안정화 */
+  /** 룰렛 그리기 */
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D, baseAngle: number) => {
       ctx.clearRect(0, 0, size, size);
@@ -62,7 +60,6 @@ export default function Roulette({ items, onResult, size = 480 }: RouletteProps)
         return;
       }
 
-      /* 2개 이상 */
       const step = (2 * Math.PI) / items.length;
 
       items.forEach((item, i) => {
@@ -93,30 +90,41 @@ export default function Roulette({ items, onResult, size = 480 }: RouletteProps)
         ctx.restore();
       });
 
-      /** 포인터 */
+      /** ▼ 정삼각형 포인터 (정확한 정삼각형 + 아래 방향) */
       ctx.save();
       ctx.translate(radius, radius);
 
-      const px = 0;
-      const py = -radius + 30;
-      const innerR = 18;
-      const outerR = 22;
+      // 원 테두리 기준
+      const edge = -(radius - 4); // arc(radius - 4)와 동일하게 맞춤
 
-      ctx.beginPath();
-      ctx.arc(px, py, outerR + 2, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.filter = 'blur(4px)';
-      ctx.fill();
+      // 정삼각형 한 변의 길이
+      const side = 42;
 
-      ctx.filter = 'none';
-      ctx.beginPath();
-      ctx.arc(px, py, outerR, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
+      // 정삼각형 높이 (정삼각형 공식: h = side * √3 / 2)
+      const h = (side * Math.sqrt(3)) / 2;
 
+      // 아래 방향 ▼
+      // 꼭짓점 좌표 설정
+      // 밑변이 원 테두리에 붙고
+      const x1 = -side / 2;
+      const y1 = edge; // 왼쪽 위 꼭짓점
+
+      const x2 = side / 2;
+      const y2 = edge; // 오른쪽 위 꼭짓점
+
+      // 아래 꼭짓점
+      const x3 = 0;
+      const y3 = edge + h; // 아래 방향으로 h만큼 내려감
+
+      // 삼각형 그리기
       ctx.beginPath();
-      ctx.arc(px, py, innerR, 0, Math.PI * 2);
-      ctx.fillStyle = '#ff2b2b';
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.lineTo(x3, y3);
+      ctx.closePath();
+
+      // 빨간색 (원하면 바꿔줄게)
+      ctx.fillStyle = '#ff4d4d';
       ctx.fill();
 
       ctx.restore();
@@ -127,13 +135,15 @@ export default function Roulette({ items, onResult, size = 480 }: RouletteProps)
   /** 룰렛 회전 */
   const spin = () => {
     if (spinning || items.length === 0) return;
+
     setSpinning(true);
+    onStart?.();
 
     if (items.length === 1) {
       setTimeout(() => {
         setSpinning(false);
         onResult?.(items[0]);
-      }, 400);
+      }, 500);
       return;
     }
 
@@ -188,16 +198,13 @@ export default function Roulette({ items, onResult, size = 480 }: RouletteProps)
         ref={canvasRef}
         width={size}
         height={size}
+        onClick={spin}
         className={
           spinning
             ? `${styles['container__canvas']} ${styles['container__canvas--spinning']}`
             : styles['container__canvas']
         }
       />
-
-      <button onClick={spin} disabled={spinning} className={styles['container__button']}>
-        {spinning ? '돌리는 중...' : '돌리기'}
-      </button>
     </div>
   );
 }

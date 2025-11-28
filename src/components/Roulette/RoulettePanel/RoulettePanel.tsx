@@ -6,44 +6,49 @@ import Roulette from '../RouletteUi/Roulette';
 import ResultModal from '../ResultModal/ResultModal';
 
 export default function RoulettePanel() {
-  const [items, setItems] = useState(['부대찌개', '닭개장', '동태찌개', '감자탕']);
+  const [items, setItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState('');
+  const [isDuplicate, setIsDuplicate] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
-  /** 메뉴 추가 */
-  const addItem = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    const value = newItem.trim();
-    if (!value) return;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim();
+    setNewItem(value);
 
-    // 중복 방지
-    if (items.includes(value)) {
-      alert('이미 존재하는 메뉴입니다.');
-      return;
-    }
-
-    setItems([...items, value]);
-    setNewItem('');
+    // 중복 여부만 체크
+    setIsDuplicate(items.includes(value));
   };
 
-  /** 메뉴 삭제 */
+  const addItem = (e?: React.FormEvent) => {
+    e?.preventDefault();
+
+    if (!newItem) return;
+    if (isDuplicate) return;
+
+    setItems(prev => [...prev, newItem]);
+    setNewItem('');
+    setIsDuplicate(false);
+  };
+
   const removeItem = (item: string) => {
-    setItems(items.filter(v => v !== item));
+    setItems(prev => prev.filter(v => v !== item));
+
+    setIsDuplicate(newItem.trim() !== '' && items.includes(newItem.trim()));
   };
 
   return (
-    <div className={styles['wrapper']}>
+    <div className={styles.wrapper}>
       <h1>오늘 뭐 먹지?</h1>
 
-      {/* 룰렛 */}
       <Roulette items={items} onResult={value => setResult(value)} />
 
-      {/* 입력 패널 */}
-      <form className={styles['panel']} onSubmit={addItem}>
+      <form className={styles.panel} onSubmit={addItem}>
         <input
-          className={styles['panel__input']}
+          className={`${styles['panel__input']} ${
+            isDuplicate ? styles['panel__input--error'] : ''
+          }`}
           value={newItem}
-          onChange={e => setNewItem(e.target.value)}
+          onChange={handleChange}
           placeholder="메뉴 입력"
         />
 
@@ -51,17 +56,22 @@ export default function RoulettePanel() {
           추가
         </button>
 
-        <button className={styles['panel__button']} type="button" onClick={() => setItems([])}>
+        <button
+          className={styles['panel__button']}
+          type="button"
+          onClick={() => {
+            setItems([]);
+            setIsDuplicate(false);
+          }}
+        >
           초기화
         </button>
       </form>
 
-      {/* 항목 목록 */}
-      <ul className={styles['list']}>
+      <ul className={styles.list}>
         {items.map(item => (
           <li key={item} className={styles['list__item']}>
             <span>{item}</span>
-
             <button className={styles['list__delete-btn']} onClick={() => removeItem(item)}>
               삭제
             </button>
@@ -69,7 +79,6 @@ export default function RoulettePanel() {
         ))}
       </ul>
 
-      {/* 결과 모달 */}
       {result && <ResultModal menu={result} onClose={() => setResult(null)} />}
     </div>
   );
