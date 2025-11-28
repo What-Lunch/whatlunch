@@ -1,0 +1,56 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__result {
+    background: f.color(blue-100);
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  &__search {
+    display: flex;
+    gap: 10px;
+
+    input {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid f.color(gray-300);
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      background: f.color(brand-primary);
+      color: f.color(white);
+      font-weight: 600;
+    }
+  }
+
+  &__categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__category {
+    padding: 8px 10px;
+    background: f.color(gray-100);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  &__reset {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: f.color(status-danger);
+    color: f.color(white);
+  }
+}

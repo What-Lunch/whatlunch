@@ -1,0 +1,63 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: calc(100vh - 20px);
+  overflow-y: auto;
+
+  &__item {
+    padding: 12px 14px;
+    border: 1px solid f.color(gray-200);
+    border-radius: 10px;
+
+    &--active {
+      border-color: f.color(brand-primary);
+      background: f.color(green-100);
+    }
+
+    &__name {
+      @include m.text-style(lg);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    &__address {
+      @include m.text-style(md);
+      color: f.color(gray-600);
+      margin-bottom: 4px;
+    }
+
+    &__phone {
+      @include m.text-style(md);
+      color: f.color(gray-500);
+      margin-bottom: 8px;
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    &__detail {
+      @include m.text-style(md);
+      color: f.color(blue-600);
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    &__link {
+      @include m.text-style(md);
+      color: f.color(red-600);
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
