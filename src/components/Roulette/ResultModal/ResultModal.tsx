@@ -1,9 +1,11 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect } from 'react';
-import styles from './ResultModal.module.scss';
+import Image from 'next/image';
+
 import Button from '@/components/common/Button';
+
+import styles from './ResultModal.module.scss';
 
 interface Props {
   menu: string;

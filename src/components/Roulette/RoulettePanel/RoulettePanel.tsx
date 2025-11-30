@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './RoulettePanel.module.scss';
+
 import Roulette from '../RouletteUi/Roulette';
 import ResultModal from '../ResultModal/ResultModal';
+
+import styles from './RoulettePanel.module.scss';
 
 export default function RoulettePanel() {
   const [items, setItems] = useState<string[]>([]);

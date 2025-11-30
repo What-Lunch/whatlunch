@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './WeatherMood.module.scss';
 
 import WeatherRecommend from './WeatherRecommend';
 import MoodRecommend from './MoodRecommend';
+
 import type { RecommendTab } from '@/components/WeatherMood/recommend';
+
+import styles from './WeatherMood.module.scss';
 
 const DEFAULT_TAB: RecommendTab = 'weather';
 

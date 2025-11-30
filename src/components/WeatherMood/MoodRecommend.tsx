@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import styles from './MoodRecommend.module.scss';
+
+import { moods, recommendMenu } from '@/utils/recommend/mood';
 
 import type { MoodId } from '@/components/WeatherMood/mood';
-import { moods, recommendMenu } from '@/utils/recommend/mood';
+
+import styles from './MoodRecommend.module.scss';
 
 const DEFAULT_MOOD: MoodId = 'happy';
 

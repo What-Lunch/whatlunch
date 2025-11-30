@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+
 import Button from '@/components/common/Button/Button';
+
 import styles from './RouletteFilter.module.scss';
 
 import {

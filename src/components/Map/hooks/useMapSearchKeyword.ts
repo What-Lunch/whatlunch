@@ -1,4 +1,5 @@
 import { MutableRefObject, useCallback } from 'react';
+
 import { MapPlace } from '../type';
 
 export function useMapSearchKeyword(

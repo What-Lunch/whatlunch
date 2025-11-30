@@ -1,19 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import styles from './Map.module.scss';
+
+import { useMapKakaoLoader } from './hooks/useMapKakaoLoader';
+import { useMapKakaoMap } from './hooks/useMapKakaoMap';
+import { useMapMarkers } from './hooks/useMapMarkers';
+import { useMapSearchKeyword } from './hooks/useMapSearchKeyword';
+import { useMapSearchCategory } from './hooks/useMapSearchCategory';
 
 import { MapPanel } from './MapPanel';
 import { MapList } from './MapList';
+
 import { MapPlace } from './type';
 
-import {
-  useMapKakaoLoader,
-  useMapKakaoMap,
-  useMapMarkers,
-  useMapSearchKeyword,
-  useMapSearchCategory,
-} from './hooks';
+import styles from './Map.module.scss';
 
 export default function Map() {
   const mapRef = useRef<HTMLDivElement | null>(null);

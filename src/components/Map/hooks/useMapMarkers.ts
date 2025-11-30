@@ -1,6 +1,8 @@
 import { useRef } from 'react';
-import { MapPlace } from '../type';
+
 import { mapMarkerHoverIcon, mapMarkerActiveIcon } from '../utils/mapMarkerIcons';
+
+import { MapPlace } from '../type';
 
 export function useMapMarkers(
   kakaoRef: React.MutableRefObject<typeof window.kakao | null>,

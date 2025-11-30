@@ -1,9 +1,10 @@
 'use client';
 
 import { Orbit, ListOrdered, MapPinned } from 'lucide-react';
-import styles from './TopTabs.module.scss';
 
 export type TabType = 'roulette' | 'ladder' | 'map';
+
+import styles from './TopTabs.module.scss';
 
 interface Props {
   tab: TabType;

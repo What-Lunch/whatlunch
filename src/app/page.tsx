@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './page.module.scss';
-import Clock from '@/components/Clock/Clock';
+import { Shuffle } from 'lucide-react';
 
+import Clock from '@/components/Clock/Clock';
 import { TopTabs } from '@/components/common/TopTabs';
 import { WeatherMood } from '@/components/WeatherMood';
 import { Roulette, RouletteFilter, ResultModal } from '@/components/Roulette';
@@ -11,7 +11,7 @@ import Ladder from '@/components/Ladder/Ladder';
 import MapComp from '@/components/Map/Map';
 import Button from '@/components/common/Button/Button';
 
-import { Shuffle } from 'lucide-react';
+import styles from './page.module.scss';
 
 export default function HomePage() {
   const [tab, setTab] = useState<'roulette' | 'ladder' | 'map'>('roulette');

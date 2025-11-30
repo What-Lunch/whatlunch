@@ -5,21 +5,20 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5); // 조금 더 자연스럽게
+  background: rgba(0, 0, 0, 0.5);
   @include m.flex-box(center, center);
   z-index: 999;
-  backdrop-filter: blur(2px); // 약한 블러 효과 (모던 느낌)
+  backdrop-filter: blur(2px);
 }
 
 /* 모달 박스 */
 .modal {
   background: f.color(white);
   padding: 28px 24px;
-  border-radius: 16px; // 트렌디한 값
+  border-radius: 16px;
   width: 320px;
   text-align: center;
 
-  // 기존보다 더 부드러운 그림자
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.18);
 
   animation: fade-in 0.25s ease;
@@ -43,10 +42,9 @@
     @include m.flex-box(center, center, column);
     gap: 12px;
 
-    // Button 컴포넌트에 width 적용
     :global(button) {
       width: 100%;
-      border-radius: 12px; // 버튼도 좀 더 부드러운 느낌
+      border-radius: 12px;
     }
   }
 }

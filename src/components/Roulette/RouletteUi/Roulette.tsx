@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+
 import styles from './Roulette.module.scss';
 
 interface RouletteProps {
@@ -90,31 +91,23 @@ export default function Roulette({ items, onResult, onStart, size = 480 }: Roule
         ctx.restore();
       });
 
-      /** ▼ 정삼각형 포인터 (정확한 정삼각형 + 아래 방향) */
       ctx.save();
       ctx.translate(radius, radius);
 
       // 원 테두리 기준
-      const edge = -(radius - 4); // arc(radius - 4)와 동일하게 맞춤
+      const edge = -(radius - 4);
 
-      // 정삼각형 한 변의 길이
       const side = 42;
 
-      // 정삼각형 높이 (정삼각형 공식: h = side * √3 / 2)
       const h = (side * Math.sqrt(3)) / 2;
-
-      // 아래 방향 ▼
-      // 꼭짓점 좌표 설정
-      // 밑변이 원 테두리에 붙고
       const x1 = -side / 2;
-      const y1 = edge; // 왼쪽 위 꼭짓점
+      const y1 = edge;
 
       const x2 = side / 2;
-      const y2 = edge; // 오른쪽 위 꼭짓점
+      const y2 = edge;
 
-      // 아래 꼭짓점
       const x3 = 0;
-      const y3 = edge + h; // 아래 방향으로 h만큼 내려감
+      const y3 = edge + h;
 
       // 삼각형 그리기
       ctx.beginPath();

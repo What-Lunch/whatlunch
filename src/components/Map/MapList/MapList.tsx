@@ -1,5 +1,6 @@
-import styles from './MapList.module.scss';
 import { MapPlace } from '../type';
+
+import styles from './MapList.module.scss';
 
 interface Props {
   places: MapPlace[];
@@ -25,7 +26,6 @@ export default function MapList({ places, activeId }: Props) {
 
           <div className={styles['list__item__phone']}>{place.phone || '전화번호 없음'}</div>
 
-          {/* ⭐ 상세 + 길찾기 버튼 영역 */}
           <div className={styles['list__item__actions']}>
             <a
               href={place.place_url}
