@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import styles from '../LoginModal.module.scss';
+import styles from '../AutnModal.module.scss';
 import { Eye, EyeOff, XIcon } from 'lucide-react';
 
 import Button from '@/components/common/Button';
