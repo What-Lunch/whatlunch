@@ -26,47 +26,46 @@
 
   &__track {
     display: flex;
-    // width: 931px;
+
     transition: transform 0.6s ease-in-out;
   }
 
-  &__container {
+  &__article {
     flex: 0 0 100%;
     @include m.flex-box(center, flex-start, column);
     gap: 12px;
-
-    &__info {
-      @include m.flex-box(center, flex-start, column);
-      gap: 8px;
-    }
-
-    &__images {
-      @include m.flex-box(space-between, center, row);
-      width: 100%;
-      gap: 12px;
-      transition: transform 0.5s ease;
-      user-select: none;
-      overflow: hidden;
-    }
+  }
+  &__info {
+    @include m.flex-box(center, flex-start, column);
+    gap: 8px;
   }
 
-  &__dots {
+  &__images {
+    @include m.flex-box(space-between, center, row);
     width: 100%;
-    @include m.flex-box(center, center, row);
-    &__active {
-      @include dot;
-      background-color: f.color(black);
-    }
+    gap: 12px;
+    transition: transform 0.5s ease;
+    user-select: none;
+    overflow: hidden;
+  }
+}
 
-    &__inactive {
-      @include dot;
-      background-color: f.color(gray-500);
+.dots {
+  width: 100%;
+  @include m.flex-box(center, center, row);
+  &__active {
+    @include dot;
+    background-color: f.color(black);
+  }
 
-      &:hover {
-        transition: background-color 0.3s ease-in-out;
-        background-color: f.color(gray-400);
-        transform: scale(1.1);
-      }
+  &__inactive {
+    @include dot;
+    background-color: f.color(gray-500);
+
+    &:hover {
+      transition: background-color 0.3s ease-in-out;
+      background-color: f.color(gray-400);
+      transform: scale(1.1);
     }
   }
 }

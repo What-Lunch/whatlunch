@@ -113,6 +113,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
       <div className={styles['carousel']} ref={viewportRef}>
         <div
           className={styles['carousel__track']}
+          role="list"
           style={{
             transform: `translateX(${trackWidth - viewportWidth + dragOffset}px)`,
             width: `${viewportWidth}px`,
@@ -121,12 +122,12 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
         >
           {items.map((item, index) => (
             <article
-              className={styles['carousel__container']}
+              className={styles['carousel__article']}
               key={item.title}
               data-testid={`carousel-item-${index}`}
               role="listitem"
             >
-              <div className={styles['carousel__container__info']}>
+              <div className={styles['carousel__info']}>
                 <h2>{item.title}</h2>
                 <div>
                   <span>{item.category}</span>
@@ -135,7 +136,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                 <span>{item.location}</span>
               </div>
 
-              <div className={styles['carousel__container__images']} onClick={nextSlide}>
+              <div className={styles['carousel__images']} onClick={nextSlide}>
                 {item.src.slice(0, imageCounter).map((imageSrc, imageIndex) => (
                   <Image
                     aria-label={`Carousel Image ${imageIndex + 1}`}
@@ -152,7 +153,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
           ))}
         </div>
       </div>
-      <nav aria-label="Carousel navigation" className={styles['carousel__dots']}>
+      <nav aria-label="Carousel navigation" className={styles['dots']}>
         {items.map((_, index) => (
           <button
             type="button"
