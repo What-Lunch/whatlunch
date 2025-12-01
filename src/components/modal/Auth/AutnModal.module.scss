@@ -100,35 +100,3 @@
     }
   }
 }
-// .login {
-//   @include m.flex-box(center, center, column);
-//   gap: 24px;
-//   width: 100%;
-//   &__title {
-//     @include m.text-style-extended('2xl', 600, black);
-//   }
-//   &__form {
-//     width: 100%;
-//     @include m.flex-box(center, center, column);
-//     gap: 16px;
-
-//     &-group {
-//       width: 100%;
-//       @include m.flex-box(center, flex-start, column);
-//       gap: 8px;
-//       span {
-//         @include m.text-style-extended('md', 500, gray-900);
-//       }
-//     }
-//   }
-//   &__input {
-//     width: 100%;
-//   }
-//   &__buttons {
-//     width: 100%;
-//   }
-// }
-
-// .icon {
-//   color: f.color(white);
-// }
