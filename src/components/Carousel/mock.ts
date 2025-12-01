@@ -1,13 +1,13 @@
-import One1 from '../../public/images/test/1.jpeg';
-import One2 from '../../public/images/test/2.jpeg';
-import One5 from '../../public/images/test/15.jpeg';
-import Two1 from '../../public/images/test/6.jpeg';
-import Two2 from '../../public/images/test/7.jpeg';
-import Two3 from '../../public/images/test/8.jpeg';
-import Two4 from '../../public/images/test/9.jpeg';
-import Two5 from '../../public/images/test/5.jpeg';
-import Three1 from '../../public/images/test/10.jpeg';
-import Three4 from '../../public/images/test/14.jpeg';
+import One1 from '../../../public/images/test/1.jpeg';
+import One2 from '../../../public/images/test/2.jpeg';
+import One5 from '../../../public/images/test/15.jpeg';
+import Two1 from '../../../public/images/test/6.jpeg';
+import Two2 from '../../../public/images/test/7.jpeg';
+import Two3 from '../../../public/images/test/8.jpeg';
+import Two4 from '../../../public/images/test/9.jpeg';
+import Two5 from '../../../public/images/test/5.jpeg';
+import Three1 from '../../../public/images/test/10.jpeg';
+import Three4 from '../../../public/images/test/14.jpeg';
 
 /**
  * TODO: 백엔드 연동시 mock 데이터 제거 필요
