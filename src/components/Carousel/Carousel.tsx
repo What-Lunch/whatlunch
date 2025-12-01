@@ -119,8 +119,13 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
           }}
           ref={slideRef}
         >
-          {items.map(item => (
-            <article className={styles['carousel__container']} key={item.title}>
+          {items.map((item, index) => (
+            <article
+              className={styles['carousel__container']}
+              key={item.title}
+              data-testid={`carousel-item-${index}`}
+              role="listitem"
+            >
               <div className={styles['carousel__container__info']}>
                 <h2>{item.title}</h2>
                 <div>

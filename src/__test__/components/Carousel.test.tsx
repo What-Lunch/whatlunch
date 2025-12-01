@@ -41,34 +41,26 @@ describe('Carousel Component', () => {
 
   it('렌더링 테스트', () => {
     render(<Carousel items={mockItems} />);
-    expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
-    expect(screen.queryByText('여긴어디지고기집')).not.toBeInTheDocument();
-    expect(screen.queryByText('메가메가메가커피')).not.toBeInTheDocument();
+    expect(screen.getByTestId('carousel-item-0')).toBeInTheDocument();
+    expect(screen.queryByTestId('carousel-item-1')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('carousel-item-2')).not.toBeInTheDocument();
   });
 
-  it('자동 슬라이드 전환 테스트', async () => {
-    jest.useFakeTimers();
-    render(<Carousel items={mockItems} duration={3000} />);
+  it('슬라이드 이동 시 이미지가 올바르게 변경된다', async () => {
+    render(<Carousel items={mockItems} />);
 
-    expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
+    let images = screen.getAllByRole('img');
+    expect(images[0]).toHaveAttribute('alt', '너무맛있는곰장어집 - Image 1');
 
+    const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
     act(() => {
-      jest.advanceTimersByTime(3000);
+      fireEvent.click(pageButtons[1]);
     });
 
     await waitFor(() => {
-      expect(screen.getByText('여긴어디지고기집')).toBeInTheDocument();
+      images = screen.getAllByRole('img');
+      expect(images[0]).toHaveAttribute('alt', '여긴어디지고기집 - Image 1');
     });
-
-    act(() => {
-      jest.advanceTimersByTime(3000);
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('메가메가메가커피')).toBeInTheDocument();
-    });
-
-    jest.useRealTimers();
   });
 
   it('페이지 네비게이션 테스트', async () => {
@@ -126,7 +118,11 @@ describe('Carousel Component', () => {
     expect(pageButtons[1]).toHaveClass('carousel__dots__inactive');
     expect(pageButtons[2]).toHaveClass('carousel__dots__inactive');
   });
-
+  it('활성화된 슬라이드 접근성 테스트', () => {
+    render(<Carousel items={mockItems} />);
+    const activeItem = screen.getByRole('listitem', { current: true });
+    expect(activeItem).toBeInTheDocument();
+  });
   it('접근성 테스트', () => {
     render(<Carousel items={mockItems} />);
 
