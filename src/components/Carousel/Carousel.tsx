@@ -1,16 +1,22 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import styles from './Carousel.module.scss';
 import Image from 'next/image';
 import { CarouselProps } from './type';
 
+/**
+ * TODO
+ * 1. 백엔드 연동시 items 타입 재검토 필요
+ * 2. 스켈레톤 UI 필요
+ */
 export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageCounter, setImageCounter] = useState(5);
   const [isPaused, setIsPaused] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [carouselHeight, setCarouselHeight] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const slideRef = useRef<HTMLDivElement>(null);
@@ -24,26 +30,18 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  const handleSlideChange = useCallback((newIndex: number) => {
-    setCurrentIndex(prev => {
-      if (newIndex === prev) return prev;
-      return newIndex;
-    });
-  }, []);
+  const handlePageChange = (index: number) => setCurrentIndex(index);
+  const handlePause = () => setIsPaused(true);
+  const handleResume = () => setIsPaused(false);
 
-  const nextSlide = useCallback(() => {
-    setCurrentIndex(prev => (prev + 1) % items.length);
-  }, [items.length]);
+  const nextSlide = useCallback(
+    () => setCurrentIndex(prev => (prev + 1) % items.length),
+    [items.length]
+  );
 
-  const prevSlide = useCallback(() => {
-    setCurrentIndex(prev => (prev === 0 ? items.length - 1 : prev - 1));
-  }, [items.length]);
-
-  const handlePageChange = useCallback(
-    (index: number) => {
-      handleSlideChange(index);
-    },
-    [handleSlideChange]
+  const prevSlide = useCallback(
+    () => setCurrentIndex(prev => (prev === 0 ? items.length - 1 : prev - 1)),
+    [items.length]
   );
 
   // 자동 슬라이드
@@ -57,16 +55,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   // 반응형 이미지 개수 조절
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setImageCounter(3);
-        setCarouselHeight(viewportWidth / (3 + 1));
-      } else if (window.innerWidth < 1024) {
-        setImageCounter(3);
-        setCarouselHeight(viewportWidth / (3 + 1));
-      } else if (window.innerWidth < 1280) {
-        setImageCounter(3);
-        setCarouselHeight(viewportWidth / (3 + 1));
-      } else if (window.innerWidth < 1536) {
+      if (window.innerWidth < 1536) {
         setImageCounter(3);
         setCarouselHeight(viewportWidth / (3 + 1));
       } else {
@@ -80,9 +69,6 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, [viewportWidth]);
 
-  const handlePause = useCallback(() => setIsPaused(true), []);
-  const handleResume = useCallback(() => setIsPaused(false), []);
-
   // 추가 로직
   const onDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDragging.current = true;
@@ -90,30 +76,20 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   };
 
   const onDragMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDragging.current || !slideRef.current) return;
-
+    if (!isDragging.current) return;
     const currentX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const diff = currentX - startX.current;
-
-    slideRef.current.scrollLeft -= diff;
-    startX.current = currentX;
+    setDragOffset(currentX - startX.current);
   };
 
-  const onDragEnd = (e: React.MouseEvent | React.TouchEvent) => {
+  const onDragEnd = () => {
     if (!isDragging.current) return;
-
-    const endX = 'changedTouches' in e ? e.changedTouches[0].clientX : e.clientX;
-    const diff = endX - startX.current;
-
-    if (Math.abs(diff) > 50) {
-      if (diff < 0) nextSlide();
+    if (Math.abs(dragOffset) > 50) {
+      if (dragOffset < 0) nextSlide();
       else prevSlide();
     }
-
+    setDragOffset(0);
     isDragging.current = false;
   };
-
-  const handleImageSlideClick = () => nextSlide();
 
   if (!items || items.length === 0) {
     return null;
@@ -138,7 +114,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
         <div
           className={styles['carousel__track']}
           style={{
-            transform: `translateX(${trackWidth - viewportWidth}px)`,
+            transform: `translateX(${trackWidth - viewportWidth + dragOffset}px)`,
             width: `${viewportWidth}px`,
           }}
           ref={slideRef}
@@ -154,18 +130,15 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                 <span>{item.location}</span>
               </div>
 
-              <div
-                className={styles['carousel__container__images']}
-                onClick={handleImageSlideClick}
-              >
+              <div className={styles['carousel__container__images']} onClick={nextSlide}>
                 {item.src.slice(0, imageCounter).map((imageSrc, imageIndex) => (
                   <Image
                     aria-label={`Carousel Image ${imageIndex + 1}`}
                     key={`${item.title}-${imageIndex}`}
                     src={imageSrc}
                     alt={`${item.title} - Image ${imageIndex + 1}`}
-                    width={carouselHeight ? carouselHeight : 200} // 스켈레톤 필요
-                    height={carouselHeight ? carouselHeight : 200} // 스켈레톤 필요
+                    width={carouselHeight ? carouselHeight : 200}
+                    height={carouselHeight ? carouselHeight : 200}
                     loading={imageIndex === 0 ? 'eager' : 'lazy'}
                   />
                 ))}
@@ -174,7 +147,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
           ))}
         </div>
       </div>
-      <div aria-label="Carousel navigation" className={styles['carousel__dots']}>
+      <nav aria-label="Carousel navigation" className={styles['carousel__dots']}>
         {items.map((_, index) => (
           <button
             type="button"
@@ -188,7 +161,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
             }
           />
         ))}
-      </div>
+      </nav>
     </section>
   );
 }
