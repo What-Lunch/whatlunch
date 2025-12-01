@@ -1,10 +1,11 @@
-@use '~/src/styles/utils/mixins' as m;
-@use '~/src/styles/utils/functions' as f;
-@use '~/src/styles/utils/variables' as v;
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
 
 .container {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .wrapper {
