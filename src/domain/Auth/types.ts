@@ -1,11 +1,11 @@
-export interface AutnProps {
+export interface AuthProps {
   onClose: () => void;
 }
 
-export interface SignupModalProps extends AutnProps {
+export interface SignupModalProps extends AuthProps {
   onLoginOpen: () => void;
 }
 
-export interface LoginModalProps extends AutnProps {
+export interface LoginModalProps extends AuthProps {
   onSignupOpen: () => void;
 }

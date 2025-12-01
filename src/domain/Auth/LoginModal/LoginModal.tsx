@@ -20,10 +20,10 @@ import { LoginModalProps } from '../types';
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordValue, setPasswordValue] = useState('password');
+  const [passwordType, setPasswordType] = useState('password');
 
   const handlePasswordVisibility = () => {
-    setPasswordValue(prev => (prev === 'password' ? 'text' : 'password'));
+    setPasswordType(prev => (prev === 'password' ? 'text' : 'password'));
   };
 
   const onSubmit = (e: React.FormEvent) => {
@@ -42,19 +42,31 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   }, [onClose]);
 
   const renderPasswordIcon = () => {
-    if (passwordValue === 'password') {
+    if (passwordType === 'password') {
       return <EyeOff className={styles['icon']} onClick={handlePasswordVisibility} />;
     }
     return <Eye className={styles['icon']} onClick={handlePasswordVisibility} />;
   };
 
   return (
-    <section className={styles['overlay']} tabIndex={0}>
+    <section
+      className={styles['overlay']}
+      tabIndex={0}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="login-modal-title"
+    >
       <div className={styles['modal']}>
-        <div className={styles['modal__close']}>
-          <XIcon onClick={onClose} />
-        </div>
-        <h2>로그인</h2>
+        <button
+          type="button"
+          aria-label="닫기"
+          onClick={onClose}
+          className={styles['modal__close']}
+        >
+          <XIcon aria-hidden="true" />
+        </button>
+
+        <h2 id="login-modal-title">로그인</h2>
         <form onSubmit={onSubmit} className={styles['login']}>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>이메일</span>
@@ -70,7 +82,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
             <span className={styles['login-group__label']}>비밀번호</span>
             <Input
               value={password}
-              type={passwordValue}
+              type={passwordType}
               placeholder="비밀번호를 입력하세요"
               tabIndex={2}
               onChange={e => setPassword(e.target.value)}
@@ -80,7 +92,9 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
           </div>
           <span className={styles['login__forget']}>비밀번호를 잊어버리셨나요?</span>
           <div className={styles['login__buttons']}>
-            <Button tabIndex={3}>로그인</Button>
+            <Button tabIndex={3} className={styles['login__buttons__button']}>
+              로그인
+            </Button>
 
             <div>
               <span className={styles['login__buttons__boolean']}>회원이 아니신가요? </span>
