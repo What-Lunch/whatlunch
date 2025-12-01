@@ -5,10 +5,10 @@ import styles from './MapList.module.scss';
 interface Props {
   places: MapPlace[];
   activeId: string | null;
-  className?: string;
+  onItemClick: (id: string) => void;
 }
 
-export default function MapList({ places, activeId }: Props) {
+export default function MapList({ places, activeId, onItemClick }: Props) {
   return (
     <div className={styles['list']}>
       {places.map(place => (
@@ -17,6 +17,7 @@ export default function MapList({ places, activeId }: Props) {
           className={`${styles['list__item']} ${
             activeId === place.id ? styles['list__item--active'] : ''
           }`}
+          onClick={() => onItemClick(place.id)}
         >
           <div className={styles['list__item__name']}>{place.place_name}</div>
 

@@ -15,6 +15,7 @@ declare namespace kakao {
       getCenter(): LatLng;
       relayout(): void;
       getLevel(): number;
+      setLevel(level: number): void;
     }
 
     class Marker {
@@ -22,6 +23,7 @@ declare namespace kakao {
       setImage(image: MarkerImage | null): void;
       getPosition(): LatLng;
       setMap(map: Map | null): void;
+      setPosition(latlng: LatLng): void;
     }
 
     class MarkerImage {

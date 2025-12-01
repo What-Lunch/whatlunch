@@ -24,16 +24,22 @@ export default function Map() {
 
   const { loadKakao, waitForKakao } = useMapKakaoLoader();
 
-  const { kakaoRef, mapObjRef, clustererRef, userLocationRef, initMap } = useMapKakaoMap(mapRef);
+  const { kakaoRef, setKakao, mapObjRef, clustererRef, userLocationRef, initMap } =
+    useMapKakaoMap(mapRef);
 
-  const { createMarkers, resetMarkers } = useMapMarkers(
+  const { createMarkers, resetMarkers, activateMarkerById } = useMapMarkers(
     kakaoRef,
     mapObjRef,
     clustererRef,
     setActiveId
   );
 
-  const { searchKeyword } = useMapSearchKeyword(kakaoRef, mapObjRef, createMarkers);
+  const { searchKeyword } = useMapSearchKeyword(
+    kakaoRef,
+    mapObjRef,
+    userLocationRef,
+    createMarkers
+  );
 
   const { searchCategory } = useMapSearchCategory(
     kakaoRef,
@@ -48,12 +54,14 @@ export default function Map() {
       await waitForKakao();
 
       window.kakao.maps.load(() => {
-        kakaoRef.current = window.kakao;
+        setKakao();
 
-        navigator.geolocation.getCurrentPosition(
-          pos => initMap(pos.coords.latitude, pos.coords.longitude),
-          () => initMap(37.5665, 126.978)
-        );
+        setTimeout(() => {
+          navigator.geolocation.getCurrentPosition(
+            pos => initMap(pos.coords.latitude, pos.coords.longitude),
+            () => initMap()
+          );
+        }, 0);
       });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,7 +69,6 @@ export default function Map() {
 
   return (
     <div className={styles['map']}>
-      {/* Left: 검색 + 리스트 */}
       <div className={styles['map__left']}>
         <MapPanel
           keyword={keyword}
@@ -76,7 +83,14 @@ export default function Map() {
           }}
         />
 
-        <MapList places={places} activeId={activeId} />
+        <MapList
+          places={places}
+          activeId={activeId}
+          onItemClick={id => {
+            setActiveId(id);
+            activateMarkerById(id);
+          }}
+        />
       </div>
 
       <div className={styles['map__right']}>

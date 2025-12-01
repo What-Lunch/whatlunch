@@ -1,12 +1,17 @@
 import { useCallback } from 'react';
 
+let kakaoLoadPromise: Promise<void> | null = null;
+
 export function useMapKakaoLoader() {
   const loadKakao = useCallback(() => {
-    return new Promise<void>((resolve, reject) => {
-      // 이미 로드된 경우
-      if (window.kakao?.maps) return resolve();
+    if (kakaoLoadPromise) return kakaoLoadPromise;
 
-      // 이미 script tag가 있는 경우
+    kakaoLoadPromise = new Promise<void>((resolve, reject) => {
+      if (typeof window !== 'undefined' && window.kakao?.maps) {
+        resolve();
+        return;
+      }
+
       const existing = document.getElementById('kakao-sdk');
       if (existing) {
         existing.addEventListener('load', () => resolve());
@@ -14,7 +19,6 @@ export function useMapKakaoLoader() {
         return;
       }
 
-      // 새 스크립트 삽입
       const script = document.createElement('script');
       script.id = 'kakao-sdk';
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${
@@ -26,22 +30,23 @@ export function useMapKakaoLoader() {
 
       document.head.appendChild(script);
     });
+
+    return kakaoLoadPromise;
   }, []);
 
   const waitForKakao = useCallback(() => {
     return new Promise<void>((resolve, reject) => {
       const start = Date.now();
-
       const timer = setInterval(() => {
         if (window.kakao?.maps) {
           clearInterval(timer);
-          return resolve();
+          resolve();
         }
 
         // timeout 10초
         if (Date.now() - start > 10000) {
           clearInterval(timer);
-          return reject('Kakao maps load timeout');
+          reject('Kakao maps load timeout');
         }
       }, 50);
     });
