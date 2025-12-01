@@ -1,8 +1,13 @@
-import styles from './Header.module.scss';
+'use client';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import styles from './Header.module.scss';
+
 import Button from '@/shared/components/Button';
+import LoginModal from '@/domain/Auth/LoginModal';
+import SignupModal from '@/domain/Auth/SignupModal';
+
 import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 /**
  * 로그인 및 회원가입 모달로 관리d
@@ -11,6 +16,8 @@ import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
  */
 
 export function Header() {
+  const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
+
   return (
     <header className={styles['header']}>
       <div className={styles['header__menu']}>
@@ -31,9 +38,22 @@ export function Header() {
       </div>
 
       <div className={styles['header__auth']}>
-        <Button variant="primary">로그인</Button>
-        <Button variant="primary">회원가입</Button>
+        <Button variant="primary" onClick={() => setModalType('login')}>
+          로그인
+        </Button>
+        <Button variant="primary" onClick={() => setModalType('signup')}>
+          회원가입
+        </Button>
       </div>
+      {modalType === 'login' && (
+        <LoginModal
+          onClose={() => setModalType(null)}
+          onSignupOpen={() => setModalType('signup')}
+        />
+      )}
+      {modalType === 'signup' && (
+        <SignupModal onClose={() => setModalType(null)} onLoginOpen={() => setModalType('login')} />
+      )}
     </header>
   );
 }
