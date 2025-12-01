@@ -49,12 +49,23 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   }, [onClose]);
 
   return (
-    <section className={styles['overlay']} tabIndex={0}>
+    <section
+      className={styles['overlay']}
+      tabIndex={0}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="signup-modal-title"
+    >
       <div className={styles['modal']}>
-        <div className={styles['modal__close']}>
-          <XIcon onClick={onClose} />
-        </div>
-        <h2>회원가입</h2>
+        <button
+          type="button"
+          aria-label="닫기"
+          onClick={onClose}
+          className={styles['modal__close']}
+        >
+          <XIcon aria-hidden="true" />
+        </button>
+        <h2 id="signup-modal-title">회원가입</h2>
         <form onSubmit={onSubmit} className={styles['login']}>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>이메일</span>
@@ -112,12 +123,13 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               }
             />
           </div>
-          <div></div>
-          <div className={styles['login__buttons']}>
-            <Button tabIndex={3}>로그인</Button>
 
+          <div className={styles['login__buttons']}>
+            <Button tabIndex={5} className={styles['login__buttons__button']}>
+              회원가입
+            </Button>
             <div>
-              <span className={styles['login__buttons__boolean']}>회원이 이신가요? </span>
+              <span className={styles['login__buttons__boolean']}>회원이이신가요? </span>
               <span className={styles['login__buttons__signup']} onClick={onLoginOpen}>
                 로그인하기
               </span>
