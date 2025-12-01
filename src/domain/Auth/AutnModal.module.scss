@@ -35,6 +35,7 @@
   animation: fade-in 0.25s ease;
 
   &__close {
+    width: 100%;
     cursor: pointer;
     color: f.color(text-secondary);
     @include m.flex-box(flex-end, center);
@@ -68,6 +69,9 @@
     @include m.flex-box(center, center, column);
     gap: 12px;
 
+    &__button {
+      width: 100%;
+    }
     &__boolean {
       display: inline;
       @include m.text-style-extended('md', 400, gray-300);
