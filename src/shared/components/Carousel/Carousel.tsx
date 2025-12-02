@@ -8,7 +8,7 @@ import { CarouselProps } from './type';
 /**
  * TODO
  * 1. 백엔드 연동시 items 타입 재검토 필요
- * 2. 스켈레톤 UI 필요
+ * 2. 스켈레톤 UI 필요d
  */
 export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
