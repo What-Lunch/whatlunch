@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Input from '@/components/common/input/Input';
+import Input from '@/shared/components/Input/Input';
 
 export default function InputTestPage() {
   const [normalValue, setNormalValue] = useState('');
