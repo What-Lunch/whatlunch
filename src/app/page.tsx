@@ -1,5 +1,4 @@
 import styles from './page.module.scss';
-
 import Carousel, { pendingData } from '@/shared/components/Carousel';
 import Clock from '@/shared/components/Clock/Clock';
 import { WeatherMood } from '@/domain/WeatherMood';
