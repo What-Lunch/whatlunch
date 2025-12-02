@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 
-import Clock from '@/components/Clock/Clock';
-import { TopTabs } from '@/components/common/TopTabs';
-import { WeatherMood } from '@/components/WeatherMood';
-import Ladder from '@/components/Ladder/Ladder';
-import MapComp from '@/components/Map/Map';
-import { RouletteSection } from '@/components/Roulette/RouletteSection/RouletteSection';
+import Clock from '@/shared/components/Clock/Clock';
+import { TopTabs } from '@/shared/components/TopTabs';
+import { WeatherMood } from '@/domain/WeatherMood';
+import Ladder from '@/domain/Ladder/Ladder';
+import MapComp from '@/domain/Map/Map';
+import { RouletteSection } from '@/domain/Roulette/RouletteSection/RouletteSection';
+import Carousel, { pendingData } from '@/shared/components/Carousel';
 
 import styles from './page.module.scss';
 
@@ -18,6 +19,7 @@ export default function HomePage() {
   return (
     <div className={styles['container']}>
       <div className={styles['container__left']}>
+        <Carousel duration={4000} items={pendingData} />
         <section className={styles['container__left__slice']}>오늘 인기있는 음식</section>
 
         <div className={styles['container__left__main']}>

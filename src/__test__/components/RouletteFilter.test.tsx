@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import RouletteFilter from '@/components/Roulette/RouletteFilter/RouletteFilter';
-import { pickMenus } from '@/utils/pickMenus';
+import RouletteFilter from '@/domain/Roulette/RouletteFilter/RouletteFilter';
+import { pickMenus } from '@/shared/utils/recommend/pickMenus';
 
 jest.mock('@/utils/pickMenus', () => ({
   pickMenus: jest.fn(() => [{ name: '테스트메뉴1' }, { name: '테스트메뉴2' }]),
