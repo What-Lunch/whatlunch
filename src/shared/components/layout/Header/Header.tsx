@@ -9,6 +9,7 @@ import LoginModal from '@/domain/Auth/LoginModal';
 import SignupModal from '@/domain/Auth/SignupModal';
 
 import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
+
 /**
  * 로그인 및 회원가입 모달로 관리d
  * 헤더를 학교 홈페이지처럼 하고 싶다고 했는데 아직 메뉴가 없어 하기가 어렵네요
