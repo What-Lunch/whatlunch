@@ -41,7 +41,7 @@ export default function MapPanel({
         ))}
       </div>
 
-      <Button variant="danger" mode="outline" className={styles['panel__reset']} onClick={onReset}>
+      <Button variant="danger" mode="fill" className={styles['panel__reset']} onClick={onReset}>
         초기화
       </Button>
     </div>
