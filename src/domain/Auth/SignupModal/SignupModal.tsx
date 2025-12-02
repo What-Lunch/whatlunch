@@ -15,7 +15,7 @@ import { SignupModalProps } from '../types';
 /**
  * TODO
  * 1. 백엔드 구현 필요 + 이에 맞는 validation 로직 구현
- * 2. 리다이렉트 구현 필요
+ * 2. 리다이렉트 구현 필요d
  */
 
 export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) {
