@@ -10,6 +10,17 @@
   gap: 20px;
   min-height: 0;
 
+  // 경고 텍스트
+  &__geoError {
+    grid-column: 1 / -1;
+    padding: 10px 14px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
   &__left {
     display: flex;
     flex-direction: column;

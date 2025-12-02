@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 
 import { mapMarkerHoverIcon, mapMarkerActiveIcon } from '../utils/mapMarkerIcons';
+
 import { MapPlace } from '../type';
 
 export function useMapMarkers(
@@ -13,7 +14,7 @@ export function useMapMarkers(
 
   const markerMapRef = useRef<Map<string, kakao.maps.Marker>>(new Map());
 
-  const markerEventRef = useRef<Set<string>>(new Set());
+  const eventAttachedRef = useRef<Set<string>>(new Set());
 
   const createMarkers = (places: MapPlace[]) => {
     const kakao = kakaoRef.current;
@@ -22,59 +23,64 @@ export function useMapMarkers(
 
     if (!kakao || !map || !clusterer) return;
 
-    // 현재 존재하는 placeId 목록
     const nextIds = new Set(places.map(p => p.id));
 
     markerMapRef.current.forEach((marker, id) => {
       if (!nextIds.has(id)) {
         marker.setMap(null);
         markerMapRef.current.delete(id);
-        markerEventRef.current.delete(id);
+        eventAttachedRef.current.delete(id);
       }
     });
 
     const newMarkers: kakao.maps.Marker[] = [];
 
     places.forEach(place => {
-      let marker = markerMapRef.current.get(place.id);
+      const { id, x, y } = place;
 
-      if (marker) {
-        newMarkers.push(marker);
-        return;
+      let marker = markerMapRef.current.get(id);
+
+      if (!marker) {
+        const position = new kakao.maps.LatLng(Number(y), Number(x));
+
+        marker = new kakao.maps.Marker({
+          position,
+        });
+
+        markerMapRef.current.set(id, marker);
+
+        if (!eventAttachedRef.current.has(id)) {
+          eventAttachedRef.current.add(id);
+
+          kakao.maps.event.addListener(marker, 'mouseover', () => {
+            if (activeMarkerRef.current !== marker) {
+              marker!.setImage(mapMarkerHoverIcon());
+            }
+          });
+
+          kakao.maps.event.addListener(marker, 'mouseout', () => {
+            if (activeMarkerRef.current !== marker) {
+              marker!.setImage(null);
+            }
+          });
+
+          kakao.maps.event.addListener(marker, 'click', () => {
+            // 다른 활성 마커 초기화
+            if (activeMarkerRef.current && activeMarkerRef.current !== marker) {
+              activeMarkerRef.current.setImage(null);
+            }
+
+            marker!.setImage(mapMarkerActiveIcon());
+            activeMarkerRef.current = marker!;
+
+            setActiveId(id);
+          });
+        }
       }
 
-      const pos = new kakao.maps.LatLng(Number(place.y), Number(place.x));
-      marker = new kakao.maps.Marker({ position: pos });
+      marker.setMap(map);
 
-      markerMapRef.current.set(place.id, marker);
       newMarkers.push(marker);
-
-      if (!markerEventRef.current.has(place.id)) {
-        markerEventRef.current.add(place.id);
-
-        kakao.maps.event.addListener(marker, 'mouseover', () => {
-          if (activeMarkerRef.current !== marker) {
-            marker!.setImage(mapMarkerHoverIcon());
-          }
-        });
-
-        kakao.maps.event.addListener(marker, 'mouseout', () => {
-          if (activeMarkerRef.current !== marker) {
-            marker!.setImage(null);
-          }
-        });
-
-        kakao.maps.event.addListener(marker, 'click', () => {
-          if (activeMarkerRef.current && activeMarkerRef.current !== marker) {
-            activeMarkerRef.current.setImage(null);
-          }
-
-          marker!.setImage(mapMarkerActiveIcon());
-          activeMarkerRef.current = marker;
-
-          setActiveId(place.id);
-        });
-      }
     });
 
     clusterer.clear();
@@ -87,6 +93,7 @@ export function useMapMarkers(
 
     if (!map || !marker) return;
 
+    // 기존 활성 마커 초기화
     if (activeMarkerRef.current && activeMarkerRef.current !== marker) {
       activeMarkerRef.current.setImage(null);
     }
@@ -105,7 +112,7 @@ export function useMapMarkers(
 
     markerMapRef.current.forEach(marker => marker.setMap(null));
     markerMapRef.current.clear();
-    markerEventRef.current.clear();
+    eventAttachedRef.current.clear();
     activeMarkerRef.current = null;
   };
 

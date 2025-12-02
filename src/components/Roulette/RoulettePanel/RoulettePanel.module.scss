@@ -25,18 +25,20 @@ $list-max-height: 200px;
     transition:
       border-color 0.15s ease,
       background-color 0.15s ease;
-  }
 
-  &__input--error {
-    border: 2px solid f.color(status-danger);
-    background: rgba(f.color(status-danger), 0.08);
+    &--error {
+      border: 2px solid f.color(status-danger);
+      background: rgba(f.color(status-danger), 0.08);
+    }
   }
 
   &__button {
     padding: 10px 16px;
     border: $border-default;
     border-radius: 6px;
-    font-size: map-get(map-get(v.$typography, sm), fontSize);
+
+    @include m.text-style(sm, 400);
+
     background: f.color(bg-inverse);
     cursor: pointer;
     transition: background 0.15s ease;

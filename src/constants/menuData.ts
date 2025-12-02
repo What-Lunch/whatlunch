@@ -1,50 +1,4 @@
-export const FOOD_TYPE_FILTERS = [
-  '전체',
-  '베스트',
-  '중식',
-  '양식',
-  '일식',
-  '한식',
-  '분식',
-] as const;
-
-export type FoodTypeFilter = (typeof FOOD_TYPE_FILTERS)[number];
-
-export const SITUATION_FILTERS = [
-  '점심',
-  '혼밥',
-  '회식',
-  '다이어트',
-  '데이트',
-  '스트레스 받을 때',
-] as const;
-
-export type SituationFilter = (typeof SITUATION_FILTERS)[number];
-
-export const FOOD_TYPE_ICONS: Record<FoodTypeFilter, string> = {
-  전체: '',
-  베스트: '⭐',
-  중식: '🍜',
-  양식: '🍔',
-  일식: '🍣',
-  한식: '🍚',
-  분식: '🌭',
-};
-
-export const SITUATION_ICONS: Record<SituationFilter, string> = {
-  점심: '🍱',
-  혼밥: '🙋‍♂️',
-  회식: '🍻',
-  다이어트: '🥗',
-  데이트: '💖',
-  '스트레스 받을 때': '😡',
-};
-
-export interface MenuItem {
-  name: string;
-  types: FoodTypeFilter[];
-  situations: SituationFilter[];
-}
+import { MenuItem } from '../types/menu';
 
 export const MENU_DATA: MenuItem[] = [
   // 한식
@@ -97,29 +51,3 @@ export const MENU_DATA: MenuItem[] = [
   { name: '분식7', types: ['분식', '전체'], situations: ['데이트', '점심'] },
   { name: '분식8', types: ['분식', '전체'], situations: ['스트레스 받을 때', '혼밥'] },
 ];
-
-export function pickMenus(types: FoodTypeFilter[], situation: SituationFilter | null): MenuItem[] {
-  let pool = MENU_DATA;
-
-  const isOnlyAll = types.length === 1 && types[0] === '전체';
-
-  if (!isOnlyAll) {
-    pool = pool.filter(item => item.types.some(t => types.includes(t)));
-  }
-
-  if (situation) {
-    pool = pool.filter(item => item.situations.includes(situation));
-  }
-
-  if (pool.length === 0) {
-    if (!isOnlyAll) {
-      pool = MENU_DATA.filter(item => item.types.some(t => types.includes(t)));
-    } else {
-      pool = [...MENU_DATA];
-    }
-  }
-
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
-
-  return shuffled.slice(0, Math.max(1, Math.min(shuffled.length, 8)));
-}

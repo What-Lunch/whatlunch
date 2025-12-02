@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import Roulette from '../RouletteUi/Roulette';
+import Roulette from '../RouletteUi/RouletteUi';
 import ResultModal from '../ResultModal/ResultModal';
 
 import styles from './RoulettePanel.module.scss';

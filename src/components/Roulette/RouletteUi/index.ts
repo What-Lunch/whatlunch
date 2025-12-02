@@ -1,1 +1,1 @@
-export { default as Roulette } from './Roulette';
+export { default as Roulette } from './RouletteUi';

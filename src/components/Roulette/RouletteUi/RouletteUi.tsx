@@ -2,16 +2,11 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
+import { RouletteUiProps } from './type';
+
 import styles from './Roulette.module.scss';
 
-interface RouletteProps {
-  items: string[];
-  onResult?: (item: string) => void;
-  onStart?: () => void;
-  size?: number;
-}
-
-export default function Roulette({ items, onResult, onStart, size = 480 }: RouletteProps) {
+export default function RouletteUi({ items, onResult, onStart, size = 480 }: RouletteUiProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -20,7 +15,6 @@ export default function Roulette({ items, onResult, onStart, size = 480 }: Roule
   /** 색상 생성 */
   const generatePalette = (count: number) => {
     if (count === 0) return [];
-
     const palette = [];
     for (let i = 0; i < count; i++) {
       const hue = (360 / count) * i;
@@ -73,12 +67,10 @@ export default function Roulette({ items, onResult, onStart, size = 480 }: Roule
         ctx.arc(radius, radius, radius - 4, start, end);
         ctx.fill();
 
-        // 경계선
         ctx.lineWidth = 2;
         ctx.strokeStyle = 'rgba(0,0,0,0.18)';
         ctx.stroke();
 
-        // 텍스트
         ctx.save();
         ctx.translate(radius, radius);
         ctx.rotate(start + step / 2);
@@ -94,29 +86,15 @@ export default function Roulette({ items, onResult, onStart, size = 480 }: Roule
       ctx.save();
       ctx.translate(radius, radius);
 
-      // 원 테두리 기준
       const edge = -(radius - 4);
-
       const side = 42;
-
       const h = (side * Math.sqrt(3)) / 2;
-      const x1 = -side / 2;
-      const y1 = edge;
 
-      const x2 = side / 2;
-      const y2 = edge;
-
-      const x3 = 0;
-      const y3 = edge + h;
-
-      // 삼각형 그리기
       ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-      ctx.lineTo(x3, y3);
+      ctx.moveTo(-side / 2, edge);
+      ctx.lineTo(side / 2, edge);
+      ctx.lineTo(0, edge + h);
       ctx.closePath();
-
-      // 빨간색 (원하면 바꿔줄게)
       ctx.fillStyle = '#ff4d4d';
       ctx.fill();
 

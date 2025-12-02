@@ -36,7 +36,7 @@
     color: f.color(text-inverse);
     padding: 10px 30px;
     border-radius: 12px;
-    font-size: map-get(map-get(v.$typography, lg), fontSize);
+    @include m.text-style(lg, 600);
     font-weight: 600;
     cursor: pointer;
     border: none;

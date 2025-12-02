@@ -1,0 +1,72 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.wrapper {
+  @include m.flex-box(center, center, column);
+  gap: 14px;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.today {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: #222;
+
+  span {
+    color: f.color(brand-primary);
+    font-weight: 800;
+  }
+}
+
+.rouletteWrapper {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.resultBtnWrapper {
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  @include m.flex-box(center, center);
+}
+
+.shuffleBtn {
+  position: absolute;
+  top: 20px;
+  right: -10px;
+  z-index: 10;
+
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+
+  background: f.color(gray-100);
+  border: 1px solid f.color(gray-300);
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: f.color(gray-200);
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    color: f.color(text-default);
+  }
+}

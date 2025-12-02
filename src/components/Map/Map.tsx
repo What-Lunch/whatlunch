@@ -21,6 +21,7 @@ export default function Map() {
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<MapPlace[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [geoError, setGeoError] = useState<string | null>(null);
 
   const { loadKakao, waitForKakao } = useMapKakaoLoader();
 
@@ -58,8 +59,18 @@ export default function Map() {
 
         setTimeout(() => {
           navigator.geolocation.getCurrentPosition(
-            pos => initMap(pos.coords.latitude, pos.coords.longitude),
-            () => initMap()
+            pos => {
+              initMap(pos.coords.latitude, pos.coords.longitude);
+            },
+            err => {
+              console.warn('위치 정보를 가져올 수 없습니다.', err);
+
+              setGeoError(
+                '현재 위치를 가져올 수 없어 기본 위치로 이동했습니다. 권한을 확인해주세요.'
+              );
+
+              initMap(); // 기본 위치로 이동
+            }
           );
         }, 0);
       });
@@ -69,6 +80,8 @@ export default function Map() {
 
   return (
     <div className={styles['map']}>
+      {geoError && <div className={styles['map__geoError']}>{geoError}</div>}
+
       <div className={styles['map__left']}>
         <MapPanel
           keyword={keyword}

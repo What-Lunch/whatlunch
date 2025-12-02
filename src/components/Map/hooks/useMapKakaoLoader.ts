@@ -2,6 +2,10 @@ import { useCallback } from 'react';
 
 let kakaoLoadPromise: Promise<void> | null = null;
 
+// 상수
+const KAKAO_POLL_INTERVAL_MS = 50;
+const KAKAO_LOAD_TIMEOUT_MS = 10000;
+
 export function useMapKakaoLoader() {
   const loadKakao = useCallback(() => {
     if (kakaoLoadPromise) return kakaoLoadPromise;
@@ -44,11 +48,11 @@ export function useMapKakaoLoader() {
         }
 
         // timeout 10초
-        if (Date.now() - start > 10000) {
+        if (Date.now() - start > KAKAO_LOAD_TIMEOUT_MS) {
           clearInterval(timer);
           reject('Kakao maps load timeout');
         }
-      }, 50);
+      }, KAKAO_POLL_INTERVAL_MS);
     });
   }, []);
 

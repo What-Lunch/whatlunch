@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 
 import WeatherRecommend from './WeatherRecommend';
 import MoodRecommend from './MoodRecommend';
@@ -16,10 +16,12 @@ const TAB_LIST = [
   { id: 'mood', label: '기분에 따른' },
 ] as const;
 
-export default function WeatherMood() {
+function WeatherMoodComponent() {
   const [activeTab, setActiveTab] = useState<RecommendTab>(DEFAULT_TAB);
 
-  const handleTabChange = (tabId: RecommendTab) => setActiveTab(tabId);
+  const handleTabChange = useCallback((tabId: RecommendTab) => {
+    setActiveTab(tabId);
+  }, []);
 
   const tabContent = {
     weather: <WeatherRecommend />,
@@ -46,3 +48,4 @@ export default function WeatherMood() {
     </div>
   );
 }
+export default memo(WeatherMoodComponent);

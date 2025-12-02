@@ -2,16 +2,11 @@
 
 import { Orbit, ListOrdered, MapPinned } from 'lucide-react';
 
-export type TabType = 'roulette' | 'ladder' | 'map';
+import { TopTabsProps } from './type';
 
 import styles from './TopTabs.module.scss';
 
-interface Props {
-  tab: TabType;
-  onChange: (value: TabType) => void;
-}
-
-export default function TopTabs({ tab, onChange }: Props) {
+export default function TopTabs({ tab, onChange }: TopTabsProps) {
   return (
     <div className={styles['container']}>
       <div className={styles['container__tabs']}>

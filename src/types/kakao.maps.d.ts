@@ -57,6 +57,8 @@ declare namespace kakao {
 
       const Status: {
         OK: string;
+        ZERO_RESULT: string;
+        ERROR: string;
       };
     }
 

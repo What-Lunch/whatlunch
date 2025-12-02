@@ -1,6 +1,12 @@
 import { MutableRefObject, useCallback, useRef } from 'react';
 
+import { resetMapView } from '../utils/resetMapView';
+import { handleZeroResult } from '../utils/handleZeroResult';
+
 import { MapPlace } from '../type';
+
+const MAP_SEARCH_RADIUS = 5000;
+const MAP_DEFAULT_LEVEL = 4;
 
 export function useMapSearchCategory(
   kakaoRef: MutableRefObject<typeof window.kakao | null>,
@@ -23,6 +29,7 @@ export function useMapSearchCategory(
       const { lat, lng } = userLoc;
 
       const cacheKey = `${categoryCode}-${lat}-${lng}`;
+      const { Status } = kakao.maps.services;
 
       // 캐싱된 결과가 있으면 즉시 반환
       if (categoryCacheRef.current.has(cacheKey)) {
@@ -30,11 +37,7 @@ export function useMapSearchCategory(
         setPlaces(cached);
         createMarkers(cached);
 
-        setTimeout(() => {
-          map.setCenter(new kakao.maps.LatLng(lat, lng));
-          map.setLevel(4);
-        }, 0);
-
+        resetMapView(map, kakao, lat, lng, MAP_DEFAULT_LEVEL);
         return;
       }
 
@@ -51,14 +54,12 @@ export function useMapSearchCategory(
       const ps = new kakao.maps.services.Places();
       const options = {
         location: new kakao.maps.LatLng(lat, lng),
-        radius: 5000,
+        radius: MAP_SEARCH_RADIUS,
       };
 
       ps.categorySearch(
         categoryCode,
         (data: MapPlace[], status: kakao.maps.services.Status) => {
-          const { Status } = kakao.maps.services;
-
           if (status === Status.OK) {
             // 캐싱 저장
             categoryCacheRef.current.set(cacheKey, data);
@@ -69,20 +70,16 @@ export function useMapSearchCategory(
             setPlaces(data);
             createMarkers(data);
 
-            setTimeout(() => {
-              map.setCenter(new kakao.maps.LatLng(lat, lng));
-              map.setLevel(4);
-            }, 0);
-          } else if (status === 'ZERO_RESULT') {
+            resetMapView(map, kakao, lat, lng, MAP_DEFAULT_LEVEL);
+          } else if (status === Status.ZERO_RESULT) {
             categoryCacheRef.current.set(cacheKey, []);
-            setPlaces([]);
-            createMarkers([]);
+
+            handleZeroResult(setPlaces, createMarkers);
 
             lastCategoryRef.current = categoryCode;
             lastLocationRef.current = { lat, lng };
           } else {
-            setPlaces([]);
-            createMarkers([]);
+            handleZeroResult(setPlaces, createMarkers);
           }
         },
         options

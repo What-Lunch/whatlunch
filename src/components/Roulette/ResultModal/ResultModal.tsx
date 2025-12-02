@@ -3,18 +3,14 @@
 import { useEffect } from 'react';
 import Image from 'next/image';
 
+import { ResultModalProps } from './type';
 import Button from '@/components/common/Button';
 
 import styles from './ResultModal.module.scss';
 
-interface Props {
-  menu: string;
-  onClose: () => void;
-}
-
 const DEFAULT_IMAGE = '/foods/noimg.png';
 
-export default function ResultModal({ menu, onClose }: Props) {
+export default function ResultModal({ menu, onClose }: ResultModalProps) {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -39,15 +35,20 @@ export default function ResultModal({ menu, onClose }: Props) {
         title: '오늘의 메뉴',
         text: `오늘의 메뉴는 ${menu}입니다!`,
       });
-    } catch {
-      // ignore
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return;
+      }
+
+      // 그 외 오류는 디버깅을 위해 출력
+      console.error('Unexpected share error:', error);
     }
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles['overlay']} onClick={onClose}>
       <div
-        className={styles.modal}
+        className={styles['modal']}
         onClick={e => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
