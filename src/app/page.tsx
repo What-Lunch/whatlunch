@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import Carousel, { pendingData } from '@/components/Carousel';
+
 import Clock from '@/components/Clock/Clock';
 import { TopTabs } from '@/components/common/TopTabs';
 import { WeatherMood } from '@/components/WeatherMood';
@@ -18,6 +20,7 @@ export default function HomePage() {
   return (
     <div className={styles['container']}>
       <div className={styles['container__left']}>
+        <Carousel duration={4000} items={pendingData} />
         <section className={styles['container__left__slice']}>오늘 인기있는 음식</section>
 
         <div className={styles['container__left__main']}>
