@@ -7,14 +7,13 @@ import { TopTabs } from '@/shared/components/TopTabs';
 import { WeatherMood } from '@/domain/WeatherMood';
 import Ladder from '@/domain/Ladder/Ladder';
 import MapComp from '@/domain/Map/Map';
-import { RouletteSection } from '@/domain/Roulette/RouletteSection/RouletteSection';
+
 import Carousel, { pendingData } from '@/shared/components/Carousel';
 
 import styles from './page.module.scss';
 
 export default function HomePage() {
   const [tab, setTab] = useState<'roulette' | 'ladder' | 'map'>('roulette');
-  const [isSpinning, setIsSpinning] = useState(false);
 
   return (
     <div className={styles['container']}>
@@ -25,14 +24,6 @@ export default function HomePage() {
         <div className={styles['container__left__main']}>
           <section className={styles['container__left__main__roulette']}>
             <TopTabs tab={tab} onChange={setTab} />
-
-            {tab === 'roulette' && (
-              <RouletteSection
-                isSpinning={isSpinning}
-                onSpinStart={() => setIsSpinning(true)}
-                onSpinResult={() => setIsSpinning(false)}
-              />
-            )}
 
             {tab === 'ladder' && <Ladder />}
             {tab === 'map' && <MapComp />}

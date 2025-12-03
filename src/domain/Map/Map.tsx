@@ -8,8 +8,8 @@ import { useMapMarkers } from './hooks/useMapMarkers';
 import { useMapSearchKeyword } from './hooks/useMapSearchKeyword';
 import { useMapSearchCategory } from './hooks/useMapSearchCategory';
 
-import { MapPanel } from './MapPanel';
-import { MapList } from './MapList';
+import MapPanel from './components/MapPanel';
+import MapList from './components/MapList/MapList';
 
 import { MapPlace } from './type';
 
