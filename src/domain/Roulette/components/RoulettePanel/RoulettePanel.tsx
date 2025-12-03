@@ -5,38 +5,15 @@ import { useState } from 'react';
 import Roulette from '../RouletteUi/RouletteUi';
 import ResultModal from '../ResultModal/ResultModal';
 
+import { useRouletteItems } from '../../hooks/useRouletteItem';
+
 import styles from './RoulettePanel.module.scss';
 
 export default function RoulettePanel() {
-  const [items, setItems] = useState<string[]>([]);
-  const [newItem, setNewItem] = useState('');
-  const [isDuplicate, setIsDuplicate] = useState(false);
+  const { items, newItem, isDuplicate, handleChange, addItem, removeItem, reset } =
+    useRouletteItems();
+
   const [result, setResult] = useState<string | null>(null);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim();
-    setNewItem(value);
-
-    // 중복 여부만 체크
-    setIsDuplicate(items.includes(value));
-  };
-
-  const addItem = (e?: React.FormEvent) => {
-    e?.preventDefault();
-
-    if (!newItem) return;
-    if (isDuplicate) return;
-
-    setItems(prev => [...prev, newItem]);
-    setNewItem('');
-    setIsDuplicate(false);
-  };
-
-  const removeItem = (item: string) => {
-    setItems(prev => prev.filter(v => v !== item));
-
-    setIsDuplicate(newItem.trim() !== '' && items.includes(newItem.trim()));
-  };
 
   return (
     <div className={styles.wrapper}>
@@ -44,13 +21,19 @@ export default function RoulettePanel() {
 
       <Roulette items={items} onResult={value => setResult(value)} />
 
-      <form className={styles.panel} onSubmit={addItem}>
+      <form
+        className={styles.panel}
+        onSubmit={e => {
+          e.preventDefault();
+          addItem();
+        }}
+      >
         <input
           className={`${styles['panel__input']} ${
             isDuplicate ? styles['panel__input--error'] : ''
           }`}
           value={newItem}
-          onChange={handleChange}
+          onChange={e => handleChange(e.target.value)}
           placeholder="메뉴 입력"
         />
 
@@ -58,14 +41,7 @@ export default function RoulettePanel() {
           추가
         </button>
 
-        <button
-          className={styles['panel__button']}
-          type="button"
-          onClick={() => {
-            setItems([]);
-            setIsDuplicate(false);
-          }}
-        >
+        <button className={styles['panel__button']} type="button" onClick={reset}>
           초기화
         </button>
       </form>
