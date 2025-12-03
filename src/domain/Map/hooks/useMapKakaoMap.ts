@@ -15,36 +15,39 @@ export function useMapKakaoMap(mapRef: React.RefObject<HTMLDivElement | null>) {
     }
   }, []);
 
-  const initMap = useCallback((lat?: number, lng?: number) => {
-    const kakao = kakaoRef.current;
-    if (!kakao || !mapRef.current) return;
+  const initMap = useCallback(
+    (lat?: number, lng?: number) => {
+      const kakao = kakaoRef.current;
+      if (!kakao || !mapRef.current) return;
 
-    const validLat = typeof lat === 'number' ? lat : DEFAULT_LOCATION.lat;
-    const validLng = typeof lng === 'number' ? lng : DEFAULT_LOCATION.lng;
+      const validLat = typeof lat === 'number' ? lat : DEFAULT_LOCATION.lat;
+      const validLng = typeof lng === 'number' ? lng : DEFAULT_LOCATION.lng;
 
-    const center = new kakao.maps.LatLng(validLat, validLng);
+      const center = new kakao.maps.LatLng(validLat, validLng);
 
-    userLocationRef.current = { lat: validLat, lng: validLng };
+      userLocationRef.current = { lat: validLat, lng: validLng };
 
-    if (mapObjRef.current) return;
+      if (mapObjRef.current) return;
 
-    const map = new kakao.maps.Map(mapRef.current, {
-      center,
-      level: DEFAULT_MAP_LEVEL,
-    });
-    mapObjRef.current = map;
+      const map = new kakao.maps.Map(mapRef.current, {
+        center,
+        level: DEFAULT_MAP_LEVEL,
+      });
+      mapObjRef.current = map;
 
-    userMarkerRef.current = new kakao.maps.Marker({
-      position: center,
-      map,
-    });
+      userMarkerRef.current = new kakao.maps.Marker({
+        position: center,
+        map,
+      });
 
-    clustererRef.current = new kakao.maps.MarkerClusterer({
-      map,
-      averageCenter: false,
-      minLevel: CLUSTERER_MIN_LEVEL,
-    });
-  }, []);
+      clustererRef.current = new kakao.maps.MarkerClusterer({
+        map,
+        averageCenter: false,
+        minLevel: CLUSTERER_MIN_LEVEL,
+      });
+    },
+    [mapRef]
+  );
 
   return {
     kakaoRef,

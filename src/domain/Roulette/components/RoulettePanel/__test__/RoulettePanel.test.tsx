@@ -1,17 +1,27 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import RoulettePanel from '../RoulettePanel';
+interface RouletteUiProps {
+  onResult: (value: string) => void;
+}
+
+interface ResultModalProps {
+  menu: string;
+  onClose: () => void;
+}
 
 jest.mock('../../RouletteUi/RouletteUi', () => ({
   __esModule: true,
-  default: ({ onResult }: any) => <button onClick={() => onResult('TEST_RESULT')}>Spin</button>,
+  default: (props: RouletteUiProps) => (
+    <button onClick={() => props.onResult('TEST_RESULT')}>Spin</button>
+  ),
 }));
 
 jest.mock('../../ResultModal/ResultModal', () => ({
   __esModule: true,
-  default: ({ menu, onClose }: any) => (
+  default: (props: ResultModalProps) => (
     <div>
-      <p>RESULT: {menu}</p>
-      <button onClick={onClose}>Close</button>
+      <p>RESULT: {props.menu}</p>
+      <button onClick={props.onClose}>Close</button>
     </div>
   ),
 }));

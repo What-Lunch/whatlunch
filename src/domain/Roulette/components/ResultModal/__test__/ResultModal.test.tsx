@@ -62,7 +62,7 @@ describe('ResultModal UI', () => {
   });
 
   test('공유하기 버튼 클릭 - navigator.share 미지원 시 alert 호출', () => {
-    navigator.share = undefined as any;
+    navigator.share = undefined as unknown as Navigator['share'];
 
     setup();
 
