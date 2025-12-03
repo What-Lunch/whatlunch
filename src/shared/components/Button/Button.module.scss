@@ -6,7 +6,7 @@ $variant-colors: (
   primary: brand-primary,
   secondary: brand-secondary,
   tertiary: brand-tertiary,
-  neutral: gray-400,
+  neutral: gray-700,
   danger: status-danger,
   blue: point-blue,
 );
@@ -18,9 +18,11 @@ $variant-colors: (
 @mixin fill-style($variant, $color) {
   background: f.color($color);
   color: fill-text-color($variant);
+  border: 2px solid f.color($color);
 
   &:hover:not(.button--disabled) {
     background: darken(f.color($color), 8%);
+    border-color: darken(f.color($color), 8%);
   }
 
   &:active:not(.button--disabled) {
