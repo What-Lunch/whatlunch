@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Header from '@/shared/components/layout/Header';
+import HeaderLayout from '@/shared/components/layout/HeaderLayout';
 import Main from '@/shared/components/layout/Main';
 import '@/styles/main.scss';
 
@@ -22,7 +22,7 @@ export default function RootLayout({ children }: LayoutProps) {
       ) : null}
 
       <body>
-        <Header />
+        <HeaderLayout />
         <Main>{children}</Main>
       </body>
     </html>
