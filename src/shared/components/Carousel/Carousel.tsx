@@ -126,6 +126,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
               key={item.title}
               data-testid={`carousel-item-${index}`}
               role="listitem"
+              aria-current={currentIndex === index ? 'true' : undefined}
             >
               <div className={styles['carousel__info']}>
                 <h2>{item.title}</h2>

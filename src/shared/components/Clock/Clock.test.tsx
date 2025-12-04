@@ -3,7 +3,7 @@ import { act } from 'react';
 import Clock from '@/shared/components/Clock';
 
 // formatRemain mock
-jest.mock('@/components/Clock/formatRemain', () => ({
+jest.mock('@/shared/components/Clock/formatRemain', () => ({
   formatRemain: (remain: string) => `포맷(${remain})`,
 }));
 
