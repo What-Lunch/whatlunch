@@ -42,25 +42,32 @@ describe('Carousel Component', () => {
   it('렌더링 테스트', () => {
     render(<Carousel items={mockItems} />);
     expect(screen.getByTestId('carousel-item-0')).toBeInTheDocument();
-    expect(screen.queryByTestId('carousel-item-1')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('carousel-item-2')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('carousel-item-1')).toBeInTheDocument();
+    expect(screen.queryByTestId('carousel-item-2')).toBeInTheDocument();
+    const activeItem = screen.getByRole('listitem', { current: true });
+    expect(activeItem).toBeInTheDocument();
   });
 
   it('슬라이드 이동 시 이미지가 올바르게 변경된다', async () => {
     render(<Carousel items={mockItems} />);
-
-    let images = screen.getAllByRole('img');
-    expect(images[0]).toHaveAttribute('alt', '너무맛있는곰장어집 - Image 1');
-
     const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
+
     act(() => {
       fireEvent.click(pageButtons[1]);
     });
 
     await waitFor(() => {
-      images = screen.getAllByRole('img');
+      const activeSlide = screen.getByTestId('carousel-item-1');
+      const images = activeSlide.querySelectorAll('img');
       expect(images[0]).toHaveAttribute('alt', '여긴어디지고기집 - Image 1');
     });
+  });
+
+  it('현재 슬라이드 이미지 렌더링 테스트', () => {
+    render(<Carousel items={mockItems} />);
+    const activeSlide = screen.getByTestId('carousel-item-0');
+    const images = activeSlide.querySelectorAll('img');
+    expect(images.length).toBe(3);
   });
 
   it('페이지 네비게이션 테스트', async () => {
@@ -87,11 +94,12 @@ describe('Carousel Component', () => {
     });
   });
 
-  it('현재 슬라이드 이미지 렌더링 테스트', () => {
+  it('활성 슬라이드의 첫 번째 이미지가 올바르게 렌더링된다', () => {
     render(<Carousel items={mockItems} />);
 
-    const images = screen.getAllByRole('img');
-    expect(images.length).toBe(5);
+    const activeSlide = screen.getByRole('listitem', { current: true });
+    const images = activeSlide.querySelectorAll('img');
+    expect(images[0]).toHaveAttribute('alt', '너무맛있는곰장어집 - Image 1');
   });
 
   it('같은 슬라이드 클릭시 애니메이션 동작하지 않음', () => {
