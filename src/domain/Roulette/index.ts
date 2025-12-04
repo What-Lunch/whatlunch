@@ -1,1 +1,1 @@
-export { RouletteSection } from './RouletteSection';
+export { default } from './Roulette';

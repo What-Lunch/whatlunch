@@ -4,19 +4,19 @@ import { useState, memo } from 'react';
 import { Shuffle } from 'lucide-react';
 
 import Button from '@/shared/components/Button';
-import RouletteFilter from '../Roulette/components/RouletteFilter';
-import Roulette from '../Roulette/components/RouletteUi';
-import ResultModal from '../Roulette/components/ResultModal';
+import RouletteFilter from './components/RouletteFilter';
+import RouletteUi from './components/RouletteUi';
+import ResultModal from './components/ResultModal';
 
-import { RouletteSectionProps } from './type';
+import { RouletteProps } from './type';
 
-import styles from './RouletteSection.module.scss';
+import styles from './Roulette.module.scss';
 
-export const RouletteSection = memo(function RouletteSection({
+export const Roulette = memo(function Roulette({
   isSpinning,
   onSpinStart,
   onSpinResult,
-}: RouletteSectionProps) {
+}: RouletteProps) {
   const [menus, setMenus] = useState<string[]>([]);
   const [result, setResult] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -38,7 +38,7 @@ export const RouletteSection = memo(function RouletteSection({
           <Shuffle size={20} />
         </Button>
 
-        <Roulette
+        <RouletteUi
           items={menus}
           onStart={onSpinStart}
           onResult={menu => {
@@ -66,3 +66,5 @@ export const RouletteSection = memo(function RouletteSection({
     </div>
   );
 });
+
+export default Roulette;

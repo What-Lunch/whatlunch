@@ -1,4 +1,4 @@
-import { FoodTypeFilter, SituationFilter } from '../../../types/filters';
+import { FoodTypeFilter, SituationFilter } from '@/shared/constants/filters';
 
 import { MENU_DATA } from '../../constants/menuData';
 

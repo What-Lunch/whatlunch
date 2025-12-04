@@ -6,7 +6,7 @@ import Clock from '@/shared/components/Clock/Clock';
 import TopTabs from '@/shared/components/TopTabs/TopTabs';
 import { WeatherMood } from '@/domain/WeatherMood';
 import Ladder from '@/domain/Ladder/Ladder';
-import { RouletteSection } from '@/domain/Roulette/RouletteSection';
+import Roulette from '@/domain/Roulette/Roulette';
 
 import Carousel, { pendingData } from '@/shared/components/Carousel';
 
@@ -27,7 +27,7 @@ export default function HomePage() {
             <TopTabs tab={tab} onChange={setTab} />
 
             {tab === 'roulette' && (
-              <RouletteSection
+              <Roulette
                 isSpinning={isSpinning}
                 onSpinStart={() => setIsSpinning(true)}
                 onSpinResult={() => setIsSpinning(false)}

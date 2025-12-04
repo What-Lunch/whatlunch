@@ -4,15 +4,12 @@ import Button from '@/shared/components/Button';
 
 import { RouletteFilterProps } from './type';
 
-import { FOOD_TYPE_FILTERS, SITUATION_FILTERS } from '@/shared/constants/filters';
-import { FOOD_TYPE_ICONS, SITUATION_ICONS } from '@/shared/constants/icons';
-
 import { useRouletteFilter } from '../../hooks/useRouletteFilter';
 
 import styles from './RouletteFilter.module.scss';
 
 export default function RouletteFilter({ onChange, disabled = false }: RouletteFilterProps) {
-  const { mode, setMode, selectedFoodTypes, toggleFoodType, selectedSituation, toggleSituation } =
+  const { mode, setMode, foodOptions, situationOptions, toggleFoodType, toggleSituation } =
     useRouletteFilter(onChange);
 
   return (
@@ -41,44 +38,38 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
 
       <div className={styles['filter__options']}>
         {mode === 'food' &&
-          FOOD_TYPE_FILTERS.map(type => {
-            const isActive = selectedFoodTypes.includes(type);
-            return (
-              <Button
-                key={type}
-                disabled={disabled}
-                variant="primary"
-                mode={isActive ? 'fill' : 'outline'}
-                padding="8px 18px"
-                fontSize="14px"
-                className={styles.pill}
-                onClick={() => toggleFoodType(type)}
-              >
-                <span className={styles.icon}>{FOOD_TYPE_ICONS[type]}</span>
-                {type}
-              </Button>
-            );
-          })}
+          foodOptions.map(opt => (
+            <Button
+              key={opt.value}
+              disabled={disabled}
+              variant="primary"
+              mode={opt.isActive ? 'fill' : 'outline'}
+              padding="8px 18px"
+              fontSize="14px"
+              className={styles.pill}
+              onClick={() => toggleFoodType(opt.value)}
+            >
+              <span className={styles.icon}>{opt.icon}</span>
+              {opt.label}
+            </Button>
+          ))}
 
         {mode === 'situation' &&
-          SITUATION_FILTERS.map(sit => {
-            const isActive = selectedSituation === sit;
-            return (
-              <Button
-                key={sit}
-                disabled={disabled}
-                variant="primary"
-                mode={isActive ? 'fill' : 'outline'}
-                padding="8px 18px"
-                fontSize="14px"
-                className={styles.pill}
-                onClick={() => toggleSituation(sit)}
-              >
-                <span className={styles.icon}>{SITUATION_ICONS[sit]}</span>
-                {sit}
-              </Button>
-            );
-          })}
+          situationOptions.map(opt => (
+            <Button
+              key={opt.value}
+              disabled={disabled}
+              variant="primary"
+              mode={opt.isActive ? 'fill' : 'outline'}
+              padding="8px 18px"
+              fontSize="14px"
+              className={styles.pill}
+              onClick={() => toggleSituation(opt.value)}
+            >
+              <span className={styles.icon}>{opt.icon}</span>
+              {opt.label}
+            </Button>
+          ))}
       </div>
     </div>
   );

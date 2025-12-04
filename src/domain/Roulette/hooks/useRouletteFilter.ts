@@ -1,13 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+
+import { FoodTypeFilter, SituationFilter, FilterMode } from './../../../shared/constants/filters';
 
 import { pickMenus } from '@/shared/utils/recommend/pickMenus';
+import { FILTER_CONFIG } from '@/shared/constants/filters';
 
-import { FoodTypeFilter, SituationFilter } from '@/types/filters';
+import { FilterOption } from '@/types/roulette';
 
 const ALL: FoodTypeFilter = '전체';
 
 export function useRouletteFilter(onChange: (menus: string[]) => void) {
-  const [mode, setMode] = useState<'food' | 'situation'>('food');
+  const [mode, setMode] = useState<FilterMode>('food');
   const [selectedFoodTypes, setSelectedFoodTypes] = useState<FoodTypeFilter[]>([ALL]);
   const [selectedSituation, setSelectedSituation] = useState<SituationFilter | null>(null);
 
@@ -35,7 +38,31 @@ export function useRouletteFilter(onChange: (menus: string[]) => void) {
     setSelectedSituation(prev => (prev === sit ? null : sit));
   };
 
-  /** 모드 전환 시 반대쪽 초기화 */
+  /** 음식 옵션 */
+  const foodOptions: FilterOption<FoodTypeFilter>[] = useMemo(
+    () =>
+      FILTER_CONFIG.food.options.map(opt => ({
+        value: opt.value,
+        label: opt.label,
+        icon: FILTER_CONFIG.food.icons[opt.value],
+        isActive: selectedFoodTypes.includes(opt.value),
+      })),
+    [selectedFoodTypes]
+  );
+
+  /** 상황 옵션 */
+  const situationOptions: FilterOption<SituationFilter>[] = useMemo(
+    () =>
+      FILTER_CONFIG.situation.options.map(opt => ({
+        value: opt.value,
+        label: opt.label,
+        icon: FILTER_CONFIG.situation.icons[opt.value],
+        isActive: selectedSituation === opt.value,
+      })),
+    [selectedSituation]
+  );
+
+  /** 모드 변경 시 다른 필터 초기화 */
   useEffect(() => {
     if (mode === 'food') setSelectedSituation(null);
     else setSelectedFoodTypes([ALL]);
@@ -57,9 +84,9 @@ export function useRouletteFilter(onChange: (menus: string[]) => void) {
   return {
     mode,
     setMode,
-    selectedFoodTypes,
+    foodOptions,
+    situationOptions,
     toggleFoodType,
-    selectedSituation,
     toggleSituation,
   };
 }
