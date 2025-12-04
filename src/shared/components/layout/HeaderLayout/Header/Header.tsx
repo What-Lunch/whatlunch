@@ -9,8 +9,8 @@ import WhatLunchLogo from '../../../../../../public/icons/what-lunch-logo.svg';
 
 export function Header({ onLogin, onSignup }: HeaderProps) {
   return (
-    <header className={styles['header']}>
-      <div className={styles['header__menu']}>
+    <div className={styles['header']}>
+      <nav className={styles['header__menu']}>
         <Link href="/">
           <span>룰렛 돌리기</span>
         </Link>
@@ -18,14 +18,14 @@ export function Header({ onLogin, onSignup }: HeaderProps) {
         <Link href="/faq">
           <span>고객센터</span>
         </Link>
-      </div>
+      </nav>
 
-      <div>
+      <nav>
         <Link href="/" className={styles['header__logo']}>
           <Image src={WhatLunchLogo} alt="What Lunch Logo" width={60} height={60} />
           <span>What Lunch</span>
         </Link>
-      </div>
+      </nav>
 
       <div className={styles['header__auth']}>
         <Button variant="primary" onClick={onLogin}>
@@ -35,7 +35,7 @@ export function Header({ onLogin, onSignup }: HeaderProps) {
           회원가입
         </Button>
       </div>
-    </header>
+    </div>
   );
 }
 
