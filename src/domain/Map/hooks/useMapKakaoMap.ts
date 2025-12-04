@@ -9,9 +9,10 @@ export function useMapKakaoMap(mapRef: React.RefObject<HTMLDivElement | null>) {
   const userMarkerRef = useRef<kakao.maps.Marker | null>(null);
   const userLocationRef = useRef<{ lat: number; lng: number } | null>(null);
 
-  const setKakao = useCallback(() => {
+  const setKakao = useCallback((callback?: () => void) => {
     if (typeof window !== 'undefined' && window.kakao) {
       kakaoRef.current = window.kakao;
+      callback?.();
     }
   }, []);
 

@@ -6,7 +6,7 @@ import Clock from '@/shared/components/Clock/Clock';
 import TopTabs from '@/shared/components/TopTabs';
 import { WeatherMood } from '@/domain/WeatherMood';
 import Ladder from '@/domain/Ladder/Ladder';
-import MapComp from '@/domain/Map/Map';
+import Map from '@/domain/Map/Map';
 
 import Carousel, { pendingData } from '@/shared/components/Carousel';
 
@@ -26,7 +26,7 @@ export default function HomePage() {
             <TopTabs tab={tab} onChange={setTab} />
 
             {tab === 'ladder' && <Ladder />}
-            {tab === 'map' && <MapComp />}
+            {tab === 'map' && <Map />}
           </section>
 
           <section className={styles['container__left__main__option']}>찬성 반대</section>

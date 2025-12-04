@@ -7,6 +7,7 @@ import { useMapKakaoMap } from './hooks/useMapKakaoMap';
 import { useMapMarkers } from './hooks/useMapMarkers';
 import { useMapSearchKeyword } from './hooks/useMapSearchKeyword';
 import { useMapSearchCategory } from './hooks/useMapSearchCategory';
+import { useMapResize } from './hooks/useMapResize';
 
 import MapPanel from './components/MapPanel';
 import MapList from './components/MapList/MapList';
@@ -27,6 +28,9 @@ export default function Map() {
 
   const { kakaoRef, setKakao, mapObjRef, clustererRef, userLocationRef, initMap } =
     useMapKakaoMap(mapRef);
+
+  // 지도 리사이즈 자동 처리
+  useMapResize(mapRef, mapObjRef);
 
   const { createMarkers, resetMarkers, activateMarkerById } = useMapMarkers(
     kakaoRef,
@@ -55,9 +59,7 @@ export default function Map() {
       await waitForKakao();
 
       window.kakao.maps.load(() => {
-        setKakao();
-
-        setTimeout(() => {
+        setKakao(() => {
           navigator.geolocation.getCurrentPosition(
             pos => {
               initMap(pos.coords.latitude, pos.coords.longitude);
@@ -69,10 +71,10 @@ export default function Map() {
                 '현재 위치를 가져올 수 없어 기본 위치로 이동했습니다. 권한을 확인해주세요.'
               );
 
-              initMap(); // 기본 위치로 이동
+              initMap(); // 기본 위치
             }
           );
-        }, 0);
+        });
       });
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps

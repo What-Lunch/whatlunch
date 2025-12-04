@@ -22,7 +22,7 @@
       padding: 8px 10px;
       border: 1px solid f.color(gray-300);
       border-radius: 6px;
-      font-size: 14px;
+      @include m.text-style(md);
     }
   }
 
