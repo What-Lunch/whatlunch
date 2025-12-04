@@ -1,13 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import styles from '../AutnModal.module.scss';
+import { useState } from 'react';
+import styles from '../AuthModal.module.scss';
 import { Eye, EyeOff, XIcon } from 'lucide-react';
 
 import Button from '@/shared/components/Button';
 import Input from '@/shared/components/Input/Input';
-
+import { useModalClose, useEscClose } from '@/shared/hooks/useModalClose';
 import Google from '../../../../public/icons/google.svg';
 
 import { SignupModalProps } from '../types';
@@ -15,7 +15,8 @@ import { SignupModalProps } from '../types';
 /**
  * TODO
  * 1. 백엔드 구현 필요 + 이에 맞는 validation 로직 구현
- * 2. 리다이렉트 구현 필요d
+ * 2. 리다이렉트 구현 필요
+ * 3. onSubmit 함수 구현 필요
  */
 
 export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) {
@@ -26,35 +27,20 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const [passwordType, setPasswordType] = useState<'password' | 'text'>('password');
   const [passwordConfirmType, setPasswordConfirmType] = useState<'password' | 'text'>('password');
 
-  const handlePasswordVisibility = () => {
-    setPasswordType(prev => (prev === 'password' ? 'text' : 'password'));
-  };
-  const handlePasswordConfirmVisibility = () => {
-    setPasswordConfirmType(prev => (prev === 'password' ? 'text' : 'password'));
-  };
-
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 로직 구현 필요
   };
 
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
+  const { handleOverlayClick } = useModalClose(onClose);
+  useEscClose(onClose);
 
   return (
     <section
       className={styles['overlay']}
-      tabIndex={0}
       role="dialog"
       aria-modal="true"
       aria-labelledby="signup-modal-title"
+      onClick={handleOverlayClick}
     >
       <div className={styles['modal']}>
         <button
@@ -65,7 +51,9 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
         >
           <XIcon aria-hidden="true" />
         </button>
-        <h2 id="signup-modal-title">회원가입</h2>
+        <h2 className={styles['modal__title']} id="signup-modal-title">
+          회원가입
+        </h2>
         <form onSubmit={onSubmit} className={styles['login']}>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>이메일</span>
@@ -73,7 +61,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               value={email}
               type="email"
               placeholder="이메일을 입력하세요"
-              tabIndex={1}
+              tabIndex={0}
               onChange={e => setEmail(e.target.value)}
             />
           </div>
@@ -83,7 +71,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               value={nickname}
               type="text"
               placeholder="닉네임을 입력하세요"
-              tabIndex={2}
+              tabIndex={1}
               onChange={e => setNickname(e.target.value)}
             />
           </div>
@@ -93,14 +81,14 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               value={password}
               type={passwordType}
               placeholder="비밀번호를 입력하세요"
-              tabIndex={3}
+              tabIndex={2}
               onChange={e => setPassword(e.target.value)}
               iconPosition="right"
               icon={
                 passwordType === 'password' ? (
-                  <EyeOff className={styles['icon']} onClick={handlePasswordVisibility} />
+                  <EyeOff className={styles['icon']} onClick={() => setPasswordType('text')} />
                 ) : (
-                  <Eye className={styles['icon']} onClick={handlePasswordVisibility} />
+                  <Eye className={styles['icon']} onClick={() => setPasswordType('password')} />
                 )
               }
             />
@@ -111,14 +99,20 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               value={passwordConfirm}
               type={passwordConfirmType}
               placeholder="비밀번호를 입력하세요"
-              tabIndex={4}
+              tabIndex={3}
               onChange={e => setPasswordConfirm(e.target.value)}
               iconPosition="right"
               icon={
                 passwordConfirmType === 'password' ? (
-                  <EyeOff className={styles['icon']} onClick={handlePasswordConfirmVisibility} />
+                  <EyeOff
+                    className={styles['icon']}
+                    onClick={() => setPasswordConfirmType('text')}
+                  />
                 ) : (
-                  <Eye className={styles['icon']} onClick={handlePasswordConfirmVisibility} />
+                  <Eye
+                    className={styles['icon']}
+                    onClick={() => setPasswordConfirmType('password')}
+                  />
                 )
               }
             />

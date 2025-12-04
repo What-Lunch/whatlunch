@@ -1,12 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import styles from '../AutnModal.module.scss';
+import { useState } from 'react';
+import styles from '../AuthModal.module.scss';
 import { Eye, EyeOff, XIcon } from 'lucide-react';
 
 import Button from '@/shared/components/Button';
 import Input from '@/shared/components/Input/Input';
+import { useModalClose, useEscClose } from '@/shared/hooks/useModalClose';
 
 import Google from '../../../../public/icons/google.svg';
 
@@ -14,7 +15,8 @@ import { LoginModalProps } from '../types';
 /**
  * TODO
  * 1. 백엔드 구현 필요 + 이에 맞는 validation 로직 구현
- * 2. 리다이렉트 구현 필요d
+ * 2. 리다이렉트 구현 필요
+ * 3. onSubmit 함수 구현 필요
  */
 
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
@@ -22,39 +24,21 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [password, setPassword] = useState('');
   const [passwordType, setPasswordType] = useState('password');
 
-  const handlePasswordVisibility = () => {
-    setPasswordType(prev => (prev === 'password' ? 'text' : 'password'));
-  };
-
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // 로그인 로직 구현 필요
   };
 
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
-
-  const renderPasswordIcon = () => {
-    if (passwordType === 'password') {
-      return <EyeOff className={styles['icon']} onClick={handlePasswordVisibility} />;
-    }
-    return <Eye className={styles['icon']} onClick={handlePasswordVisibility} />;
-  };
+  const { handleOverlayClick } = useModalClose(onClose);
+  useEscClose(onClose);
 
   return (
     <section
       className={styles['overlay']}
-      tabIndex={0}
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-modal-title"
+      onClick={handleOverlayClick}
     >
       <div className={styles['modal']}>
         <button
@@ -66,7 +50,9 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
           <XIcon aria-hidden="true" />
         </button>
 
-        <h2 id="login-modal-title">로그인</h2>
+        <h2 className={styles['modal__title']} id="login-modal-title">
+          로그인
+        </h2>
         <form onSubmit={onSubmit} className={styles['login']}>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>이메일</span>
@@ -74,7 +60,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
               value={email}
               type="email"
               placeholder="이메일을 입력하세요"
-              tabIndex={1}
+              tabIndex={0}
               onChange={e => setEmail(e.target.value)}
             />
           </div>
@@ -84,17 +70,21 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
               value={password}
               type={passwordType}
               placeholder="비밀번호를 입력하세요"
-              tabIndex={2}
+              tabIndex={1}
               onChange={e => setPassword(e.target.value)}
-              icon={renderPasswordIcon()}
+              icon={
+                passwordType === 'password' ? (
+                  <EyeOff className={styles['icon']} onClick={() => setPasswordType('text')} />
+                ) : (
+                  <Eye className={styles['icon']} onClick={() => setPasswordType('password')} />
+                )
+              }
               iconPosition="right"
             />
           </div>
           <span className={styles['login__forget']}>비밀번호를 잊어버리셨나요?</span>
           <div className={styles['login__buttons']}>
-            <Button tabIndex={3} className={styles['login__buttons__button']}>
-              로그인
-            </Button>
+            <Button className={styles['login__buttons__button']}>로그인</Button>
 
             <div>
               <span className={styles['login__buttons__boolean']}>회원이 아니신가요? </span>

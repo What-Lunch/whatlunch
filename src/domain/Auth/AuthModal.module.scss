@@ -29,9 +29,7 @@
   border-radius: 16px;
   width: 320px;
   text-align: center;
-
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.18);
-
   animation: fade-in 0.25s ease;
 
   &__close {
@@ -40,6 +38,11 @@
     color: f.color(text-secondary);
     @include m.flex-box(flex-end, center);
     margin-bottom: 12px;
+  }
+
+  &__title {
+    @include m.text-style-extended('2xl', 700, white);
+    margin-bottom: 16px;
   }
 }
 
