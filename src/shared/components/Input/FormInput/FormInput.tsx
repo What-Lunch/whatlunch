@@ -37,6 +37,7 @@ export default function FormInput({
   ].join(' ');
 
   const showToggleButton = type === 'password' && showToggle;
+  const errorMessageId = `${rest.id || 'form-input'}-${type}-error-message`;
 
   return (
     <div className={styles['container']}>
@@ -52,8 +53,10 @@ export default function FormInput({
           type={
             type === 'password'
               ? (showPassword ? 'text' : 'password')
-              : 'text'
+              : type
           }
+          aria-invalid={isError} // 스크린 리더에 에러 상태 알림
+          aria-describedby={isError ? errorMessageId : undefined} // 에러 메시지가 있을 때만 해당 ID 연결
           {...rest}
         />
 
@@ -71,7 +74,9 @@ export default function FormInput({
       </div>
 
       {isError && errorMessage && (
-        <p className={styles['errorMessage']}>{errorMessage}</p>
+        <p id={errorMessageId} className={styles['errorMessage']}>
+          {errorMessage}
+        </p>
       )}
     </div>
   );

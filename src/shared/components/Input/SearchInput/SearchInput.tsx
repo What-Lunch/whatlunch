@@ -68,11 +68,10 @@ export default function SearchInput({
           {...rest}
         />
 
-        {value.length > 0 && (
+        {value.length > 0 && !disabled && (
           <button
             type="button"
             className={styles['wrapper__icon-right']}
-            disabled={disabled}
             aria-label="clear-search"
             onClick={() => onChange('')}
           >
