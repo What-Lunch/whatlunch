@@ -1,0 +1,77 @@
+@use '~/src/styles/utils/mixins' as m;
+@use '~/src/styles/utils/functions' as f;
+@use '~/src/styles/utils/variables' as v;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.wrapper {
+  @include m.flex-box(flex-start, center);
+  position: relative;
+
+  width: 100%;
+  padding: 10px 12px;
+
+  border: 1px solid f.color(border-primary);
+  border-radius: 6px;
+  background: f.color(bg-secondary);
+
+  transition: border-color 0.2s;
+
+// 확장성 고려를 위한 형태
+//   &--email {
+//   }
+
+  &--password {
+    padding-right: 40px;
+  }
+
+  &.focused {
+    border-color: f.color(interaction-focus);
+    border-width: 2px;
+  }
+
+  &.error {
+    border-color: f.color(status-danger);
+    border-width: 2px;
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    background: f.color(bg-secondary);
+  }
+
+  &__icon-right {
+    @include m.flex-box(center, center);
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    color: f.color(icon-primary);
+  }
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  @include m.text-style(md, 400);
+  color: f.color(text-primary);
+}
+
+.errorMessage {
+  margin-top: 4px;
+  @include m.text-style(sm);
+  color: f.color(status-danger);
+}
