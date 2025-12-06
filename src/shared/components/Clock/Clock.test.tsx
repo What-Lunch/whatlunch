@@ -3,12 +3,12 @@ import { act } from 'react';
 import Clock from '@/shared/components/Clock';
 
 // formatRemain mock
-jest.mock('@/components/Clock/formatRemain', () => ({
+jest.mock('@/shared/components/Clock/formatRemain', () => ({
   formatRemain: (remain: string) => `포맷(${remain})`,
 }));
 
 // 메시지 mock
-jest.mock('@/components/Clock/clockMessages', () => ({
+jest.mock('@/shared/components/Clock/clockMessages', () => ({
   getBeforeLunchMessage: (remain: string) => `전(포맷(${remain}))`,
   getAfterLunchMessage: () => `후`,
 }));
