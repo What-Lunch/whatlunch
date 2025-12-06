@@ -8,7 +8,7 @@ jest.mock('@/shared/components/Clock/formatRemain', () => ({
 }));
 
 // 메시지 mock
-jest.mock('@/components/Clock/clockMessages', () => ({
+jest.mock('@/shared/components/Clock/clockMessages', () => ({
   getBeforeLunchMessage: (remain: string) => `전(포맷(${remain}))`,
   getAfterLunchMessage: () => `후`,
 }));
