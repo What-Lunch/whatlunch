@@ -37,6 +37,8 @@ export default function SearchInput({
 
   // Enter키 누르면 onSearch 실행
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (disabled) return;
+
     if (e.key === 'Enter' && onSearch) {
       onSearch(value);
     }
@@ -50,7 +52,10 @@ export default function SearchInput({
           className={styles['wrapper__icon-left']}
           disabled={disabled}
           aria-label="search-icon"
-          onClick={() => onSearch && onSearch(value)}
+          onClick={() => {
+            if (disabled) return;
+            onSearch?.(value);}
+          }
         >
           {finalSearchIcon}
         </button>

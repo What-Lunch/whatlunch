@@ -8,7 +8,7 @@ export interface FormInputProps extends Omit<InputHTMLAttributes<HTMLInputElemen
 
     isError?: boolean;
     errorMessage?: string;
-
+    
     showToggle?: boolean;
     
     disabled?: boolean;

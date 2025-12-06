@@ -58,4 +58,37 @@ describe('SearchInput Component', () => {
 
     expect(handleSearch).toHaveBeenCalledWith('keyword');
   });
+
+  test('disabled 상태일 때 모든 동작이 비활성화되는지 테스트', () => {
+    const handleChange = jest.fn();
+    const handleSearch = jest.fn();
+
+    render(
+      <SearchInput
+        value="test"
+        onChange={handleChange}
+        onSearch={handleSearch}
+        disabled
+      />
+    );
+
+    // input 비활성화 여부
+    const input = screen.getByRole('textbox');
+    expect(input).toBeDisabled();
+
+    // 검색 아이콘 비활성화 여부
+    const searchBtn = screen.getByLabelText('search-icon');
+    expect(searchBtn).toBeDisabled();
+    
+    // clear icon(x)이 disabled일 경우, 렌더링이 안되는지 여부
+    expect(screen.queryByLabelText('clear-search')).not.toBeInTheDocument();
+    
+    // enter키로 검색 실행 시 비활성화 여부
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(handleSearch).not.toHaveBeenCalled();
+    
+    // search 버튼 클릭 시, 검색 실행 비활성화 여부
+    fireEvent.click(searchBtn);
+    expect(handleSearch).not.toHaveBeenCalled();
+  });
 });
