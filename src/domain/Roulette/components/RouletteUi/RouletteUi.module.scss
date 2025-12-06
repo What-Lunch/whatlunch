@@ -1,26 +1,42 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include m.flex-box(column, center);
   gap: 18px;
   margin-top: 20px;
+  margin-bottom: 10px;
 
   &__canvas {
     border-radius: 50%;
     box-shadow:
       0 10px 25px rgba(0, 0, 0, 0.25),
       inset 0 0 25px rgba(0, 0, 0, 0.2);
-    background: radial-gradient(circle, #ffffff 0%, #e5e5e5 100%);
-    transition: box-shadow 0.25s ease;
+    background: radial-gradient(circle, #fff 0%, #e5e5e5 100%);
+
+    cursor: pointer;
+    transition:
+      box-shadow 0.25s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.28),
+        inset 0 0 32px rgba(0, 0, 0, 0.22);
+    }
+
+    &:active {
+      transform: scale(0.995);
+    }
   }
 
-  /* 돌리기 버튼 */
   &__button {
     background: linear-gradient(180deg, #444, #222);
-    color: #fff;
-    padding: 14px 30px;
+    color: f.color(text-inverse);
+    padding: 10px 30px;
     border-radius: 12px;
-    font-size: 18px;
+    @include m.text-style(lg, 600);
     font-weight: 600;
     cursor: pointer;
     border: none;
@@ -40,17 +56,14 @@
     }
 
     &:disabled {
-      background: #777;
+      background: f.color(gray-600);
       cursor: not-allowed;
       transform: none;
     }
   }
 }
 
-/* Wrapper (최상위 구성될 때 사용하는 레이아웃) */
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include m.flex-box(column, center);
   width: 100%;
 }
