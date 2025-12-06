@@ -1,10 +1,10 @@
 'use client';
 
+import { useState } from 'react';
+
 import { Eye, EyeOff } from 'lucide-react';
 
-import { useState } from 'react';
 import styles from './FormInput.module.scss';
-
 import { FormInputProps } from './FormInput.types';
 
 export default function FormInput({

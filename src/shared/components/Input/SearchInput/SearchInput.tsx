@@ -1,10 +1,10 @@
 'use client';
 
+import { useState } from 'react';
+
 import { Search, X } from 'lucide-react';
 
-import { useState } from 'react';
 import styles from './SearchInput.module.scss';
-
 import { SearchInputProps } from './SearchInput.types';
 
 export default function SearchInput({
