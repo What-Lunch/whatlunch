@@ -1,12 +1,12 @@
 'use client';
+
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { placeSearchCallback } from './kakaoPlaceSearchCallback';
-interface KakaoMapProps {
-  value: string;
-}
+import { KakaoMapProps } from './types';
+
+const KAKAOMAP = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
 
 export default function KakaoMap({ value }: KakaoMapProps) {
-  const KAKAOMAP = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
   const [places, setPlaces] = useState<Kakao.PlacesSearchResult>([]);
   const mapRef = useRef<Kakao.Maps | null>(null);
 
@@ -69,6 +69,7 @@ export default function KakaoMap({ value }: KakaoMapProps) {
             marker.setMap(mapInstance);
             if (value && value.trim() !== '') {
               const ps = new window.kakao.maps.services.Places();
+              // 검색어로 위치 검색 및 마커 표시
               ps.keywordSearch(
                 value,
                 (data: Kakao.PlacesSearchResult, status: Kakao.Status) => {
@@ -97,7 +98,7 @@ export default function KakaoMap({ value }: KakaoMapProps) {
         document.head.removeChild(oldScript);
       }
     };
-  }, [KAKAOMAP, value]);
+  }, [value]);
 
   // 장소 클릭 시 해당 위치로 지도 중심 이동
   const handlePlaceClick = useCallback((place: Kakao.PlaceItem) => {

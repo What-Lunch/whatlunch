@@ -1,9 +1,9 @@
-import styles from './page.module.scss';
-
 import Carousel, { pendingData } from '@/shared/components/Carousel';
 import Clock from '@/shared/components/Clock/Clock';
 import { WeatherMood } from '@/domain/WeatherMood';
 import KakaoMap from '@/shared/components/KakaoMap';
+
+import styles from './page.module.scss';
 
 export default function HomePage() {
   return (
@@ -15,7 +15,8 @@ export default function HomePage() {
           <section className={styles['container__left__main__roulette']}>룰렛</section>
           <section className={styles['container__left__main__option']}>찬성 반대</section>
           <section className={styles['container__left__main__map']}>
-            <KakaoMap />
+            {/* TODO: 카카오 맵 룰렛창 결과 value 전달 필요 */}
+            <KakaoMap value="" />
           </section>
         </div>
       </div>

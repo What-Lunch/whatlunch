@@ -1,17 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import KakaoMap from '@/shared/components/KakaoMap';
 
 export default function KakaoMapPage() {
   const [value, setValue] = useState('');
   const [search, setSearch] = useState('');
-  console.log(value);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSearch(value);
-  };
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      setSearch(value);
+    },
+    [value]
+  );
+
   return (
     <div style={{ width: '100%', height: '100vh' }}>
       <form onSubmit={handleSearch}>
