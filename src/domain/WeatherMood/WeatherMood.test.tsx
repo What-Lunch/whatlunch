@@ -50,7 +50,7 @@ describe('WeatherMood 통합 테스트', () => {
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async (): Promise<WeatherData> => ({
+      json: async (): Promise<Weather.WeatherData> => ({
         name: 'Seoul',
         main: { temp: 11 },
         weather: [{ main: 'Clear', description: '맑음', icon: '01d' }],
@@ -77,7 +77,7 @@ describe('WeatherMood 통합 테스트', () => {
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async (): Promise<WeatherData> => ({
+      json: async (): Promise<Weather.WeatherData> => ({
         name: 'Seoul',
         main: { temp: 8 },
         weather: [{ main: 'Clouds', description: '흐림', icon: '02d' }],
@@ -102,7 +102,7 @@ describe('WeatherMood 통합 테스트', () => {
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async (): Promise<WeatherData> => ({
+      json: async (): Promise<Weather.WeatherData> => ({
         name: 'Seoul',
         main: { temp: 5 },
         weather: [{ main: 'Clear', description: '맑음', icon: '01d' }],
@@ -128,7 +128,7 @@ describe('WeatherMood 통합 테스트', () => {
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async (): Promise<WeatherData> => ({
+      json: async (): Promise<Weather.WeatherData> => ({
         name: 'Seoul',
         main: { temp: 11 },
         weather: [{ main: 'Clear', description: '맑음', icon: '01d' }],
@@ -155,7 +155,7 @@ describe('WeatherMood 통합 테스트', () => {
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: async (): Promise<WeatherData> => ({
+      json: async (): Promise<Weather.WeatherData> => ({
         name: 'Seoul',
         main: { temp: 12 },
         weather: [{ main: 'Clear', description: '맑음', icon: '01d' }],

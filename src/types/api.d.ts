@@ -1,13 +1,15 @@
-interface WeatherData {
-  name: string;
-  main: {
-    temp: number;
-  };
-  weather: {
-    main: string;
-    description: string;
-    icon: string;
-  }[];
+namespace Weather {
+  interface WeatherData {
+    name: string;
+    main: {
+      temp: number;
+    };
+    weather: {
+      main: string;
+      description: string;
+      icon: string;
+    }[];
+  }
 }
 
 namespace Kakao {

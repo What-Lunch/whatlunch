@@ -6,7 +6,7 @@ import styles from './WeatherRecommend.module.scss';
 import { getFinalRecommend } from '@/shared/utils/recommend/weather';
 
 export default function WeatherRecommend() {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [weather, setWeather] = useState<Weather.WeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchWeather = useCallback(async (url: string) => {
@@ -17,7 +17,7 @@ export default function WeatherRecommend() {
         throw new Error(`API Error: ${response.status}`);
       }
 
-      const data: WeatherData = await response.json();
+      const data: Weather.WeatherData = await response.json();
       setWeather(data);
     } catch (err) {
       console.error(err);

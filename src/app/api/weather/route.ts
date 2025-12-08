@@ -4,7 +4,7 @@ const CACHE_DURATION = 6 * 60 * 60 * 1000;
 
 type TimeSlot = 'morning' | 'afternoon' | 'evening';
 
-const weatherCache: Record<TimeSlot, WeatherData | null> = {
+const weatherCache: Record<TimeSlot, Weather.WeatherData | null> = {
   morning: null,
   afternoon: null,
   evening: null,
@@ -57,7 +57,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const weatherData: WeatherData = await response.json();
+    const weatherData: Weather.WeatherData = await response.json();
 
     weatherCache[timeSlot] = weatherData;
     weatherCacheTimestamp[timeSlot] = now;
