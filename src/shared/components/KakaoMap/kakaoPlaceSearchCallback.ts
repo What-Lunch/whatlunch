@@ -1,6 +1,10 @@
-export function placeSearchCallback(data: any, status: any, map: any) {
+export function placeSearchCallback(
+  data: Kakao.PlacesSearchResult,
+  status: Kakao.Status,
+  map: Kakao.Maps | null
+) {
   if (status === window.kakao.maps.services.Status.OK) {
-    data.forEach((place: any) => {
+    data.forEach((place: Kakao.PlaceItem) => {
       const placeMarker = new window.kakao.maps.Marker({
         map: map,
         position: new window.kakao.maps.LatLng(place.y, place.x),

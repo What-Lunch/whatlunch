@@ -7,9 +7,8 @@ interface KakaoMapProps {
 
 export default function KakaoMap({ value }: KakaoMapProps) {
   const KAKAOMAP = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
-  const [places, setPlaces] = useState<any[]>([]);
-  const map = useRef<any>(null);
-  console.log('value', value);
+  const [places, setPlaces] = useState<Kakao.PlacesSearchResult>([]);
+  const mapRef = useRef<Kakao.Maps | null>(null);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -28,7 +27,7 @@ export default function KakaoMap({ value }: KakaoMapProps) {
             };
             // 현재 내 위치 마커 표시
             const mapInstance = new window.kakao.maps.Map(mapContainer, option);
-            map.current = mapInstance;
+            mapRef.current = mapInstance;
             const markerPosition = new window.kakao.maps.LatLng(latitude, longitude);
             const marker = new window.kakao.maps.Marker({
               position: markerPosition,
@@ -40,8 +39,8 @@ export default function KakaoMap({ value }: KakaoMapProps) {
               const ps = new window.kakao.maps.services.Places();
               ps.keywordSearch(
                 value,
-                (data, status) => {
-                  placeSearchCallback(data, status, map.current);
+                (data: Kakao.PlacesSearchResult, status: Kakao.Status) => {
+                  placeSearchCallback(data, status, mapRef.current);
                   if (status === window.kakao.maps.services.Status.OK) {
                     setPlaces(data);
                   } else {
@@ -62,7 +61,7 @@ export default function KakaoMap({ value }: KakaoMapProps) {
             };
             // 기본 위치 마커 표시 (서울 시청)
             const mapInstance = new window.kakao.maps.Map(mapContainer, option);
-            map.current = mapInstance;
+            mapRef.current = mapInstance;
             const markerPosition = new window.kakao.maps.LatLng(37.5665, 126.978);
             const marker = new window.kakao.maps.Marker({
               position: markerPosition,
@@ -72,8 +71,8 @@ export default function KakaoMap({ value }: KakaoMapProps) {
               const ps = new window.kakao.maps.services.Places();
               ps.keywordSearch(
                 value,
-                (data, status) => {
-                  placeSearchCallback(data, status, map.current);
+                (data: Kakao.PlacesSearchResult, status: Kakao.Status) => {
+                  placeSearchCallback(data, status, mapRef.current);
                   if (status === window.kakao.maps.services.Status.OK) {
                     setPlaces(data);
                   } else {
@@ -100,11 +99,12 @@ export default function KakaoMap({ value }: KakaoMapProps) {
     };
   }, [KAKAOMAP, value]);
 
-  const handlePlaceClick = useCallback((place: any) => {
-    if (map.current) {
+  // 장소 클릭 시 해당 위치로 지도 중심 이동
+  const handlePlaceClick = useCallback((place: Kakao.PlaceItem) => {
+    if (mapRef.current) {
       const lating = new window.kakao.maps.LatLng(place.y, place.x);
-      map.current.setCenter(lating);
-      map.current.setLevel(3);
+      mapRef.current.setCenter(lating);
+      mapRef.current.setLevel(3);
     }
   }, []);
 

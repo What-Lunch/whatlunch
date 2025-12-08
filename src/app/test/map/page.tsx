@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import KakaoMap from '@/shared/components/KakaoMap';
 
 export default function KakaoMapPage() {
