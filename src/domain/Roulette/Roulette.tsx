@@ -1,14 +1,17 @@
 'use client';
 
-import { useState, memo } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { Shuffle } from 'lucide-react';
 
 import Button from '@/shared/components/Button';
 import RouletteFilter from './components/RouletteFilter';
 import RouletteUi from './components/RouletteUi';
-import ResultModal from './components/ResultModal';
+import RouletteModal from './components/RouletteModal';
 
-import { RouletteProps } from './type';
+import { shuffleMenus } from '@/domain/Roulette/core/shuffleMenus';
+
+import { RouletteControllerProps } from './type';
+import { MenuItem } from './utils/menuItem';
 
 import styles from './Roulette.module.scss';
 
@@ -16,45 +19,69 @@ export const Roulette = memo(function Roulette({
   isSpinning,
   onSpinStart,
   onSpinResult,
-}: RouletteProps) {
-  const [menus, setMenus] = useState<string[]>([]);
+}: RouletteControllerProps) {
+  const [menus, setMenus] = useState<MenuItem[]>([]);
   const [result, setResult] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  return (
-    <div className={styles.wrapper}>
-      <p className={styles.today}>오늘의 메뉴 {result ? <span>{result}</span> : <span>?</span>}</p>
+  // 섞기 가능 여부
+  const canShuffle = menus.length > 1;
 
-      <div className={styles.rouletteWrapper}>
+  // 메뉴 리스트 섞기
+  const handleShuffle = useCallback(() => {
+    if (!canShuffle) return;
+    setMenus(prevMenus => shuffleMenus(prevMenus));
+  }, [canShuffle]);
+
+  // 룰렛 결과 처리
+  const handleResult = useCallback(
+    (item: MenuItem) => {
+      setResult(item.name);
+      setModalOpen(true);
+      onSpinResult(item.name);
+    },
+    [onSpinResult]
+  );
+
+  // 모달 닫기
+  const handleCloseModal = useCallback(() => {
+    setModalOpen(false);
+  }, []);
+
+  // 결과 모달 열기
+  const openResultModal = useCallback(() => {
+    if (!result) return;
+    setModalOpen(true);
+  }, [result]);
+
+  return (
+    <div className={styles['roulette']}>
+      <p className={styles['roulette__today']}>
+        오늘의 메뉴 {result ? <span>{result}</span> : <span>?</span>}
+      </p>
+
+      <div className={styles['roulette__wheel-wrapper']}>
         <Button
           variant="neutral"
           mode="fill"
           padding="0"
           fontSize="0"
-          disabled={isSpinning || menus.length < 2}
-          onClick={() => setMenus(prev => [...prev].sort(() => Math.random() - 0.5))}
-          className={styles.shuffleBtn}
+          disabled={isSpinning || !canShuffle}
+          onClick={handleShuffle}
+          className={styles['roulette__shuffle-btn']}
         >
           <Shuffle size={20} />
         </Button>
 
-        <RouletteUi
-          items={menus}
-          onStart={onSpinStart}
-          onResult={menu => {
-            setResult(menu);
-            setModalOpen(true);
-            onSpinResult(menu);
-          }}
-        />
+        <RouletteUi items={menus} onStart={onSpinStart} onResult={handleResult} />
       </div>
 
-      <div className={styles.resultBtnWrapper}>
+      <div className={styles['roulette__result-btn-wrapper']}>
         <Button
           variant="neutral"
           mode="fill"
           disabled={!result || isSpinning}
-          onClick={() => setModalOpen(true)}
+          onClick={openResultModal}
         >
           결과 보기
         </Button>
@@ -62,7 +89,7 @@ export const Roulette = memo(function Roulette({
 
       <RouletteFilter onChange={setMenus} disabled={isSpinning} />
 
-      {modalOpen && result && <ResultModal menu={result} onClose={() => setModalOpen(false)} />}
+      {modalOpen && result && <RouletteModal menu={result} onClose={handleCloseModal} />}
     </div>
   );
 });

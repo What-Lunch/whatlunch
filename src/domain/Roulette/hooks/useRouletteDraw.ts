@@ -1,80 +1,115 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
-export function useRouletteDraw(
-  items: string[],
-  size: number,
-  radius: number,
-  sectorColors: React.MutableRefObject<string[]>
-) {
+import { MenuItem } from '../utils/menuItem';
+
+import { ROULETTE_STYLE } from '../constants/rouletteStyle';
+
+const FULL_ANGLE = Math.PI * 2;
+
+export function useRouletteDraw(items: MenuItem[], size: number, sectorColors: string[]) {
+  const radius = useMemo(() => size / 2, [size]);
+
+  const stepAngle = useMemo(() => {
+    return items.length > 0 ? FULL_ANGLE / items.length : 0;
+  }, [items.length]);
+
+  // 단일 메뉴 렌더링
+  const drawSingleItem = useCallback(
+    (canvasContext: CanvasRenderingContext2D) => {
+      canvasContext.beginPath();
+      canvasContext.fillStyle = sectorColors[0];
+      canvasContext.arc(radius, radius, radius - 4, 0, FULL_ANGLE);
+      canvasContext.fill();
+
+      canvasContext.save();
+      canvasContext.translate(radius, radius);
+      canvasContext.fillStyle = ROULETTE_STYLE.text.color;
+      canvasContext.font = ROULETTE_STYLE.text.large;
+      canvasContext.textAlign = 'center';
+      canvasContext.textBaseline = 'middle';
+      canvasContext.fillText(items[0].name, 0, 0);
+      canvasContext.restore();
+    },
+    [items, sectorColors, radius]
+  );
+
+  // 섹터 + 텍스트 렌더링
+  const drawSectors = useCallback(
+    (canvasContext: CanvasRenderingContext2D, angle: number) => {
+      items.forEach((item, index) => {
+        const start = angle + stepAngle * index;
+        const end = start + stepAngle;
+
+        // 섹터 배경
+        canvasContext.beginPath();
+        canvasContext.moveTo(radius, radius);
+        canvasContext.fillStyle = sectorColors[index];
+        canvasContext.arc(radius, radius, radius - 4, start, end);
+        canvasContext.fill();
+
+        // 경계선
+        canvasContext.lineWidth = ROULETTE_STYLE.stroke.width;
+        canvasContext.strokeStyle = ROULETTE_STYLE.stroke.color;
+        canvasContext.stroke();
+
+        // 텍스트
+        canvasContext.save();
+        canvasContext.translate(radius, radius);
+        canvasContext.rotate(start + stepAngle / 2);
+
+        canvasContext.fillStyle = ROULETTE_STYLE.text.color;
+        canvasContext.font = ROULETTE_STYLE.text.normal;
+        canvasContext.textAlign = 'center';
+        canvasContext.textBaseline = 'middle';
+
+        // 글자가 뒤집히지 않도록 보정
+        canvasContext.rotate(Math.PI);
+        canvasContext.fillText(item.name, -radius * ROULETTE_STYLE.text.offsetRatio, 0);
+
+        canvasContext.restore();
+      });
+    },
+    [items, sectorColors, radius, stepAngle]
+  );
+
+  // 포인터 렌더링
+  const drawPointer = useCallback(
+    (canvasContext: CanvasRenderingContext2D) => {
+      canvasContext.save();
+      canvasContext.translate(radius, radius);
+
+      const side = ROULETTE_STYLE.pointer.size;
+      const edge = -(radius - ROULETTE_STYLE.pointer.margin);
+      const triangleHeight = (side * Math.sqrt(3)) / 2;
+
+      canvasContext.beginPath();
+      canvasContext.moveTo(-side / 2, edge);
+      canvasContext.lineTo(side / 2, edge);
+      canvasContext.lineTo(0, edge + triangleHeight);
+      canvasContext.closePath();
+
+      canvasContext.fillStyle = ROULETTE_STYLE.pointer.color;
+      canvasContext.fill();
+
+      canvasContext.restore();
+    },
+    [radius]
+  );
+
+  // 전체 draw 함수
   const draw = useCallback(
-    (ctx: CanvasRenderingContext2D, angle: number) => {
-      ctx.clearRect(0, 0, size, size);
+    (canvasContext: CanvasRenderingContext2D, angle: number) => {
+      canvasContext.clearRect(0, 0, size, size);
 
       if (items.length === 1) {
-        const color = sectorColors.current[0];
-
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        ctx.arc(radius, radius, radius - 4, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.fillStyle = '#333';
-        ctx.font = 'bold 28px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(items[0], 0, 0);
-        ctx.restore();
+        drawSingleItem(canvasContext);
         return;
       }
 
-      const step = (2 * Math.PI) / items.length;
-
-      items.forEach((item, i) => {
-        const start = angle + step * i;
-        const end = angle + step * (i + 1);
-
-        ctx.beginPath();
-        ctx.moveTo(radius, radius);
-        ctx.fillStyle = sectorColors.current[i];
-        ctx.arc(radius, radius, radius - 4, start, end);
-        ctx.fill();
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = 'rgba(0,0,0,0.18)';
-        ctx.stroke();
-
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate(start + step / 2);
-        ctx.fillStyle = '#333';
-        ctx.font = 'bold 20px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.rotate(Math.PI);
-        ctx.fillText(item, -radius * 0.45, 0);
-        ctx.restore();
-      });
-
-      ctx.save();
-      ctx.translate(radius, radius);
-
-      const edge = -(radius - 4);
-      const side = 42;
-      const h = (side * Math.sqrt(3)) / 2;
-
-      ctx.beginPath();
-      ctx.moveTo(-side / 2, edge);
-      ctx.lineTo(side / 2, edge);
-      ctx.lineTo(0, edge + h);
-      ctx.closePath();
-      ctx.fillStyle = '#ff4d4d';
-      ctx.fill();
-
-      ctx.restore();
+      drawSectors(canvasContext, angle);
+      drawPointer(canvasContext);
     },
-    [items, size, radius, sectorColors]
+    [items.length, size, drawSingleItem, drawSectors, drawPointer]
   );
 
   return draw;

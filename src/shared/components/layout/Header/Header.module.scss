@@ -18,7 +18,6 @@
 .header {
   position: fixed;
   width: 100%;
-  z-index: 999;
   @include m.flex-box(space-between, center, row);
   padding: 10px 20px;
   background-color: f.color(bg-primary);

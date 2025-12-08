@@ -1,4 +1,4 @@
-export interface ResultModalProps {
+export interface RouletteModalProps {
   menu: string;
   onClose: () => void;
 }

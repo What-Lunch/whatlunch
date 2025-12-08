@@ -1,25 +1,28 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
 
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  @include m.flex-box(center, center);
-  z-index: 999;
-  backdrop-filter: blur(2px);
-}
-
+// 모달 전체 블록
 .modal {
-  background: f.color(white);
-  padding: 28px 24px;
-  border-radius: 16px;
-  width: 320px;
-  text-align: center;
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    @include m.flex-box(center, center);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
 
-  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.18);
+  &__content {
+    background: f.color(white);
+    padding: 28px 24px;
+    border-radius: 16px;
+    width: 320px;
+    text-align: center;
 
-  animation: fade-in 0.25s ease;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.18);
+
+    animation: modal-fade-in 0.25s ease;
+  }
 
   &__image {
     width: 100%;
@@ -47,7 +50,7 @@
   }
 }
 
-@keyframes fade-in {
+@keyframes modal-fade-in {
   from {
     opacity: 0;
     transform: translateY(12px) scale(0.98);

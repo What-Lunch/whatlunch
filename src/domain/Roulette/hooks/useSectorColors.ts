@@ -1,12 +1,16 @@
-import { useEffect, useRef } from 'react';
-import { generatePalette } from '@/domain/Roulette/utils/generatePalette';
+import { useMemo } from 'react';
 
-export function useSectorColors(items: string[]) {
-  const colorsRef = useRef<string[]>([]);
+import { createHuePalette } from '@/domain/Roulette/utils/createHuePalette';
+import { MenuItem } from '../utils/menuItem';
 
-  useEffect(() => {
-    colorsRef.current = generatePalette(items.length);
-  }, [items]);
+export function useSectorColors(items: MenuItem[]) {
+  const itemCount = items.length;
 
-  return colorsRef;
+  // 아이템 개수 기반 색상 팔레트 생성
+  const sectorColors = useMemo(() => {
+    if (itemCount === 0) return [];
+    return createHuePalette(itemCount);
+  }, [itemCount]);
+
+  return sectorColors;
 }

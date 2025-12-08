@@ -2,6 +2,8 @@
 
 import { Orbit, ListOrdered, MapPinned } from 'lucide-react';
 
+import TabButton from './TabButton/TabButton';
+
 import { TopTabsProps } from './type';
 
 import styles from './TopTabs.module.scss';
@@ -10,47 +12,18 @@ export default function TopTabs({ tab, onChange }: TopTabsProps) {
   return (
     <div className={styles['container']}>
       <div className={styles['container__tabs']}>
-        {/* 룰렛 */}
-        <button
-          className={
-            tab === 'roulette'
-              ? `${styles['container__tab']} ${styles['container__tab--active']}`
-              : styles['container__tab']
-          }
-          onClick={() => onChange('roulette')}
-        >
-          <Orbit className={styles['container__icon']} />
+        <TabButton value="roulette" tab={tab} onChange={onChange} icon={<Orbit />}>
           룰렛
-        </button>
+        </TabButton>
 
-        {/* 사다리 */}
-        <button
-          className={
-            tab === 'ladder'
-              ? `${styles['container__tab']} ${styles['container__tab--active']}`
-              : styles['container__tab']
-          }
-          onClick={() => onChange('ladder')}
-        >
-          <ListOrdered className={styles['container__icon']} />
+        <TabButton value="ladder" tab={tab} onChange={onChange} icon={<ListOrdered />}>
           사다리타기
-        </button>
+        </TabButton>
 
-        {/* 지도 */}
-        <button
-          className={
-            tab === 'map'
-              ? `${styles['container__tab']} ${styles['container__tab--active']}`
-              : styles['container__tab']
-          }
-          onClick={() => onChange('map')}
-        >
-          <MapPinned className={styles['container__icon']} />
+        <TabButton value="map" tab={tab} onChange={onChange} icon={<MapPinned />}>
           지도
-        </button>
+        </TabButton>
       </div>
-
-      <div className={styles['container__content']}></div>
     </div>
   );
 }

@@ -2,23 +2,28 @@
 
 import { useRef, useState, useEffect } from 'react';
 
-import { RouletteUiProps } from './type';
+import { useSectorColors } from '@/domain/Roulette/hooks/useSectorColors';
+import { useRouletteDraw } from '@/domain/Roulette/hooks/useRouletteDraw';
+import { useRouletteSpin } from '@/domain/Roulette/hooks/useRouletteSpin';
 
-import { useSectorColors } from '../../hooks/useSectorColors';
-import { useRouletteDraw } from '../../hooks/useRouletteDraw';
-import { useRouletteSpin } from '../../hooks/useRouletteSpin';
+import { RouletteUiProps } from './type';
 
 import styles from './RouletteUi.module.scss';
 
 export default function RouletteUi({ items, onResult, onStart, size = 480 }: RouletteUiProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasContextRef = useRef<CanvasRenderingContext2D | null>(null);
+
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
-  const radius = size / 2;
 
+  // 색상 팔레트 생성
   const sectorColors = useSectorColors(items);
-  const draw = useRouletteDraw(items, size, radius, sectorColors);
 
+  // draw 함수 메모이제이션
+  const draw = useRouletteDraw(items, size, sectorColors);
+
+  // 스핀 핸들러
   const spin = useRouletteSpin({
     items,
     angle,
@@ -29,29 +34,46 @@ export default function RouletteUi({ items, onResult, onStart, size = 480 }: Rou
     onStart,
   });
 
+  // 캔버스 context 초기화 (최초 1회)
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvasRef.current) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const canvasContext = canvasRef.current.getContext('2d');
+    if (!canvasContext) return;
 
-    draw(ctx, angle);
-  }, [angle, items, draw]);
+    canvasContextRef.current = canvasContext;
+  }, []);
+
+  // angle 변경 시 룰렛 다시 그리기
+  useEffect(() => {
+    const canvasContext = canvasContextRef.current;
+    if (!canvasContext) return;
+
+    draw(canvasContext, angle);
+  }, [angle, draw]);
+
+  const canvasClass = spinning
+    ? `${styles['roulette-ui__canvas']} ${styles['roulette-ui__canvas--spinning']}`
+    : styles['roulette-ui__canvas'];
 
   return (
-    <div className={styles.container}>
+    <div className={styles['roulette-ui']}>
       <canvas
         ref={canvasRef}
         width={size}
         height={size}
-        role="img"
+        className={canvasClass}
         onClick={spin}
-        className={
-          spinning
-            ? `${styles.container__canvas} ${styles['container__canvas--spinning']}`
-            : styles.container__canvas
-        }
+        role="button"
+        tabIndex={0} // 키보드 포커스 가능
+        aria-label="룰렛을 돌리려면 클릭하세요"
+        onKeyDown={e => {
+          // Enter 키로만 스핀 실행
+          if (!spinning && e.key === 'Enter') {
+            e.preventDefault();
+            spin();
+          }
+        }}
       />
     </div>
   );

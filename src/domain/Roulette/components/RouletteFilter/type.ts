@@ -1,11 +1,15 @@
+import { ReactNode } from 'react';
+
+import { MenuItem } from './../../utils/menuItem';
+
 export interface RouletteFilterProps {
-  onChange: (menus: string[]) => void;
+  onChange: (menus: MenuItem[]) => void;
   disabled?: boolean;
 }
 
-export interface FilterOption<T> {
-  value: T;
+export interface FilterOption {
+  value: string;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   isActive: boolean;
 }

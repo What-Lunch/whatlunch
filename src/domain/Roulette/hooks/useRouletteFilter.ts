@@ -1,92 +1,63 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { FoodTypeFilter, SituationFilter, FilterMode } from './../../../shared/constants/filters';
+import { pickMenus } from '@/domain/Roulette/core/pickMenus';
+import {
+  FoodTypeFilter,
+  SituationFilter,
+  FilterMode,
+  FOOD_TYPE,
+} from '@/domain/Roulette/constants/filters';
 
-import { pickMenus } from '@/shared/utils/recommend/pickMenus';
-import { FILTER_CONFIG } from '@/shared/constants/filters';
+export function useRouletteFilter() {
+  const [mode, setMode] = useState<FilterMode>('food'); // 현재 필터 모드(food/situation)
+  const [selectedFoodTypes, setSelectedFoodTypes] = useState<FoodTypeFilter[]>([FOOD_TYPE.ALL]); // 선택된 음식 타입
+  const [selectedSituation, setSelectedSituation] = useState<SituationFilter | null>('lunch'); // 선택된 상황
 
-import { FilterOption } from '@/types/roulette';
+  const computedTypes = useMemo(() => {
+    return selectedFoodTypes.includes(FOOD_TYPE.ALL) ? null : selectedFoodTypes;
+  }, [selectedFoodTypes]); // ALL 제외한 실질 필터 타입 계산
 
-const ALL: FoodTypeFilter = '전체';
+  const menus = useMemo(() => {
+    return mode === 'food' ? pickMenus(computedTypes, null) : pickMenus(null, selectedSituation);
+  }, [mode, computedTypes, selectedSituation]); // 필터 상태 기반 메뉴 목록 생성
 
-export function useRouletteFilter(onChange: (menus: string[]) => void) {
-  const [mode, setMode] = useState<FilterMode>('food');
-  const [selectedFoodTypes, setSelectedFoodTypes] = useState<FoodTypeFilter[]>([ALL]);
-  const [selectedSituation, setSelectedSituation] = useState<SituationFilter | null>(null);
+  const changeMode = useCallback((nextMode: FilterMode) => {
+    if (nextMode === 'food') setSelectedSituation(null);
+    else setSelectedFoodTypes([FOOD_TYPE.ALL]);
+    setMode(nextMode);
+  }, []); // 모드 전환 + 상대 필터 초기화
 
-  const isFirstRun = useRef(true);
+  const toggleFoodType = useCallback((type: FoodTypeFilter) => {
+    setSelectedFoodTypes(prev => {
+      const isAll = type === FOOD_TYPE.ALL;
+      const hasAll = prev.includes(FOOD_TYPE.ALL);
+      const isSelected = prev.includes(type);
 
-  /** 음식 종류 토글 */
-  const toggleFoodType = (type: FoodTypeFilter) => {
-    const isAll = type === ALL;
-    const hasAll = selectedFoodTypes.includes(ALL);
-    const isSelected = selectedFoodTypes.includes(type);
+      if (isAll) return [FOOD_TYPE.ALL];
+      if (hasAll) return [type];
+      if (isSelected) {
+        const rest = prev.filter(v => v !== type);
+        return rest.length > 0 ? rest : [FOOD_TYPE.ALL];
+      }
+      return [...prev, type];
+    });
+  }, []); // 음식 타입 토글(ALL 규칙 포함)
 
-    if (isAll) return setSelectedFoodTypes([ALL]);
-    if (hasAll) return setSelectedFoodTypes([type]);
-
-    if (isSelected) {
-      const updated = selectedFoodTypes.filter(t => t !== type);
-      return setSelectedFoodTypes(updated.length ? updated : [ALL]);
-    }
-
-    setSelectedFoodTypes(prev => [...prev, type]);
-  };
-
-  /** 상황 선택 토글 */
-  const toggleSituation = (sit: SituationFilter) => {
+  const toggleSituation = useCallback((sit: SituationFilter) => {
     setSelectedSituation(prev => (prev === sit ? null : sit));
-  };
-
-  /** 음식 옵션 */
-  const foodOptions: FilterOption<FoodTypeFilter>[] = useMemo(
-    () =>
-      FILTER_CONFIG.food.options.map(opt => ({
-        value: opt.value,
-        label: opt.label,
-        icon: FILTER_CONFIG.food.icons[opt.value],
-        isActive: selectedFoodTypes.includes(opt.value),
-      })),
-    [selectedFoodTypes]
-  );
-
-  /** 상황 옵션 */
-  const situationOptions: FilterOption<SituationFilter>[] = useMemo(
-    () =>
-      FILTER_CONFIG.situation.options.map(opt => ({
-        value: opt.value,
-        label: opt.label,
-        icon: FILTER_CONFIG.situation.icons[opt.value],
-        isActive: selectedSituation === opt.value,
-      })),
-    [selectedSituation]
-  );
-
-  /** 모드 변경 시 다른 필터 초기화 */
-  useEffect(() => {
-    if (mode === 'food') setSelectedSituation(null);
-    else setSelectedFoodTypes([ALL]);
-  }, [mode]);
-
-  /** 메뉴 추천 수행 */
-  useEffect(() => {
-    if (isFirstRun.current) {
-      isFirstRun.current = false;
-      return;
-    }
-
-    const menus =
-      mode === 'food' ? pickMenus(selectedFoodTypes, null) : pickMenus([ALL], selectedSituation);
-
-    onChange(menus.map(m => m.name));
-  }, [selectedFoodTypes, selectedSituation, mode, onChange]);
+  }, []); // 상황 토글(단일 선택)
 
   return {
-    mode,
-    setMode,
-    foodOptions,
-    situationOptions,
-    toggleFoodType,
-    toggleSituation,
+    state: {
+      mode, // 현재 모드
+      menus, // 현재 필터 기반 메뉴 목록
+      selectedFoodTypes,
+      selectedSituation,
+    },
+    actions: {
+      changeMode,
+      toggleFoodType,
+      toggleSituation,
+    },
   };
 }
