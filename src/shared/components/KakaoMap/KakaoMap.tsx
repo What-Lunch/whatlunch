@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState, useRef } from 'react';
-import { placeSearchCallback } from './kakaoPlaceSearchCallback';
+import { placeSearchCallback, searchWithKeyword } from './kakaoPlaceSearchCallback';
 import { KakaoMapProps } from './types';
 
 const KAKAOMAP = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
@@ -54,35 +54,8 @@ export default function KakaoMap({ value }: KakaoMapProps) {
             }
           },
           () => {
-            const mapContainer = document.getElementById('map');
-            const option = {
-              center: new window.kakao.maps.LatLng(37.5665, 126.978), // 위치 거부시 서울 시청 위치
-              level: 3,
-            };
-            // 기본 위치 마커 표시 (서울 시청)
-            const mapInstance = new window.kakao.maps.Map(mapContainer, option);
-            mapRef.current = mapInstance;
-            const markerPosition = new window.kakao.maps.LatLng(37.5665, 126.978);
-            const marker = new window.kakao.maps.Marker({
-              position: markerPosition,
-            });
-            marker.setMap(mapInstance);
-            if (value && value.trim() !== '') {
-              const ps = new window.kakao.maps.services.Places();
-              // 검색어로 위치 검색 및 마커 표시
-              ps.keywordSearch(
-                value,
-                (data: Kakao.PlacesSearchResult, status: Kakao.Status) => {
-                  placeSearchCallback(data, status, mapRef.current);
-                  if (status === window.kakao.maps.services.Status.OK) {
-                    setPlaces(data);
-                  } else {
-                    setPlaces([]);
-                  }
-                },
-                { location: markerPosition, radius: 3000 }
-              );
-            }
+            // 위치 거부 시 기본 위치(서울 시청)로 설정
+            searchWithKeyword(value ?? '', 37.5665, 126.978, mapRef, setPlaces);
           }
         );
       });
