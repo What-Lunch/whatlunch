@@ -1,4 +1,4 @@
-import { range } from "./range";
+import { range } from "../range";
 
 describe("range 유틸리티 유닛 테스트", () => {
   // 1. 기본적인 닫힌 구간(Inclusive) 생성 테스트
@@ -31,7 +31,7 @@ describe("range 유틸리티 유닛 테스트", () => {
     expect(result[100]).toBe(100);
   });
 
-  // 6. [추가] 반환된 배열의 독립성 테스트 - 내용은 같지만 참조 주소는 다르게
+  // 6. 반환된 배열의 독립성 테스트 - 내용은 같지만 참조 주소는 다르게
   it("생성된 배열은 호출할 때마다 새로운 참조(Reference)여야 한다", () => {
     const first = range(0, 2);
     const second = range(0, 2);

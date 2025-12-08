@@ -1,5 +1,5 @@
 import { Ladder, LadderLink, LadderOptions } from "../types/ladder.types";
-import { shuffle } from "./shuffle";
+import { shuffle } from "../utils/shuffle";
 import { range } from "../utils/range";
 
 export function generateLadder(options: LadderOptions): Ladder {

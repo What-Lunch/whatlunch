@@ -1,4 +1,4 @@
-import { shuffle } from "../shuffle";
+import { shuffle } from "../../utils/shuffle";
 
 describe("shuffle 유닛 테스트", () => {
   // 1. 기본 구조 검증
