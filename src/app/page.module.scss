@@ -12,6 +12,7 @@
   @include m.flex-box(center, flex-start, row);
   gap: 40px;
   width: 100%;
+  overflow: hidden;
 
   &__left {
     @include m.flex-box(center, center, column);
