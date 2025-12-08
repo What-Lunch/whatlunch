@@ -1,15 +1,17 @@
-import { Ladder, LadderResult, Point } from "../types/ladder.types";
+import { Ladder, LadderResult, PathStep } from "../types/ladder.types";
 import { range } from "../utils/range";
 
-export function calculatePath(ladder: Ladder, startCol: number): { endIndex: number; path: Point[] } {
+export function calculatePath(ladder: Ladder, startCol: number): PathStep[] {
   let currentCol = startCol;
-  const path: Point[] = [];
+  const steps: PathStep[] = [];
 
-  for (let row = 0; row < ladder.rows; row++) {
-    path.push({ x: currentCol, y: row });
+  for (let currentRow = 0; currentRow < ladder.rows; currentRow++) {
+    steps.push({ row: currentRow, col: currentCol });
 
     const horizontalLink = ladder.links.find(
-      link => link.row === row && (link.col === currentCol || link.col === currentCol - 1)
+      (link) => 
+        link.row === currentRow && 
+        (link.col === currentCol || link.col === currentCol - 1)
     );
 
     if (horizontalLink) {
@@ -18,23 +20,25 @@ export function calculatePath(ladder: Ladder, startCol: number): { endIndex: num
       } else {
         currentCol--;
       }
-      path.push({ x: currentCol, y: row });
+
+      steps.push({ row: currentRow, col: currentCol });
     }
   }
-
-  path.push({ x: currentCol, y: ladder.rows });
-
-  return { endIndex: currentCol, path };
+  steps.push({ row: ladder.rows, col: currentCol });
+  return steps;
 }
+
 
 export function calculateAllResults(ladder: Ladder): LadderResult {
   const startColumns = range(0, ladder.cols - 1);
 
-  return startColumns.map(startCol => {
-    const { endIndex } = calculatePath(ladder, startCol);
+  return startColumns.map((startCol) => {
+    const steps = calculatePath(ladder, startCol);
+    const finalStep = steps[steps.length - 1];
+    
     return {
       startIndex: startCol,
-      endIndex: endIndex
+      endIndex: finalStep.col
     };
   });
 }
