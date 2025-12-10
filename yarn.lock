@@ -1318,6 +1318,11 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.8.tgz#958b91c991b1867ced318bedea0e215ee050726e"
   integrity sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==
 
+"@types/identity-obj-proxy@^3":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/identity-obj-proxy/-/identity-obj-proxy-3.0.2.tgz#296372a76ab559eaf6e5d7669c351d4650a3f060"
+  integrity sha512-0WfmImclMEjbt2oOC4BvvoypsR9Bgsp6OeqEjzSpNBYa1FEHbMGwxADaW/y5liIcnUyMotWtntl3WGWUbSebEw==
+
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.1", "@types/istanbul-lib-coverage@^2.0.6":
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.6.tgz#7739c232a1fee9b4d3ce8985f314c0c6d33549d7"

@@ -26,10 +26,14 @@ export function generateLadder(options: LadderOptions): Ladder {
       if (rowLinkCount >= maxLinksInRow) break;
 
       const isBlocked = 
-        isColumnOccupied[startColIndex] || 
-        isColumnOccupied[startColIndex + 1] || 
-        (startColIndex > 0 && isColumnOccupied[startColIndex - 1]) ||
-        (startColIndex < cols - 2 && isColumnOccupied[startColIndex + 2]);
+      // 현재 칸에 이미 가로줄이 겹쳐서 생기는 것을 방지
+      // C_start 기둥이 이미 사용 중인 경우와 C_start+1 기둥이 이미 사용 중인 경우
+      isColumnOccupied[startColIndex] ||
+      isColumnOccupied[startColIndex + 1] ||
+      // 인접한 칸에 가로줄이 생겨 연속된 가로줄이 되는 것을 방지
+      // 왼쪽 칸 (C_start-1 ~ C_start)이 연속되는 경우와 오른쪽 칸 (C_start+1 ~ C_start+2)이 연속되는 경우
+      (startColIndex > 0 && isColumnOccupied[startColIndex - 1]) ||
+      (startColIndex < cols - 2 && isColumnOccupied[startColIndex + 2]);
 
       if (!isBlocked) {
         links.push({ row: currentRow, col: startColIndex });
