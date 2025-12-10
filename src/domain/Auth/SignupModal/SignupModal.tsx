@@ -2,16 +2,16 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import styles from '../AuthModal.module.scss';
 import { Eye, EyeOff, XIcon } from 'lucide-react';
 
 import Button from '@/shared/components/Button';
-import FormInput from '@/shared/components/Input/FormInput';
+import Input from '@/shared/components/Input/FormInput';
 import { handleModalClose, useEscClose } from '@/shared/hooks/modalClose';
-import { SignupModalProps } from '../types';
-
 import Google from '../../../../public/icons/google.svg';
 
-import styles from '../AuthModal.module.scss';
+import { SignupModalProps } from '../types';
+
 /**
  * TODO
  * 1. 백엔드 구현 필요 + 이에 맞는 validation 로직 구현
@@ -42,7 +42,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
       aria-labelledby="signup-modal-title"
       onClick={handleOverlayClick}
     >
-      <form className={styles['modal']} onSubmit={onSubmit}>
+      <div className={styles['modal']}>
         <button
           type="button"
           aria-label="닫기"
@@ -57,28 +57,31 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
         <form onSubmit={onSubmit} className={styles['login']}>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>이메일</span>
-            <FormInput
+            <Input
               value={email}
               type="email"
               placeholder="이메일을 입력하세요"
+              tabIndex={0}
               onChange={e => setEmail(e.target.value)}
             />
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>닉네임</span>
-            <FormInput
+            <Input
               value={nickname}
               type="text"
               placeholder="닉네임을 입력하세요"
+              tabIndex={1}
               onChange={e => setNickname(e.target.value)}
             />
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>비밀번호</span>
-            <FormInput
+            <Input
               value={password}
               type={passwordType}
               placeholder="비밀번호를 입력하세요"
+              tabIndex={2}
               onChange={e => setPassword(e.target.value)}
               iconPosition="right"
               icon={
@@ -92,10 +95,11 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>비밀번호 확인</span>
-            <FormInput
+            <Input
               value={passwordConfirm}
               type={passwordConfirmType}
               placeholder="비밀번호를 입력하세요"
+              tabIndex={3}
               onChange={e => setPasswordConfirm(e.target.value)}
               iconPosition="right"
               icon={
@@ -115,14 +119,14 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
           </div>
 
           <div className={styles['login__buttons']}>
-            <Button type="submit" className={styles['login__buttons__button']}>
+            <Button tabIndex={5} className={styles['login__buttons__button']}>
               회원가입
             </Button>
             <div>
               <span className={styles['login__buttons__boolean']}>회원이이신가요? </span>
-              <button className={styles['login__buttons__signup']} onClick={onLoginOpen}>
+              <span className={styles['login__buttons__signup']} onClick={onLoginOpen}>
                 로그인하기
-              </button>
+              </span>
             </div>
           </div>
         </form>
@@ -130,12 +134,12 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
           <span className={styles['social__or']}>OR</span>
           <div className={styles['social__login']}>
             <span>간편 회원가입하기</span>
-            <button role="button" className={styles['social__login--google']}>
+            <div className={styles['social__login--google']}>
               <Image src={Google} alt="Google Logo" width={20} height={20} />
-            </button>
+            </div>
           </div>
         </div>
-      </form>
+      </div>
     </section>
   );
 }
