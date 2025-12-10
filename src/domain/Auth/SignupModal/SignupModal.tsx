@@ -6,7 +6,7 @@ import styles from '../AuthModal.module.scss';
 import { Eye, EyeOff, XIcon } from 'lucide-react';
 
 import Button from '@/shared/components/Button';
-import Input from '@/shared/components/Input/FormInput';
+import FormInput from '@/shared/components/Input/FormInput';
 import { handleModalClose, useEscClose } from '@/shared/hooks/modalClose';
 import Google from '../../../../public/icons/google.svg';
 
@@ -57,7 +57,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
         <form onSubmit={onSubmit} className={styles['login']}>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>이메일</span>
-            <Input
+            <FormInput
               value={email}
               type="email"
               placeholder="이메일을 입력하세요"
@@ -67,7 +67,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>닉네임</span>
-            <Input
+            <FormInput
               value={nickname}
               type="text"
               placeholder="닉네임을 입력하세요"
@@ -77,7 +77,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>비밀번호</span>
-            <Input
+            <FormInput
               value={password}
               type={passwordType}
               placeholder="비밀번호를 입력하세요"
@@ -95,7 +95,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>비밀번호 확인</span>
-            <Input
+            <FormInput
               value={passwordConfirm}
               type={passwordConfirmType}
               placeholder="비밀번호를 입력하세요"
