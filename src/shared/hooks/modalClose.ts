@@ -5,7 +5,7 @@ import { useEffect } from 'react';
  * const { handleOverlayClick } = useModalClose(onClose);
  * @param onClose
  */
-export function useModalClose(onClose: () => void) {
+export function handleModalClose(onClose: () => void) {
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
