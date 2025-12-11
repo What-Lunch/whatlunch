@@ -39,5 +39,8 @@
   },
   "resolutions": {
     "glob": "^11.1.0"
-  }
+
+  },
+  "packageManager": "yarn@4.10.3"
+
 }
