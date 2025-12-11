@@ -1,89 +1,86 @@
 'use client';
 
-import { useState } from 'react';
-
 import { Search, X } from 'lucide-react';
 
 import styles from './SearchInput.module.scss';
 import { SearchInputProps } from './SearchInput.types';
+import BaseInput from '../BaseInput/BaseInput';
 
 export default function SearchInput({
   value,
   onChange,
-
   onSearch,
   searchIcon,
   clearIcon,
-
   disabled = false,
-
-  placeholder,
   ...rest
 }: SearchInputProps) {
-  const [isFocused, setIsFocused] = useState(false);
-
-  const handleFocus = () => setIsFocused(true);
-  const handleBlur = () => setIsFocused(false);
-
-  const wrapperClass = [
-    styles['wrapper'],
-    styles['wrapper--search'],
-    isFocused ? styles['focused'] : '',
-    disabled ? styles['disabled'] : '',
-  ].join(' ');
-
   const finalSearchIcon = searchIcon ?? <Search size={18} />;
   const finalClearIcon = clearIcon ?? <X size={16} />;
 
   // Enter키 누르면 onSearch 실행
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
-
     if (e.key === 'Enter' && onSearch) {
       onSearch(value);
     }
+    if (rest.onKeyDown) {
+      rest.onKeyDown(e);
+    }
   };
+
+  const handleSearchClick = () => {
+      if (disabled) return; 
+
+      if (onSearch) {
+          onSearch(value);
+      }
+  }
+
+  const handleClear = () => {
+      onChange({
+          target: { value: '' }
+      } as React.ChangeEvent<HTMLInputElement>);
+  };
+
+  const showClearButton = value.length > 0 && !disabled;
+  const wrapperClass = styles['wrapper--search'];
 
   return (
     <div className={styles['container']}>
-      <div className={wrapperClass}>
+      <BaseInput
+        type="text"
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        
+        wrapperClassName={wrapperClass} 
+        
+        onKeyDown={handleKeyDown} 
+        {...rest}
+      >
         <button
           type="button"
           className={styles['wrapper__icon-left']}
           disabled={disabled}
           aria-label="search-icon"
-          onClick={() => {
-            if (disabled) return;
-            onSearch?.(value);}
-          }
+          onClick={handleSearchClick}
         >
           {finalSearchIcon}
         </button>
-
-        <input
-          className={styles['input']}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          disabled={disabled}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          type="text"
-          {...rest}
-        />
-
-        {value.length > 0 && !disabled && (
+          
+        {showClearButton && (
           <button
             type="button"
             className={styles['wrapper__icon-right']}
+            disabled={disabled}
             aria-label="clear-search"
-            onClick={() => onChange('')}
+            onClick={handleClear}
           >
             {finalClearIcon}
           </button>
         )}
-      </div>
+      </BaseInput>
     </div>
   );
 }
