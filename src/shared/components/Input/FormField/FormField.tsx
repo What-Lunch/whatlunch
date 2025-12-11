@@ -61,7 +61,7 @@ export default function FormField({
       </BaseInput>
       
       {isError && errorMessage && (
-        <p id={errorMessageId} className={styles['errorMessage']}>
+        <p id={errorMessageId} className={styles['error-message']}>
           {errorMessage}
         </p>
       )}
