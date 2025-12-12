@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-import { useEscClose } from '../../hooks/useEscClose';
+import { useEscClose } from '@/shared/hooks/useEscClose';
 import { shareContent } from '../../utils/shareContent';
 
 import Button from '@/shared/components/Button';
 
-import { RouletteModalProps } from './type';
+import { RouletteModalProps } from './types';
 import { DEFAULT_IMAGE } from '../../constants';
 
 import styles from './RouletteModal.module.scss';

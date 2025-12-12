@@ -6,7 +6,7 @@ import { useSectorColors } from '@/domain/Roulette/hooks/useSectorColors';
 import { useRouletteDraw } from '@/domain/Roulette/hooks/useRouletteDraw';
 import { useRouletteSpin } from '@/domain/Roulette/hooks/useRouletteSpin';
 
-import { RouletteUiProps } from './type';
+import { RouletteUiProps } from './types';
 
 import styles from './RouletteUi.module.scss';
 

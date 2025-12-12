@@ -46,17 +46,18 @@
     border-radius: 50%;
 
     background: f.color(gray-100);
-    border: 1px solid f.color(gray-300);
+    border: 1px solid transparent;
 
     cursor: pointer;
 
     transition:
       background 0.15s ease,
-      transform 0.15s ease;
+      transform 0.15s ease,
+      border-color 0.15s ease;
 
     &:hover:not(:disabled) {
       background: f.color(gray-200);
-      transform: scale(1.05);
+      border-color: f.color(gray-300);
     }
 
     &:disabled {

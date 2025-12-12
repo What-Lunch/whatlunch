@@ -7,7 +7,7 @@ import Button from '@/shared/components/Button';
 import { useRouletteFilter } from '../../hooks/useRouletteFilter';
 import { useFilterOptions } from '../../hooks/useFilterOptions';
 
-import { RouletteFilterProps } from './type';
+import { RouletteFilterProps } from './types';
 import styles from './RouletteFilter.module.scss';
 
 export default function RouletteFilter({ onChange, disabled = false }: RouletteFilterProps) {

@@ -30,14 +30,9 @@
 
       &__roulette {
         @include bordered-box;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
+        @include m.flex-box(flex-start, center, column);
         gap: 14px;
 
-        height: auto;
         min-height: 860px;
       }
 

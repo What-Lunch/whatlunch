@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import Clock from '@/shared/components/Clock/Clock';
-import TopTabs from '@/shared/components/TopTabs/TopTabs';
+import TopTabs from '@/domain/TopTabs/TopTabs';
 import { WeatherMood } from '@/domain/WeatherMood';
 import Ladder from '@/domain/Ladder/Ladder';
 import Roulette from '@/domain/Roulette/Roulette';
