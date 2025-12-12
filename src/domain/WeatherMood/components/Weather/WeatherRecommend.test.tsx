@@ -1,21 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import type { ImgHTMLAttributes } from 'react';
-
-import WeatherRecommend from './WeatherRecommend';
-
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: ImgHTMLAttributes<HTMLImageElement>) => (
-    <img {...props} alt={props.alt ?? ''} /> // 테스트 환경에서는 next/image를 img로 대체
-  ),
-}));
-
-jest.mock('@/domain/WeatherMood/hooks/useWeather');
-jest.mock('@/domain/WeatherMood/hooks/useWeatherRecommend');
 
 import { useWeather } from '@/domain/WeatherMood/hooks/useWeather';
 import { useWeatherRecommend } from '@/domain/WeatherMood/hooks/useWeatherRecommend';
+
+import WeatherRecommend from './WeatherRecommend';
+
+jest.mock('@/domain/WeatherMood/hooks/useWeather');
+jest.mock('@/domain/WeatherMood/hooks/useWeatherRecommend');
 
 const mockUseWeather = useWeather as jest.Mock;
 const mockUseWeatherRecommend = useWeatherRecommend as jest.Mock;
