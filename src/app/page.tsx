@@ -1,8 +1,9 @@
-import styles from './page.module.scss';
+import WeatherMood from '@/domain/WeatherMood';
 
 import Carousel, { pendingData } from '@/shared/components/Carousel';
 import Clock from '@/shared/components/Clock/Clock';
-import { WeatherMood } from '@/domain/WeatherMood';
+
+import styles from './page.module.scss';
 
 export default function HomePage() {
   return (
