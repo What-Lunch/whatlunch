@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
 import BaseInput from '../BaseInput/BaseInput';
@@ -17,6 +17,13 @@ export default function FormField({
   disabled = false,
   ...rest
 }: FormFieldProps) {
+  // A11y 개선을 위해 useId 훅을 사용해 고유 ID 생성
+  const uniqueId = useId();
+  
+  // 사용자가 id를 전달했다면 그것을 사용하고, 아니면 고유 ID 생성
+  const inputId = rest.id || uniqueId;
+  const errorMessageId = `${inputId}-error-message`;
+
   const [showPassword, setShowPassword] = useState(false);
   const showToggleButton = type === 'password' && showToggle;
   
@@ -30,14 +37,14 @@ export default function FormField({
     styles[`wrapper--${type}`],
     isError ? styles['error'] : '',
   ].filter(Boolean).join(' ');
-  
-  const errorMessageId = `${rest.id || 'app-form-field'}-error-message`;
 
   return (
     <div className={styles['container']}>
       <BaseInput
         {...rest}
-        
+
+        id={inputId}
+
         type={inputType} 
         value={value}
         onChange={onChange}
