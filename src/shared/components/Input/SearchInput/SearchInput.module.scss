@@ -1,0 +1,79 @@
+@use '~/src/styles/utils/mixins' as m;
+@use '~/src/styles/utils/functions' as f;
+@use '~/src/styles/utils/variables' as v;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.wrapper {
+  --icon-size: 24px;     			// search, clear 아이콘 사이즈
+  --icon-gap: 12px;      			// icon-left/right 간격
+  --input-padding-x: 12px;    // 아이콘 없을 때 기본 좌우 패딩
+
+  @include m.flex-box(flex-start, center);
+  position: relative;
+  width: 100%;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  /* padding = icon-size + icon-gap + base-padding */
+  padding-left: calc(var(--icon-size) + var(--icon-gap) + var(--input-padding-x));
+  padding-right: calc(var(--icon-size) + var(--icon-gap) + var(--input-padding-x));
+
+  border: 1px solid f.color(border-primary);
+  border-radius: 6px;
+  background: f.color(bg-secondary);
+  transition: border-color 0.2s;
+
+  &.focused {
+    border-color: f.color(interaction-focus);
+    border-width: 2px;
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  &__icon-left,
+  &__icon-right {
+    @include m.flex-box(center, center);
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: var(--icon-size);
+    height: var(--icon-size);
+
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    color: f.color(icon-primary);
+  }
+
+  &__icon-left {
+    left: var(--icon-gap);
+  }
+
+  &__icon-right {
+    right: var(--icon-gap);
+  }
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  @include m.text-style(md, 400);
+  color: f.color(text-primary);
+
+  line-height: 1.6;
+}
