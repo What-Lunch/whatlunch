@@ -44,7 +44,9 @@ export default function BaseInput({
       <div className={finalWrapperClass}>
         <input
           className={styles['input']}
-          
+    
+          {...rest}
+
           type={type}
           value={value}
           onChange={onChange}
@@ -53,8 +55,6 @@ export default function BaseInput({
           
           onFocus={handleFocus}
           onBlur={handleBlur}
-          
-          {...rest} 
         />
         {children}
       </div>

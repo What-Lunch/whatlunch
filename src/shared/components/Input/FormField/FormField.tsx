@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
-import styles from './FormField.module.scss';
-import { FormFieldProps } from './FormField.types';
 import BaseInput from '../BaseInput/BaseInput';
+import { FormFieldProps } from './FormField.types';
+import styles from './FormField.module.scss';
 
 export default function FormField({
   type,
@@ -36,6 +36,8 @@ export default function FormField({
   return (
     <div className={styles['container']}>
       <BaseInput
+        {...rest}
+        
         type={inputType} 
         value={value}
         onChange={onChange}
@@ -45,7 +47,6 @@ export default function FormField({
         
         aria-invalid={isError}
         aria-describedby={isError ? errorMessageId : undefined}
-        {...rest}
       >
         {showToggleButton && (
           <button

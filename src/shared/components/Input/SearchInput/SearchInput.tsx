@@ -2,9 +2,9 @@
 
 import { Search, X } from 'lucide-react';
 
-import styles from './SearchInput.module.scss';
-import { SearchInputProps } from './SearchInput.types';
 import BaseInput from '../BaseInput/BaseInput';
+import { SearchInputProps } from './SearchInput.types';
+import styles from './SearchInput.module.scss';
 
 export default function SearchInput({
   value,
