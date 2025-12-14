@@ -1,57 +1,63 @@
 import { useEffect, useState } from 'react';
 
+import { getCurrentTimeSlot } from '@/domain/WeatherMood/components/Weather/constants/timeSlot';
+
 import { createRecommendKey } from '@/domain/WeatherMood/components/Weather/utils/createRecommendKey';
-import { makeFinalRecommend } from '@/domain/WeatherMood/components/Weather/utils/weatherRecommend';
 import { getTempGroup } from '@/domain/WeatherMood/components/Weather/utils/weatherRecommend';
+import { makeFinalRecommend } from '@/domain/WeatherMood/components/Weather/utils/weatherRecommend';
 
 import type { WeatherMain } from '@/types/api/weather';
 
+// 추천 메뉴 목록 타입 (UI/캐시 공통)
+type RecommendMenus = string[];
+
 interface WeatherRecommendState {
-  menus: string[] | null; // 추천 메뉴
-  loading: boolean;
+  menus: RecommendMenus | null; // UI 표시용 (계산 전 null)
+  loading: boolean; // 추천 계산 중 여부
 }
 
-// 날씨 데이터 기반으로 추천 메뉴를 계산하고 캐시까지 처리하는 훅
+interface CachedRecommendPayload {
+  menus: RecommendMenus; // 캐시된 추천 메뉴
+  cachedAt: number; // 캐시 생성 시각
+}
+
+const CACHE_DURATION = 12 * 60 * 60 * 1000; // 캐시 유효기간: 12시간
+
 export function useWeatherRecommend(weather: WeatherMain | null, temp: number | null) {
-  const [state, setState] = useState<WeatherRecommendState>({
-    menus: null,
-    loading: true,
-  });
+  const [state, setState] = useState<WeatherRecommendState>({ menus: null, loading: true });
 
   useEffect(() => {
-    // 추천 계산에 필요한 값이 아직 준비되지 않은 경우
     if (!weather || temp === null) {
+      // 입력 미완료 시 로딩 유지함
       setState({ menus: null, loading: true });
       return;
     }
 
-    // 날씨 + 온도 그룹 기준으로 추천 캐시 key 생성
-    const key = createRecommendKey(weather, getTempGroup(temp));
+    const now = Date.now();
+    const timeSlot = getCurrentTimeSlot();
+    const key = createRecommendKey(weather, getTempGroup(temp), timeSlot); // 조건별 캐시 키
 
     try {
-      // localStorage에 저장된 추천 결과가 있는지 확인
-      const cached = window.localStorage.getItem(key);
+      const cachedRaw = window.localStorage.getItem(key);
 
-      if (cached) {
-        setState({
-          menus: JSON.parse(cached),
-          loading: false,
-        });
-        return;
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw) as CachedRecommendPayload;
+
+        if (cached?.cachedAt && now - cached.cachedAt < CACHE_DURATION) {
+          // 캐시 hit = 이미 계산된 값이 있어서 그대로 쓰는 경우
+          setState({ menus: cached.menus, loading: false });
+          return;
+        }
+
+        window.localStorage.removeItem(key); // 캐시 만료 및 오염
       }
 
-      // 캐시가 없으면 추천 로직 실행
-      const result = makeFinalRecommend(weather, temp);
+      const result = makeFinalRecommend(weather, temp); // 추천 생성
+      window.localStorage.setItem(key, JSON.stringify({ menus: result, cachedAt: now })); // 캐시 저장
 
-      // 추천 결과를 localStorage에 저장
-      window.localStorage.setItem(key, JSON.stringify(result));
-
-      setState({
-        menus: result,
-        loading: false,
-      });
+      setState({ menus: result, loading: false });
     } catch {
-      setState({ menus: null, loading: false });
+      setState({ menus: null, loading: false }); // 캐시 및 파싱 실패 시 안전 처리
     }
   }, [weather, temp]);
 

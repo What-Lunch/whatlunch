@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { moods } from '@/domain/WeatherMood/components/Mood/utils/moodRecommend';
-import { getMoodBaseMenus } from '@/domain/WeatherMood/components/Mood/utils/moodRecommend';
-import type { MoodId } from '@/domain/WeatherMood/components/Mood/utils/moodRecommend';
-
+import {
+  getMoodBaseMenus,
+  moodOptions,
+  type MoodId,
+} from '@/domain/WeatherMood/components/Mood/utils/moodRecommend';
 import { generateRecommendations } from '@/domain/WeatherMood/components/Mood/utils/recommendEngine';
 
 import styles from './MoodRecommend.module.scss';
@@ -30,26 +31,26 @@ export default function MoodRecommend() {
     const result = generateRecommendations(baseMenus);
 
     setRecommendedMenus(result);
-  }, [selectedMood]);
+  }, [selectedMood, getMoodBaseMenus, generateRecommendations]);
 
   return (
     <div className={styles['mood-recommend']}>
       {/* 기분 선택 버튼 */}
       <div className={styles['mood-recommend__list']}>
-        {moods.map(mood => {
-          const isActive = mood.id === selectedMood;
+        {moodOptions.map(option => {
+          const isActive = option.id === selectedMood;
 
           return (
             <button
-              key={mood.id}
+              key={option.id}
               className={`
                 ${styles['mood-recommend__button']}
                 ${isActive ? styles['mood-recommend__button--active'] : ''}
               `}
-              onClick={() => handleMoodChange(mood.id)}
+              onClick={() => handleMoodChange(option.id)}
             >
-              <span className={styles['mood-recommend__icon']}>{mood.icon}</span>
-              <span className={styles['mood-recommend__label']}>{mood.label}</span>
+              <span className={styles['mood-recommend__icon']}>{option.icon}</span>
+              <span className={styles['mood-recommend__label']}>{option.label}</span>
             </button>
           );
         })}

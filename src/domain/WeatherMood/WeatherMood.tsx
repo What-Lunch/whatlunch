@@ -13,18 +13,14 @@ import styles from '@/domain/WeatherMood/WeatherMood.module.scss';
 const TAB_META = {
   weather: {
     label: '날씨에 따른',
-    Component: WeatherRecommend,
   },
   mood: {
     label: '기분에 따른',
-    Component: MoodRecommend,
   },
 } as const;
 
 export default function WeatherMood() {
   const [activeTab, setActiveTab] = useState<TabKey>('weather');
-
-  const ActiveComponent = TAB_META[activeTab].Component;
 
   return (
     <div className={styles['weather-mood']}>
@@ -57,13 +53,19 @@ export default function WeatherMood() {
       </div>
 
       {/* 탭 별 컨텐츠 */}
-      <div
-        id={`${activeTab}-panel`}
-        role="tabpanel"
-        aria-labelledby={activeTab}
-        className={styles['weather-mood__content']}
-      >
-        <ActiveComponent />
+      <div className={styles['weather-mood__content']}>
+        <div
+          id="weather-panel"
+          role="tabpanel"
+          aria-labelledby="weather"
+          hidden={activeTab !== 'weather'}
+        >
+          <WeatherRecommend />
+        </div>
+
+        <div id="mood-panel" role="tabpanel" aria-labelledby="mood" hidden={activeTab !== 'mood'}>
+          <MoodRecommend />
+        </div>
       </div>
     </div>
   );

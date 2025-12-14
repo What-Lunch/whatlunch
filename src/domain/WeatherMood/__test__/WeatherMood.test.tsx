@@ -36,16 +36,13 @@ describe('WeatherMood', () => {
   it('기분 탭 클릭 시 MoodRecommend로 전환된다', () => {
     render(<WeatherMood />);
 
-    const moodTab = screen.getByRole('tab', { name: '기분에 따른' });
+    fireEvent.click(screen.getByRole('tab', { name: '기분에 따른' }));
 
-    // 기분 탭 클릭
-    fireEvent.click(moodTab);
+    const panels = screen.getAllByRole('tabpanel');
+    const visiblePanel = panels.find(p => !p.hasAttribute('hidden')) ?? panels[0];
 
-    expect(moodTab).toHaveAttribute('aria-selected', 'true');
-
-    expect(screen.getByText('MoodRecommend Component')).toBeInTheDocument();
-
-    expect(screen.queryByText('WeatherRecommend Component')).not.toBeInTheDocument();
+    expect(visiblePanel).toHaveTextContent('MoodRecommend Component');
+    expect(visiblePanel).not.toHaveTextContent('WeatherRecommend Component');
   });
 
   it('tablist, tabpanel 접근성 역할이 올바르게 설정되어 있다', () => {

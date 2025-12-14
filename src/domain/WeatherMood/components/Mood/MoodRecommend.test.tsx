@@ -5,7 +5,7 @@ import MoodRecommend from './MoodRecommend';
 
 // utils mock
 jest.mock('@/domain/WeatherMood/components/Mood/utils/moodRecommend', () => ({
-  moods: [
+  moodOptions: [
     { id: 'happy', label: '행복', icon: '😊' },
     { id: 'sad', label: '우울', icon: '😢' },
   ],

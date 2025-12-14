@@ -1,30 +1,23 @@
-// 배열 섞기 (Fisher–Yates)
-function shuffleArray<T>(list: T[]): T[] {
-  const result = [...list];
+import { shuffleArray } from '@/domain/WeatherMood/utils/shuffle';
 
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
+const RECOMMEND_LIMIT = 6;
 
-  return result;
-}
-
-// 추천 생성 (셔플 + 최근 제외 + 고정된 결과)
 export function generateRecommendations(
-  sourceMenus: string[],
-  recentMenus: string[] = [],
-  limit = 6
+  sourceMenus: readonly string[],
+  recentMenus: readonly string[] = []
 ): string[] {
-  // 최근 추천 메뉴 제외
-  const filteredMenus = sourceMenus.filter(menu => !recentMenus.includes(menu));
+  // 최근 추천된 메뉴는 우선 제외
+  const filtered = sourceMenus.filter(menu => !recentMenus.includes(menu));
 
-  // 추천 개수가 부족하면 전체 메뉴 사용
-  const menuPool = filteredMenus.length >= limit ? filteredMenus : sourceMenus;
+  // 중복 제거
+  const uniqueFiltered = Array.from(new Set(filtered));
+  const uniqueSource = Array.from(new Set(sourceMenus));
 
-  // 한 번만 섞기
-  const shuffledMenus = shuffleArray(menuPool);
+  // 최근 제외 후 개수가 부족하면 전체 메뉴에서 보충
+  const menuPool = uniqueFiltered.length >= RECOMMEND_LIMIT ? uniqueFiltered : uniqueSource;
 
-  // 앞에서 limit개 선택
-  return shuffledMenus.slice(0, limit);
+  // 랜덤성 확보 (1회 셔플)
+  const shuffled = shuffleArray(menuPool);
+
+  return shuffled.slice(0, Math.min(RECOMMEND_LIMIT, shuffled.length));
 }
