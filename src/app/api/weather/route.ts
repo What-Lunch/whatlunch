@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
-import { fetchAirPollution, fetchWeather } from '@/app/lib/weather/openWeather';
-import { normalizeAir, normalizeWeather } from '@/app/lib/weather/normalizeWeather';
-import { secondsUntilNextKstBoundary } from '@/app/lib/weather/timeSlotCache';
+import { fetchAirPollution, fetchWeather } from '@/app/services/weather/openWeather';
+import { normalizeAir, normalizeWeather } from '@/app/services/weather/normalizeWeather';
+import { secondsUntilNextKstBoundary } from '@/app/services/weather/timeSlotCache';
 
 // 서울 기본 좌표 (위치 미사용 시 fallback)
 const SEOUL_LAT = 37.5665;

@@ -1,7 +1,7 @@
 import type { AirPollutionData } from '@/types/api/airPollution';
 import type { WeatherData } from '@/types/api/weather';
 
-import { WEATHER_API_KEY } from './env';
+import { getWeatherApiKey } from './config';
 import { toLocKeyParts } from './timeSlotCache';
 
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
@@ -12,13 +12,14 @@ export async function fetchWeather(
   lon: number,
   revalidateSeconds: number
 ): Promise<WeatherData> {
+  const apiKey = getWeatherApiKey();
   const { fixedLat, fixedLon } = toLocKeyParts(lat, lon);
 
   const url =
     `${BASE_URL}/weather` +
     `?lat=${fixedLat}` +
     `&lon=${fixedLon}` +
-    `&appid=${WEATHER_API_KEY}` +
+    `&appid=${apiKey}` +
     `&units=metric` +
     `&lang=kr`;
 
@@ -39,13 +40,11 @@ export async function fetchAirPollution(
   lon: number,
   revalidateSeconds: number
 ): Promise<AirPollutionData> {
+  const apiKey = getWeatherApiKey();
   const { fixedLat, fixedLon } = toLocKeyParts(lat, lon);
 
   const url =
-    `${BASE_URL}/air_pollution` +
-    `?lat=${fixedLat}` +
-    `&lon=${fixedLon}` +
-    `&appid=${WEATHER_API_KEY}`;
+    `${BASE_URL}/air_pollution` + `?lat=${fixedLat}` + `&lon=${fixedLon}` + `&appid=${apiKey}`;
 
   const res = await fetch(url, {
     next: { revalidate: revalidateSeconds },
