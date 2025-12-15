@@ -53,6 +53,10 @@ export const WEATHER_DESCRIPTION_PATTERNS: WeatherPattern[] = [
 // 날씨 설명 문장을 UI에 표시할 짧은 문구로 변환
 export function getShortDescription(desc: string): string {
   const clean = desc.trim();
+  // 비정상/미확인 값 처리
+  if (!clean || clean === 'Unknown') {
+    return '알 수 없음';
+  }
 
   for (const pattern of WEATHER_DESCRIPTION_PATTERNS) {
     if (clean.includes(pattern.keyword)) {
