@@ -31,7 +31,7 @@ export default function MoodRecommend() {
     const result = generateRecommendations(baseMenus);
 
     setRecommendedMenus(result);
-  }, [selectedMood, getMoodBaseMenus, generateRecommendations]);
+  }, [selectedMood]);
 
   return (
     <div className={styles['mood-recommend']}>
