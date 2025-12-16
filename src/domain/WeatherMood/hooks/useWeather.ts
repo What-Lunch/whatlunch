@@ -1,26 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { AirPollutionData } from '@/types/api/airPollution';
+import type { NormalizedAirPollutionData } from '@/types/api/airPollution';
 import type { WeatherData } from '@/types/api/weather';
 
 // API 응답 타입(날씨 + 대기)
 interface WeatherApiResponse {
   weather: WeatherData;
-  air: AirPollutionData;
+  air: NormalizedAirPollutionData;
 }
 
-// useWeather 상태 타입
+// useWeather 훅이 외부로 반환하는 상태 타입
 interface WeatherState {
   weather: WeatherData | null;
-  air: AirPollutionData | null;
+  air: NormalizedAirPollutionData | null;
   error: string | null;
   loading: boolean;
-  usedUserLocation: boolean;
+  usedUserLocation: boolean; // true면 내 위치, false면 서울 기준
 }
 
-const GEO_WAIT_TIMEOUT_MS = 2500;
-// 사용자 위치 가져오기(빠른 응답 우선 옵션)
-function getUserLocation(): Promise<GeolocationPosition> {
+// 위치 권한 팝업 최대 대기 시간
+const GEOLOCATION_TIMEOUT_MS = 2500;
+
+function requestUserGeolocation(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
       reject(new Error('GEO_NOT_SUPPORTED'));
@@ -34,27 +35,50 @@ function getUserLocation(): Promise<GeolocationPosition> {
   });
 }
 // 위치 팝업 대기 방지를 위한 타임아웃
-function withTimeout<T>(promise: Promise<T>, ms: number, code: string): Promise<T> {
+function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  timeoutErrorCode: string
+): Promise<T> {
   return new Promise((resolve, reject) => {
-    const timer = window.setTimeout(() => reject(new Error(code)), ms);
+    const timer = window.setTimeout(() => reject(new Error(timeoutErrorCode)), timeoutMs);
 
     promise
-      .then(v => {
+      .then(value => {
         window.clearTimeout(timer);
-        resolve(v);
+        resolve(value);
       })
-      .catch(e => {
+      .catch(error => {
         window.clearTimeout(timer);
-        reject(e);
+        reject(error);
       });
   });
 }
 
 // UI 표시용 에러 메시지 정규화
-function parseErrorMessage(error: unknown): string {
+function normalizeErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (typeof error === 'string') return error;
   return '알 수 없는 오류가 발생했습니다.';
+}
+// 좌표를 소수점 2자리로 정규화 (약 1km 단위)
+function normalizeCoordinate(value: number, digits = 2): number {
+  const factor = 10 ** digits;
+  return Math.round(value * factor) / factor;
+}
+
+// 문자열 결합 대신 URLSearchParams로 쿼리 스트링 생성
+function buildWeatherApiUrl(params?: { lat: number; lon: number }): string {
+  const searchParams = new URLSearchParams();
+
+  if (params) {
+    searchParams.set('useUserLocation', 'true');
+    searchParams.set('lat', String(params.lat));
+    searchParams.set('lon', String(params.lon));
+  }
+
+  const queryString = searchParams.toString();
+  return queryString ? `/api/weather?${queryString}` : '/api/weather';
 }
 
 export function useWeather() {
@@ -67,33 +91,32 @@ export function useWeather() {
   });
 
   // 최신 요청만 반영
-  const requestIdRef = useRef(0);
+  const requestSequenceRef = useRef(0);
 
-  const fetchWeatherApi = useCallback(async (params?: { lat: number; lon: number }) => {
-    // 위치 파라미터가 있으면 사용자 위치 API, 없으면 기본(서울) API
-    const url = params
-      ? `/api/weather?useUserLocation=true&lat=${encodeURIComponent(String(params.lat))}&lon=${encodeURIComponent(
-          String(params.lon)
-        )}`
-      : `/api/weather`;
+  const fetchWeatherData = useCallback(async (params?: { lat: number; lon: number }) => {
+    const url = buildWeatherApiUrl(params);
 
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`API_ERROR_${res.status}`);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`API_ERROR_${response.status}`);
+    }
 
-    const json: WeatherApiResponse = await res.json();
-    if (!json.weather || !json.air) throw new Error('INVALID_WEATHER_DATA');
+    const data: WeatherApiResponse = await response.json();
+    if (!data.weather || !data.air) {
+      throw new Error('INVALID_WEATHER_DATA');
+    }
 
-    return json;
+    return data;
   }, []);
 
   useEffect(() => {
-    requestIdRef.current += 1;
-    const rid = requestIdRef.current;
+    requestSequenceRef.current += 1;
+    const currentRequestId = requestSequenceRef.current;
 
-    // 이전 실행 결과 반영을 막기 위한 스테일 체크
-    const isStale = () => requestIdRef.current !== rid;
+    // 이전 요청 결과 무시용 가드
+    const isStaleRequest = () => requestSequenceRef.current !== currentRequestId;
 
-    const setSuccessState = (data: WeatherApiResponse, usedUserLocation: boolean) => {
+    const applySuccessState = (data: WeatherApiResponse, usedUserLocation: boolean) => {
       setState({
         weather: data.weather,
         air: data.air,
@@ -103,56 +126,73 @@ export function useWeather() {
       });
     };
 
-    const setErrorState = (error: unknown) => {
+    const applyErrorState = (error: unknown) => {
       setState({
         weather: null,
         air: null,
-        error: parseErrorMessage(error),
+        error: normalizeErrorMessage(error),
         loading: false,
         usedUserLocation: false,
       });
     };
 
-    async function load() {
-      // 기본(서울) 먼저 표시
+    async function loadWeather() {
+      // 초기 로딩 상태
       setState(prev => ({ ...prev, loading: true, error: null }));
 
-      // 위치를 먼저 시도하고 실패 시 서울로 폴백
+      // 추가: 서울 요청을 먼저 시작하고, 사용자 위치 성공 시 덮어쓰기 위해 promise를 저장
+      const seoulWeatherRequest = fetchWeatherData();
+
+      // 서울 데이터가 먼저 오면 바로 화면에 표시
+      seoulWeatherRequest
+        .then(data => {
+          if (!isStaleRequest()) {
+            applySuccessState(data, false);
+          }
+        })
+        .catch(() => {
+          // 서울 요청 실패는 여기서 에러 처리하지 않음
+        });
+
+      // 사용자 위치 시도 (병렬)
       try {
-        const pos = await withTimeout(getUserLocation(), GEO_WAIT_TIMEOUT_MS, 'GEO_WAIT_TIMEOUT');
-        if (isStale()) return;
+        const position = await withTimeout(
+          requestUserGeolocation(),
+          GEOLOCATION_TIMEOUT_MS,
+          'GEOLOCATION_TIMEOUT'
+        );
 
-        const lat = Number(pos.coords.latitude);
-        const lon = Number(pos.coords.longitude);
+        if (isStaleRequest()) return;
+
+        const lat = normalizeCoordinate(position.coords.latitude);
+        const lon = normalizeCoordinate(position.coords.longitude);
+
         if (Number.isFinite(lat) && Number.isFinite(lon)) {
-          const data = await fetchWeatherApi({ lat, lon });
-          if (isStale()) return;
+          const userLocationData = await fetchWeatherData({ lat, lon });
+          if (isStaleRequest()) return;
 
-          setSuccessState(data, true);
+          // 사용자 위치 성공시 서울 데이터 덮어쓰기
+          applySuccessState(userLocationData, true);
           return;
         }
       } catch {
-        // 위치 실패 시 서울 데이터 유지
+        // 위치 실패 시 아무 처리 없이 서울 fallback으로 진행
       }
 
+      // 위치 실패시 서울로 요청
       try {
-        const data = await fetchWeatherApi();
-        if (isStale()) return;
+        const seoulData = await seoulWeatherRequest;
+        if (isStaleRequest()) return;
 
-        setSuccessState(data, false);
+        applySuccessState(seoulData, false);
       } catch (error) {
-        if (isStale()) return;
-
-        setErrorState(error);
+        if (isStaleRequest()) return;
+        applyErrorState(error);
       }
     }
 
-    load();
-
-    return () => {
-      // requestId로 스테일 처리하므로 별도 cleanup 작업은 불필요
-    };
-  }, [fetchWeatherApi]);
+    loadWeather();
+  }, [fetchWeatherData]);
 
   return state;
 }

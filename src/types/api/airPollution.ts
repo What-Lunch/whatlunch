@@ -12,3 +12,18 @@ export interface AirPollutionData {
     };
   }[];
 }
+
+// UI에서 쓰는 Normalized 타입
+export interface NormalizedAirPollutionData {
+  list: {
+    main: { aqi: 1 | 2 | 3 | 4 | 5 };
+    components: {
+      pm2_5: number | null;
+      pm10: number | null;
+      o3: number | null;
+      no2: number | null;
+      so2: number | null;
+      co: number | null;
+    };
+  }[];
+}

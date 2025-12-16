@@ -49,8 +49,6 @@ export function secondsUntilNextKstBoundary() {
   const min = get('minute');
   const sec = get('second');
 
-  const nowKstLike = new Date(y, m, d, h, min, sec);
-
   let targetHour = 6;
   let addDay = 0;
 
@@ -63,9 +61,13 @@ export function secondsUntilNextKstBoundary() {
     addDay = 1;
   }
 
-  const next = new Date(y, m, d + addDay, targetHour, 0, 0);
+  const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
-  const diffSeconds = Math.ceil((next.getTime() - nowKstLike.getTime()) / 1000);
+  // KST 구성요소 -> UTC 타임스탬프로 변환
+  const nowKstAsUtcMs = Date.UTC(y, m, d, h, min, sec) - KST_OFFSET_MS;
+  const nextKstAsUtcMs = Date.UTC(y, m, d + addDay, targetHour, 0, 0) - KST_OFFSET_MS;
+
+  const diffSeconds = Math.ceil((nextKstAsUtcMs - nowKstAsUtcMs) / 1000);
 
   return Math.max(60, diffSeconds);
 }

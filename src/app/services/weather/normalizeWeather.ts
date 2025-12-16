@@ -1,5 +1,5 @@
 import type { WeatherData } from '@/types/api/weather';
-import type { AirPollutionData } from '@/types/api/airPollution';
+import type { AirPollutionData, NormalizedAirPollutionData } from '@/types/api/airPollution';
 
 // 날씨 데이터 정규화
 export function normalizeWeather(data: WeatherData): WeatherData {
@@ -14,27 +14,25 @@ export function normalizeWeather(data: WeatherData): WeatherData {
 }
 
 // 대기오염 데이터 정규화
-export function normalizeAir(data?: AirPollutionData): AirPollutionData {
-  if (!data || !Array.isArray(data.list) || data.list.length === 0) {
+export function normalizeAir(data?: AirPollutionData): NormalizedAirPollutionData {
+  if (!data?.list?.length) {
     return createFallbackAir();
   }
 
   const first = data.list[0];
-  const comp = first.components ?? {};
+  const comp = first?.components ?? ({} as Partial<AirPollutionData['list'][number]['components']>);
 
   return {
-    ...data,
     list: [
       {
-        ...first,
-        main: { aqi: first.main?.aqi ?? 1 },
+        main: { aqi: first?.main?.aqi ?? 1 },
         components: {
-          pm2_5: comp.pm2_5 ?? -1,
-          pm10: comp.pm10 ?? -1,
-          o3: comp.o3 ?? -1,
-          no2: comp.no2 ?? -1,
-          so2: comp.so2 ?? -1,
-          co: comp.co ?? -1,
+          pm2_5: comp.pm2_5 ?? null,
+          pm10: comp.pm10 ?? null,
+          o3: comp.o3 ?? null,
+          no2: comp.no2 ?? null,
+          so2: comp.so2 ?? null,
+          co: comp.co ?? null,
         },
       },
     ],
@@ -42,18 +40,18 @@ export function normalizeAir(data?: AirPollutionData): AirPollutionData {
 }
 
 // 대기오염 데이터 fallback
-function createFallbackAir(): AirPollutionData {
+function createFallbackAir(): NormalizedAirPollutionData {
   return {
     list: [
       {
         main: { aqi: 1 },
         components: {
-          pm2_5: -1,
-          pm10: -1,
-          o3: -1,
-          no2: -1,
-          so2: -1,
-          co: -1,
+          pm2_5: null,
+          pm10: null,
+          o3: null,
+          no2: null,
+          so2: null,
+          co: null,
         },
       },
     ],
