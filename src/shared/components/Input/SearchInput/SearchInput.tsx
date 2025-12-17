@@ -1,6 +1,7 @@
 'use client';
 
 import { Search, X } from 'lucide-react';
+import React from 'react';
 
 import BaseInput from '../BaseInput/BaseInput';
 import { SearchInputProps } from './SearchInput.types';
@@ -12,6 +13,7 @@ export default function SearchInput({
   onSearch,
   searchIcon,
   clearIcon,
+  onClear,
   disabled = false,
   ...rest
 }: SearchInputProps) {
@@ -21,26 +23,34 @@ export default function SearchInput({
   // Enter키 누르면 onSearch 실행
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
-    if (e.key === 'Enter' && onSearch) {
-      onSearch(value);
-    }
+
     if (rest.onKeyDown) {
       rest.onKeyDown(e);
+    }
+
+    if (e.key === 'Enter' && onSearch) {
+      onSearch(value);
     }
   };
 
   const handleSearchClick = () => {
-      if (disabled) return; 
+    if (disabled) return;
 
-      if (onSearch) {
-          onSearch(value);
-      }
-  }
+    if (onSearch) {
+      onSearch(value);
+    }
+  };
 
   const handleClear = () => {
+    if (disabled) return;
+
+    if (onClear) {
+      onClear();
+    } else {
       onChange({
-          target: { value: '' }
+        target: { value: '' },
       } as React.ChangeEvent<HTMLInputElement>);
+    }
   };
 
   const showClearButton = value.length > 0 && !disabled;
@@ -53,10 +63,9 @@ export default function SearchInput({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        
-        wrapperClassName={wrapperClass} 
-        
-        onKeyDown={handleKeyDown} 
+        wrapperClassName={wrapperClass}
+        onKeyDown={handleKeyDown}
+        disableFocusStyle={true}
         {...rest}
       >
         <button
@@ -68,13 +77,13 @@ export default function SearchInput({
         >
           {finalSearchIcon}
         </button>
-          
+
         {showClearButton && (
           <button
             type="button"
             className={styles['wrapper__icon-right']}
             disabled={disabled}
-            aria-label="clear-search"
+            aria-label="search-clear"
             onClick={handleClear}
           >
             {finalClearIcon}

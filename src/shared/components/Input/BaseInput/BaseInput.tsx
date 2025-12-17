@@ -1,63 +1,85 @@
-'use client';
-
-import { useState } from 'react';
-
+import { forwardRef, ChangeEvent, useState, FocusEvent } from 'react';
+import { BaseInputProps } from './BaseInput.types';
 import styles from './BaseInput.module.scss';
 
-import { BaseInputProps } from './BaseInput.types';
+const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
+  (
+    {
+      type = 'text',
+      className,
+      value,
+      placeholder,
+      disabled,
 
-export default function BaseInput({
-  type = 'text',
-  value,
-  onChange,
-  disabled = false,
-  placeholder,
-  wrapperClassName,
-  children,
-  ...rest
-}: BaseInputProps) {
-  const [isFocused, setIsFocused] = useState(false);
+      children,
+      wrapperClassName,
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(true);
-    if (rest.onFocus) {
-      rest.onFocus(e);
-    }
-  };
-  
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(false);
-    if (rest.onBlur) {
-      rest.onBlur(e);
-    }
-  };
+      'aria-invalid': ariaInvalid,
+      'aria-describedby': ariaDescribedby,
 
-  const finalWrapperClass = [
-    styles['wrapper'],
-    isFocused ? styles['focused'] : '',
-    disabled ? styles['disabled'] : '',
-    wrapperClassName,
-  ].filter(Boolean).join(' ');
+      onChange,
+      onKeyDown,
+      onFocus,
+      onBlur,
+      disableFocusStyle = false,
+      ...rest
+    },
+    ref
+  ) => {
+    const [isFocused, setIsFocused] = useState(false);
+    const isError = ariaInvalid === true;
 
-  return (
-    <div className={styles['container']}>
-      <div className={finalWrapperClass}>
+    const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
+
+    const inputWrapperClass = [
+      styles['wrapper'],
+      disabled && styles['disabled'],
+      isFocused && !disableFocusStyle && styles['focused'],
+      isError && styles['error'],
+      wrapperClassName,
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    const inputClass = [styles['input'], isError && styles['input--error'], className]
+      .filter(Boolean)
+      .join(' ');
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      onChange(e);
+    };
+
+    return (
+      <div className={inputWrapperClass}>
         <input
-          className={styles['input']}
-    
-          {...rest}
-
+          ref={ref}
           type={type}
+          className={inputClass}
           value={value}
-          onChange={onChange}
-          disabled={disabled}
           placeholder={placeholder}
-          
+          disabled={disabled}
+          aria-invalid={ariaInvalid}
+          aria-describedby={ariaDescribedby}
+          onChange={handleChange}
+          onKeyDown={onKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          autoComplete="off"
+          {...rest}
         />
-        {children}
+        {children && <div className={styles['wrapper__children']}>{children}</div>}
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
+
+BaseInput.displayName = 'BaseInput';
+export default BaseInput;

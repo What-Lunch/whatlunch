@@ -1,10 +1,12 @@
+import { InputHTMLAttributes, ChangeEvent, ReactNode } from 'react';
 
-import { ChangeEvent, InputHTMLAttributes, ReactNode } from 'react';
-
-export interface BaseInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value'> {
-  type?: HTMLInputElement['type']; 
-  value: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void; 
-  wrapperClassName?: string;
+export interface BaseInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   children?: ReactNode;
+  wrapperClassName?: string;
+
+  'aria-invalid'?: boolean;
+  'aria-describedby'?: string;
+
+  disableFocusStyle?: boolean;
 }

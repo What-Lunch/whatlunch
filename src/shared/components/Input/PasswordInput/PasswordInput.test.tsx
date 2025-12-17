@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-import FormField from './FormField';
-import { FormFieldProps } from './FormField.types';
+import PasswordInput from './PasswordInput';
+import { PasswordInputProps } from './PasswordInput.types';
 
 interface ControlledFormFieldWrapperProps
-  extends Omit<FormFieldProps, 'value' | 'onChange'> {
+  extends Omit<PasswordInputProps, 'value' | 'onChange'> {
   initialValue?: string;
   mockOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -23,7 +23,7 @@ const ControlledFormFieldWrapper: React.FC<ControlledFormFieldWrapperProps> = ({
   };
 
   return (
-    <FormField
+    <PasswordInput
       {...rest}
       value={currentValue}
       onChange={handleChange}
@@ -36,7 +36,7 @@ describe('FormField Component', () => {
 
   test('기본 렌더링 테스트 - email 타입이 정상적으로 보이는지 테스트', () => {
     render(
-      <FormField
+      <PasswordInput
         type="email"
         value=""
         onChange={mockOnChange}
@@ -89,7 +89,7 @@ describe('FormField Component', () => {
     const errorMessageText = '닉네임은 최소 2자 이상 필요합니다.';
 
     render(
-      <FormField
+      <PasswordInput
         type="text"
         value="a"
         onChange={mockOnChange}
@@ -102,7 +102,7 @@ describe('FormField Component', () => {
   });
 
   test('disabled일 때 input 비활성화되는지 테스트', () => {
-    render(<FormField type="email" value="" onChange={mockOnChange} disabled />);
+    render(<PasswordInput type="email" value="" onChange={mockOnChange} disabled />);
 
     const input = screen.getByRole('textbox');
     expect(input).toBeDisabled();
@@ -110,7 +110,7 @@ describe('FormField Component', () => {
 
   test('eye icon 토글 클릭 시, type 변환이 잘 되는지 테스트', () => {
     render(
-      <FormField
+      <PasswordInput
         type="password"
         value="1234"
         onChange={mockOnChange}
@@ -132,7 +132,7 @@ describe('FormField Component', () => {
 
   test('showToggle={false}일 때 토글 버튼이 렌더링되지 않는지 테스트', () => {
     render(
-      <FormField
+      <PasswordInput
         type="password"
         value="1234"
         onChange={mockOnChange}

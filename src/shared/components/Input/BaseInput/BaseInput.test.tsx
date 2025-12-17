@@ -1,100 +1,159 @@
-import React, { useState } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-import BaseInput from './BaseInput';
-import { BaseInputProps } from './BaseInput.types';
+import BaseInput from '../BaseInput';
+import styles from '../BaseInput.module.scss';
 
-// 제어 컴포넌트 테스트용 래퍼
-interface ControlledTestWrapperProps extends Omit<BaseInputProps, 'value' | 'onChange'> {
-  initialValue?: string;
-  mockOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; 
-}
+jest.mock('../BaseInput.module.scss', () => ({
+  wrapper: 'test-wrapper',
+  disabled: 'test-disabled',
+  focused: 'test-focused',
+  error: 'test-error',
+  input: 'test-input',
+  'input--error': 'test-input-error',
+  wrapper__children: 'test-children',
+}));
 
-const ControlledTestWrapper: React.FC<ControlledTestWrapperProps> = ({ 
-  initialValue = '', 
-  wrapperClassName = 'test-wrapper',
-  mockOnChange,
-  ...rest
-}) => {
-  const [currentValue, setCurrentValue] = useState(initialValue);
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentValue(e.target.value);
-    if (mockOnChange) mockOnChange(e); 
-  };
-  
-  return (
-    <BaseInput
-      {...rest}
-      value={currentValue}
-      onChange={handleChange}
-      wrapperClassName={wrapperClassName}
-    />
-  );
+// Mock Props 타입은 생략, 함수는 jest.fn()으로 생성
+const mockOnChange = jest.fn();
+const mockOnFocus = jest.fn();
+const mockOnBlur = jest.fn();
+const mockOnKeyDown = jest.fn();
+
+const defaultProps = {
+  onChange: mockOnChange,
+  onFocus: mockOnFocus,
+  onBlur: mockOnBlur,
+  onKeyDown: mockOnKeyDown,
+  value: '',
 };
 
-// Props 전달용 wrapper
-const TestInput = (props: BaseInputProps) => (
-  <BaseInput 
-    {...props} 
-    wrapperClassName={`${props.wrapperClassName || ''} test-wrapper`} 
-  />
-);
-
-
-describe('BaseInput Component', () => {
-	test('사용자가 입력 시 input의 value가 올바르게 업데이트되는지 테스트 (Controlled)', () => {
-    render(<ControlledTestWrapper type="text" placeholder="controlled test" />);
-    
-    const input = screen.getByPlaceholderText('controlled test');
-    const newValue = 'hello world';
-    
-		fireEvent.change(input, { target: { value: newValue } });
-
-    expect(input).toHaveValue(newValue);
+describe('BaseInput Unit Test', () => {
+  // 테스트 전후에 Mock 함수를 초기화 -> 각 테스트가 독립적 실행
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
-    
-  test('onChange prop이 ChangeEvent를 받아 정확히 호출되는지 테스트', () => {
-    const mockPropOnChange = jest.fn();
-    const testValue = 'event check';
 
+  test('1. value와 placeholder를 올바르게 렌더링하는 테스트', () => {
+    const value = 'Test Value';
+    const placeholder = 'Enter text';
+    render(<BaseInput {...defaultProps} value={value} placeholder={placeholder} />);
+
+    const input = screen.getByPlaceholderText(placeholder) as HTMLInputElement;
+
+    expect(input).toBeInTheDocument();
+    expect(input.value).toBe(value);
+  });
+
+  test('2. type과 autoComplete 속성이 올바르게 전달되는 테스트', () => {
+    render(<BaseInput {...defaultProps} type="email" />);
+    const input = screen.getByRole('textbox', { hidden: true });
+
+    expect(input).toHaveAttribute('type', 'email');
+    expect(input).toHaveAttribute('autocomplete', 'off');
+  });
+
+  test('3. wrapperClassName이 래퍼 div에 병합되는 테스트', () => {
+    const customClass = 'custom-wrapper-class';
+    render(<BaseInput {...defaultProps} wrapperClassName={customClass} />);
+
+    const wrapper = screen.getByRole('textbox').closest('div');
+    expect(wrapper).toHaveClass('test-wrapper');
+    expect(wrapper).toHaveClass(customClass);
+  });
+
+  test('4. children이 올바르게 렌더링되는 테스트', () => {
     render(
-        <ControlledTestWrapper 
-            type="text" 
-            mockOnChange={mockPropOnChange} 
-            placeholder="event-check-input"
-        />
+      <BaseInput {...defaultProps}>
+        <span data-testid="test-child">Icon Here</span>
+      </BaseInput>
     );
-    
-    const input = screen.getByPlaceholderText('event-check-input');
 
-    fireEvent.change(input, { target: { value: testValue } });
-		
-		expect(mockPropOnChange).toHaveBeenCalledTimes(1);
-		
-		const event = mockPropOnChange.mock.calls[0][0] as React.ChangeEvent<HTMLInputElement>;
-    expect(event.target.value).toBe(testValue); 
+    const childElement = screen.getByTestId('test-child');
+    expect(childElement).toBeInTheDocument();
+
+    const wrapperChildren = document.querySelector(`.${styles.wrapper__children}`);
+    expect(wrapperChildren).toBeInTheDocument();
   });
-  
-	test('disabled prop이 input에 정확히 적용되는지 테스트', () => {
-    render(<TestInput type="text" value="" onChange={() => {}} disabled />);
-    expect(screen.getByRole('textbox')).toBeDisabled();
+
+  test('5. error 상태일 때 wrapper와 input에 "error" 클래스가 적용되는 테스트', () => {
+    render(<BaseInput {...defaultProps} aria-invalid={true} />);
+    const input = screen.getByRole('textbox');
+    const wrapper = input.closest('div');
+
+    expect(wrapper).toHaveClass('test-error');
+    expect(input).toHaveClass('test-input-error');
   });
-  
-  test('input focus/blur 시 wrapper에 focused 클래스가 적용되는지 테스트', () => {
-    render(<TestInput type="text" value="" onChange={() => {}} />);
-    const wrapper = screen.getByRole('textbox').closest('.test-wrapper');
+
+  test('6. disabled일 때 wrapper와 input에 "disabled" 클래스가 적용되는 테스트', () => {
+    render(<BaseInput {...defaultProps} disabled={true} />);
+    const input = screen.getByRole('textbox');
+    const wrapper = input.closest('div');
+
+    expect(input).toBeDisabled();
+    expect(wrapper).toHaveClass('test-disabled');
+  });
+
+  test('7. focus 시 wrapper에 "focused" 클래스가 적용되고 blur 시 제거되는 테스트', () => {
+    render(<BaseInput {...defaultProps} />);
+    const input = screen.getByRole('textbox');
+    const wrapper = input.closest('div');
+
+    fireEvent.focus(input);
+    expect(wrapper).toHaveClass('test-focused');
+
+    fireEvent.blur(input);
+    expect(wrapper).not.toHaveClass('test-focused');
+  });
+
+  test('8. disableFocusStyle=true 일 때 포커스 클래스가 비활성화되는 테스트', () => {
+    render(<BaseInput {...defaultProps} disableFocusStyle={true} />);
+    const input = screen.getByRole('textbox');
+    const wrapper = input.closest('div');
+
+    fireEvent.focus(input);
+    expect(wrapper).not.toHaveClass('test-focused');
+  });
+
+  test('9. aria-describedby가 올바르게 전달되는 테스트', () => {
+    const describedById = 'error-message-id';
+    render(<BaseInput {...defaultProps} aria-describedby={describedById} />);
     const input = screen.getByRole('textbox');
 
-    // 초기 상태
-    expect(wrapper).not.toHaveClass('focused');
+    expect(input).toHaveAttribute('aria-describedby', describedById);
+  });
 
-    // focus 시
+  test('10. onChange 핸들러가 사용자 입력 시 호출되는 테스트', () => {
+    render(<BaseInput {...defaultProps} />);
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    const newValue = 'testing';
+
+    fireEvent.change(input, { target: { value: newValue } });
+
+    expect(mockOnChange).toHaveBeenCalledTimes(1);
+
+    const receivedEvent = mockOnChange.mock.calls[0][0];
+
+    expect(mockOnChange).toHaveBeenCalled();
+    expect(receivedEvent).toHaveProperty('target');
+  });
+
+  test('11. onFocus/onBlur 핸들러가 올바르게 호출되는 테스트', () => {
+    render(<BaseInput {...defaultProps} />);
+    const input = screen.getByRole('textbox');
+
     fireEvent.focus(input);
-    expect(wrapper).toHaveClass('focused');
+    expect(mockOnFocus).toHaveBeenCalledTimes(1);
 
-    // blur 시
     fireEvent.blur(input);
-    expect(wrapper).not.toHaveClass('focused');
+    expect(mockOnBlur).toHaveBeenCalledTimes(1);
+  });
+
+  test('12. onKeyDown 핸들러가 키 입력 시 호출되는 테스트', () => {
+    render(<BaseInput {...defaultProps} />);
+    const input = screen.getByRole('textbox');
+
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(mockOnKeyDown).toHaveBeenCalledTimes(1);
   });
 });

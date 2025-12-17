@@ -2,43 +2,63 @@
 @use 'utils/functions' as f;
 @use 'utils/variables' as v;
 
-.container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
 .wrapper {
+  --icon-size: 0px;
+  --icon-gap: 0px;
+  --input-padding-x: 12px;
+
   @include m.flex-box(flex-start, center);
   position: relative;
 
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px var(--input-padding-x);
 
   border: 1px solid f.color(border-primary);
   border-radius: 6px;
   background: f.color(bg-secondary);
 
-  transition: border-color 0.2s;
-  
+  transition:
+    border-color 0.2s,
+    box-shadow 0.1s;
+
   &.focused {
     border-color: f.color(interaction-focus);
-    border-width: 2px;
+    box-shadow: inset 0 0 0 1px f.color(interaction-focus);
   }
 
   &.disabled {
     opacity: 0.6;
     pointer-events: none;
   }
+
+  &.error {
+    border-color: f.color(status-danger);
+    box-shadow: inset 0 0 0 1px f.color(status-danger);
+
+    &.focused {
+      border-color: f.color(status-danger);
+      box-shadow: inset 0 0 0 1px f.color(status-danger);
+    }
+  }
 }
 
 .input {
   flex: 1;
+  height: auto;
   background: transparent;
   border: none;
   outline: none;
 
   @include m.text-style(md, 400);
   color: f.color(text-primary);
-  line-height: 1.6; 
+  line-height: 1.6;
+
+  padding: 0;
+  margin: 0;
+}
+
+.wrapper__children {
+  @include m.flex-box;
+  color: f.color(icon-primary);
+  cursor: pointer;
 }

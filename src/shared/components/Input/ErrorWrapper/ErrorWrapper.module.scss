@@ -1,0 +1,17 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
+.wrapper {
+  display: block;
+}
+
+// .error {
+
+// }
+
+.wrapper__message {
+  margin-top: 4px;
+  @include m.text-style(sm);
+  color: f.color(status-danger);
+}
