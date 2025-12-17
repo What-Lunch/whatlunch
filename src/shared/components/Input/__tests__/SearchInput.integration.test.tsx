@@ -21,7 +21,8 @@ interface MockBaseInputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 jest.mock('../BaseInput/BaseInput', () => {
   const MockBaseInput = React.forwardRef<HTMLInputElement, MockBaseInputProps>((props, ref) => {
-    const { type, children, wrapperClassName, ...restInputProps } = props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { type, children, wrapperClassName, disableFocusStyle, ...restInputProps } = props;
 
     return (
       <div data-testid="base-input-wrapper" className={wrapperClassName}>
@@ -156,11 +157,14 @@ describe('SearchInput Integration Test', () => {
     render(<SearchInput {...filledProps} disabled={true} />);
     const input = screen.getByTestId('password-input-field');
     const searchButton = screen.getByRole('button', { name: 'search-icon' });
+
+    // disabled 상태에서는 클리어 버튼이 렌더링되지 않으므로 queryBy 사용
     const clearButton = screen.queryByRole('button', { name: 'search-clear' });
 
     expect(input).toBeDisabled();
     expect(searchButton).toBeDisabled();
 
+    // disabled 상태에서는 클리어 버튼이 없어야 함
     expect(clearButton).not.toBeInTheDocument();
 
     fireEvent.click(searchButton);
