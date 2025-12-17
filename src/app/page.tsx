@@ -16,7 +16,7 @@ export default function HomePage() {
           <section className={styles['container__left__main__option']}>찬성 반대</section>
           <section className={styles['container__left__main__map']}>
             {/* TODO: 카카오 맵 룰렛창 결과 value 전달 필요 */}
-            <KakaoMap value="" />
+            <KakaoMap keyword="" />
           </section>
         </div>
       </div>

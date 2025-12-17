@@ -17,7 +17,7 @@ export default function WeatherRecommend() {
         throw new Error(`API Error: ${response.status}`);
       }
 
-      const data: Weather.WeatherData = await response.json();
+      const data: WeatherData = await response.json();
       setWeather(data);
     } catch (err) {
       console.error(err);

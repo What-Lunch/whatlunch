@@ -1,17 +1,3 @@
-namespace Weather {
-  interface WeatherData {
-    name: string;
-    main: {
-      temp: number;
-    };
-    weather: {
-      main: string;
-      description: string;
-      icon: string;
-    }[];
-  }
-}
-
 namespace Kakao {
   type Status = 'OK' | 'ZERO_RESULT' | 'ERROR';
 
@@ -30,6 +16,12 @@ namespace Kakao {
   interface LatLng {
     getLat(): number;
     getLng(): number;
+  }
+
+  declare class Marker {
+    constructor(options: { map?: Maps | null; position: LatLng });
+    setMap(map: Maps | null): void;
+    getPosition(): LatLng;
   }
 
   declare class Maps {

@@ -1,3 +1,3 @@
 export interface KakaoMapProps {
-  value?: string;
+  keyword?: string;
 }
