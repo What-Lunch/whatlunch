@@ -46,14 +46,10 @@ export default function SearchInput({
 
     if (onClear) {
       onClear();
-    } else {
-      onChange({
-        target: { value: '' },
-      } as React.ChangeEvent<HTMLInputElement>);
     }
   };
 
-  const showClearButton = value.length > 0 && !disabled;
+  const showClearButton = !!onClear && value.length > 0 && !disabled;
   const wrapperClass = styles['wrapper--search'];
 
   return (

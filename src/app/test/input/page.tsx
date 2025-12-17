@@ -106,7 +106,11 @@ export default function InputTestPage() {
           value={search}
           onChange={handleSearchChange}
           placeholder="검색어를 입력하세요"
-          onSearch={v => setSearchLog(prev => [v, ...prev])}
+          onSearch={v => {
+            if (!v.trim()) return;
+            setSearchLog(prev => [v, ...prev]);
+          }}
+          onClear={() => setSearch('')}
         />
       </section>
 
