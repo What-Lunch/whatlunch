@@ -30,14 +30,16 @@ describe('TopTabs Component', () => {
   const getTabButtonByLabel = (label: string) =>
     screen.getByRole('button', { name: new RegExp(label, 'i') });
 
-  const getPanels = () =>
-    screen.getAllByTestId('panel-content').map(node => node.closest('.top-tabs__panel'));
+  const getPanelElements = (): HTMLElement[] => {
+    const contents = screen.getAllByTestId('panel-content');
+    return contents
+      .map(node => node.closest('.top-tabs__panel'))
+      .filter((el): el is HTMLElement => el !== null);
+  };
 
-  const getVisiblePanel = () => {
-    const panels = screen
-      .getAllByTestId('panel-content')
-      .map(node => node.closest('.top-tabs__panel'));
-    const visible = panels.find(panel => panel && !panel.hasAttribute('hidden'));
+  const getVisiblePanel = (): HTMLElement => {
+    const panels = getPanelElements();
+    const visible = panels.find(panel => !panel.classList.contains('top-tabs__panel--hidden'));
     if (!visible) throw new Error('No visible panel found');
     return visible;
   };
@@ -81,7 +83,7 @@ describe('TopTabs Component', () => {
     });
 
     it('value가 items에 없으면 첫 번째 탭이 활성화되어야 한다', () => {
-      render(<TopTabs {...getDefaultProps({ value: 'invalid' as any })} />);
+      render(<TopTabs {...getDefaultProps({ value: 'invalid' as string })} />);
 
       const tab1 = getTabButtonByLabel('Tab 1');
       expect(tab1).toHaveClass('top-tabs__tab--active');
@@ -91,19 +93,17 @@ describe('TopTabs Component', () => {
       render(<TopTabs {...getDefaultProps({ value: 'tab2' })} />);
 
       const visiblePanel = getVisiblePanel();
-      expect(within(visiblePanel as HTMLElement).getByTestId('panel-content')).toHaveTextContent(
-        'tab2 Content'
-      );
+      expect(within(visiblePanel).getByTestId('panel-content')).toHaveTextContent('tab2 Content');
     });
 
-    it('활성화되지 않은 패널은 hidden 속성을 가져야 한다', () => {
+    it('활성화되지 않은 패널은 hidden 클래스가 적용되어야 한다', () => {
       render(<TopTabs {...getDefaultProps({ value: 'tab2' })} />);
 
-      const panels = getPanels();
+      const panels = getPanelElements();
 
-      expect(panels[1]).not.toHaveAttribute('hidden');
-      expect(panels[0]).toHaveAttribute('hidden');
-      expect(panels[2]).toHaveAttribute('hidden');
+      expect(panels[1]).not.toHaveClass('top-tabs__panel--hidden');
+      expect(panels[0]).toHaveClass('top-tabs__panel--hidden');
+      expect(panels[2]).toHaveClass('top-tabs__panel--hidden');
     });
   });
 
