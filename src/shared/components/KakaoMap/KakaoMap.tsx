@@ -20,6 +20,18 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   const mapRef = useRef<Kakao.Maps | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const currentLocationMarkerRef = useRef<Kakao.Marker | null>(null);
+  const infoWindowRef = useRef<any>(null); // 단일 InfoWindow 인스턴스
+
+  /**
+   * InfoWindow 초기화 (한 번만)
+   */
+  const initializeInfoWindow = useCallback(() => {
+    if (!infoWindowRef.current && window.kakao?.maps) {
+      infoWindowRef.current = new window.kakao.maps.InfoWindow({
+        removable: true,
+      });
+    }
+  }, []);
 
   /**
    * 검색 마커 초기화
@@ -27,25 +39,66 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   const clearSearchMarkers = useCallback(() => {
     searchMarkersRef.current.forEach(marker => marker.setMap(null));
     searchMarkersRef.current = [];
+
+    // InfoWindow도 닫기
+    if (infoWindowRef.current) {
+      infoWindowRef.current.close();
+    }
   }, []);
 
   /**
-   * 검색 결과 표시
+   * InfoWindow 내용 생성
    */
-  const displaySearchResults = useCallback((data: Kakao.PlacesSearchResult) => {
-    setPlaces(data);
-
-    const newMarkers = data.map(place => {
-      const position = new window.kakao.maps.LatLng(Number(place.y), Number(place.x));
-      const marker = new window.kakao.maps.Marker({
-        position,
-        map: mapRef.current,
-      });
-      return marker;
-    });
-
-    searchMarkersRef.current = newMarkers;
+  const createInfoWindowContent = useCallback((place: Kakao.PlaceItem) => {
+    return `
+      <div style="padding: 12px; min-width: 200px;">
+        <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #333;">
+          ${place.place_name}
+        </h4>
+        <p style="margin: 4px 0; font-size: 12px; color: #666;">
+          ${place.road_address_name || place.address_name}
+        </p>
+        ${
+          place.phone
+            ? `<p style="margin: 4px 0; font-size: 12px; color: #999;">
+                ${place.phone}
+              </p>`
+            : ''
+        }
+      </div>
+    `;
   }, []);
+
+  /**
+   * 검색 결과 표시 (마커 클릭 시 InfoWindow 표시)
+   */
+  const displaySearchResults = useCallback(
+    (data: Kakao.PlacesSearchResult) => {
+      setPlaces(data);
+
+      const newMarkers = data.map(place => {
+        const position = new window.kakao.maps.LatLng(Number(place.y), Number(place.x));
+        const marker = new window.kakao.maps.Marker({
+          position,
+          map: mapRef.current,
+        });
+
+        // 마커 클릭 이벤트: InfoWindow 재사용
+        window.kakao.maps.event.addListener(marker, 'click', () => {
+          if (infoWindowRef.current) {
+            const content = createInfoWindowContent(place);
+            infoWindowRef.current.setContent(content);
+            infoWindowRef.current.open(mapRef.current, marker);
+          }
+        });
+
+        return marker;
+      });
+
+      searchMarkersRef.current = newMarkers;
+    },
+    [createInfoWindowContent]
+  );
 
   /**
    * 전국 검색 후 지도 중심 이동 및 주변 검색
@@ -140,28 +193,34 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   /**
    * 지도 초기화 (한 번만 실행)
    */
-  const initializeMap = useCallback((latitude: number, longitude: number, permission: boolean) => {
-    // 이미 지도가 초기화되어 있으면 실행하지 않음
-    if (mapRef.current) return;
+  const initializeMap = useCallback(
+    (latitude: number, longitude: number, permission: boolean) => {
+      // 이미 지도가 초기화되어 있으면 실행하지 않음
+      if (mapRef.current) return;
 
-    const center = new window.kakao.maps.LatLng(latitude, longitude);
-    const mapInstance = new window.kakao.maps.Map(mapContainerRef.current, {
-      center,
-      level: DEFAULT_MAP_LEVEL,
-    });
+      const center = new window.kakao.maps.LatLng(latitude, longitude);
+      const mapInstance = new window.kakao.maps.Map(mapContainerRef.current, {
+        center,
+        level: DEFAULT_MAP_LEVEL,
+      });
 
-    mapRef.current = mapInstance;
+      mapRef.current = mapInstance;
 
-    // 현재 위치 마커 표시
-    const locationMarker = new window.kakao.maps.Marker({
-      position: center,
-      map: mapInstance,
-    });
-    currentLocationMarkerRef.current = locationMarker;
+      // 현재 위치 마커 표시
+      const locationMarker = new window.kakao.maps.Marker({
+        position: center,
+        map: mapInstance,
+      });
+      currentLocationMarkerRef.current = locationMarker;
 
-    setMapReady(true);
-    setHasPermission(permission);
-  }, []);
+      // InfoWindow 초기화
+      initializeInfoWindow();
+
+      setMapReady(true);
+      setHasPermission(permission);
+    },
+    [initializeInfoWindow]
+  );
 
   /**
    * 카카오맵 스크립트 로드
@@ -206,9 +265,13 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
     document.head.appendChild(script);
 
     return () => {
+      // cleanup: 마커들만 제거하고 지도 인스턴스는 유지
       clearSearchMarkers();
       if (currentLocationMarkerRef.current) {
         currentLocationMarkerRef.current.setMap(null);
+      }
+      if (infoWindowRef.current) {
+        infoWindowRef.current.close();
       }
     };
   }, [initializeMap, clearSearchMarkers]);
@@ -227,15 +290,30 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   }, [keyword, mapReady, executeSearch]);
 
   /**
-   * 장소 클릭 핸들러
+   * 장소 클릭 핸들러 (리스트 아이템)
    */
-  const handlePlaceClick = useCallback((place: Kakao.PlaceItem) => {
-    if (!mapRef.current) return;
+  const handlePlaceClick = useCallback(
+    (place: Kakao.PlaceItem) => {
+      if (!mapRef.current) return;
 
-    const position = new window.kakao.maps.LatLng(Number(place.y), Number(place.x));
-    mapRef.current.setCenter(position);
-    mapRef.current.setLevel(DEFAULT_MAP_LEVEL);
-  }, []);
+      const position = new window.kakao.maps.LatLng(Number(place.y), Number(place.x));
+      mapRef.current.setCenter(position);
+      mapRef.current.setLevel(DEFAULT_MAP_LEVEL);
+
+      // 해당 장소의 마커를 찾아서 InfoWindow 표시
+      const targetMarker = searchMarkersRef.current.find(marker => {
+        const markerPos = marker.getPosition();
+        return markerPos.getLat() === Number(place.y) && markerPos.getLng() === Number(place.x);
+      });
+
+      if (targetMarker && infoWindowRef.current) {
+        const content = createInfoWindowContent(place);
+        infoWindowRef.current.setContent(content);
+        infoWindowRef.current.open(mapRef.current, targetMarker);
+      }
+    },
+    [createInfoWindowContent]
+  );
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
