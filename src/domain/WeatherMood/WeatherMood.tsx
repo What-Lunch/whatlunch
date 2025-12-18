@@ -5,8 +5,8 @@ import { CloudSun, Smile } from 'lucide-react';
 
 import TopTabs from '@/shared/components/TopTabs';
 
-import MoodRecommend from './MoodRecommend';
-import WeatherRecommend from './WeatherRecommend';
+import MoodRecommend from './components/Mood/MoodRecommend';
+import WeatherRecommend from './components/Weather/WeatherRecommend';
 
 import type { TopTabItem } from '@/shared/components/TopTabs';
 

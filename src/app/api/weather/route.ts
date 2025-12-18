@@ -1,69 +1,47 @@
 import { NextResponse } from 'next/server';
 
-const CACHE_DURATION = 6 * 60 * 60 * 1000;
+import { fetchAirPollution, fetchWeather } from '@/app/services/weather/openWeather';
+import { normalizeAir, normalizeWeather } from '@/app/services/weather/normalizeWeather';
+import { secondsUntilNextKstBoundary } from '@/app/services/weather/timeSlotCache';
 
-type TimeSlot = 'morning' | 'afternoon' | 'evening';
-
-const weatherCache: Record<TimeSlot, WeatherData | null> = {
-  morning: null,
-  afternoon: null,
-  evening: null,
-};
-
-const weatherCacheTimestamp: Record<TimeSlot, number | null> = {
-  morning: null,
-  afternoon: null,
-  evening: null,
-};
-
-function getCurrentTimeSlot(): TimeSlot {
-  const hour = new Date().getHours();
-
-  if (hour >= 6 && hour < 12) return 'morning';
-  if (hour >= 12 && hour < 18) return 'afternoon';
-  return 'evening';
-}
+// 서울 기본 좌표 (위치 미사용 시 fallback)
+const SEOUL_LAT = 37.5665;
+const SEOUL_LON = 126.978;
 
 export async function GET(request: Request) {
   try {
-    const timeSlot = getCurrentTimeSlot();
-    const now = Date.now();
-
     const { searchParams } = new URL(request.url);
-    const latitude = Number(searchParams.get('lat') ?? 37.5665);
-    const longitude = Number(searchParams.get('lon') ?? 126.978);
 
-    const cachedWeather = weatherCache[timeSlot];
-    const cachedAt = weatherCacheTimestamp[timeSlot];
+    // 사용자 위치 사용 여부
+    const useUserLocation = searchParams.get('useUserLocation') === 'true';
 
-    const isCacheValid = cachedWeather && cachedAt && now - cachedAt < CACHE_DURATION;
+    // 사용자 전달 좌표
+    const rawLat = Number(searchParams.get('lat'));
+    const rawLon = Number(searchParams.get('lon'));
 
-    if (isCacheValid) {
-      return NextResponse.json(cachedWeather);
-    }
+    // 위치 사용 + 좌표 유효할 때만 사용자 위치 채택
+    const userOk = useUserLocation && Number.isFinite(rawLat) && Number.isFinite(rawLon);
 
-    const apiKey = process.env.WEATHER_API_KEY!;
-    const apiUrl =
-      `https://api.openweathermap.org/data/2.5/weather` +
-      `?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric&lang=kr`;
+    // 최종 좌표 결정 (사용자 위치 or 서울 fallback)
+    const lat = userOk ? rawLat : SEOUL_LAT;
+    const lon = userOk ? rawLon : SEOUL_LON;
 
-    const response = await fetch(apiUrl);
+    // KST 기준 다음 06/18시까지 남은 초 (하루 2회 갱신용)
+    const revalidateSeconds = secondsUntilNextKstBoundary();
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      return NextResponse.json(
-        { error: 'OpenWeather error', detail: errorText },
-        { status: response.status }
-      );
-    }
+    // 날씨, 대기오염 정보 요청
+    const [weatherRaw, airRaw] = await Promise.all([
+      fetchWeather(lat, lon, revalidateSeconds),
+      fetchAirPollution(lat, lon, revalidateSeconds).catch(() => undefined),
+    ]);
 
-    const weatherData: WeatherData = await response.json();
-
-    weatherCache[timeSlot] = weatherData;
-    weatherCacheTimestamp[timeSlot] = now;
-
-    return NextResponse.json(weatherData);
+    // 응답 데이터 정규화 후 반환
+    return NextResponse.json({
+      weather: normalizeWeather(weatherRaw),
+      air: normalizeAir(airRaw),
+    });
   } catch (error) {
-    return NextResponse.json({ error: 'server crash', detail: String(error) }, { status: 500 });
+    // 예외 발생 시 서버 에러 반환
+    return NextResponse.json({ error: 'server error', detail: String(error) }, { status: 500 });
   }
 }
