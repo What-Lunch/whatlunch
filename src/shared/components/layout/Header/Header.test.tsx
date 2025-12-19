@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Header from '@/shared/components/layout/Header';
+import Header from '@/shared/components/Layout/Header';
 import { useRouter } from 'next/router';
 
 // next/link 때문에 router mocking 필요
