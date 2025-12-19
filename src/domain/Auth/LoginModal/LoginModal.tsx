@@ -1,15 +1,15 @@
 'use client';
 
-// import Image from 'next/image';
+import Image from 'next/image';
 import { useState } from 'react';
-// import { Eye, EyeOff, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 
-import { handleModalClose, useEscClose } from '@/shared/hooks/useEscClose';
+import { useModalClose, useEscClose } from '@/shared/hooks/useEscClose';
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
 import { LoginModalProps } from '../types';
-
-// import Google from '../../../../public/';
+import PasswordInput from '@/shared/components/Input/PasswordInput';
+import Google from '../../../../public/icons/google.png';
 
 import styles from '../AuthModal.module.scss';
 
@@ -23,14 +23,13 @@ import styles from '../AuthModal.module.scss';
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  //   const [passwordType, setPasswordType] = useState<'password' | 'text'>('password');
-  const passwordType = 'password';
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // 로그인 로직 구현 필요
   };
 
-  const { handleOverlayClick } = handleModalClose(onClose);
+  const { handleOverlayClick } = useModalClose(onClose);
   useEscClose(onClose);
 
   return (
@@ -48,13 +47,13 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
           onClick={onClose}
           className={styles['modal__close']}
         >
-          {/* <XIcon aria-hidden="true" /> */}
+          <XIcon aria-hidden="true" />
         </button>
 
         <h2 className={styles['modal__title']} id="login-modal-title">
           로그인
         </h2>
-        <form onSubmit={onSubmit} className={styles['login']}>
+        <div className={styles['login']}>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>이메일</span>
             <BaseInput
@@ -66,9 +65,8 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>비밀번호</span>
-            <BaseInput
+            <PasswordInput
               value={password}
-              type={passwordType === 'password' ? 'password' : 'text'}
               placeholder="비밀번호를 입력하세요"
               onChange={e => setPassword(e.target.value)}
             />
@@ -86,13 +84,17 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
               </button>
             </div>
           </div>
-        </form>
+        </div>
         <div className={styles['social']}>
           <span className={styles['social__or']}>OR</span>
           <div className={styles['social__login']}>
             <span>간편 로그인하기</span>
-            <button role="button" className={styles['social__login--google']}>
-              {/* <Image src={Google} alt="Google Logo" width={20} height={20} /> */}
+            <button
+              role="button"
+              className={styles['social__login--google']}
+              aria-label="Google로 로그인"
+            >
+              <Image src={Google} alt="Google Logo" width={20} height={20} />
             </button>
           </div>
         </div>

@@ -1,14 +1,15 @@
 'use client';
 
-// import Image from 'next/image';
+import Image from 'next/image';
 import { useState } from 'react';
 import styles from '../AuthModal.module.scss';
-// import { Eye, EyeOff, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
-import { handleModalClose, useEscClose } from '@/shared/hooks/useEscClose';
-// import Google from '../../../../public/icons/google.svg';
+import PasswordInput from '@/shared/components/Input/PasswordInput';
+import { useModalClose, useEscClose } from '@/shared/hooks/useEscClose';
+import Google from '../../../../public/icons/google.png';
 
 import { SignupModalProps } from '../types';
 
@@ -24,17 +25,12 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  //   const [passwordType, setPasswordType] = useState<'password' | 'text'>('password');
-  //   const [passwordConfirmType, setPasswordConfirmType] = useState<'password' | 'text'>('password');
-
-  const passwordType = 'password';
-  const passwordConfirmType = 'password';
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
-  const { handleOverlayClick } = handleModalClose(onClose);
+  const { handleOverlayClick } = useModalClose(onClose);
   useEscClose(onClose);
 
   return (
@@ -45,26 +41,25 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
       aria-labelledby="signup-modal-title"
       onClick={handleOverlayClick}
     >
-      <div className={styles['modal']}>
+      <form className={styles['modal']} onSubmit={onSubmit}>
         <button
           type="button"
           aria-label="닫기"
           onClick={onClose}
           className={styles['modal__close']}
         >
-          {/* <XIcon aria-hidden="true" /> */}
+          <XIcon aria-hidden="true" />
         </button>
         <h2 className={styles['modal__title']} id="signup-modal-title">
           회원가입
         </h2>
-        <form onSubmit={onSubmit} className={styles['login']}>
+        <div className={styles['login']}>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>이메일</span>
             <BaseInput
               value={email}
               type="email"
               placeholder="이메일을 입력하세요"
-              tabIndex={0}
               onChange={e => setEmail(e.target.value)}
             />
           </div>
@@ -74,53 +69,52 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               value={nickname}
               type="text"
               placeholder="닉네임을 입력하세요"
-              tabIndex={1}
               onChange={e => setNickname(e.target.value)}
             />
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>비밀번호</span>
-            <BaseInput
+            <PasswordInput
               value={password}
-              type={passwordType}
               placeholder="비밀번호를 입력하세요"
-              tabIndex={2}
               onChange={e => setPassword(e.target.value)}
             />
           </div>
           <div className={styles['login-group']}>
             <span className={styles['login-group__label']}>비밀번호 확인</span>
-            <BaseInput
+            <PasswordInput
               value={passwordConfirm}
-              type={passwordConfirmType}
               placeholder="비밀번호를 입력하세요"
-              tabIndex={3}
               onChange={e => setPasswordConfirm(e.target.value)}
             />
           </div>
 
           <div className={styles['login__buttons']}>
-            <Button tabIndex={5} className={styles['login__buttons__button']}>
+            <Button type="submit" className={styles['login__buttons__button']}>
               회원가입
             </Button>
             <div>
-              <span className={styles['login__buttons__boolean']}>회원이이신가요? </span>
+              <span className={styles['login__buttons__boolean']}>회원이신가요? </span>
               <span className={styles['login__buttons__signup']} onClick={onLoginOpen}>
                 로그인하기
               </span>
             </div>
           </div>
-        </form>
+        </div>
         <div className={styles['social']}>
           <span className={styles['social__or']}>OR</span>
           <div className={styles['social__login']}>
             <span>간편 회원가입하기</span>
-            <div className={styles['social__login--google']}>
-              {/* <Image src={Google} alt="Google Logo" width={20} height={20} /> */}
-            </div>
+            <button
+              role="button"
+              className={styles['social__login--google']}
+              aria-label="Google로 회원가입"
+            >
+              <Image src={Google} alt="Google Logo" width={20} height={20} />
+            </button>
           </div>
         </div>
-      </div>
+      </form>
     </section>
   );
 }

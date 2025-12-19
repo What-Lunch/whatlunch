@@ -28,7 +28,7 @@ export function useEscClose(onClose?: () => void) {
  * const { handleOverlayClick } = useModalClose(onClose);
  * @param onClose
  */
-export function handleModalClose(onClose: () => void) {
+export function useModalClose(onClose: () => void) {
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
