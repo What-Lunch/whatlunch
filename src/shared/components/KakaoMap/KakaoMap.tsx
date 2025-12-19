@@ -56,19 +56,26 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   /**
    * InfoWindow 내용 생성
    */
+  function escapeHtml(str: string) {
+    return String(str).replace(
+      /[&<>"']/g,
+      s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[s] || s
+    );
+  }
+
   const createInfoWindowContent = useCallback((place: Kakao.PlaceItem) => {
     return `
       <div style="padding: 12px; min-width: 200px;">
         <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #333;">
-          ${place.place_name}
+             ${escapeHtml(place.place_name)}
         </h4>
         <p style="margin: 4px 0; font-size: 12px; color: #666;">
-          ${place.road_address_name || place.address_name}
+          ${escapeHtml(place.road_address_name || place.address_name)}
         </p>
         ${
           place.phone
             ? `<p style="margin: 4px 0; font-size: 12px; color: #999;">
-                ${place.phone}
+                ${escapeHtml(place.phone)}
               </p>`
             : ''
         }
