@@ -1,18 +1,42 @@
-import Carousel, { pendingData } from '@/shared/components/Carousel';
+'use client';
+
+import { useState } from 'react';
+
 import Clock from '@/shared/components/Clock/Clock';
-import { WeatherMood } from '@/domain/WeatherMood';
-import KakaoMap from '@/shared/components/KakaoMap';
+import TopTabs from '@/domain/TopTabs/TopTabs';
+import WeatherMood from '@/domain/WeatherMood/WeatherMood';
+import Ladder from '@/domain/Ladder/Ladder';
+import Roulette from '@/domain/Roulette/Roulette';
+
+import Carousel, { pendingData } from '@/shared/components/Carousel';
 
 import styles from './page.module.scss';
 
 export default function HomePage() {
+  const [tab, setTab] = useState<'roulette' | 'ladder' | 'map'>('roulette');
+  const [isSpinning, setIsSpinning] = useState(false);
+
   return (
     <div className={styles['container']}>
       <div className={styles['container__left']}>
         <Carousel duration={4000} items={pendingData} />
         <section className={styles['container__left__slice']}>오늘 인기있는 음식</section>
+
         <div className={styles['container__left__main']}>
-          <section className={styles['container__left__main__roulette']}>룰렛</section>
+          <section className={styles['container__left__main__roulette']}>
+            <TopTabs tab={tab} onChange={setTab} />
+
+            {tab === 'roulette' && (
+              <Roulette
+                isSpinning={isSpinning}
+                onSpinStart={() => setIsSpinning(true)}
+                onSpinResult={() => setIsSpinning(false)}
+              />
+            )}
+
+            {tab === 'ladder' && <Ladder />}
+          </section>
+
           <section className={styles['container__left__main__option']}>찬성 반대</section>
           <section className={styles['container__left__main__map']}>
             {/* TODO: 카카오 맵 룰렛창 결과 value 전달 필요 */}

@@ -1,0 +1,41 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.tabButton {
+  flex: 1;
+  height: 48px;
+
+  @include m.flex-box(center, center, row);
+  @include m.text-style(md, 500);
+
+  gap: 6px;
+  border-radius: 10px;
+  cursor: pointer;
+
+  color: f.color(text-default);
+  background: transparent;
+  line-height: 1;
+
+  position: relative;
+
+  &:hover {
+    background: f.color(gray-200);
+  }
+
+  &__icon {
+    @include m.flex-box(center, center);
+    width: 18px;
+    height: 18px;
+    line-height: 1;
+    color: inherit;
+  }
+
+  &--active {
+    background: f.color(white);
+    color: f.color(black);
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+
+    border-bottom: 3px solid f.color(point-blue);
+  }
+}
