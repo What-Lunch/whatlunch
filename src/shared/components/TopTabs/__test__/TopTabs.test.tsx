@@ -28,7 +28,7 @@ describe('TopTabs Component', () => {
   };
 
   const getTabButtonByLabel = (label: string) =>
-    screen.getByRole('button', { name: new RegExp(label, 'i') });
+    screen.getByRole('tab', { name: new RegExp(label, 'i') });
 
   const getPanelElements = (): HTMLElement[] => {
     const contents = screen.getAllByTestId('panel-content');
@@ -136,8 +136,6 @@ describe('TopTabs Component', () => {
       const tab2 = getTabButtonByLabel('Tab 2');
 
       tab1.focus();
-      expect(tab1).toHaveFocus();
-
       await user.keyboard('{ArrowRight}');
       expect(tab2).toHaveFocus();
     });
@@ -150,10 +148,84 @@ describe('TopTabs Component', () => {
       const tab1 = getTabButtonByLabel('Tab 1');
 
       tab2.focus();
-      expect(tab2).toHaveFocus();
-
       await user.keyboard('{ArrowLeft}');
       expect(tab1).toHaveFocus();
+    });
+
+    it('Home 키를 누르면 첫 번째 탭으로 포커스가 이동해야 한다', async () => {
+      const user = userEvent.setup();
+      render(<TopTabs {...getDefaultProps({ value: 'tab2' })} />);
+
+      const tab2 = getTabButtonByLabel('Tab 2');
+      const tab1 = getTabButtonByLabel('Tab 1');
+
+      tab2.focus();
+      await user.keyboard('{Home}');
+      expect(tab1).toHaveFocus();
+    });
+
+    it('End 키를 누르면 마지막 탭으로 포커스가 이동해야 한다', async () => {
+      const user = userEvent.setup();
+      render(<TopTabs {...getDefaultProps({ value: 'tab1' })} />);
+
+      const tab1 = getTabButtonByLabel('Tab 1');
+      const tab3 = getTabButtonByLabel('Tab 3');
+
+      tab1.focus();
+      await user.keyboard('{End}');
+      expect(tab3).toHaveFocus();
+    });
+
+    it('마지막 탭에서 ArrowRight를 누르면 첫 번째 탭으로 순환 이동해야 한다', async () => {
+      const user = userEvent.setup();
+      render(<TopTabs {...getDefaultProps({ value: 'tab3' })} />);
+
+      const tab3 = getTabButtonByLabel('Tab 3');
+      const tab1 = getTabButtonByLabel('Tab 1');
+
+      tab3.focus();
+      await user.keyboard('{ArrowRight}');
+      expect(tab1).toHaveFocus();
+    });
+
+    it('첫 번째 탭에서 ArrowLeft를 누르면 마지막 탭으로 순환 이동해야 한다', async () => {
+      const user = userEvent.setup();
+      render(<TopTabs {...getDefaultProps({ value: 'tab1' })} />);
+
+      const tab1 = getTabButtonByLabel('Tab 1');
+      const tab3 = getTabButtonByLabel('Tab 3');
+
+      tab1.focus();
+      await user.keyboard('{ArrowLeft}');
+      expect(tab3).toHaveFocus();
+    });
+
+    it('Enter 키를 누르면 포커스된 탭 value로 onChange가 호출되어야 한다', async () => {
+      const user = userEvent.setup();
+      const props = getDefaultProps({ value: 'tab1' });
+      render(<TopTabs {...props} />);
+
+      const tab1 = getTabButtonByLabel('Tab 1');
+      tab1.focus();
+
+      await user.keyboard('{ArrowRight}'); // focus -> tab2
+      await user.keyboard('{Enter}');
+
+      expect(props.onChange).toHaveBeenCalledWith('tab2');
+    });
+
+    it('Space 키를 누르면 포커스된 탭 value로 onChange가 호출되어야 한다', async () => {
+      const user = userEvent.setup();
+      const props = getDefaultProps({ value: 'tab1' });
+      render(<TopTabs {...props} />);
+
+      const tab1 = getTabButtonByLabel('Tab 1');
+      tab1.focus();
+
+      await user.keyboard('{ArrowRight}'); // focus -> tab2
+      await user.keyboard(' ');
+
+      expect(props.onChange).toHaveBeenCalledWith('tab2');
     });
   });
 });

@@ -2,19 +2,69 @@
 
 import { useState } from 'react';
 
+import { MapPin, Shuffle, Table2 } from 'lucide-react';
+
+import Carousel, { pendingData } from '@/shared/components/Carousel';
 import Clock from '@/shared/components/Clock/Clock';
-import TopTabs from '@/domain/TopTabs/TopTabs';
+import TopTabs from '@/shared/components/TopTabs';
 import WeatherMood from '@/domain/WeatherMood/WeatherMood';
 import Ladder from '@/domain/Ladder/Ladder';
 import Roulette from '@/domain/Roulette/Roulette';
 
-import Carousel, { pendingData } from '@/shared/components/Carousel';
+import type { TopTabItem } from '@/shared/components/TopTabs';
 
 import styles from './page.module.scss';
 
+const TAB_LIST = [
+  { value: 'roulette', label: '룰렛', icon: <Shuffle size={18} /> },
+  { value: 'ladder', label: '사다리', icon: <Table2 size={18} /> },
+  { value: 'map', label: '지도', icon: <MapPin size={18} /> },
+] as const satisfies readonly TopTabItem[];
+
+type MainTab = (typeof TAB_LIST)[number]['value'];
+const DEFAULT_TAB: MainTab = TAB_LIST[0].value;
+
+const isMainTab = (value: string): value is MainTab => TAB_LIST.some(item => item.value === value);
+
 export default function HomePage() {
-  const [tab, setTab] = useState<'roulette' | 'ladder' | 'map'>('roulette');
+  const [activeTab, setActiveTab] = useState<MainTab>(DEFAULT_TAB);
   const [isSpinning, setIsSpinning] = useState(false);
+
+  // 각 탭이 한 번이라도 마운트되었는지 여부 기록
+  const [mountedTabs, setMountedTabs] = useState<Record<MainTab, boolean>>({
+    roulette: true,
+    ladder: false,
+    map: false,
+  });
+
+  const handleChangeTab = (next: string) => {
+    if (!isMainTab(next)) return;
+
+    setActiveTab(next);
+    setMountedTabs(prev => (prev[next] ? prev : { ...prev, [next]: true }));
+  };
+
+  // 각 탭에 해당하는 패널 컴포넌트
+  const panels: Record<MainTab, JSX.Element> = {
+    roulette: (
+      <Roulette
+        isSpinning={isSpinning}
+        onSpinStart={() => setIsSpinning(true)}
+        onSpinResult={() => setIsSpinning(false)}
+      />
+    ),
+    ladder: <Ladder />,
+    map: <div>지도</div>,
+  };
+
+  const renderMainPanel = (active: string) => {
+    if (!isMainTab(active)) return null;
+
+    // lazyMount된 탭이 아니면 렌더링하지 않음
+    if (!mountedTabs[active]) return null;
+
+    return panels[active]; // 각 탭에 해당하는 패널 반환
+  };
 
   return (
     <div className={styles['container']}>
@@ -24,17 +74,13 @@ export default function HomePage() {
 
         <div className={styles['container__left__main']}>
           <section className={styles['container__left__main__roulette']}>
-            <TopTabs tab={tab} onChange={setTab} />
-
-            {tab === 'roulette' && (
-              <Roulette
-                isSpinning={isSpinning}
-                onSpinStart={() => setIsSpinning(true)}
-                onSpinResult={() => setIsSpinning(false)}
-              />
-            )}
-
-            {tab === 'ladder' && <Ladder />}
+            <TopTabs
+              items={TAB_LIST}
+              value={activeTab}
+              onChange={handleChangeTab}
+              renderPanel={renderMainPanel}
+              lazyMount
+            />
           </section>
 
           <section className={styles['container__left__main__option']}>찬성 반대</section>

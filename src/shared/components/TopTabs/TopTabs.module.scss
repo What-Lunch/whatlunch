@@ -3,11 +3,17 @@
 @use 'utils/variables' as v;
 
 .top-tabs {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
   &__list {
     display: flex;
     width: 100%;
     background: f.color(gray-100);
     border-radius: 10px;
+    flex: 0 0 auto;
   }
 
   &__tab {
@@ -45,6 +51,8 @@
   }
 
   &__panel {
+    flex: 1 1 auto; // 남은 공간 모두 차지
+    min-height: 0;
     overflow-y: auto;
 
     &--hidden {
