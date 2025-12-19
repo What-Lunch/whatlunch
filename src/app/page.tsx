@@ -13,6 +13,7 @@ import Carousel, { pendingData } from '@/shared/components/Carousel';
 import styles from './page.module.scss';
 
 export default function HomePage() {
+  //d
   const [tab, setTab] = useState<'roulette' | 'ladder' | 'map'>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
 
