@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import Clock from '@/shared/components/Clock/Clock';
 import TopTabs from '@/domain/TopTabs/TopTabs';
@@ -16,6 +16,16 @@ import styles from './page.module.scss';
 export default function HomePage() {
   const [tab, setTab] = useState<'roulette' | 'ladder' | 'map'>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchValue, setSearchValue] = useState('맛집');
+
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      setSearchKeyword(searchValue);
+    },
+    [searchValue]
+  );
 
   return (
     <div className={styles['container']}>
@@ -24,7 +34,7 @@ export default function HomePage() {
         <section className={styles['container__left__slice']}>오늘 인기있는 음식</section>
 
         <div className={styles['container__left__main']}>
-          <section className={styles['container__left__main__roulette']}>
+          <section className={styles['container__left__main__menu-tab']}>
             <TopTabs tab={tab} onChange={setTab} />
 
             {tab === 'roulette' && (
@@ -34,15 +44,25 @@ export default function HomePage() {
                 onSpinResult={() => setIsSpinning(false)}
               />
             )}
-
             {tab === 'ladder' && <Ladder />}
+            {tab === 'map' && (
+              <div className={styles['container__left__main__menu-tab-map']}>
+                <div onClick={handleSearch}>
+                  <input
+                    type="search"
+                    placeholder="Search location"
+                    value={searchValue}
+                    onChange={e => setSearchValue(e.target.value)}
+                  />
+                  <button type="submit">검색</button>
+                </div>
+                <KakaoMap keyword={searchKeyword} />
+              </div>
+            )}
           </section>
 
           <section className={styles['container__left__main__option']}>찬성 반대</section>
-          <section className={styles['container__left__main__map']}>
-            {/* TODO: 카카오 맵 룰렛창 결과 value 전달 필요 */}
-            <KakaoMap keyword="" />
-          </section>
+          <section className={styles['container__left__main__map']}></section>
         </div>
       </div>
 

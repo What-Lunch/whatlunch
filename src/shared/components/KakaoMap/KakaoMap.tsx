@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState, useRef } from 'react';
-
+import styles from './KakaoMap.module.scss';
 import { KakaoMapProps } from './types';
 
 const KAKAO_MAP = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
@@ -316,24 +316,10 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   );
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
-      {error && (
-        <div
-          style={{
-            color: '#fff',
-            background: '#f44336',
-            padding: '12px',
-            borderRadius: '4px',
-            marginBottom: '8px',
-          }}
-        >
-          {error}
-        </div>
-      )}
+    <div className={styles['container']}>
+      <div ref={mapContainerRef} className={styles['map-wrapper']} />
 
-      <div ref={mapContainerRef} style={{ width: '100%', height: '70%' }} />
-
-      <div
+      {/* <div
         style={{
           height: '30%',
           overflowY: 'auto',
@@ -384,7 +370,7 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
             {keyword ? '검색 결과가 없습니다.' : '검색어를 입력하세요.'}
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
