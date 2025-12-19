@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Main from '@/shared/components/Layout/Main/Main';
+import Main from '@/shared/components/layout/Main/Main';
 
 describe('<Main />', () => {
   it('renders without crashing', () => {
