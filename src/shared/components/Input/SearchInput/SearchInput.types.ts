@@ -1,13 +1,10 @@
-import { InputHTMLAttributes, ReactNode } from 'react';
+import { BaseInputProps } from '../BaseInput/BaseInput.types';
+import React from 'react';
 
-export interface SearchInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange'> {
-    value: string;
-    onChange: (value: string) => void;
-
-    onSearch?: (value: string) => void;
-
-    searchIcon?: ReactNode;
-    clearIcon?: ReactNode;
-
-    disabled?: boolean;
+export interface SearchInputProps extends Omit<BaseInputProps, 'value'> {
+  value: string;
+  onSearch: (value: string) => void;
+  onClear?: () => void;
+  searchIcon?: React.ReactNode;
+  clearIcon?: React.ReactNode;
 }
