@@ -67,6 +67,16 @@ declare global {
           ERROR: 'ERROR';
         };
       }
+      namespace event {
+        type MouseEventListener = (mouseEvent: object) => void;
+        function addListener(
+          target: object,
+          type: string,
+          handler: MouseEventListener
+        ): MouseEventListener;
+        function removeListener(target: object, type: string, handler: MouseEventListener): void;
+      }
+
       function load(callback: () => void): void;
     }
   }

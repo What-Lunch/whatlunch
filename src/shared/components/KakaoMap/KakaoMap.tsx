@@ -21,6 +21,9 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const currentLocationMarkerRef = useRef<Kakao.maps.Marker | null>(null);
   const infoWindowRef = useRef<Kakao.maps.InfoWindow | null>(null);
+  const markerClickListenersRef = useRef<
+    Array<{ marker: Kakao.maps.Marker; listener: Kakao.maps.event.MouseEventListener }>
+  >([]);
 
   /**
    * InfoWindow 초기화 (한 번만)
@@ -37,10 +40,14 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
    * 검색 마커 초기화
    */
   const clearSearchMarkers = useCallback(() => {
+    markerClickListenersRef.current.forEach(({ marker, listener }) => {
+      window.kakao.maps.event.removeListener(marker, 'click', listener);
+    });
+    markerClickListenersRef.current = [];
+
     searchMarkersRef.current.forEach(marker => marker.setMap(null));
     searchMarkersRef.current = [];
 
-    // InfoWindow도 닫기
     if (infoWindowRef.current) {
       infoWindowRef.current.close();
     }
@@ -76,6 +83,12 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
     (data: Kakao.PlacesSearchResult) => {
       setPlaces(data);
 
+      // 이전 리스너 제거
+      markerClickListenersRef.current.forEach(({ marker, listener }) => {
+        window.kakao.maps.event.removeListener(marker, 'click', listener);
+      });
+      markerClickListenersRef.current = [];
+
       const newMarkers = data.map(place => {
         const position = new window.kakao.maps.LatLng(Number(place.y), Number(place.x));
         const marker = new window.kakao.maps.Marker({
@@ -84,13 +97,14 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
         });
 
         // 마커 클릭 이벤트: InfoWindow 재사용
-        window.kakao.maps.event.addListener(marker, 'click', () => {
+        const listener = window.kakao.maps.event.addListener(marker, 'click', () => {
           if (infoWindowRef.current && mapRef.current) {
             const content = createInfoWindowContent(place);
             infoWindowRef.current.setContent(content);
             infoWindowRef.current.open(mapRef.current, marker);
           }
         });
+        markerClickListenersRef.current.push({ marker, listener });
 
         return marker;
       });
@@ -152,7 +166,7 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
           if (status === window.kakao.maps.services.Status.OK && data.length > 0) {
             // 주변에 결과 있음
             displaySearchResults(data);
-          } else if (data.length === 0) {
+          } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
             // 주변에 결과 없음 → 전국 검색
             searchNationwide(ps, searchKeyword);
           } else {
@@ -246,13 +260,16 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
       });
     };
 
+    let cleanupListener: (() => void) | undefined;
+
     if (existingScript) {
       if (window.kakao?.maps) {
         loadMap();
       } else {
         existingScript.addEventListener('load', loadMap);
+        cleanupListener = () => existingScript.removeEventListener('load', loadMap);
       }
-      return;
+      return cleanupListener;
     }
 
     const script = document.createElement('script');
@@ -273,6 +290,7 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
       if (infoWindowRef.current) {
         infoWindowRef.current.close();
       }
+      if (cleanupListener) cleanupListener();
     };
   }, [initializeMap, clearSearchMarkers]);
 

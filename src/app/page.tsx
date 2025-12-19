@@ -47,7 +47,7 @@ export default function HomePage() {
             {tab === 'ladder' && <Ladder />}
             {tab === 'map' && (
               <div className={styles['container__left__main__menu-tab-map']}>
-                <div onClick={handleSearch}>
+                <form onSubmit={handleSearch}>
                   <input
                     type="search"
                     placeholder="Search location"
@@ -55,7 +55,7 @@ export default function HomePage() {
                     onChange={e => setSearchValue(e.target.value)}
                   />
                   <button type="submit">검색</button>
-                </div>
+                </form>
                 <KakaoMap keyword={searchKeyword} />
               </div>
             )}
