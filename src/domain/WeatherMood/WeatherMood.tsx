@@ -1,72 +1,44 @@
 'use client';
 
 import { useState } from 'react';
+import { CloudSun, Smile } from 'lucide-react';
 
-import WeatherRecommend from '@/domain/WeatherMood/components/Weather/WeatherRecommend';
-import MoodRecommend from '@/domain/WeatherMood/components/Mood/MoodRecommend';
+import TopTabs from '@/shared/components/TopTabs';
 
-import type { TabKey } from '@/domain/WeatherMood/types';
+import MoodRecommend from './components/Mood/MoodRecommend';
+import WeatherRecommend from './components/Weather/WeatherRecommend';
 
-import styles from '@/domain/WeatherMood/WeatherMood.module.scss';
+import type { TopTabItem } from '@/shared/components/TopTabs';
 
-// 탭 구성 정보
-const TAB_META = {
-  weather: {
-    label: '날씨에 따른',
-  },
-  mood: {
-    label: '기분에 따른',
-  },
-} as const;
+import styles from './WeatherMood.module.scss';
+
+const TAB_LIST = [
+  { value: 'weather', label: '날씨에 따른', icon: <CloudSun size={18} /> },
+  { value: 'mood', label: '기분에 따른', icon: <Smile size={18} /> },
+] as const satisfies readonly TopTabItem[];
+
+type TabValue = (typeof TAB_LIST)[number]['value']; // 'weather' | 'mood'
+const DEFAULT_TAB: TabValue = TAB_LIST[0].value;
+
+const isTabValue = (value: string): value is TabValue =>
+  TAB_LIST.some(item => item.value === value);
 
 export default function WeatherMood() {
-  const [activeTab, setActiveTab] = useState<TabKey>('weather');
+  const [activeTab, setActiveTab] = useState<TabValue>(DEFAULT_TAB);
 
   return (
-    <div className={styles['weather-mood']}>
-      {/* 탭 버튼 영역 */}
-      <div className={styles['weather-mood__tabs']} role="tablist" aria-label="유형 선택">
-        {Object.entries(TAB_META).map(([key, { label }]) => {
-          const tabId = key as TabKey;
-          const isActive = activeTab === tabId;
-          const panelId = `${tabId}-panel`;
-
-          return (
-            <button
-              key={tabId}
-              role="tab"
-              aria-selected={isActive}
-              aria-controls={panelId}
-              tabIndex={isActive ? 0 : -1}
-              className={[
-                styles['weather-mood__tab'],
-                isActive && styles['weather-mood__tab--active'],
-              ]
-                .filter(Boolean)
-                .join(' ')}
-              onClick={() => setActiveTab(tabId)}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* 탭 별 컨텐츠 */}
-      <div className={styles['weather-mood__content']}>
-        <div
-          id="weather-panel"
-          role="tabpanel"
-          aria-labelledby="weather"
-          hidden={activeTab !== 'weather'}
-        >
-          <WeatherRecommend />
-        </div>
-
-        <div id="mood-panel" role="tabpanel" aria-labelledby="mood" hidden={activeTab !== 'mood'}>
-          <MoodRecommend />
-        </div>
-      </div>
+    <div className={styles['wrapper']}>
+      <TopTabs
+        items={TAB_LIST}
+        value={activeTab}
+        onChange={next => {
+          if (isTabValue(next)) setActiveTab(next);
+        }}
+        renderPanel={active => {
+          if (active === 'weather') return <WeatherRecommend />;
+          return <MoodRecommend />;
+        }}
+      />
     </div>
   );
 }
