@@ -16,11 +16,11 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   const [error, setError] = useState<string | null>(null);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
 
-  const searchMarkersRef = useRef<Kakao.Marker[]>([]);
-  const mapRef = useRef<Kakao.Maps | null>(null);
+  const searchMarkersRef = useRef<Kakao.maps.Marker[]>([]);
+  const mapRef = useRef<Kakao.maps.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const currentLocationMarkerRef = useRef<Kakao.Marker | null>(null);
-  const infoWindowRef = useRef<any>(null); // 단일 InfoWindow 인스턴스
+  const currentLocationMarkerRef = useRef<Kakao.maps.Marker | null>(null);
+  const infoWindowRef = useRef<Kakao.maps.InfoWindow | null>(null);
 
   /**
    * InfoWindow 초기화 (한 번만)
@@ -85,7 +85,7 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
 
         // 마커 클릭 이벤트: InfoWindow 재사용
         window.kakao.maps.event.addListener(marker, 'click', () => {
-          if (infoWindowRef.current) {
+          if (infoWindowRef.current && mapRef.current) {
             const content = createInfoWindowContent(place);
             infoWindowRef.current.setContent(content);
             infoWindowRef.current.open(mapRef.current, marker);
@@ -104,7 +104,7 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
    * 전국 검색 후 지도 중심 이동 및 주변 검색
    */
   const searchNationwide = useCallback(
-    (ps: any, searchKeyword: string) => {
+    (ps: Kakao.maps.services.Places, searchKeyword: string) => {
       ps.keywordSearch(searchKeyword, (data: Kakao.PlacesSearchResult, status: Kakao.Status) => {
         if (status === window.kakao.maps.services.Status.OK && data.length > 0) {
           const firstPlace = data[0];
@@ -142,7 +142,7 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
    * 주변 검색 (위치 권한 있을 때)
    */
   const searchNearby = useCallback(
-    (ps: any, searchKeyword: string) => {
+    (ps: Kakao.maps.services.Places, searchKeyword: string) => {
       const center = mapRef.current?.getCenter();
       if (!center) return;
 

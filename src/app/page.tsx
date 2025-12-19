@@ -7,13 +7,13 @@ import TopTabs from '@/domain/TopTabs/TopTabs';
 import WeatherMood from '@/domain/WeatherMood/WeatherMood';
 import Ladder from '@/domain/Ladder/Ladder';
 import Roulette from '@/domain/Roulette/Roulette';
+import KakaoMap from '@/shared/components/KakaoMap';
 
 import Carousel, { pendingData } from '@/shared/components/Carousel';
 
 import styles from './page.module.scss';
 
 export default function HomePage() {
-  //d
   const [tab, setTab] = useState<'roulette' | 'ladder' | 'map'>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
 

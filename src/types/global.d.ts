@@ -1,6 +1,8 @@
 declare global {
   interface Window {
-    kakao: any;
+    kakao: {
+      maps: typeof kakao.maps;
+    };
   }
 
   namespace Kakao {
@@ -18,65 +20,55 @@ declare global {
 
     type PlacesSearchResult = PlaceItem[];
 
-    interface LatLng {
-      getLat(): number;
-      getLng(): number;
-    }
-
-    class Marker {
-      constructor(options: { map?: Maps | null; position: LatLng });
-      setMap(map: Maps | null): void;
-      getPosition(): LatLng;
-    }
-
-    class Maps {
-      constructor(container: HTMLElement | null, options: MapOptions);
-      setCenter(latlng: LatLng): void;
-      getCenter(): LatLng;
-      setLevel(
-        level: number,
-        options?: {
-          animate?: boolean | { duration: number; easing: string };
-          anchor?: LatLng;
+    namespace maps {
+      class LatLng {
+        constructor(lat: number, lng: number);
+        getLat(): number;
+        getLng(): number;
+      }
+      class Marker {
+        constructor(options: { map?: maps.Map | null; position: maps.LatLng });
+        setMap(map: maps.Map | null): void;
+        getPosition(): maps.LatLng;
+      }
+      class InfoWindow {
+        constructor(options?: { content?: string; removable?: boolean });
+        open(map: maps.Map, marker: maps.Marker): void;
+        close(): void;
+        setContent(content: string): void;
+      }
+      class Map {
+        constructor(container: HTMLElement | null, options: maps.MapOptions);
+        setCenter(latlng: maps.LatLng): void;
+        getCenter(): maps.LatLng;
+        setLevel(
+          level: number,
+          options?: {
+            animate?: boolean | { duration: number; easing: string };
+            anchor?: maps.LatLng;
+          }
+        ): void;
+      }
+      interface MapOptions {
+        center: maps.LatLng;
+        level?: number;
+      }
+      namespace services {
+        class Places {
+          keywordSearch(
+            keyword: string,
+            callback: (data: Kakao.PlacesSearchResult, status: Kakao.Status) => void,
+            options?: object
+          ): void;
         }
-      ): void;
+        const Status: {
+          OK: 'OK';
+          ZERO_RESULT: 'ZERO_RESULT';
+          ERROR: 'ERROR';
+        };
+      }
+      function load(callback: () => void): void;
     }
-
-    interface MapOptions {
-      center: LatLng;
-      level?: number;
-    }
-
-    // namespace maps {
-    //   function load(callback: () => void): void;
-
-    //   class Map extends Maps {}
-    //   class LatLng {
-    //     constructor(lat: number, lng: number);
-    //     getLat(): number;
-    //     getLng(): number;
-    //   }
-    //   class Marker {
-    //     constructor(options: { map?: Map | null; position: LatLng });
-    //     setMap(map: Map | null): void;
-    //     getPosition(): LatLng;
-    //   }
-
-    //   namespace services {
-    //     class Places {
-    //       keywordSearch(
-    //         keyword: string,
-    //         callback: (data: PlaceItem[], status: Status) => void,
-    //         options?: any
-    //       ): void;
-    //     }
-    //     const Status: {
-    //       OK: 'OK';
-    //       ZERO_RESULT: 'ZERO_RESULT';
-    //       ERROR: 'ERROR';
-    //     };
-    //   }
-    // }
   }
 }
 
