@@ -15,7 +15,7 @@ export default function PasswordInput({
   ...rest
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const inputType = showPassword ? 'text' : 'password';
+  const inputType = showToggle ? (showPassword ? 'text' : 'password') : 'password';
 
   const wrapperClass = [styles['wrapper']].filter(Boolean).join(' ');
 

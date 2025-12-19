@@ -90,6 +90,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
           <div className={styles['social__login']}>
             <span>간편 로그인하기</span>
             <button
+              type="button"
               role="button"
               className={styles['social__login--google']}
               aria-label="Google로 로그인"

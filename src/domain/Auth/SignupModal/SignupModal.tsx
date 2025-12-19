@@ -95,9 +95,13 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
             </Button>
             <div>
               <span className={styles['login__buttons__boolean']}>회원이신가요? </span>
-              <span className={styles['login__buttons__signup']} onClick={onLoginOpen}>
+              <button
+                type="button"
+                className={styles['login__buttons__signup']}
+                onClick={onLoginOpen}
+              >
                 로그인하기
-              </span>
+              </button>
             </div>
           </div>
         </div>
@@ -106,6 +110,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
           <div className={styles['social__login']}>
             <span>간편 회원가입하기</span>
             <button
+              type="button"
               role="button"
               className={styles['social__login--google']}
               aria-label="Google로 회원가입"
