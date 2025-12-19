@@ -316,61 +316,37 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   );
 
   return (
-    <div className={styles['container']}>
-      <div ref={mapContainerRef} className={styles['map-wrapper']} />
+    <div className={styles['map-wrapper']}>
+      {error && <div className={styles['error-message']}>{error}</div>}
+      <div ref={mapContainerRef} className={styles['map']} />
 
-      {/* <div
-        style={{
-          height: '30%',
-          overflowY: 'auto',
-          background: '#fff',
-          borderTop: '1px solid #eee',
-        }}
-      >
+      <div className={styles['map__place-list']}>
         {places.length > 0 ? (
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          <ul className={styles['map__place-list__list']}>
             {places.map(place => (
               <li
                 key={place.id}
-                style={{
-                  padding: '12px 16px',
-                  borderBottom: '1px solid #eee',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s',
-                }}
+                className={styles['map__place-list__list__item']}
                 onClick={() => handlePlaceClick(place)}
-                onMouseEnter={e => {
-                  e.currentTarget.style.background = '#f5f5f5';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.background = 'transparent';
-                }}
               >
-                <strong style={{ fontSize: '14px', color: '#333' }}>{place.place_name}</strong>
-                <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                <span className={styles['map__place-list__list__item__name']}>
+                  {place.place_name}
+                </span>
+                <div className={styles['map__place-list__list__item__address']}>
                   {place.road_address_name || place.address_name}
                 </div>
                 {place.phone && (
-                  <div style={{ fontSize: '12px', color: '#999', marginTop: '2px' }}>
-                    {place.phone}
-                  </div>
+                  <div className={styles['map__place-list__list__item__phone']}>{place.phone}</div>
                 )}
               </li>
             ))}
           </ul>
         ) : (
-          <div
-            style={{
-              padding: '24px',
-              color: '#999',
-              textAlign: 'center',
-              fontSize: '14px',
-            }}
-          >
+          <div className={styles['map__place-list__search-prompt']}>
             {keyword ? '검색 결과가 없습니다.' : '검색어를 입력하세요.'}
           </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 }

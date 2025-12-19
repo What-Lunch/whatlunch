@@ -1,29 +1,51 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
 
-.container,
 .map-wrapper {
   width: 100%;
   height: 100%;
+  display: flex;
+  height: 765px;
 }
 
-.kakao-infowindow-content {
-  padding: 12px;
-  //   min-width: 200px;
+.error-message {
+  color: f.color(red-0);
 }
-.kakao-infowindow-title {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-}
-.kakao-infowindow-address {
-  margin: 4px 0;
-  font-size: 12px;
-  color: #666;
-}
-.kakao-infowindow-phone {
-  margin: 4px 0;
-  font-size: 12px;
-  color: #999;
+
+.map {
+  width: 70%;
+
+  &__place-list {
+    flex: 1 1 0;
+    height: 100%;
+    overflow-y: auto;
+    background: f.color(white);
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      &__item {
+        padding: '12px 16px';
+        cursor: 'pointer';
+        border-bottom: 1px solid f.color(gray-200);
+
+        &__name {
+          @include m.text-style-extended('2lg', 500, black);
+        }
+        &__address {
+          @include m.text-style-extended('lg', 400, black);
+        }
+        &__phone {
+          @include m.text-style-extended('md', 400, black);
+        }
+      }
+    }
+  }
+
+  &__search-prompt {
+    @include m.text-style-extended('md', 400, gray-600);
+    text-align: center;
+  }
 }
