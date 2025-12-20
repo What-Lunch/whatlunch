@@ -4,13 +4,13 @@ import type { KeyboardEvent, MutableRefObject } from 'react';
 
 import type { TopTabItem } from '../types';
 
-type UseTopTabsArgs = {
+interface UseTopTabsArgs {
   items: readonly TopTabItem[];
   value: string;
   onChange: (next: string) => void; // 탭 변경 시 호출되는 콜백
-};
+}
 
-export type TopTabsController = {
+export interface TopTabsController {
   items: readonly TopTabItem[];
   activeValue: string;
   activeIndex: number;
@@ -19,18 +19,30 @@ export type TopTabsController = {
   setActive: (next: string) => void;
 
   registerButtonRef: (index: number, element: HTMLButtonElement | null) => void;
-  onKeyDownTab: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void; // 탭 키보드 네비게이션 핸들러
+  onKeyDownTab: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void;
 
-  buttonRefs: MutableRefObject<Array<HTMLButtonElement | null>>; // 탭 버튼 DOM ref 배열
-};
+  buttonRefs: MutableRefObject<Array<HTMLButtonElement | null>>;
+}
 
 export function useTopTabs({ items, value, onChange }: UseTopTabsArgs): TopTabsController {
   const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
+  // 현재 value가 items에 포함되어 있는지 여부
+  const hasValidValue = useMemo(() => items.some(item => item.value === value), [items, value]);
+
+  // value가 유효하지 않을 경우 사용할 fallback 값
+  const fallbackValue = useMemo(() => items[0]?.value ?? value, [items, value]);
+
   const activeValue = useMemo(() => {
     if (items.length === 0) return value;
-    return items.some(item => item.value === value) ? value : items[0].value;
-  }, [items, value]);
+    return hasValidValue ? value : fallbackValue;
+  }, [items, hasValidValue, value, fallbackValue]);
+
+  useEffect(() => {
+    if (items.length === 0 || hasValidValue || value === fallbackValue) return;
+
+    onChange(fallbackValue);
+  }, [items, hasValidValue, value, fallbackValue, onChange]);
 
   const activeIndex = useMemo(() => {
     const foundIndex = items.findIndex(item => item.value === activeValue);
