@@ -4,13 +4,13 @@ import type { KeyboardEvent, MutableRefObject } from 'react';
 
 import type { TopTabItem } from '../types';
 
-type UseTopTabsArgs = {
+interface UseTopTabsArgs {
   items: readonly TopTabItem[];
   value: string;
   onChange: (next: string) => void; // 탭 변경 시 호출되는 콜백
-};
+}
 
-export type TopTabsController = {
+export interface TopTabsController {
   items: readonly TopTabItem[];
   activeValue: string;
   activeIndex: number;
@@ -22,7 +22,7 @@ export type TopTabsController = {
   onKeyDownTab: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void;
 
   buttonRefs: MutableRefObject<Array<HTMLButtonElement | null>>;
-};
+}
 
 export function useTopTabs({ items, value, onChange }: UseTopTabsArgs): TopTabsController {
   const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -31,24 +31,18 @@ export function useTopTabs({ items, value, onChange }: UseTopTabsArgs): TopTabsC
   const hasValidValue = useMemo(() => items.some(item => item.value === value), [items, value]);
 
   // value가 유효하지 않을 경우 사용할 fallback 값
-  const fallbackValue = useMemo(() => {
-    if (items.length === 0) return value;
-    return items[0].value;
-  }, [items, value]);
+  const fallbackValue = useMemo(() => items[0]?.value ?? value, [items, value]);
 
   const activeValue = useMemo(() => {
     if (items.length === 0) return value;
     return hasValidValue ? value : fallbackValue;
-  }, [items.length, hasValidValue, value, fallbackValue]);
+  }, [items, hasValidValue, value, fallbackValue]);
 
-  // value가 items에 없을 경우
   useEffect(() => {
-    if (items.length === 0) return;
-    if (hasValidValue) return;
-    if (value === fallbackValue) return; // 무한 루프 방지
+    if (items.length === 0 || hasValidValue || value === fallbackValue) return;
 
     onChange(fallbackValue);
-  }, [items.length, hasValidValue, value, fallbackValue, onChange]);
+  }, [items, hasValidValue, value, fallbackValue, onChange]);
 
   const activeIndex = useMemo(() => {
     const foundIndex = items.findIndex(item => item.value === activeValue);

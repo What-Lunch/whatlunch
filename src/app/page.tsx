@@ -21,49 +21,42 @@ const TAB_LIST = [
   { value: 'map', label: '지도', icon: <MapPin size={18} /> },
 ] as const satisfies readonly TopTabItem[];
 
-type MainTab = (typeof TAB_LIST)[number]['value'];
-const DEFAULT_TAB: MainTab = TAB_LIST[0].value;
-
-const isMainTab = (value: string): value is MainTab => TAB_LIST.some(item => item.value === value);
+const isMainTab = (value: string): value is TopTabItem['value'] =>
+  TAB_LIST.some(item => item.value === value);
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<MainTab>(DEFAULT_TAB);
+  const [activeTab, setActiveTab] = useState<TopTabItem['value']>(TAB_LIST[0].value);
   const [isSpinning, setIsSpinning] = useState(false);
 
-  // 각 탭이 한 번이라도 마운트되었는지 여부 기록
-  const [mountedTabs, setMountedTabs] = useState<Record<MainTab, boolean>>({
-    roulette: true,
-    ladder: false,
-    map: false,
-  });
-
+  // 활성 탭 상태만 변경
   const handleChangeTab = (next: string) => {
     if (!isMainTab(next)) return;
-
     setActiveTab(next);
-    setMountedTabs(prev => (prev[next] ? prev : { ...prev, [next]: true }));
   };
 
-  // 각 탭에 해당하는 패널 컴포넌트
-  const panels: Record<MainTab, JSX.Element> = {
-    roulette: (
-      <Roulette
-        isSpinning={isSpinning}
-        onSpinStart={() => setIsSpinning(true)}
-        onSpinResult={() => setIsSpinning(false)}
-      />
-    ),
-    ladder: <Ladder />,
-    map: <div>지도</div>,
-  };
+  // 패널 생성만 담당 (lazyMount는 TopTabs가 처리)
+  const renderMainPanel = (value: string) => {
+    if (!isMainTab(value)) return null;
 
-  const renderMainPanel = (active: string) => {
-    if (!isMainTab(active)) return null;
+    if (value === 'roulette') {
+      return (
+        <Roulette
+          isSpinning={isSpinning}
+          onSpinStart={() => setIsSpinning(true)}
+          onSpinResult={() => setIsSpinning(false)}
+        />
+      );
+    }
 
-    // lazyMount된 탭이 아니면 렌더링하지 않음
-    if (!mountedTabs[active]) return null;
+    if (value === 'ladder') {
+      return <Ladder />;
+    }
 
-    return panels[active]; // 각 탭에 해당하는 패널 반환
+    if (value === 'map') {
+      return <div>지도</div>;
+    }
+
+    return null;
   };
 
   return (
