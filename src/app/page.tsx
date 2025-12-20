@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import { MapPin, Shuffle, Table2 } from 'lucide-react';
 
@@ -10,6 +10,7 @@ import TopTabs from '@/shared/components/TopTabs';
 import WeatherMood from '@/domain/WeatherMood/WeatherMood';
 import Ladder from '@/domain/Ladder/Ladder';
 import Roulette from '@/domain/Roulette/Roulette';
+import KakaoMap from '@/shared/components/KakaoMap';
 
 import type { TopTabItem } from '@/shared/components/TopTabs';
 
@@ -27,6 +28,16 @@ const isMainTab = (value: string): value is TopTabItem['value'] =>
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<TopTabItem['value']>(TAB_LIST[0].value);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchValue, setSearchValue] = useState('맛집');
+
+  const handleSearch = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      setSearchKeyword(searchValue);
+    },
+    [searchValue]
+  );
 
   // 활성 탭 상태만 변경
   const handleChangeTab = (next: string) => {
@@ -74,10 +85,35 @@ export default function HomePage() {
               renderPanel={renderMainPanel}
               lazyMount
             />
+          <section className={styles['container__left__main__menu-tab']}>
+            <TopTabs tab={tab} onChange={setTab} />
+
+            {tab === 'roulette' && (
+              <Roulette
+                isSpinning={isSpinning}
+                onSpinStart={() => setIsSpinning(true)}
+                onSpinResult={() => setIsSpinning(false)}
+              />
+            )}
+            {tab === 'ladder' && <Ladder />}
+            {tab === 'map' && (
+              <div className={styles['container__left__main__menu-tab-map']}>
+                <form onSubmit={handleSearch}>
+                  <input
+                    type="search"
+                    placeholder="Search location"
+                    value={searchValue}
+                    onChange={e => setSearchValue(e.target.value)}
+                  />
+                  <button type="submit">검색</button>
+                </form>
+                <KakaoMap keyword={searchKeyword} />
+              </div>
+            )}
           </section>
 
           <section className={styles['container__left__main__option']}>찬성 반대</section>
-          <section className={styles['container__left__main__map']}>지도</section>
+          <section className={styles['container__left__main__map']}></section>
         </div>
       </div>
 

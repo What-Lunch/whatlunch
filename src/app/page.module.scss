@@ -10,6 +10,7 @@
   @include m.flex-box(center, flex-start, row);
   gap: 40px;
   width: 100%;
+  overflow: hidden;
 
   &__left {
     @include m.flex-box(center, center, column);
@@ -28,12 +29,16 @@
       width: 100%;
       gap: 30px;
 
-      &__roulette {
+      &__menu-tab {
         @include bordered-box;
         @include m.flex-box(flex-start, center, column);
         gap: 14px;
+        height: 860px;
 
-        min-height: 860px;
+        &-map {
+          height: 100%;
+          width: 100%;
+        }
       }
 
       &__option {
