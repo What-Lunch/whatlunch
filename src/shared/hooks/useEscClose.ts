@@ -22,3 +22,18 @@ export function useEscClose(onClose?: () => void) {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 }
+
+/**
+ * 모달 바깥 클릭 시 닫기 훅
+ * const { handleOverlayClick } = useModalClose(onClose);
+ * @param onClose
+ */
+export function useModalClose(onClose: () => void) {
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return { handleOverlayClick };
+}
