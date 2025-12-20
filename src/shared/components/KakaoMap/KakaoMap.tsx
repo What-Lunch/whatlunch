@@ -217,6 +217,8 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
   const initializeMap = useCallback(
     (latitude: number, longitude: number, permission: boolean) => {
       // 이미 지도가 초기화되어 있으면 실행하지 않음
+      setHasPermission(permission);
+
       if (mapRef.current) return;
 
       const center = new window.kakao.maps.LatLng(latitude, longitude);
@@ -238,7 +240,6 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
       initializeInfoWindow();
 
       setMapReady(true);
-      setHasPermission(permission);
     },
     [initializeInfoWindow]
   );
