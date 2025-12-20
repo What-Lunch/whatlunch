@@ -64,7 +64,7 @@ export default function HomePage() {
     }
 
     if (value === 'map') {
-      return <div>지도</div>;
+      return <div>지도임</div>;
     }
 
     return null;
