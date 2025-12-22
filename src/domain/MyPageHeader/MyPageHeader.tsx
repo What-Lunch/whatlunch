@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 
-import { Star, Timer, Users, Utensils } from 'lucide-react';
+import { Pencil, Star, Timer, Users, Utensils } from 'lucide-react';
 
 import type { MyPageBadge, UserProfile } from './types';
 
@@ -53,17 +54,17 @@ const MyPageHeader = () => {
         onClick={handleClickProfile}
         aria-label="프로필 사진 변경"
       >
-        <img
+        <Image
           className={styles['profile-header__avatar-image']}
           src={user.profileImageUrl}
           alt="프로필 이미지"
+          width={120}
+          height={120}
+          priority
         />
-        <span className={styles['profile-header__edit-icon']} aria-hidden="true">
-          <img
-            src="/icons/pencil.png"
-            alt="프로필 편집 아이콘"
-            className={styles['profile-header__edit-icon-image']}
-          />
+
+        <span className={styles['profile-header__avatar-edit-icon']} aria-hidden="true">
+          <Pencil className={styles['profile-header__avatar-edit-icon-image']} />
         </span>
       </button>
 
