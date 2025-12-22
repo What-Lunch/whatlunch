@@ -46,7 +46,7 @@ const MyPageHeader = () => {
   };
 
   return (
-    <header className={styles['profile-header']}>
+    <section className={styles['profile-header']} aria-labelledby="profile-header-title">
       <button
         type="button"
         className={styles['profile-header__avatar']}
@@ -68,7 +68,9 @@ const MyPageHeader = () => {
       </button>
 
       <div className={styles['profile-header__body']}>
-        <h1 className={styles['profile-header__title']}>{user.nickname}님의 마이페이지</h1>
+        <h1 className={styles['profile-header__title']} id="profile-header-title">
+          {user.nickname}님의 마이페이지
+        </h1>
         <p className={styles['profile-header__subtitle']}>오늘 기록이 여기에 정리돼요</p>
 
         <div className={styles['profile-header__stats']}>
@@ -91,7 +93,7 @@ const MyPageHeader = () => {
         accept="image/*"
         onChange={handleChangeFile}
       />
-    </header>
+    </section>
   );
 };
 
