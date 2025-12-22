@@ -84,7 +84,7 @@ export default function HomePage() {
           </form>
 
           <div className={styles['container__left__main__menu-tab-map__map']}>
-            <KakaoMap keyword={rouletteResult || searchKeyword} />
+            <KakaoMap keyword={searchKeyword} />
           </div>
         </div>
       );
@@ -111,9 +111,11 @@ export default function HomePage() {
           </section>
 
           <section className={styles['container__left__main__option']}>찬성 반대</section>
-          <section className={styles['container__left__main__map']}>
-            <KakaoMap keyword={rouletteResult || searchKeyword} list={false} />
-          </section>
+          {rouletteResult && (
+            <section className={styles['container__left__main__map']}>
+              <KakaoMap keyword={rouletteResult || searchKeyword} list={false} />
+            </section>
+          )}
         </div>
       </div>
 
