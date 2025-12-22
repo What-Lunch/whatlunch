@@ -12,10 +12,10 @@
 }
 
 .map {
-  width: 70%;
+  flex: 1 1 0;
 
   &__place-list {
-    flex: 1 1 0;
+    width: 30%;
     height: 100%;
     overflow-y: auto;
     background: f.color(white);

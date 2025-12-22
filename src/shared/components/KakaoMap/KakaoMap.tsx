@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef, memo } from 'react';
 import styles from './KakaoMap.module.scss';
 import { KakaoMapProps } from './types';
 
@@ -10,7 +10,7 @@ const SEARCH_RADIUS = 3000;
 const DEBOUNCE_DELAY = 300;
 const DEFAULT_COORDS = { lat: 37.5665, lng: 126.978 }; // 서울시청
 
-export default function KakaoMap({ keyword }: KakaoMapProps) {
+function KakaoMap({ keyword, list = true }: KakaoMapProps) {
   const [places, setPlaces] = useState<Kakao.PlacesSearchResult>([]);
   const [mapReady, setMapReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -346,33 +346,38 @@ export default function KakaoMap({ keyword }: KakaoMapProps) {
       {error && <div className={styles['error-message']}>{error}</div>}
       <div ref={mapContainerRef} className={styles['map']} />
 
-      <div className={styles['map__place-list']}>
-        {places.length > 0 ? (
-          <ul className={styles['map__place-list__list']}>
-            {places.map(place => (
-              <li
-                key={place.id}
-                className={styles['map__place-list__list__item']}
-                onClick={() => handlePlaceClick(place)}
-              >
-                <span className={styles['map__place-list__list__item__name']}>
-                  {place.place_name}
-                </span>
-                <div className={styles['map__place-list__list__item__address']}>
-                  {place.road_address_name || place.address_name}
-                </div>
-                {place.phone && (
-                  <div className={styles['map__place-list__list__item__phone']}>{place.phone}</div>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className={styles['map__place-list__search-prompt']}>
-            {keyword ? '검색 결과가 없습니다.' : '검색어를 입력하세요.'}
-          </div>
-        )}
-      </div>
+      {list && (
+        <div className={styles['map__place-list']}>
+          {places.length > 0 ? (
+            <ul className={styles['map__place-list__list']}>
+              {places.map(place => (
+                <li
+                  key={place.id}
+                  className={styles['map__place-list__list__item']}
+                  onClick={() => handlePlaceClick(place)}
+                >
+                  <span className={styles['map__place-list__list__item__name']}>
+                    {place.place_name}
+                  </span>
+                  <div className={styles['map__place-list__list__item__address']}>
+                    {place.road_address_name || place.address_name}
+                  </div>
+                  {place.phone && (
+                    <div className={styles['map__place-list__list__item__phone']}>
+                      {place.phone}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className={styles['map__place-list__search-prompt']}>
+              {keyword ? '검색 결과가 없습니다.' : '검색어를 입력하세요.'}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
+export default memo(KakaoMap);
