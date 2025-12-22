@@ -1,0 +1,158 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+@use 'utils/variables' as v;
+
+.profile-header {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+
+  width: 100%;
+  padding: 18px 20px;
+
+  background: f.color(white);
+  border-radius: 14px;
+
+  &__avatar {
+    position: relative;
+
+    width: 100px;
+    height: 100px;
+    padding: 0;
+
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+
+  &__avatar-image {
+    width: 100%;
+    height: 100%;
+
+    border-radius: 999px;
+    border: 1px solid f.color(gray-300);
+
+    object-fit: cover;
+  }
+
+  &__edit-icon {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: f.color(white);
+    border: 1px solid f.color(gray-300);
+    border-radius: 999px;
+  }
+
+  &__edit-icon-image {
+    width: 16px;
+    height: 16px;
+
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0;
+
+    @include m.text-style(xl, 700);
+    color: f.color(black);
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+
+    @include m.text-style(md, 400);
+    color: f.color(text-default);
+  }
+
+  &__stats {
+    margin-top: 12px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    background: f.color(gray-100);
+    border: 1px solid f.color(gray-200);
+    border-radius: 999px;
+
+    @include m.text-style(sm, 500);
+    color: f.color(text-default);
+  }
+
+  &__stat-icon {
+    width: 14px;
+    height: 14px;
+
+    flex-shrink: 0;
+  }
+
+  &__stat--blue {
+    background: f.color(blue-100);
+    border: 1px solid f.color(blue-200);
+    color: f.color(blue-700);
+
+    .profile-header__stat-icon {
+      color: f.color(point-blue);
+    }
+  }
+
+  &__stat--green {
+    background: f.color(green-100);
+    border: 1px solid f.color(green-200);
+    color: f.color(green-700);
+
+    .profile-header__stat-icon {
+      color: f.color(brand-primary);
+    }
+  }
+
+  &__stat--purple {
+    background: f.color(gray-100);
+    border: 1px solid f.color(point-purple);
+    color: f.color(point-purple);
+
+    .profile-header__stat-icon {
+      color: f.color(point-purple);
+    }
+  }
+
+  &__stat--orange {
+    background: f.color(orange-100);
+    border: 1px solid f.color(orange-200);
+    color: f.color(orange-700);
+
+    .profile-header__stat-icon {
+      color: f.color(point-orange);
+    }
+  }
+
+  &__file-input {
+    display: none;
+  }
+}
