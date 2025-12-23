@@ -1,21 +1,15 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-
 import type { FormEvent } from 'react';
-
 import { MapPin, Shuffle, Table2 } from 'lucide-react';
-
 import Carousel, { pendingData } from '@/shared/components/Carousel';
 import Clock from '@/shared/components/Clock/Clock';
-import TopTabs from '@/shared/components/TopTabs';
+import TopTabs, { TopTabItem } from '@/shared/components/TopTabs';
 import WeatherMood from '@/domain/WeatherMood/WeatherMood';
 import Ladder from '@/domain/Ladder/Ladder';
 import Roulette from '@/domain/Roulette/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
-
-import type { TopTabItem } from '@/shared/components/TopTabs';
-
 import styles from './page.module.scss';
 
 const TAB_LIST = [
@@ -32,6 +26,7 @@ export default function HomePage() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchValue, setSearchValue] = useState('맛집');
+  const [rouletteResult, setRouletteResult] = useState<string | null>(null);
 
   const handleSearch = useCallback(
     (e: FormEvent) => {
@@ -56,7 +51,11 @@ export default function HomePage() {
         <Roulette
           isSpinning={isSpinning}
           onSpinStart={() => setIsSpinning(true)}
-          onSpinResult={() => setIsSpinning(false)}
+          onSpinResult={result => {
+            setIsSpinning(false);
+            setRouletteResult(result);
+          }}
+          result={rouletteResult}
         />
       );
     }
@@ -112,7 +111,11 @@ export default function HomePage() {
           </section>
 
           <section className={styles['container__left__main__option']}>찬성 반대</section>
-          <section className={styles['container__left__main__map']} />
+          {rouletteResult && (
+            <section className={styles['container__left__main__map']}>
+              <KakaoMap keyword={rouletteResult || searchKeyword} list={false} />
+            </section>
+          )}
         </div>
       </div>
 

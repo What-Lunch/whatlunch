@@ -19,9 +19,9 @@ export const Roulette = memo(function Roulette({
   isSpinning,
   onSpinStart,
   onSpinResult,
+  result,
 }: RouletteControllerProps) {
   const [menus, setMenus] = useState<MenuItem[]>([]);
-  const [result, setResult] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   // 섞기 가능 여부
@@ -36,7 +36,6 @@ export const Roulette = memo(function Roulette({
   // 룰렛 결과 처리
   const handleResult = useCallback(
     (item: MenuItem) => {
-      setResult(item.name);
       setModalOpen(true);
       onSpinResult(item.name);
     },

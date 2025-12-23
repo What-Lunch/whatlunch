@@ -53,7 +53,13 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
             공유하기
           </Button>
 
-          <Button variant="neutral" size="md">
+          <Button
+            variant="neutral"
+            size="md"
+            onClick={() =>
+              window.open(`https://map.kakao.com/?q=${encodeURIComponent(menu)}`, '_blank')
+            }
+          >
             지도 보기
           </Button>
 
