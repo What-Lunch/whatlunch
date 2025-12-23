@@ -1,9 +1,13 @@
+import MyPageHeader from '@/domain/MyPageHeader/MyPageHeader';
+
 import styles from './page.module.scss';
 
 export default function MyPage() {
   return (
     <div className={styles['container']}>
-      <section className={styles['myprofile']}>마이프로필</section>
+      <section className={styles['myprofile']}>
+        <MyPageHeader />
+      </section>
       <div className={styles['mymenu']}>
         <div className={styles['mymenu__top']}>
           <section className={styles['mymenu__top__meal']}>1</section>
