@@ -52,7 +52,7 @@ export const Roulette = memo(function Roulette({
     if (!result) return;
     setModalOpen(true);
   }, [result]);
-  console.log(result);
+
   return (
     <div className={styles['roulette']}>
       <p className={styles['roulette__today']}>
