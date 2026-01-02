@@ -1,54 +1,89 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Utensils, X } from 'lucide-react';
 
 import { RECENT_MEAL_DECISIONS_MOCK } from './mock';
-import type { MealDecisionItem } from './types';
 
 import styles from './RecentMenuDecisionCard.module.scss';
 
-interface RecentMenuDecisionCardProps {
-  items?: readonly MealDecisionItem[];
-  onClickRechoose?: (id: string) => void;
-}
-
 const MAX_VISIBLE_ITEMS = 3;
 
-export default function RecentMenuDecisionCard({
-  items = RECENT_MEAL_DECISIONS_MOCK,
-  onClickRechoose,
-}: RecentMenuDecisionCardProps) {
+export default function RecentMenuDecisionCard() {
   const router = useRouter();
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
-  const visibleItems = useMemo(() => items.slice(0, MAX_VISIBLE_ITEMS), [items]);
+  const items = RECENT_MEAL_DECISIONS_MOCK;
   const shouldShowViewAll = items.length > MAX_VISIBLE_ITEMS;
 
-  const handleClickRechoose = (id: string) => {
-    if (onClickRechoose) {
-      onClickRechoose(id);
-      return;
-    }
-
-    router.push('/');
+  // 현재는 reroll 트리거만 필요
+  const handleClickRechoose = () => {
+    router.push('/?reroll=1');
   };
 
-  const handleOpenHistory = () => setIsHistoryOpen(true);
-  const handleCloseHistory = () => setIsHistoryOpen(false);
+  const handleOpenHistory = useCallback(() => setIsHistoryOpen(true), []);
+  const handleCloseHistory = useCallback(() => setIsHistoryOpen(false), []);
+
+  // 바깥 스크롤 잠금 + 스크롤바 폭 보정
+  useEffect(() => {
+    if (!isHistoryOpen) return;
+
+    const scrollY = window.scrollY;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    return () => {
+      const top = document.body.style.top;
+
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+
+      const restoredY = top ? Math.abs(parseInt(top, 10)) : scrollY;
+      window.scrollTo(0, restoredY);
+    };
+  }, [isHistoryOpen]);
+
+  // ESC 키로 모달 닫기
+  useEffect(() => {
+    if (!isHistoryOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
+      handleCloseHistory();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isHistoryOpen, handleCloseHistory]);
 
   return (
-    <div>
+    <>
       <section className={styles['meal-history']} aria-label="최근 메뉴 결정 결과">
         <header className={styles['meal-history__header']}>
           <h2 className={styles['meal-history__header__title']}>최근 메뉴 결정 결과</h2>
         </header>
 
         <ul className={styles['meal-history__list']}>
-          {visibleItems.map(item => (
+          {items.slice(0, MAX_VISIBLE_ITEMS).map(item => (
             <li key={item.id} className={styles['meal-history__list__item']}>
               <div className={styles['meal-history__list__item__left']}>
                 <div className={styles['meal-history__list__item__menu']}>
@@ -62,7 +97,7 @@ export default function RecentMenuDecisionCard({
               <button
                 type="button"
                 className={styles['meal-history__list__item__action']}
-                onClick={() => handleClickRechoose(item.id)}
+                onClick={handleClickRechoose}
                 aria-label={`${item.menuName} 다른 메뉴 선택`}
               >
                 다른 메뉴 선택
@@ -123,7 +158,7 @@ export default function RecentMenuDecisionCard({
                   <button
                     type="button"
                     className={styles['meal-history-modal__item__action']}
-                    onClick={() => handleClickRechoose(item.id)}
+                    onClick={handleClickRechoose}
                     aria-label={`${item.menuName} 다른 메뉴 선택`}
                   >
                     다른 메뉴 선택
@@ -134,6 +169,6 @@ export default function RecentMenuDecisionCard({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

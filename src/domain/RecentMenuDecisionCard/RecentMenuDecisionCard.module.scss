@@ -1,15 +1,9 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
-@use 'utils/variables' as v;
 
 .meal-history {
   width: 100%;
   height: 100%;
-  padding: 18px 20px;
-
-  background: f.color(white);
-  border: 1px solid f.color(gray-200);
-  border-radius: 14px;
 
   @include m.flex-box(flex-start, stretch, column);
 
@@ -18,8 +12,7 @@
 
     &__title {
       margin: 0;
-
-      @include m.text-style('xl', 400);
+      @include m.text-style('xl', 500);
       color: f.color(black);
     }
   }
@@ -28,10 +21,10 @@
     margin: 0;
     padding: 0;
 
+    list-style: none;
+
     @include m.flex-box(flex-start, stretch, column);
     gap: 10px;
-
-    list-style: none;
 
     &__item {
       @include m.flex-box(space-between, center);
@@ -44,7 +37,6 @@
 
       &__left {
         min-width: 0;
-
         @include m.flex-box(flex-start, stretch, column);
         gap: 6px;
       }
@@ -56,15 +48,13 @@
         &__icon {
           width: 18px;
           height: 18px;
-
           flex-shrink: 0;
           color: f.color(text-default);
         }
 
         &__name {
           margin: 0;
-
-          @include m.text-style('2lg');
+          @include m.text-style('2lg', 500);
           color: f.color(black);
 
           white-space: nowrap;
@@ -75,7 +65,6 @@
 
       &__date {
         margin: 0;
-
         @include m.text-style(sm);
         color: f.color(text-default);
       }
@@ -120,11 +109,10 @@
   }
 }
 
-/* Modal (전체 기록 보기) */
+// 모달
 .meal-history-modal {
   position: fixed;
   inset: 0;
-
   z-index: 50;
 
   @include m.flex-box(center, center);
@@ -162,12 +150,10 @@
 
   &__header {
     margin-bottom: 14px;
-
     @include m.flex-box(space-between, center);
 
     &__title {
       margin: 0;
-
       @include m.text-style('xl', 500);
       color: f.color(black);
     }
@@ -191,7 +177,6 @@
       &__icon {
         width: 18px;
         height: 18px;
-
         color: f.color(text-default);
       }
     }
@@ -202,8 +187,7 @@
     padding: 0;
 
     list-style: none;
-
-    overflow: auto;
+    overflow-y: auto;
 
     @include m.flex-box(flex-start, stretch, column);
     gap: 10px;
@@ -220,7 +204,6 @@
 
     &__left {
       min-width: 0;
-
       @include m.flex-box(flex-start, stretch, column);
       gap: 6px;
     }
@@ -232,15 +215,13 @@
       &__icon {
         width: 18px;
         height: 18px;
-
         flex-shrink: 0;
         color: f.color(text-default);
       }
 
       &__name {
         margin: 0;
-
-        @include m.text-style('2lg');
+        @include m.text-style('2lg', 500);
         color: f.color(black);
 
         white-space: nowrap;
@@ -251,7 +232,6 @@
 
     &__date {
       margin: 0;
-
       @include m.text-style(sm);
       color: f.color(text-default);
     }

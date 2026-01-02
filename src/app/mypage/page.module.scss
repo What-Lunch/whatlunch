@@ -3,9 +3,18 @@
 
 // 카드가 들어가는 영역의 경계선
 @mixin card-boundary {
-  @include m.flex-box(stretch, stretch);
+  @include m.flex-box(flex-start, stretch);
   width: 100%;
+  padding: 18px 20px;
+
   border: 1px solid f.color(gray-300);
+  box-sizing: border-box;
+
+  background: f.color(white);
+  border-radius: 14px;
+  overflow: hidden;
+
+  min-height: 0;
 }
 
 // 가운데 정렬이 필요한 영역의 경계선
@@ -15,20 +24,20 @@
   border: 1px solid f.color(gray-300);
 }
 
-.container {
+.mypage {
   @include m.flex-box(flex-start, stretch, column);
   gap: 40px;
-}
 
-.myprofile {
-  @include center-boundary;
-  height: 200px;
-}
+  &__header {
+    @include center-boundary;
+    height: 200px;
+  }
 
-.mymenu {
-  width: 100%;
-  @include m.flex-box(flex-start, stretch, column);
-  gap: 30px;
+  &__content {
+    width: 100%;
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 30px;
+  }
 
   &__top {
     display: grid;

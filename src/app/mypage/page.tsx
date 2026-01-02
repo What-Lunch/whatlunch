@@ -1,30 +1,30 @@
 import MyPageHeader from '@/domain/MyPageHeader/MyPageHeader';
-import RecentMenuDecisionCard from '@/domain/MyPageHeader/components/RecentMenuDecisionCard';
+import RecentMenuDecisionCard from '@/domain/RecentMenuDecisionCard/RecentMenuDecisionCard';
 
 import styles from './page.module.scss';
 
 export default function MyPage() {
   return (
-    <div className={styles['container']}>
-      <section className={styles['myprofile']}>
+    <div className={styles['mypage']}>
+      <header className={styles['mypage__header']}>
         <MyPageHeader />
-      </section>
+      </header>
 
-      <div className={styles['mymenu']}>
-        <div className={styles['mymenu__top']}>
-          <section className={styles['mymenu__top__meal']}>
+      <section className={styles['mypage__content']}>
+        <div className={styles['mypage__top']}>
+          <section className={styles['mypage__top__meal']}>
             <RecentMenuDecisionCard />
           </section>
 
-          <section className={styles['mymenu__top__favorite']}>2</section>
-          <section className={styles['mymenu__top__preference']}>3</section>
+          <section className={styles['mypage__top__favorite']}>2</section>
+          <section className={styles['mypage__top__preference']}>3</section>
         </div>
 
-        <div className={styles['mymenu__bottom']}>
-          <section className={styles['mymenu__bottom__profile']}>4</section>
-          <section className={styles['mymenu__bottom__faq']}>5</section>
+        <div className={styles['mypage__bottom']}>
+          <section className={styles['mypage__bottom__profile']}>4</section>
+          <section className={styles['mypage__bottom__faq']}>5</section>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
