@@ -129,7 +129,7 @@ export default function RecentMenuDecisionCard() {
 
           <div className={styles['meal-history-modal__panel']}>
             <header className={styles['meal-history-modal__header']}>
-              <h3 className={styles['meal-history-modal__title']}>전체 기록</h3>
+              <h3 className={styles['meal-history-modal__header__title']}>전체 기록</h3>
 
               <button
                 type="button"
