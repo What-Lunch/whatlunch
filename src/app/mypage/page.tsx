@@ -10,7 +10,7 @@ export default function MyPage() {
         <MyPageHeader />
       </header>
 
-      <section className={styles['mypage__content']}>
+      <main className={styles['mypage__content']}>
         <div className={styles['mypage__top']}>
           <section className={styles['mypage__top__meal']}>
             <RecentMenuDecisionCard />
@@ -24,7 +24,7 @@ export default function MyPage() {
           <section className={styles['mypage__bottom__profile']}>4</section>
           <section className={styles['mypage__bottom__faq']}>5</section>
         </div>
-      </section>
+      </main>
     </div>
   );
 }
