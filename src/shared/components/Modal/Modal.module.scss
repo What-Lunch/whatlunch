@@ -3,7 +3,8 @@
 
 .overlay {
   display: flex;
-
+  align-items: center;
+  justify-content: center;
   background-color: rgba(f.color(bg-primary), 0.5);
   padding: 20%;
   position: fixed;
@@ -17,14 +18,25 @@
   padding: 28px 24px;
   border-radius: 16px;
   text-align: center;
+  overflow: auto;
 
-  &__close {
-    width: 100%;
-    @include m.flex-box(flex-end, center);
-    margin-bottom: 12px;
+  &__header {
+    @include m.flex-box(space-between, center);
+    margin-bottom: 15px;
 
-    svg {
-      cursor: pointer;
+    &__close {
+      @include m.flex-box(flex-end, center);
+
+      svg {
+        cursor: pointer;
+      }
     }
+  }
+
+  &__description {
+    margin-top: 8px;
+    text-align: left;
+    font-size: 14px;
+    line-height: 20px;
   }
 }

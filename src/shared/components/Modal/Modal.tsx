@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { XIcon } from 'lucide-react';
 
-import { useModalClose } from '@/shared/hooks/useEscClose';
+import { useModalClose, useEscClose } from '@/shared/hooks/useEscClose';
 import { ModalProps } from './types';
 
 import styles from './Modal.module.scss';
@@ -17,6 +17,7 @@ export default function Modal({
   children,
 }: ModalProps) {
   const { handleOverlayClick } = useModalClose(onClose);
+  useEscClose(isOpen ? onClose : undefined);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -51,19 +52,6 @@ export default function Modal({
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
-
   return createPortal(
     <section
       className={`${styles['overlay']}${contentClassName ? ` ${contentClassName}` : ''}`}
@@ -76,14 +64,30 @@ export default function Modal({
       onClick={handleOverlayClick}
     >
       <div className={`${styles['modal']}${innerClassName ? ` ${innerClassName}` : ''}`}>
-        <button
-          type="button"
-          aria-label="닫기"
-          onClick={onClose}
-          className={styles['modal__close']}
-        >
-          <XIcon aria-hidden="true" />
-        </button>
+        <>
+          <header className={styles['modal__header']}>
+            {title && (
+              <h2 id="modal-title" className={styles['modal__header__title']}>
+                {title}
+              </h2>
+            )}
+
+            <button
+              type="button"
+              aria-label="닫기"
+              onClick={onClose}
+              className={styles['modal__header__close']}
+            >
+              <XIcon aria-hidden="true" />
+            </button>
+          </header>
+          {description && (
+            <p id="modal-description" className={styles['modal__description']}>
+              {description}
+            </p>
+          )}
+        </>
+
         <div>{children}</div>
       </div>
     </section>,

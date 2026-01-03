@@ -13,19 +13,16 @@ export default function FavoriteMenuCard() {
       </section>
       {isModalOpen && (
         <>
-          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Favorite Menu">
-            <>dsd</>
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title="Favorite Menu"
+            description="설명설명"
+          >
+            <>ㅎㅇㅎㅇ</>
           </Modal>
         </>
       )}
     </div>
-    // <Modal
-    //   isOpen={true}
-    //   onClose={() => {}}
-    //   title="Favorite Menu"
-    //   description="Your favorite menu items"
-    // >
-    //   FavoriteMenuCard
-    // </Modal>
   );
 }
