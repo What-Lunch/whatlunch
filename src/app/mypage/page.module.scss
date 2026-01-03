@@ -49,7 +49,6 @@
       align-items: stretch;
     }
 
-    &__meal,
     &__favorite,
     &__preference {
       @include card-boundary;

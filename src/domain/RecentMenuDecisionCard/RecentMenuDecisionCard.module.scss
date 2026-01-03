@@ -4,7 +4,10 @@
 .meal-history {
   width: 100%;
   height: 100%;
-
+  padding: 18px 20px;
+  border: 1px solid f.color(gray-300);
+  border-radius: 14px;
+  box-sizing: border-box;
   @include m.flex-box(flex-start, stretch, column);
 
   &__header {
@@ -20,17 +23,13 @@
   &__list {
     margin: 0;
     padding: 0;
-
     list-style: none;
-
     @include m.flex-box(flex-start, stretch, column);
     gap: 10px;
 
     &__item {
       @include m.flex-box(space-between, center);
-
       padding: 14px;
-
       background: f.color(gray-100);
       border: 1px solid f.color(gray-200);
       border-radius: 14px;
@@ -56,7 +55,6 @@
           margin: 0;
           @include m.text-style('2lg', 500);
           color: f.color(black);
-
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -71,18 +69,14 @@
 
       &__action {
         @include m.flex-box(center, center);
-
         height: 30px;
         padding: 6px 12px;
-
         border-radius: 999px;
         border: 1px solid f.color(blue-200);
         background: f.color(blue-100);
         color: f.color(blue-700);
-
         @include m.text-style(sm, 500);
         white-space: nowrap;
-
         cursor: pointer;
       }
     }
@@ -90,17 +84,13 @@
 
   &__view-all {
     margin-top: 12px;
-
     @include m.flex-box(center, center);
     width: 100%;
     padding: 10px 0;
-
     background: transparent;
     border: none;
-
     @include m.text-style(lg, 500);
     color: f.color(text-default);
-
     cursor: pointer;
 
     &:hover {
@@ -111,93 +101,21 @@
 
 // 모달
 .meal-history-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-
-  @include m.flex-box(center, center);
-
-  &__backdrop {
-    position: absolute;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    background: f.color(black);
-    opacity: 0.5;
-
-    border: 0;
-    padding: 0;
-
-    cursor: pointer;
-  }
-
-  &__panel {
-    position: relative;
-
-    width: min(560px, calc(100% - 32px));
-    max-height: min(640px, calc(100vh - 48px));
-
-    padding: 18px 20px;
-
-    background: f.color(white);
-    border: 1px solid f.color(gray-200);
-    border-radius: 14px;
-
-    @include m.flex-box(flex-start, stretch, column);
-  }
-
-  &__header {
-    margin-bottom: 14px;
-    @include m.flex-box(space-between, center);
-
-    &__title {
-      margin: 0;
-      @include m.text-style('xl', 500);
-      color: f.color(black);
-    }
-
-    &__close {
-      @include m.flex-box(center, center);
-
-      width: 32px;
-      height: 32px;
-
-      background: transparent;
-      border: 0;
-      border-radius: 999px;
-
-      cursor: pointer;
-
-      &:hover {
-        background: f.color(gray-100);
-      }
-
-      &__icon {
-        width: 18px;
-        height: 18px;
-        color: f.color(text-default);
-      }
-    }
-  }
+  width: 500px;
+  height: 600px;
 
   &__list {
     margin: 0;
     padding: 0;
-
     list-style: none;
     overflow-y: auto;
-
     @include m.flex-box(flex-start, stretch, column);
     gap: 10px;
   }
 
   &__item {
     @include m.flex-box(space-between, center);
-
     padding: 14px;
-
     background: f.color(gray-100);
     border: 1px solid f.color(gray-200);
     border-radius: 14px;
@@ -223,7 +141,6 @@
         margin: 0;
         @include m.text-style('2lg', 500);
         color: f.color(black);
-
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -238,18 +155,14 @@
 
     &__action {
       @include m.flex-box(center, center);
-
       height: 30px;
       padding: 6px 12px;
-
       border-radius: 999px;
       border: 1px solid f.color(blue-200);
       background: f.color(blue-100);
       color: f.color(blue-700);
-
       @include m.text-style(sm, 500);
       white-space: nowrap;
-
       cursor: pointer;
     }
   }
