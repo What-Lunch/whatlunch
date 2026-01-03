@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { XIcon } from 'lucide-react';
 
@@ -19,6 +19,9 @@ export default function Modal({
   children,
 }: ModalProps) {
   const [mounted, setMounted] = useState(false);
+
+  const titleId = useId();
+  const descId = useId();
 
   const { handleOverlayClick } = useModalClose(onClose);
   useEscClose(isOpen ? onClose : undefined);
@@ -65,8 +68,6 @@ export default function Modal({
   return createPortal(
     <section
       className={`${styles['overlay']}${contentClassName ? ` ${contentClassName}` : ''}`}
-      aria-hidden={!isOpen}
-      style={{ display: isOpen ? 'flex' : 'none' }}
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
@@ -76,7 +77,7 @@ export default function Modal({
       <div className={`${styles['modal']}${innerClassName ? ` ${innerClassName}` : ''}`}>
         <header className={styles['modal__header']}>
           {title && (
-            <h2 id="modal-title" className={styles['modal__header__title']}>
+            <h2 id={titleId} className={styles['modal__header__title']}>
               {title}
             </h2>
           )}
@@ -91,7 +92,7 @@ export default function Modal({
           </button>
         </header>
         {description && (
-          <p id="modal-description" className={styles['modal__description']}>
+          <p id={descId} className={styles['modal__description']}>
             {description}
           </p>
         )}
