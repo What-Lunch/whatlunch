@@ -1,0 +1,30 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.overlay {
+  display: flex;
+
+  background-color: rgba(f.color(bg-primary), 0.5);
+  padding: 20%;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+}
+
+.modal {
+  width: 100%;
+  background-color: f.color(bg-inverse);
+  padding: 28px 24px;
+  border-radius: 16px;
+  text-align: center;
+
+  &__close {
+    width: 100%;
+    @include m.flex-box(flex-end, center);
+    margin-bottom: 12px;
+
+    svg {
+      cursor: pointer;
+    }
+  }
+}
