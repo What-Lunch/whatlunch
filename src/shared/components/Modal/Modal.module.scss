@@ -29,7 +29,7 @@
   padding: 28px 24px;
   border-radius: 16px;
   text-align: center;
-  overflow: auto;
+  overflow: hidden;
   animation: fade-in 0.25s ease;
 
   &__header {
@@ -51,5 +51,10 @@
     text-align: left;
     font-size: 14px;
     line-height: 20px;
+  }
+
+  &__content {
+    overflow: auto;
+    height: 90%;
   }
 }
