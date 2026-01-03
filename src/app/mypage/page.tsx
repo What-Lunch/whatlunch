@@ -12,9 +12,7 @@ export default function MyPage() {
 
       <main className={styles['mypage__content']}>
         <div className={styles['mypage__top']}>
-          <section className={styles['mypage__top__meal']}>
-            <RecentMenuDecisionCard />
-          </section>
+          <RecentMenuDecisionCard />
 
           <section className={styles['mypage__top__favorite']}>2</section>
           <section className={styles['mypage__top__preference']}>3</section>
