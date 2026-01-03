@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { XIcon } from 'lucide-react';
 
@@ -16,6 +18,8 @@ export default function Modal({
   innerClassName,
   children,
 }: ModalProps) {
+  const [mounted, setMounted] = useState(false);
+
   const { handleOverlayClick } = useModalClose(onClose);
   useEscClose(isOpen ? onClose : undefined);
 
@@ -52,6 +56,12 @@ export default function Modal({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   return createPortal(
     <section
       className={`${styles['overlay']}${contentClassName ? ` ${contentClassName}` : ''}`}
@@ -64,31 +74,29 @@ export default function Modal({
       onClick={handleOverlayClick}
     >
       <div className={`${styles['modal']}${innerClassName ? ` ${innerClassName}` : ''}`}>
-        <>
-          <header className={styles['modal__header']}>
-            {title && (
-              <h2 id="modal-title" className={styles['modal__header__title']}>
-                {title}
-              </h2>
-            )}
-
-            <button
-              type="button"
-              aria-label="닫기"
-              onClick={onClose}
-              className={styles['modal__header__close']}
-            >
-              <XIcon aria-hidden="true" />
-            </button>
-          </header>
-          {description && (
-            <p id="modal-description" className={styles['modal__description']}>
-              {description}
-            </p>
+        <header className={styles['modal__header']}>
+          {title && (
+            <h2 id="modal-title" className={styles['modal__header__title']}>
+              {title}
+            </h2>
           )}
-        </>
 
-        <div>{children}</div>
+          <button
+            type="button"
+            aria-label="닫기"
+            onClick={onClose}
+            className={title ? undefined : styles['modal__header__close']}
+          >
+            <XIcon aria-hidden="true" />
+          </button>
+        </header>
+        {description && (
+          <p id="modal-description" className={styles['modal__description']}>
+            {description}
+          </p>
+        )}
+
+        <div className="modal-content">{children}</div>
       </div>
     </section>,
     document.body
