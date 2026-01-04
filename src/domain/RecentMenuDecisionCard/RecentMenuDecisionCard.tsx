@@ -10,7 +10,7 @@ import { RECENT_MEAL_DECISIONS_MOCK } from './mock';
 import Modal from '@/shared/components/Modal';
 import styles from './RecentMenuDecisionCard.module.scss';
 
-const MAX_VISIBLE_ITEMS = 3;
+const MAX_VISIBLE_ITEMS = 4;
 
 export default function RecentMenuDecisionCard() {
   const router = useRouter();
