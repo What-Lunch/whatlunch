@@ -3,6 +3,7 @@ import RecentMenuDecisionCard from '@/domain/RecentMenuDecisionCard/RecentMenuDe
 import FavoriteMenuCard from '@/domain/FavoriteMenuCard/FavoriteMenuCard';
 
 import styles from './page.module.scss';
+import MenuSummaryCard from '@/domain/MenuSummaryCard';
 
 export default function MyPage() {
   return (
@@ -16,7 +17,9 @@ export default function MyPage() {
           <RecentMenuDecisionCard />
           <FavoriteMenuCard />
           {/* <section className={styles['mypage__top__favorite']}>2</section> */}
-          <section className={styles['mypage__top__preference']}>3</section>
+          <section className={styles['mypage__top__preference']}>
+            <MenuSummaryCard />
+          </section>
         </div>
 
         <div className={styles['mypage__bottom']}>

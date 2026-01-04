@@ -52,10 +52,10 @@
     &__favorite,
     &__preference {
       @include card-boundary;
-      height: 360px;
+      height: 500px;
 
       @include m.mq(lg) {
-        height: 420px;
+        height: 500px;
       }
     }
   }
