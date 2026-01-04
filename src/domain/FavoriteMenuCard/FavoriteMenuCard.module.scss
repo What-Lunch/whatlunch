@@ -1,0 +1,113 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+// Item list 공통 스타일 믹스인
+@mixin item-list-style {
+  @include m.flex-box(flex-start, stretch, column);
+  gap: 10px;
+
+  &__item {
+    @include m.flex-box(space-between, center);
+    padding: 14px;
+    background: f.color(gray-100);
+    border: 1px solid f.color(gray-200);
+    border-radius: 14px;
+
+    &__info {
+      @include m.flex-box(center, flex-start, column);
+
+      &__name {
+        margin: 0;
+        @include m.text-style('2lg', 500);
+        color: f.color(black);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &__category {
+        margin: 0;
+        @include m.text-style(md);
+        color: f.color(gray-600);
+      }
+    }
+  }
+}
+
+.meal-favorite {
+  width: 100%;
+  height: 100%;
+  padding: 18px 20px;
+  border: 1px solid f.color(gray-300);
+  border-radius: 14px;
+  box-sizing: border-box;
+  @include m.flex-box(flex-start, stretch, column);
+
+  &__header {
+    margin-bottom: 14px;
+    @include m.flex-box(space-between, center);
+
+    &__title {
+      margin: 0;
+      @include m.text-style('xl', 500);
+      color: f.color(black);
+    }
+
+    &__icon {
+      width: 20px;
+      height: 20px;
+      color: f.color(gray-600);
+    }
+  }
+
+  &__empty {
+    @include m.flex-box(center, center, column);
+    gap: 8px;
+    height: 100%;
+
+    &__icon {
+      width: 40px;
+      height: 40px;
+      color: f.color(gray-400);
+    }
+
+    &__text {
+      margin: 0;
+      @include m.text-style(md);
+      color: f.color(text-default);
+    }
+  }
+
+  &__list {
+    @include item-list-style();
+  }
+
+  &__view-all {
+    width: 100%;
+    @include m.flex-box(center, center);
+
+    &__button {
+      margin-top: 12px;
+      width: fit-content;
+      background: transparent;
+      border: none;
+      @include m.text-style(lg, 500);
+      color: f.color(text-default);
+      cursor: pointer;
+
+      &:hover {
+        color: f.color(black);
+      }
+    }
+  }
+}
+
+.modal {
+  width: 500px;
+  height: 600px;
+
+  &__list {
+    gap: 10px;
+    @include item-list-style();
+  }
+}
