@@ -20,7 +20,7 @@ export default function FavoriteMenuCard() {
         {FAVORITE_MEAL_MOCK.length === 0 ? (
           <div className={styles['meal-favorite__empty']}>
             <TrophyIcon className={styles['meal-favorite__empty__icon']} />
-            <p className={styles['meal-favorite__empty__text']}>아직 즐겨찾기 메뉴가 없어요!</p>
+            <p className={styles['meal-favorite__empty__text']}>아직 자주 선택한 메뉴가 없어요!</p>
           </div>
         ) : (
           <>
@@ -42,10 +42,11 @@ export default function FavoriteMenuCard() {
             </ul>
             <div className={styles['meal-favorite__view-all']}>
               <button
+                type="button"
                 className={styles['meal-favorite__view-all__button']}
                 onClick={() => setIsModalOpen(true)}
               >
-                전체기록 보기
+                전체 기록 보기
               </button>
             </div>
           </>
@@ -56,7 +57,7 @@ export default function FavoriteMenuCard() {
           <Modal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-            title="즐겨찾기 메뉴 전체 기록"
+            title="자주 선택된 메뉴 전체 기록"
             innerClassName={styles['modal']}
           >
             <ul className={styles['modal__list']}>
