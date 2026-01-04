@@ -1,9 +1,9 @@
 import MyPageHeader from '@/domain/MyPageHeader/MyPageHeader';
 import RecentMenuDecisionCard from '@/domain/RecentMenuDecisionCard/RecentMenuDecisionCard';
 import FavoriteMenuCard from '@/domain/FavoriteMenuCard/FavoriteMenuCard';
+import MenuSummaryCard from '@/domain/MenuSummaryCard';
 
 import styles from './page.module.scss';
-import MenuSummaryCard from '@/domain/MenuSummaryCard';
 
 export default function MyPage() {
   return (

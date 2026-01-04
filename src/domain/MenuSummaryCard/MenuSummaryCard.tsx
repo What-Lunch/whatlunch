@@ -2,9 +2,9 @@ import type { LucideIcon } from 'lucide-react';
 import { TrendingUp, Layers, Clock, CookingPot, Users } from 'lucide-react';
 
 import { MENU_SUMMARY_MOCK } from './mock';
-import styles from './MenuSummaryCard.module.scss';
+import type { MenuSummaryItemId } from './types';
 
-type MenuSummaryItemId = 'category' | 'mealTier' | 'time' | 'style'; // 아이콘 매핑용
+import styles from './MenuSummaryCard.module.scss';
 
 const ITEM_ICON_MAP: Record<MenuSummaryItemId, LucideIcon> = {
   category: Layers,
@@ -14,23 +14,22 @@ const ITEM_ICON_MAP: Record<MenuSummaryItemId, LucideIcon> = {
 };
 
 export default function MenuSummaryCard() {
-  const { title, items } = MENU_SUMMARY_MOCK;
+  const { items } = MENU_SUMMARY_MOCK;
 
   return (
-    <section className={styles['menu-summary']} aria-label={title}>
+    <section className={styles['menu-summary']} aria-label="최근 메뉴 성향 요약">
       <header className={styles['menu-summary__header']}>
         <div className={styles['menu-summary__header-inner']}>
-          <h2 className={styles['menu-summary__title']}>{title}</h2>
-          <TrendingUp size={24} aria-hidden />
+          <h2 className={styles['menu-summary__title']}>최근 메뉴 성향 요약</h2>
+          <TrendingUp size={24} aria-hidden="true" />
         </div>
       </header>
 
       <ul className={styles['menu-summary__list']}>
         {items.map(item => {
-          const Icon = ITEM_ICON_MAP[item.id]; // item.id는 mock(satisfies)에서 MenuSummaryItemId로 보장됨
-
+          const Icon = ITEM_ICON_MAP[item.id];
           const modifier = styles[`menu-summary__item--${item.id}`];
-          // 퍼센트는 UI 깨짐 방지를 위해 0~100 범위로 보정
+
           const percent =
             typeof item.percentage === 'number'
               ? Math.max(0, Math.min(100, item.percentage))
@@ -42,7 +41,7 @@ export default function MenuSummaryCard() {
               className={[styles['menu-summary__item'], modifier].filter(Boolean).join(' ')}
             >
               <div className={styles['menu-summary__item-header']}>
-                <Icon size={16} aria-hidden />
+                <Icon size={16} aria-hidden="true" />
                 <span>{item.title}</span>
               </div>
 
@@ -59,7 +58,7 @@ export default function MenuSummaryCard() {
                   <div
                     className={styles['menu-summary__bar-fill']}
                     style={{ width: `${percent}%` }}
-                    aria-hidden
+                    aria-hidden="true"
                   />
                 </div>
               )}
