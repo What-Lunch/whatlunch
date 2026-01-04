@@ -5,11 +5,11 @@ import { TrophyIcon } from 'lucide-react';
 import Modal from '@/shared/components/Modal';
 
 import { FAVORITE_MEAL_MOCK } from './mock';
-
 import styles from './FavoriteMenuCard.module.scss';
 
 export default function FavoriteMenuCard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       <section aria-label="즐겨찾기 메뉴" className={styles['meal-favorite']}>
@@ -27,7 +27,7 @@ export default function FavoriteMenuCard() {
             <ul className={styles['meal-favorite__list']}>
               {FAVORITE_MEAL_MOCK.slice(0, 3).map(item => (
                 <li key={item.id} className={styles['meal-favorite__list__item']}>
-                  {/* TODO: 각 음식 사진이나 아이콘 추가 필요 */}
+                  {/* TODO: 각 음식 사진이나 아이콘 추가 필요 -> 스타일 재검토 */}
                   <div className={styles['meal-favorite__list__item__info']}>
                     <span className={styles['meal-favorite__list__item__info__name']}>
                       {item.menuName}
