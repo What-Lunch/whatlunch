@@ -44,6 +44,9 @@
       margin: 0;
       @include m.text-style('xl', 600);
       color: f.color(black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       @include m.mq(md) {
         @include m.text-style('2xl', 600);
@@ -65,6 +68,9 @@
     text-align: left;
     @include m.text-style('lg', 600);
     line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     @include m.mq(md) {
       @include m.text-style('2xl', 600);
