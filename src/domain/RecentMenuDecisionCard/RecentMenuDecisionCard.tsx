@@ -60,13 +60,15 @@ export default function RecentMenuDecisionCard() {
         </ul>
 
         {shouldShowViewAll && (
-          <button
-            type="button"
-            className={styles['meal-history__view-all']}
-            onClick={handleOpenHistory}
-          >
-            전체 기록 보기
-          </button>
+          <div className={styles['meal-history__view-all']}>
+            <button
+              type="button"
+              className={styles['meal-history__view-all__button']}
+              onClick={handleOpenHistory}
+            >
+              전체 기록 보기
+            </button>
+          </div>
         )}
       </section>
 
