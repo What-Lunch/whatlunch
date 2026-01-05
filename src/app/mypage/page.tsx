@@ -15,7 +15,6 @@ export default function MyPage() {
         <div className={styles['mypage__top']}>
           <RecentMenuDecisionCard />
           <FavoriteMenuCard />
-          {/* <section className={styles['mypage__top__favorite']}>2</section> */}
           <section className={styles['mypage__top__preference']}>3</section>
         </div>
 

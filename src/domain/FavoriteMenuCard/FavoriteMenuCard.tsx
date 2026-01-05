@@ -40,15 +40,17 @@ export default function FavoriteMenuCard() {
                 </li>
               ))}
             </ul>
-            <div className={styles['meal-favorite__view-all']}>
-              <button
-                type="button"
-                className={styles['meal-favorite__view-all__button']}
-                onClick={() => setIsModalOpen(true)}
-              >
-                전체 기록 보기
-              </button>
-            </div>
+            {FAVORITE_MEAL_MOCK.length > 3 && (
+              <div className={styles['meal-favorite__view-all']}>
+                <button
+                  type="button"
+                  className={styles['meal-favorite__view-all__button']}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  전체 기록 보기
+                </button>
+              </div>
+            )}
           </>
         )}
       </section>
