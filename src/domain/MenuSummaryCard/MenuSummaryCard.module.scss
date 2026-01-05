@@ -1,0 +1,140 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.menu-summary {
+  width: 100%;
+  height: 100%;
+  padding: 18px 20px;
+  border: 1px solid f.color(gray-300);
+  border-radius: 14px;
+  box-sizing: border-box;
+  @include m.flex-box(flex-start, stretch, column);
+
+  &__header {
+    margin-bottom: 14px;
+  }
+
+  &__header-inner {
+    @include m.flex-box(space-between, center);
+    width: 100%;
+    color: f.color(gray-900);
+  }
+
+  &__title {
+    margin: 0;
+    @include m.text-style('xl', 500);
+    color: f.color(gray-900);
+  }
+
+  &__header-icon {
+    width: 22px;
+    height: 22px;
+    color: f.color(gray-600);
+    flex-shrink: 0;
+  }
+  &__list {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 12px;
+
+    min-height: 0;
+  }
+
+  &__item {
+    padding: 14px 16px;
+    border-radius: 14px;
+
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 8px;
+  }
+
+  &__item-header {
+    @include m.flex-box(flex-start, center);
+    gap: 6px;
+    @include m.text-style('2lg', 500);
+
+    color: inherit;
+  }
+  &__item-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+
+    /* 아이콘 컬러는 아이템 컬러를 따라감 */
+    color: inherit;
+  }
+
+  &__value {
+    margin: 0;
+    @include m.text-style('lg', 400);
+    color: f.color(gray-900);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__bar {
+    height: 6px;
+    background: f.color(gray-300);
+    border-radius: 32px;
+    overflow: hidden;
+  }
+
+  &__bar-fill {
+    height: 100%;
+    background: f.color(point-blue);
+    border-radius: 32px;
+  }
+
+  &__empty {
+    flex: 1;
+    padding: 6px 0;
+
+    @include m.flex-box(center, center, column);
+    gap: 8px;
+    text-align: center;
+  }
+
+  &__empty-icon {
+    width: 40px;
+    height: 40px;
+    color: f.color(gray-400);
+  }
+
+  &__empty-title {
+    margin: 0;
+    @include m.text-style('lg', 500);
+    color: f.color(gray-700);
+  }
+
+  &__empty-desc {
+    margin: 0;
+    @include m.text-style('md', 400);
+    color: f.color(gray-600);
+  }
+
+  /* pastel variants (배경 + 라벨 컬러만 담당) */
+  &__item--category {
+    background: rgba(f.color(point-blue), 0.12);
+    color: f.color(point-blue);
+  }
+
+  &__item--mealTier {
+    background: rgba(f.color(brand-primary), 0.12);
+    color: f.color(brand-primary);
+  }
+
+  &__item--time {
+    background: rgba(f.color(point-purple), 0.12);
+    color: f.color(point-purple);
+  }
+
+  &__item--style {
+    background: rgba(f.color(point-orange), 0.12);
+    color: f.color(point-orange);
+  }
+}

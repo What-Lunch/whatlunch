@@ -1,6 +1,7 @@
 import MyPageHeader from '@/domain/MyPageHeader/MyPageHeader';
 import RecentMenuDecisionCard from '@/domain/RecentMenuDecisionCard/RecentMenuDecisionCard';
 import FavoriteMenuCard from '@/domain/FavoriteMenuCard/FavoriteMenuCard';
+import MenuSummaryCard from '@/domain/MenuSummaryCard';
 
 import styles from './page.module.scss';
 
@@ -15,7 +16,7 @@ export default function MyPage() {
         <div className={styles['mypage__top']}>
           <RecentMenuDecisionCard />
           <FavoriteMenuCard />
-          <section className={styles['mypage__top__preference']}>3</section>
+          <MenuSummaryCard />
         </div>
 
         <div className={styles['mypage__bottom']}>

@@ -25,7 +25,7 @@ export default function FavoriteMenuCard() {
         ) : (
           <>
             <ul className={styles['meal-favorite__list']}>
-              {FAVORITE_MEAL_MOCK.slice(0, 3).map(item => (
+              {FAVORITE_MEAL_MOCK.slice(0, 4).map(item => (
                 <li key={item.id} className={styles['meal-favorite__list__item']}>
                   {/* TODO: 각 음식 사진이나 아이콘 추가 필요 -> 스타일 재검토 */}
                   <div className={styles['meal-favorite__list__item__info']}>
@@ -40,7 +40,7 @@ export default function FavoriteMenuCard() {
                 </li>
               ))}
             </ul>
-            {FAVORITE_MEAL_MOCK.length > 3 && (
+            {FAVORITE_MEAL_MOCK.length > 4 && (
               <div className={styles['meal-favorite__view-all']}>
                 <button
                   type="button"

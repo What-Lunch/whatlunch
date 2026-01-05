@@ -9,6 +9,50 @@
   border-radius: 14px;
   box-sizing: border-box;
   @include m.flex-box(flex-start, stretch, column);
+  &__empty {
+    flex: 1;
+    padding: 8px 0;
+
+    @include m.flex-box(center, center, column);
+    gap: 8px;
+    text-align: center;
+  }
+
+  &__empty__icon {
+    width: 40px;
+    height: 40px;
+    color: f.color(gray-400);
+    flex-shrink: 0;
+  }
+
+  &__empty__title {
+    margin: 0;
+    @include m.text-style(lg, 500);
+    color: f.color(gray-700);
+  }
+
+  &__empty__desc {
+    margin: 0;
+    @include m.text-style(sm, 400);
+    color: f.color(text-default);
+  }
+
+  &__empty__action {
+    margin-top: 6px;
+
+    @include m.flex-box(center, center);
+    height: 34px;
+    padding: 8px 14px;
+
+    border-radius: 999px;
+    border: 1px solid f.color(blue-200);
+    background: f.color(blue-100);
+    color: f.color(blue-700);
+
+    @include m.text-style(sm, 500);
+    white-space: nowrap;
+    cursor: pointer;
+  }
 
   &__header {
     margin-bottom: 14px;
