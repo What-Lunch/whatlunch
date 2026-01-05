@@ -26,15 +26,32 @@
 
 .modal {
   background-color: f.color(bg-inverse);
-  padding: 28px 24px;
+  padding: 20px 18px;
   border-radius: 16px;
   text-align: center;
-  overflow: auto;
+  overflow: hidden;
   animation: fade-in 0.25s ease;
+
+  @include m.mq(md) {
+    padding: 28px 24px;
+  }
 
   &__header {
     @include m.flex-box(space-between, center);
     margin-bottom: 15px;
+
+    &__title {
+      margin: 0;
+      @include m.text-style('xl', 600);
+      color: f.color(black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      @include m.mq(md) {
+        @include m.text-style('2xl', 600);
+      }
+    }
 
     &__close {
       width: 100%;
@@ -49,7 +66,22 @@
   &__description {
     margin-top: 8px;
     text-align: left;
-    font-size: 14px;
+    @include m.text-style('lg', 600);
     line-height: 20px;
+    overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    @include m.mq(md) {
+      @include m.text-style('2xl', 600);
+    }
+  }
+
+  &__content {
+    overflow: auto;
+    height: 100%;
+    max-height: 90vh;
+    padding-bottom: 32px;
   }
 }

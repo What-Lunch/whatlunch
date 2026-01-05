@@ -97,7 +97,7 @@ export default function Modal({
           </p>
         )}
 
-        <div className="modal-content">{children}</div>
+        <div className={styles['modal__content']}>{children}</div>
       </div>
     </section>,
     document.body
