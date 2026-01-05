@@ -2,10 +2,10 @@
 
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
 import { Utensils } from 'lucide-react';
 
 import { RECENT_MEAL_DECISIONS_MOCK } from './mock';
+import { formatDate } from '@/shared/utils/date';
 
 import Modal from '@/shared/components/Modal';
 import styles from './RecentMenuDecisionCard.module.scss';
@@ -44,7 +44,9 @@ export default function RecentMenuDecisionCard() {
                   <p className={styles['meal-history__list__item__menu__name']}>{item.menuName}</p>
                 </div>
 
-                <p className={styles['meal-history__list__item__date']}>{item.decidedAt}</p>
+                <p className={styles['meal-history__list__item__date']}>
+                  {formatDate(item.decidedAt)}
+                </p>
               </div>
 
               <button
@@ -60,13 +62,15 @@ export default function RecentMenuDecisionCard() {
         </ul>
 
         {shouldShowViewAll && (
-          <button
-            type="button"
-            className={styles['meal-history__view-all']}
-            onClick={handleOpenHistory}
-          >
-            전체 기록 보기
-          </button>
+          <div className={styles['meal-history__view-all']}>
+            <button
+              type="button"
+              className={styles['meal-history__view-all__button']}
+              onClick={handleOpenHistory}
+            >
+              전체 기록 보기
+            </button>
+          </div>
         )}
       </section>
 
@@ -88,7 +92,9 @@ export default function RecentMenuDecisionCard() {
                       {item.menuName}
                     </p>
                   </div>
-                  <p className={styles['meal-history-modal__item__date']}>{item.decidedAt}</p>
+                  <p className={styles['meal-history-modal__item__date']}>
+                    {formatDate(item.decidedAt)}
+                  </p>
                 </div>
                 <button
                   type="button"

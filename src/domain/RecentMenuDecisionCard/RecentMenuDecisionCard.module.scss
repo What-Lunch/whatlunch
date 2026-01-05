@@ -83,18 +83,21 @@
   }
 
   &__view-all {
-    margin-top: 12px;
-    @include m.flex-box(center, center);
     width: 100%;
-    padding: 10px 0;
-    background: transparent;
-    border: none;
-    @include m.text-style(lg, 500);
-    color: f.color(text-default);
-    cursor: pointer;
+    @include m.flex-box(center, center);
 
-    &:hover {
-      color: f.color(black);
+    &__button {
+      margin-top: 12px;
+      width: fit-content;
+      background: transparent;
+      border: none;
+      @include m.text-style(lg, 500);
+      color: f.color(text-default);
+      cursor: pointer;
+
+      &:hover {
+        color: f.color(black);
+      }
     }
   }
 }
