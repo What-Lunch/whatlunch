@@ -11,6 +11,7 @@ import Ladder from '@/domain/Ladder/Ladder';
 import Roulette from '@/domain/Roulette/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
 import styles from './page.module.scss';
+import Chat from '@/domain/Chat';
 
 const TAB_LIST = [
   { value: 'roulette', label: '룰렛', icon: <Shuffle size={18} /> },
@@ -120,13 +121,15 @@ export default function HomePage() {
       </div>
 
       <div className={styles['container__right']}>
+        {/* TODO: section 스타일 삭제 및 각 컴포넌트로 스타일 이전 필요 */}
         <section className={styles['container__right__clock']}>
           <Clock />
         </section>
         <section className={styles['container__right__weather']}>
           <WeatherMood />
         </section>
-        <section className={styles['container__right__chat']}>채팅창</section>
+
+        <Chat />
       </div>
     </div>
   );

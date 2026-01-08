@@ -43,7 +43,6 @@
 
       &__option {
         @include bordered-box;
-
         height: 90px;
       }
 
@@ -51,9 +50,7 @@
         width: 100%;
         height: 450px;
         min-height: 450px;
-
         border: 1px solid f.color(black);
-
         display: block;
         position: relative;
         overflow: hidden;
@@ -74,11 +71,6 @@
     &__weather {
       @include bordered-box;
       height: 400px;
-    }
-
-    &__chat {
-      @include bordered-box;
-      height: 500px;
     }
   }
 }
