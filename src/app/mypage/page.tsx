@@ -1,8 +1,9 @@
-import MyPageHeader from '@/domain/MyPageHeader/MyPageHeader';
-import RecentMenuDecisionCard from '@/domain/RecentMenuDecisionCard/RecentMenuDecisionCard';
-import FavoriteMenuCard from '@/domain/FavoriteMenuCard/FavoriteMenuCard';
-import MenuSummaryCard from '@/domain/MenuSummaryCard';
-
+import MyPageHeader from '@/domain/Mypage/MyPageHeader';
+import RecentMenuDecisionCard from '@/domain/Mypage/RecentMenuDecisionCard';
+import FavoriteMenuCard from '@/domain/Mypage/FavoriteMenuCard';
+import MenuSummaryCard from '@/domain/Mypage/MenuSummaryCard';
+import AccountSetting from '@/domain/Mypage/AccountSetting';
+import MypageFnq from '@/domain/Mypage/MypageFaq';
 import styles from './page.module.scss';
 
 export default function MyPage() {
@@ -18,8 +19,8 @@ export default function MyPage() {
         </div>
 
         <div className={styles['mypage__bottom']}>
-          <section className={styles['mypage__bottom__profile']}>4</section>
-          <section className={styles['mypage__bottom__faq']}>5</section>
+          <AccountSetting />
+          <MypageFnq />
         </div>
       </main>
     </div>
