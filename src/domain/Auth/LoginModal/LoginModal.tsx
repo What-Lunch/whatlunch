@@ -1,12 +1,16 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
+import Image from 'next/image';
+
+import { useAuthStore } from '../store/auth.store';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
+
+import { login, getMe } from '@/app/api/auth/auth.api';
 
 import { LoginModalProps } from '../types';
 
@@ -25,10 +29,42 @@ import styles from '../AuthModal.module.scss';
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const onSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const setUser = useAuthStore(state => state.setUser);
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 로직 구현 필요
+
+    if (!email || !password) {
+      alert('이메일과 비밀번호를 입력해주세요');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // 로그인 (토큰 저장)
+      await login({ email, password });
+
+      // 유저 정보 조회
+      const me = await getMe();
+
+      // 전역 auth 상태 세팅
+      setUser({
+        id: me._id,
+        email: me.email,
+        nickname: me.nickname,
+      });
+
+      onClose();
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert('로그인에 실패했습니다');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,14 +78,17 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
               type="email"
               placeholder="이메일을 입력하세요"
               onChange={e => setEmail(e.target.value)}
+              disabled={loading}
             />
           </div>
+
           <div className={styles['auth__body-group']}>
             <span className={styles['auth__body-group__label']}>비밀번호</span>
             <PasswordInput
               value={password}
               placeholder="비밀번호를 입력하세요"
               onChange={e => setPassword(e.target.value)}
+              disabled={loading}
             />
           </div>
           <div className={styles['auth__social']}>
@@ -61,11 +100,13 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
                 role="button"
                 className={styles['auth__social__oauth--google']}
                 aria-label="Google로 로그인"
+                disabled={loading}
               >
                 <Image src={Google} alt="Google Logo" width={20} height={20} />
               </button>
             </div>
           </div>
+
           <div className={styles['auth__actions']}>
             <div>
               <span className={styles['auth__actions__boolean']}>회원이 아니신가요? </span>
@@ -73,13 +114,20 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
                 type="button"
                 className={styles['auth__actions__signup']}
                 onClick={onSignupOpen}
+                disabled={loading}
               >
                 회원가입하기
               </button>
             </div>
           </div>
-          <Button type="submit" variant="blue" className={styles['auth__actions__buttons__button']}>
-            로그인
+
+          <Button
+            type="submit"
+            variant="blue"
+            className={styles['auth__actions__buttons__button']}
+            disabled={loading}
+          >
+            {loading ? '로그인 중...' : '로그인'}
           </Button>
         </div>
       </form>

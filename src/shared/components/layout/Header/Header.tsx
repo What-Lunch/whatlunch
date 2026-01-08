@@ -1,43 +1,92 @@
 'use client';
 
-import styles from './Header.module.scss';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
+import { getMe } from '@/app/api/auth/auth.api';
+
 import Button from '@/shared/components/Button';
-import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 import LoginModal from '@/domain/Auth/LoginModal';
 import SignupModal from '@/domain/Auth/SignupModal';
-import { useState } from 'react';
+
+import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
+
+import styles from './Header.module.scss';
 
 export function Header() {
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
+  const { user, isAuthLoading, setUser, clearUser, finishAuthCheck } = useAuthStore();
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      finishAuthCheck();
+      return;
+    }
+
+    getMe()
+      .then(user => {
+        setUser({
+          id: user._id,
+          email: user.email,
+          nickname: user.nickname,
+        });
+      })
+      .catch(() => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('expiresAt');
+        clearUser();
+      });
+  }, [setUser, clearUser, finishAuthCheck]);
+
   return (
     <header className={styles['header']}>
       <div className={styles['header__menu']}>
         <Link href="/">
           <span>룰렛 돌리기</span>
         </Link>
-
         <Link href="/faq">
           <span>고객센터</span>
         </Link>
       </div>
 
-      <div>
-        <Link href="/" className={styles['header__logo']}>
-          <Image src={WhatLunchLogo} alt="What Lunch Logo" width={60} height={60} />
-          <span>What Lunch</span>
-        </Link>
-      </div>
+      <Link href="/" className={styles['header__logo']}>
+        <Image src={WhatLunchLogo} alt="What Lunch Logo" width={60} height={60} />
+        <span>What Lunch</span>
+      </Link>
 
       <div className={styles['header__auth']}>
-        <Button variant="primary" onClick={() => setModalType('login')}>
-          로그인
-        </Button>
-        <Button variant="primary" onClick={() => setModalType('signup')}>
-          회원가입
-        </Button>
+        {isAuthLoading ? null : user ? (
+          <>
+            <div className={styles['header__user']}>
+              <div className={styles['header__user-avatar']}>{user.nickname[0]}</div>
+              <span className={styles['header__user-nickname']}>{user.nickname}님</span>
+            </div>
+
+            <Button
+              variant="primary"
+              onClick={() => {
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('expiresAt');
+                clearUser();
+              }}
+            >
+              로그아웃
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button variant="primary" onClick={() => setModalType('login')}>
+              로그인
+            </Button>
+            <Button variant="primary" onClick={() => setModalType('signup')}>
+              회원가입
+            </Button>
+          </>
+        )}
       </div>
 
       {modalType === 'login' && (
@@ -46,6 +95,7 @@ export function Header() {
           onSignupOpen={() => setModalType('signup')}
         />
       )}
+
       {modalType === 'signup' && (
         <SignupModal onClose={() => setModalType(null)} onLoginOpen={() => setModalType('login')} />
       )}
