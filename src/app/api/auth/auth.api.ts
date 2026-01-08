@@ -6,8 +6,8 @@ export const signup = (data: {
   password: string;
   passwordConfirm: string;
   nickname: string;
-}) => {
-  return fetcher('/auth/signup', {
+}): Promise<{ message: string }> => {
+  return fetcher<{ message: string }>('/auth/signup', {
     method: 'POST',
     body: JSON.stringify(data),
   });
@@ -23,8 +23,10 @@ export const login = async (data: { email: string; password: string }) => {
     body: JSON.stringify(data),
   });
 
-  localStorage.setItem('accessToken', res.accessToken); // 액세스 토큰
-  localStorage.setItem('expiresAt', res.expiresAt); // 만료 시간
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('accessToken', res.accessToken); // 액세스 토큰
+    localStorage.setItem('expiresAt', res.expiresAt); // 만료 시간
+  }
 
   return res;
 };

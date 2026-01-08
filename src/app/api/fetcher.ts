@@ -19,7 +19,7 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
   }
 
   // 인증 토큰 자동 첨부
-  if (options.auth) {
+  if (options.auth && typeof window !== 'undefined') {
     const token = localStorage.getItem('accessToken');
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
@@ -45,5 +45,6 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
     throw new Error(message);
   }
 
-  return res.json() as Promise<T>;
+  const text = await res.text();
+  return text ? (JSON.parse(text) as T) : (undefined as T);
 }

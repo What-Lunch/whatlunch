@@ -15,11 +15,23 @@ import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 
 import styles from './Header.module.scss';
 
+// 닉네임에서 첫 글자 추출
+const getInitial = (nickname?: string) => {
+  if (!nickname) return '?';
+
+  const trimmed = nickname.trim();
+  if (!trimmed) return '?';
+
+  return Array.from(trimmed)[0];
+};
+
 export function Header() {
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
   const { user, isAuthLoading, setUser, clearUser, finishAuthCheck } = useAuthStore();
 
   useEffect(() => {
+    let isMounted = true;
+
     const token = localStorage.getItem('accessToken');
 
     if (!token) {
@@ -29,6 +41,8 @@ export function Header() {
 
     getMe()
       .then(user => {
+        if (!isMounted) return;
+
         setUser({
           id: user._id,
           email: user.email,
@@ -36,10 +50,21 @@ export function Header() {
         });
       })
       .catch(() => {
+        if (!isMounted) return;
+
         localStorage.removeItem('accessToken');
         localStorage.removeItem('expiresAt');
         clearUser();
+      })
+      .finally(() => {
+        if (isMounted) {
+          finishAuthCheck();
+        }
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [setUser, clearUser, finishAuthCheck]);
 
   return (
@@ -62,8 +87,8 @@ export function Header() {
         {isAuthLoading ? null : user ? (
           <>
             <div className={styles['header__user']}>
-              <div className={styles['header__user-avatar']}>{user.nickname[0]}</div>
-              <span className={styles['header__user-nickname']}>{user.nickname}님</span>
+              <div className={styles['header__user-avatar']}>{getInitial(user.nickname)}</div>
+              <span className={styles['header__user-nickname']}>{user.nickname || '사용자'}님</span>
             </div>
 
             <Button
