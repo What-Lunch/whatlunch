@@ -8,9 +8,7 @@ import styles from './page.module.scss';
 export default function MyPage() {
   return (
     <div className={styles['mypage']}>
-      <header className={styles['mypage__header']}>
-        <MyPageHeader />
-      </header>
+      <MyPageHeader />
 
       <main className={styles['mypage__content']}>
         <div className={styles['mypage__top']}>
