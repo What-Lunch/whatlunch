@@ -24,8 +24,8 @@ export default function MypageFaq() {
         <CircleQuestionMarkIcon className={styles['mypage-faq__header__icon']} />
       </header>
       <div className={styles['mypage-faq__menu']}>
-        {faqMenus.map(menu => (
-          <div className={styles['mypage-faq__menu__section']} key={menu.title + menu.description}>
+        {faqMenus.map((menu, index) => (
+          <div className={styles['mypage-faq__menu__section']} key={index}>
             <div className={styles['mypage-faq__menu__section__info']}>
               <span className={styles['mypage-faq__menu__section__info__icon']}>{menu.icon}</span>
               <div>

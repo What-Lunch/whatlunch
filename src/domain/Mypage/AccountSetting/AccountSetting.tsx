@@ -23,15 +23,12 @@ export default function AccountSetting() {
   return (
     <section className={styles['account-setting']}>
       <header className={styles['account-setting__header']}>
-        <h2 className={styles['account-setting__header__title']}>자주 선택된 메뉴 요약</h2>
+        <h2 className={styles['account-setting__header__title']}>계정 설정</h2>
         <UserIcon className={styles['account-setting__header__icon']} />
       </header>
       <div className={styles['account-setting__menu']}>
-        {settingMenus.map(menu => (
-          <div
-            className={styles['account-setting__menu__section']}
-            key={menu.title + menu.description}
-          >
+        {settingMenus.map((menu, index) => (
+          <div className={styles['account-setting__menu__section']} key={index}>
             <div className={styles['account-setting__menu__section__info']}>
               <span className={styles['account-setting__menu__section__info__icon']}>
                 {menu.icon}
@@ -40,7 +37,7 @@ export default function AccountSetting() {
                 <div className={styles['account-setting__menu__section__info__title']}>
                   {menu.title}
                 </div>
-                <div className={styles['account-setting__menu__section__info__desc']}>
+                <div className={styles['account-setting__menu__section__info__description']}>
                   {menu.description}
                 </div>
               </div>

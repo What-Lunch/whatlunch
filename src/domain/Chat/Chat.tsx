@@ -3,8 +3,15 @@ import { SendHorizontalIcon, UserIcon } from 'lucide-react';
 import { mockChat } from './mock';
 import styles from './Chat.module.scss';
 
-// TODO: 채팅 기능 구현 필요, 채팅 로딩 UI 구현 필요
+/**
+ * TODO
+ * 채팅 기능 구현 필요 (백엔드 + submit)
+ * 채팅 로딩 UI 구현 필요 (스켈레톤 또는 로딩 스피너)
+ */
 export default function Chat() {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
   return (
     <section className={styles['chat']}>
       <span className={styles['chat__title']}>실시간 채팅</span>
@@ -41,7 +48,7 @@ export default function Chat() {
           </div>
         ))}
       </div>
-      <div className={styles['chat__input']}>
+      <form className={styles['chat__input']} onSubmit={onSubmit}>
         <input
           type="text"
           placeholder="메시지를 입력하세요"
@@ -50,7 +57,7 @@ export default function Chat() {
         <button type="submit" className={styles['chat__input__send']}>
           <SendHorizontalIcon className={styles['chat__input__send__icon']} size={20} />
         </button>
-      </div>
+      </form>
     </section>
   );
 }
