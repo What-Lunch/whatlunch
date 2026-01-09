@@ -1,4 +1,8 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+if (!BASE_URL) {
+  throw new Error('NEXT_PUBLIC_API_BASE_URL environment variable is not defined');
+}
 
 // fetcher 유틸리티 함수 및 관련 타입 정의
 export interface FetchOptions extends RequestInit {
@@ -10,7 +14,7 @@ export interface ApiErrorResponse {
   message?: string;
 }
 
-// 범용 fetcher 함수
+// 범용 fetcher 함수 (JSON 응답 필수)
 export async function fetcher<T>(url: string, options: FetchOptions = {}): Promise<T> {
   const headers = new Headers(options.headers);
 
@@ -40,11 +44,19 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
       if (data?.message) {
         message = data.message;
       }
-    } catch {}
+    } catch {
+      // JSON 파싱 실패 시 기본 메시지 유지
+    }
 
     throw new Error(message);
   }
 
   const text = await res.text();
-  return text ? (JSON.parse(text) as T) : (undefined as T);
+
+  // JSON 파싱 로유 방지
+  if (!text) {
+    throw new Error(`Unexpected empty response: ${res.status} ${res.url}`);
+  }
+
+  return JSON.parse(text) as T;
 }

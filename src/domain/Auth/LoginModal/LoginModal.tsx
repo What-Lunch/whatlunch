@@ -10,7 +10,7 @@ import BaseInput from '@/shared/components/Input/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
-import { login, getMe } from '@/app/api/auth/auth.api';
+import { authService } from '@/app/services/Auth/auth.api';
 
 import { LoginModalProps } from '../types';
 
@@ -26,11 +26,31 @@ import styles from '../AuthModal.module.scss';
  * 4. useState 대신 ref 사용 고려 -> input 컴포넌트들 수정 필요 (현재 input입력시 전체 렌더링 되는 이슈 존재)
  */
 
+function getLoginErrorMessage(error: unknown): string {
+  if (!(error instanceof Error)) {
+    return '로그인에 실패했습니다. 잠시 후 다시 시도해주세요.';
+  }
+
+  const message = error.message.toLowerCase();
+
+  if (message.includes('unauthorized') || message.includes('401')) {
+    return '이메일 또는 비밀번호가 올바르지 않습니다.';
+  }
+
+  if (message.includes('network') || message.includes('fetch')) {
+    return '네트워크 연결을 확인해주세요.';
+  }
+
+  return '로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+}
+
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
   const setUser = useAuthStore(state => state.setUser);
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -43,24 +63,21 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
       setLoading(true);
 
       // 로그인 (토큰 저장)
-      await login({ email, password });
+      await authService.login({ email, password });
 
-      // 유저 정보 조회
-      const me = await getMe();
+      // 내 정보 조회
+      const me = await authService.getMe();
 
       // 전역 auth 상태 세팅
       setUser({
         email: me.email,
         nickname: me.nickname,
+        profileImage: me.profileImage,
       });
 
       onClose();
     } catch (err) {
-      if (err instanceof Error) {
-        alert(err.message);
-      } else {
-        alert('로그인에 실패했습니다');
-      }
+      alert(getLoginErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -90,6 +107,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
               disabled={loading}
             />
           </div>
+
           <div className={styles['auth__social']}>
             <span className={styles['auth__social__or']}>OR</span>
             <div className={styles['auth__social__oauth']}>

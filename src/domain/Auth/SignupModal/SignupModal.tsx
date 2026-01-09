@@ -8,7 +8,7 @@ import BaseInput from '@/shared/components/Input/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
-import { signup } from '@/app/api/auth/auth.api';
+import { authService } from '@/app/services/Auth/auth.api';
 
 import { SignupModalProps } from '../types';
 
@@ -46,7 +46,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
     try {
       setLoading(true);
 
-      await signup({
+      await authService.signup({
         email,
         password,
         passwordConfirm,

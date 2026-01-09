@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
-import { getMe } from '@/app/api/auth/auth.api';
+import { authService } from '@/app/services/Auth/auth.api';
 
 import { Menu, X } from 'lucide-react';
 
@@ -42,13 +42,15 @@ export function Header() {
       return;
     }
 
-    getMe()
+    authService
+      .getMe()
       .then(user => {
         if (!isMounted) return;
 
         setUser({
           email: user.email,
           nickname: user.nickname,
+          profileImage: user.profileImage,
         });
       })
       .catch(() => {
@@ -68,6 +70,18 @@ export function Header() {
       isMounted = false;
     };
   }, [setUser, clearUser, finishAuthCheck]);
+
+  // 공통 로그아웃 핸들러
+  const handleLogout = (afterLogout?: () => void) => {
+    const ok = confirm('로그아웃하시겠어요?');
+    if (!ok) return;
+
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('expiresAt');
+    clearUser();
+
+    afterLogout?.();
+  };
 
   return (
     <header className={styles['header']}>
@@ -96,17 +110,7 @@ export function Header() {
               <span className={styles['header__user-nickname']}>{user.nickname || '사용자'}님</span>
             </div>
 
-            <Button
-              variant="primary"
-              onClick={() => {
-                const ok = confirm('로그아웃하시겠어요?');
-                if (!ok) return;
-
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('expiresAt');
-                clearUser();
-              }}
-            >
+            <Button variant="primary" onClick={() => handleLogout()}>
               로그아웃
             </Button>
           </>
@@ -172,15 +176,11 @@ export function Header() {
               {!isAuthLoading && user && (
                 <li>
                   <button
-                    onClick={() => {
-                      const ok = confirm('로그아웃하시겠어요?');
-                      if (!ok) return;
-
-                      localStorage.removeItem('accessToken');
-                      localStorage.removeItem('expiresAt');
-                      clearUser();
-                      setIsMobileMenuOpen(false);
-                    }}
+                    onClick={() =>
+                      handleLogout(() => {
+                        setIsMobileMenuOpen(false);
+                      })
+                    }
                   >
                     로그아웃
                   </button>
