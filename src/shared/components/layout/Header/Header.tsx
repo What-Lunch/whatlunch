@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { getMe } from '@/app/api/auth/auth.api';
 
+import { Menu, X } from 'lucide-react';
+
 import Button from '@/shared/components/Button';
 import LoginModal from '@/domain/Auth/LoginModal';
 import SignupModal from '@/domain/Auth/SignupModal';
@@ -27,6 +29,7 @@ const getInitial = (nickname?: string) => {
 
 export function Header() {
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, isAuthLoading, setUser, clearUser, finishAuthCheck } = useAuthStore();
 
   useEffect(() => {
@@ -44,7 +47,6 @@ export function Header() {
         if (!isMounted) return;
 
         setUser({
-          id: user._id,
           email: user.email,
           nickname: user.nickname,
         });
@@ -71,7 +73,10 @@ export function Header() {
     <header className={styles['header']}>
       <div className={styles['header__menu']}>
         <Link href="/">
-          <span>룰렛 돌리기</span>
+          <span>홈</span>
+        </Link>
+        <Link href="/mypage">
+          <span>마이페이지</span>
         </Link>
         <Link href="/faq">
           <span>고객센터</span>
@@ -94,6 +99,9 @@ export function Header() {
             <Button
               variant="primary"
               onClick={() => {
+                const ok = confirm('로그아웃하시겠어요?');
+                if (!ok) return;
+
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('expiresAt');
                 clearUser();
@@ -113,6 +121,101 @@ export function Header() {
           </>
         )}
       </div>
+
+      {/* 햄버거 버튼 */}
+      {!isMobileMenuOpen && (
+        <button
+          className={styles['header__hamburger']}
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="메뉴 열기"
+        >
+          <Menu size={26} />
+        </button>
+      )}
+
+      {/* 모바일 메뉴 */}
+      {isMobileMenuOpen && (
+        <>
+          <div
+            className={styles['header__mobile-overlay']}
+            onClick={() => setIsMobileMenuOpen(false)}
+          ></div>
+          <div className={styles['header__mobile-menu']}>
+            <div className={styles['header__mobile-menu-header']}>
+              <span className={styles['header__mobile-menu-title']}>메뉴</span>
+              <button
+                className={styles['header__mobile-menu-close']}
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="메뉴 닫기"
+              >
+                <X size={28} />
+              </button>
+            </div>
+            <ul className={styles['header__mobile-menu-list']}>
+              <li>
+                <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+                  홈
+                </Link>
+              </li>
+              <li>
+                <Link href="/mypage" onClick={() => setIsMobileMenuOpen(false)}>
+                  마이페이지
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" onClick={() => setIsMobileMenuOpen(false)}>
+                  고객센터
+                </Link>
+              </li>
+
+              {/* 로그인 상태 */}
+              {!isAuthLoading && user && (
+                <li>
+                  <button
+                    onClick={() => {
+                      const ok = confirm('로그아웃하시겠어요?');
+                      if (!ok) return;
+
+                      localStorage.removeItem('accessToken');
+                      localStorage.removeItem('expiresAt');
+                      clearUser();
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    로그아웃
+                  </button>
+                </li>
+              )}
+
+              {/* 비로그인 상태 */}
+              {!isAuthLoading && !user && (
+                <>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setModalType('login');
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      로그인
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setModalType('signup');
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      회원가입
+                    </button>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+        </>
+      )}
 
       {modalType === 'login' && (
         <LoginModal

@@ -2,7 +2,6 @@ import { create } from 'zustand';
 
 // 유저 정보 타입
 type User = {
-  id: string;
   email: string;
   nickname: string;
 };

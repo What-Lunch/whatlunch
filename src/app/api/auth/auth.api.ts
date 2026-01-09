@@ -34,7 +34,6 @@ export const login = async (data: { email: string; password: string }) => {
 // 내 정보 조회 API
 export const getMe = () => {
   return fetcher<{
-    _id: string;
     email: string;
     nickname: string;
   }>('/auth/me', {

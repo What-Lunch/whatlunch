@@ -50,7 +50,6 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
 
       // 전역 auth 상태 세팅
       setUser({
-        id: me._id,
         email: me.email,
         nickname: me.nickname,
       });
