@@ -47,6 +47,14 @@ class AuthService {
     return res;
   }
 
+  // 로그아웃 (토큰 제거)
+  logout() {
+    if (typeof window === 'undefined') return;
+
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('expiresAt');
+  }
+
   // 내 정보 조회
   getMe(): Promise<MeResponse> {
     return fetcher<MeResponse>('/auth/me', {

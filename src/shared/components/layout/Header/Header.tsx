@@ -53,12 +53,25 @@ export function Header() {
           profileImage: user.profileImage,
         });
       })
-      .catch(() => {
+      .catch(err => {
         if (!isMounted) return;
 
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('expiresAt');
-        clearUser();
+        if (err instanceof Error) {
+          const message = err.message.toLowerCase();
+
+          // 인증 오류(401/403)만 로그아웃 처리
+          if (
+            message.includes('unauthorized') ||
+            message.includes('401') ||
+            message.includes('403')
+          ) {
+            authService.logout();
+            clearUser();
+          } else {
+            // 네트워크/서버 오류 등은 세션 유지
+            console.error('getMe failed:', err);
+          }
+        }
       })
       .finally(() => {
         if (isMounted) {
@@ -76,9 +89,8 @@ export function Header() {
     const ok = confirm('로그아웃하시겠어요?');
     if (!ok) return;
 
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('expiresAt');
-    clearUser();
+    authService.logout();
+    clearUser(); // 전역 auth 상태 초기화
 
     afterLogout?.();
   };
@@ -155,6 +167,7 @@ export function Header() {
                 <X size={28} />
               </button>
             </div>
+
             <ul className={styles['header__mobile-menu-list']}>
               <li>
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
