@@ -9,6 +9,7 @@ import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
 import { authService } from '@/app/services/Auth/auth.api';
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import { SignupModalProps } from '../types';
 
@@ -29,6 +30,9 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // 전역 auth 상태 초기화용
+  const clearUser = useAuthStore(state => state.clearUser);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +56,9 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
         passwordConfirm,
         nickname,
       });
+
+      // 이전 로그인 상태 제거
+      clearUser();
 
       alert('회원가입이 완료되었습니다');
       onLoginOpen();
