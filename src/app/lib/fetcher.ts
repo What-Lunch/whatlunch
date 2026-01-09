@@ -1,8 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-if (!BASE_URL) {
-  throw new Error('NEXT_PUBLIC_API_BASE_URL environment variable is not defined');
-}
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
 // fetcher 유틸리티 함수 및 관련 타입 정의
 export interface FetchOptions extends RequestInit {
@@ -16,6 +12,15 @@ export interface ApiErrorResponse {
 
 // 범용 fetcher 함수 (JSON 응답 필수)
 export async function fetcher<T>(url: string, options: FetchOptions = {}): Promise<T> {
+  // SSG / SSR 방어
+  if (typeof window === 'undefined') {
+    throw new Error('fetcher should not be called during server rendering');
+  }
+
+  if (!BASE_URL) {
+    throw new Error('API base URL is not configured');
+  }
+
   const headers = new Headers(options.headers);
 
   if (!headers.has('Content-Type')) {
@@ -23,7 +28,7 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
   }
 
   // 인증 토큰 자동 첨부
-  if (options.auth && typeof window !== 'undefined') {
+  if (options.auth) {
     const token = localStorage.getItem('accessToken');
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
@@ -53,7 +58,7 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
 
   const text = await res.text();
 
-  // JSON 파싱 로유 방지
+  // JSON 파싱 로직 방어
   if (!text) {
     throw new Error(`Unexpected empty response: ${res.status} ${res.url}`);
   }
