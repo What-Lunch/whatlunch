@@ -54,7 +54,7 @@ export default function Chat() {
           placeholder="메시지를 입력하세요"
           className={styles['chat__input__field']}
         />
-        <button type="submit" className={styles['chat__input__send']}>
+        <button type="submit" className={styles['chat__input__send']} aria-label="send message">
           <SendHorizontalIcon className={styles['chat__input__send__icon']} size={20} />
         </button>
       </form>
