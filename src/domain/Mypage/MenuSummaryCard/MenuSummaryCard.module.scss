@@ -5,9 +5,9 @@
   width: 100%;
   height: 100%;
   padding: 18px 20px;
-  border: 1px solid f.color(gray-300);
+  border: 1.5px solid f.color(gray-300);
+  box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.1);
   border-radius: 14px;
-  box-sizing: border-box;
   @include m.flex-box(flex-start, stretch, column);
 
   &__header {
@@ -21,7 +21,6 @@
   }
 
   &__title {
-    margin: 0;
     @include m.text-style('xl', 500);
     color: f.color(gray-900);
   }
@@ -33,14 +32,9 @@
     flex-shrink: 0;
   }
   &__list {
-    margin: 0;
-    padding: 0;
-
     list-style: none;
     @include m.flex-box(flex-start, stretch, column);
     gap: 12px;
-
-    min-height: 0;
   }
 
   &__item {
@@ -62,16 +56,12 @@
     width: 16px;
     height: 16px;
     flex-shrink: 0;
-
-    /* 아이콘 컬러는 아이템 컬러를 따라감 */
-    color: inherit;
+    color: inherit; /* 아이콘 컬러는 아이템 컬러를 따라감 */
   }
 
   &__value {
-    margin: 0;
     @include m.text-style('lg', 400);
     color: f.color(gray-900);
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -106,13 +96,11 @@
   }
 
   &__empty-title {
-    margin: 0;
     @include m.text-style('lg', 500);
     color: f.color(gray-700);
   }
 
   &__empty-desc {
-    margin: 0;
     @include m.text-style('md', 400);
     color: f.color(gray-600);
   }

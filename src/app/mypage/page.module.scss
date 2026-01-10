@@ -6,32 +6,19 @@
   @include m.flex-box(flex-start, stretch);
   width: 100%;
   padding: 18px 20px;
-
   border: 1px solid f.color(gray-300);
   box-sizing: border-box;
-
   background: f.color(white);
   border-radius: 14px;
   overflow: hidden;
-
   min-height: 0;
-}
-
-// 가운데 정렬이 필요한 영역의 경계선
-@mixin center-boundary {
-  @include m.flex-box(center, center);
-  width: 100%;
-  border: 1px solid f.color(gray-300);
 }
 
 .mypage {
   @include m.flex-box(flex-start, stretch, column);
   gap: 40px;
-
-  &__header {
-    @include center-boundary;
-    height: 200px;
-  }
+  width: fit-content;
+  margin: auto;
 
   &__content {
     width: 100%;
@@ -48,36 +35,17 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       align-items: stretch;
     }
-
-    &__favorite,
-    &__preference {
-      @include card-boundary;
-      height: 500px;
-
-      @include m.mq(lg) {
-        height: 500px;
-      }
-    }
   }
 
   &__bottom {
     display: grid;
     gap: 30px;
     grid-template-columns: 1fr;
+    margin: 10px 0;
 
     @include m.mq(lg) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: stretch;
-    }
-
-    &__profile,
-    &__faq {
-      @include card-boundary;
-      height: 280px;
-
-      @include m.mq(lg) {
-        height: 400px;
-      }
     }
   }
 }

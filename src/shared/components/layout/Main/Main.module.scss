@@ -7,9 +7,12 @@
   padding: 100px 20px;
   transition: margin-left 0.3s ease;
   overflow: hidden;
+  width: 100%;
+
   @include m.mq(lg) {
     padding: f.main(padding);
   }
+
   &__content {
     display: flex;
     flex-direction: column;
