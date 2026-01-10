@@ -1,18 +1,21 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
-import styles from '../AuthModal.module.scss';
+import Image from 'next/image';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
-import Google from '../../../../public/icons/google.png';
+import { authService } from '@/app/services/Auth/auth.api';
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import { SignupModalProps } from '../types';
 
+import Google from '../../../../public/icons/google.png';
+
+import styles from '../AuthModal.module.scss';
 /**
  * TODO
  * 1. 백엔드 구현 필요 + 이에 맞는 validation 로직 구현
@@ -26,9 +29,48 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e: React.FormEvent) => {
+  // 전역 auth 상태 초기화용
+  const clearUser = useAuthStore(state => state.clearUser);
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!email || !nickname || !password || !passwordConfirm) {
+      alert('모든 항목을 입력해주세요');
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      alert('비밀번호가 일치하지 않습니다');
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await authService.signup({
+        email,
+        password,
+        passwordConfirm,
+        nickname,
+      });
+
+      // 이전 로그인 상태 제거
+      clearUser();
+
+      alert('회원가입이 완료되었습니다');
+      onLoginOpen();
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert('회원가입에 실패했습니다');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,8 +84,10 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               type="text"
               placeholder="닉네임을 입력하세요"
               onChange={e => setNickname(e.target.value)}
+              disabled={loading}
             />
           </div>
+
           <div className={styles['auth__body-group']}>
             <span className={styles['auth__body-group__label']}>이메일</span>
             <BaseInput
@@ -51,25 +95,31 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               type="email"
               placeholder="이메일을 입력하세요"
               onChange={e => setEmail(e.target.value)}
+              disabled={loading}
             />
           </div>
+
           <div className={styles['auth__body-group']}>
             <span className={styles['auth__body-group__label']}>비밀번호</span>
             <PasswordInput
               value={password}
               placeholder="비밀번호를 입력하세요"
               onChange={e => setPassword(e.target.value)}
+              disabled={loading}
             />
           </div>
+
           <div className={styles['auth__body-group']}>
             <span className={styles['auth__body-group__label']}>비밀번호 확인</span>
             <PasswordInput
               value={passwordConfirm}
               placeholder="비밀번호를 다시 입력하세요"
               onChange={e => setPasswordConfirm(e.target.value)}
+              disabled={loading}
             />
           </div>
         </div>
+
         <div className={styles['auth__social']}>
           <span className={styles['auth__social__or']}>OR</span>
           <div className={styles['auth__social__oauth']}>
@@ -79,13 +129,20 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
             </button>
           </div>
         </div>
+
         <div className={styles['auth__actions']}>
           <div>
             <span className={styles['auth__actions__boolean']}>이미 회원이신가요? </span>
-            <button type="button" className={styles['auth__actions__signup']} onClick={onLoginOpen}>
+            <button
+              type="button"
+              className={styles['auth__actions__signup']}
+              onClick={onLoginOpen}
+              disabled={loading}
+            >
               로그인하기
             </button>
           </div>
+
           <div className={styles['auth__actions__buttons']}>
             <Button
               type="button"
@@ -93,15 +150,18 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               mode="outline"
               className={styles['auth__actions__buttons__button']}
               onClick={onClose}
+              disabled={loading}
             >
               취소
             </Button>
+
             <Button
               type="submit"
               variant="blue"
               className={styles['auth__actions__buttons__button']}
+              disabled={loading}
             >
-              회원가입
+              {loading ? '처리 중...' : '회원가입'}
             </Button>
           </div>
         </div>

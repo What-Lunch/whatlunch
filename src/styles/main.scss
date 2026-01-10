@@ -4,3 +4,8 @@
 @use 'utils/mixins';
 @use 'utils/variables';
 @use 'utils/functions';
+
+// 스크롤바가 생기거나 사라질 때도 화면 레이아웃 폭을 고정
+html {
+  scrollbar-gutter: stable;
+}
