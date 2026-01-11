@@ -9,6 +9,7 @@ $variant-colors: (
   neutral: gray-700,
   danger: status-danger,
   blue: point-blue,
+  orange: orange-800,
 );
 
 @function fill-text-color($variant) {
@@ -36,7 +37,7 @@ $variant-colors: (
 
 @mixin outline-style($variant, $color) {
   background: transparent;
-  border: 2px solid f.color($color);
+  border: 1px solid f.color($color);
   color: f.color(black);
 
   &:hover:not(.button--disabled) {
