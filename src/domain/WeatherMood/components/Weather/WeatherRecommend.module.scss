@@ -4,15 +4,19 @@
 
 .weather-recommend {
   width: 100%;
-  height: 100%;
+  height: auto;
   padding: 14px 4px;
 
   display: flex;
   flex-direction: column;
 
   &__text {
-    @include m.text-style('2lg', 600);
+    @include m.text-style(lg, 600);
     color: f.color(black);
+
+    @include m.mq(lg) {
+      @include m.text-style('2lg', 600);
+    }
   }
 
   &__card {
@@ -32,55 +36,74 @@
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-
-  &__temp {
-    @include m.text-style('3xl', 700);
-    color: f.color(black);
-    line-height: 1;
+    flex-shrink: 0;
   }
 
   &__icon {
     object-fit: contain;
   }
 
+  &__temp {
+    @include m.text-style('2xl', 700);
+    color: f.color(black);
+    line-height: 1;
+
+    @include m.mq(lg) {
+      @include m.text-style('3xl', 700);
+    }
+  }
+
   &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+
+    text-align: left;
   }
 
   &__summary {
-    @include m.text-style(lg, 600);
+    @include m.text-style(sm, 600);
     color: f.color(black);
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 4px;
+
+    white-space: nowrap;
+
+    @include m.mq(lg) {
+      @include m.text-style(lg, 600);
+    }
   }
 
   &__aqi {
-    @include m.text-style(md, 600);
-    margin-left: 4px;
+    display: block;
+    @include m.text-style(sm, 600);
+    margin-top: 2px;
+
+    @include m.mq(lg) {
+      @include m.text-style(md, 600);
+    }
   }
 
   &__humidity {
-    @include m.text-style(lg, 600);
+    @include m.text-style(sm, 600);
     color: f.color(black);
+
+    @include m.mq(lg) {
+      @include m.text-style(lg, 600);
+    }
   }
 
   &__title {
-    @include m.text-style('2lg', 600);
+    @include m.text-style(lg, 600);
     margin-bottom: 10px;
     color: f.color(black);
   }
 
   &__list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
     gap: 14px;
 
-    @include m.mq(md) {
+    grid-template-columns: repeat(2, 1fr);
+
+    @include m.mq(lg) {
       grid-template-columns: repeat(3, 1fr);
     }
   }
@@ -88,16 +111,20 @@
   &__item {
     padding: 10px 16px;
     text-align: center;
-
+    min-width: 100px;
     background: f.color(white);
     border: 1px solid f.color(gray-300);
     border-radius: 12px;
 
-    @include m.text-style(md, 600);
+    @include m.text-style(sm, 600);
     color: f.color(gray-700);
 
-    transition: all 0.2s ease;
     cursor: pointer;
+    transition: all 0.2s ease;
+
+    @include m.mq(lg) {
+      @include m.text-style(md, 600);
+    }
 
     &:hover {
       border-color: f.color(point-blue);
@@ -105,10 +132,6 @@
     }
   }
 }
-
-// 공기오염(AQI)은 컴포넌트 고유 스타일이 아닌 상태(state) 값이므로 BEM 블록과 분리
-// AQI 수치(1~5)를 class로 직접 매핑해 재사용성과 JS 바인딩 효율을 높이기 위함
-// BEM(Element) + 전역 상태 클래스(Utility)를 함께 사용하는 구조
 
 .aqi-1 {
   color: #2ecc71; // 좋음

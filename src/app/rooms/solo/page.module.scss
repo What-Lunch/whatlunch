@@ -1,0 +1,35 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.solo {
+  min-height: 100vh;
+  padding: 24px 20px;
+  background: f.color(gray-100);
+  @include m.flex-box(flex-start, stretch, column);
+  gap: 24px;
+
+  &__header {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    @include m.text-style('xl', 700);
+    color: f.color(gray-900);
+    margin-bottom: 6px;
+  }
+
+  &__description {
+    @include m.text-style('sm', 400);
+    color: f.color(gray-600);
+  }
+
+  &__content {
+    background: f.color(white);
+    border-radius: 24px;
+    padding: 20px 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 20px;
+  }
+}

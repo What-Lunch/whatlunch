@@ -1,0 +1,92 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.room {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  @include m.flex-box(flex-start, stretch, column);
+  gap: 20px;
+  background-color: f.color(gray-200);
+
+  &__header {
+    @include m.flex-box(space-between, center);
+    gap: 16px;
+    padding: 16px 20px;
+    background: f.color(white);
+    border-radius: 20px;
+    border: 1px solid rgba(f.color(gray-300), 0.4);
+  }
+
+  &__title {
+    @include m.text-style('lg', 700);
+    color: f.color(gray-900);
+  }
+
+  &__code {
+    @include m.flex-box(flex-start, center);
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: f.color(gray-200);
+
+    &__label {
+      @include m.text-style('xs', 500);
+      color: f.color(gray-600);
+    }
+
+    &__value {
+      @include m.text-style('sm', 700);
+      letter-spacing: 0.08em;
+      color: f.color(gray-900);
+    }
+
+    &__copy {
+      @include m.flex-box(center, center);
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: none;
+      background: f.color(white);
+      cursor: pointer;
+      @include m.text-style('xs', 500);
+      color: f.color(gray-700);
+      &:hover {
+        background: f.color(gray-300);
+      }
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-height: 0;
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 16px;
+    @include m.mq(lg) {
+      flex-direction: row;
+      gap: 20px;
+    }
+  }
+
+  &__left {
+    flex: 1;
+    min-width: 0;
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 16px;
+  }
+
+  &__right {
+    width: 100%;
+    background: f.color(white);
+    border-radius: 20px;
+    border: 1px solid rgba(f.color(gray-300), 0.4);
+
+    @include m.flex-box(flex-start, stretch, column);
+    overflow: hidden;
+
+    @include m.mq(lg) {
+      width: 360px;
+      flex-shrink: 0;
+    }
+  }
+}

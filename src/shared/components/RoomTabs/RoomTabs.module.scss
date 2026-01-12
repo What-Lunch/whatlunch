@@ -1,0 +1,73 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.room-tabs {
+  &__map {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__form {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 14px;
+    background: f.color(white);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    margin-bottom: 12px;
+  }
+
+  &__input {
+    flex: 1;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(f.color(gray-400), 0.6);
+    background: f.color(white);
+    @include m.text-style(md, 500);
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: f.color(point-blue);
+      box-shadow: 0 0 0 3px rgba(f.color(point-blue), 0.15);
+    }
+    &::placeholder {
+      color: f.color(gray-500);
+    }
+  }
+
+  &__button {
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    background: f.color(brand-orange);
+    color: f.color(white);
+    border: none;
+    @include m.text-style(md, 600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &__result {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid f.color(gray-200);
+  }
+  &__result-title {
+    @include m.text-style(lg, 600);
+    color: f.color(black);
+    margin-bottom: 12px;
+  }
+}
