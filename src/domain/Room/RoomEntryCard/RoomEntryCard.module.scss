@@ -1,0 +1,76 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.room-entry {
+  padding: 32px 28px;
+  background: f.color(white);
+  border-radius: 28px;
+  border: 1px solid rgba(f.color(gray-300), 0.6);
+
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  &__header {
+    &__title {
+      @include m.text-style('xl', 700);
+      margin-bottom: 6px;
+    }
+
+    &__description {
+      @include m.text-style('lg', 400);
+      color: f.color(gray-600);
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 12px;
+  }
+
+  &__tab {
+    flex: 1;
+    height: 48px;
+    border-radius: 999px;
+    background: f.color(gray-200);
+    border: none;
+    cursor: pointer;
+    color: f.color(gray-600);
+    @include m.text-style('lg', 500);
+    transition: all 0.2s ease;
+
+    &--active {
+      background: f.color(brand-orange);
+      color: f.color(white);
+    }
+  }
+
+  &__description-box {
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(f.color(brand-orange), 0.08);
+    text-align: center;
+
+    &__main {
+      @include m.text-style('lg', 500);
+      color: f.color(gray-700);
+      margin-bottom: 6px;
+    }
+
+    &__sub {
+      @include m.text-style('md', 500);
+      color: f.color(gray-600);
+      line-height: 1.6;
+    }
+  }
+
+  &__description-box--solo {
+    padding: 18px;
+    background: rgba(f.color(brand-orange), 0.08);
+    border-radius: 16px;
+    text-align: center;
+
+    @include m.text-style('lg', 500);
+    color: f.color(gray-700);
+  }
+}
