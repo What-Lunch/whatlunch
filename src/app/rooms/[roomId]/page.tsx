@@ -8,11 +8,14 @@ import { useRoomLogic } from './useRoomLogic';
 
 import styles from './page.module.scss';
 
-type Props = {
-  params: { roomId: string };
-};
+// 방 페이지
+interface RoomPageProps {
+  params: {
+    roomId: string;
+  };
+}
 
-export default function RoomPage({ params }: Props) {
+export default function RoomPage({ params }: RoomPageProps) {
   const roomId = params.roomId;
 
   const { isSoloMode, isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
@@ -34,6 +37,7 @@ export default function RoomPage({ params }: Props) {
             <strong className={styles['room__code__value']}>{roomId}</strong>
 
             <button
+              type="button"
               aria-label="방 코드 복사"
               className={styles['room__code__copy']}
               onClick={copyRoomCode}

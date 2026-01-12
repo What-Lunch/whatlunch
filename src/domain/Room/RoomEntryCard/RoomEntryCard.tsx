@@ -14,11 +14,10 @@ type Mode = 'together' | 'solo';
 
 export default function RoomEntryCard() {
   const router = useRouter();
+  const room = useRoomEntry();
 
   const [mode, setMode] = useState<Mode>('together');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const room = useRoomEntry();
 
   return (
     <>
@@ -28,12 +27,11 @@ export default function RoomEntryCard() {
           <p className={styles['room-entry__header__description']}>정하는 방법을 선택해보세요</p>
         </header>
 
-        <div className={styles['room-entry__tabs']} aria-label="같이 정하기 또는 혼자 정하기 선택">
+        <div className={styles['room-entry__tabs']}>
           <button
             className={`${styles['room-entry__tab']} ${
               mode === 'together' ? styles['room-entry__tab--active'] : ''
             }`}
-            aria-label="친구들과 같이 메뉴 정하기 선택"
             onClick={() => setMode('together')}
           >
             같이 정하기
@@ -43,7 +41,6 @@ export default function RoomEntryCard() {
             className={`${styles['room-entry__tab']} ${
               mode === 'solo' ? styles['room-entry__tab--active'] : ''
             }`}
-            aria-label="혼자서 메뉴 추천 받기 선택"
             onClick={() => setMode('solo')}
           >
             혼자 정하기
@@ -52,22 +49,14 @@ export default function RoomEntryCard() {
 
         {mode === 'together' && (
           <>
-            <div
-              className={styles['room-entry__description-box']}
-              aria-label="같이 정하기 기능 설명"
-            >
-              <p className={styles['room-entry__description-box__main']}>
-                친구들과 실시간으로 룰렛과 채팅을 할 수 있어요
-              </p>
-              <span className={styles['room-entry__description-box__sub']}>
-                방을 만들면 6자리 코드가 생성돼요
-              </span>
+            <div className={styles['room-entry__description-box']}>
+              <p>친구들과 실시간으로 룰렛과 채팅을 할 수 있어요</p>
+              <span>방을 만들면 6자리 코드가 생성돼요</span>
             </div>
 
             <Button
               variant="orange"
               size="lg"
-              aria-label="같이 정하기 모달 열기"
               onClick={() => {
                 setIsModalOpen(true);
                 room.setStep('select');
@@ -81,10 +70,7 @@ export default function RoomEntryCard() {
 
         {mode === 'solo' && (
           <>
-            <div
-              className={styles['room-entry__description-box--solo']}
-              aria-label="혼자 정하기 기능 설명"
-            >
+            <div className={styles['room-entry__description-box--solo']}>
               로그인 없이 바로 메뉴를 추천받을 수 있어요
             </div>
 
@@ -92,7 +78,6 @@ export default function RoomEntryCard() {
               variant="orange"
               size="lg"
               mode="outline"
-              aria-label="혼자 메뉴 추천 받기 페이지로 이동"
               onClick={() => router.push('/rooms/solo')}
             >
               <User size={18} aria-hidden="true" />
@@ -108,8 +93,10 @@ export default function RoomEntryCard() {
           roomCode={room.roomCodeRaw}
           error={room.error}
           isJoining={room.isJoining}
+          isCreating={room.isCreating}
           onCreate={room.createRoom}
-          onJoinSelect={() => room.setStep('join')}
+          onSelectJoin={() => room.setStep('join')}
+          onJoin={room.joinRoom}
           onBack={room.resetJoin}
           onClose={() => setIsModalOpen(false)}
           onChangeCode={room.changeRoomCode}

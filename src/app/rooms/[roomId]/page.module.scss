@@ -68,8 +68,13 @@
     flex: 1;
     min-height: 0;
 
-    @include m.flex-box(flex-start, stretch);
-    gap: 20px;
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 16px;
+
+    @include m.mq(lg) {
+      flex-direction: row;
+      gap: 20px;
+    }
   }
 
   &__left {
@@ -81,8 +86,7 @@
   }
 
   &__right {
-    width: 360px;
-    flex-shrink: 0;
+    width: 100%;
 
     background: f.color(white);
     border-radius: 20px;
@@ -90,5 +94,10 @@
 
     @include m.flex-box(flex-start, stretch, column);
     overflow: hidden;
+
+    @include m.mq(lg) {
+      width: 360px;
+      flex-shrink: 0;
+    }
   }
 }

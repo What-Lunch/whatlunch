@@ -1,13 +1,35 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export type RoomEntryStep = 'select' | 'join';
 
 const STORAGE_KEY = 'rooms';
-// 6자리 랜덤 방 코드 생성 (A-Z, 0-9)
-const generateRoomCode = () => Math.random().toString(36).slice(2, 8).toUpperCase();
+const ROOM_CODE_LENGTH = 6;
+const CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+const generateRoomCode = () => {
+  let code = '';
+
+  for (let i = 0; i < ROOM_CODE_LENGTH; i++) {
+    const randomIndex = Math.floor(Math.random() * CHARSET.length);
+    code += CHARSET[randomIndex];
+  }
+
+  return code;
+};
+
+// 고유한 방 코드 생성
+const generateUniqueRoomCode = (existingRooms: string[]) => {
+  let roomId = generateRoomCode();
+
+  while (existingRooms.includes(roomId)) {
+    roomId = generateRoomCode();
+  }
+
+  return roomId;
+};
 
 export function useRoomEntry() {
   const router = useRouter();
@@ -15,63 +37,74 @@ export function useRoomEntry() {
   const [step, setStep] = useState<RoomEntryStep>('select');
   const [roomCodeRaw, setRoomCodeRaw] = useState('');
   const [error, setError] = useState('');
-  const [isJoining, setIsJoining] = useState(false); // 방 입장 중 상태
-  const [isCreating, setIsCreating] = useState(false); // 방 생성 중 상태
+  const [isJoining, setIsJoining] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const createRoom = async () => {
+    if (isCreating) return;
+
+    setIsCreating(true);
+
     try {
-      setIsCreating(true);
-      // UX용 딜레이 (실제 API 연동 시 제거 예정)
+      // UX용 딜레이
       await new Promise(res => setTimeout(res, 300));
 
-      const roomId = generateRoomCode();
       const rooms: string[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
-      const nextRooms = rooms.includes(roomId) ? rooms : [...rooms, roomId];
+      const roomId = generateUniqueRoomCode(rooms);
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextRooms));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([...rooms, roomId]));
+
       router.push(`/rooms/${roomId}`);
     } finally {
       setIsCreating(false);
       setStep('select');
     }
   };
-
+  // 방 코드 변경
   const changeRoomCode = (value: string) => {
-    setRoomCodeRaw(value);
+    const parsed = value
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '')
+      .slice(0, ROOM_CODE_LENGTH);
+
+    setRoomCodeRaw(parsed);
+
     if (error) setError('');
   };
 
-  useEffect(() => {
-    // 입력값을 대문자 + 숫자로 정규화하고 6자리로 제한
-    const parsedCode = roomCodeRaw
-      .toUpperCase()
-      .replace(/[^A-Z0-9]/g, '')
-      .slice(0, 6);
+  // 방 입장
+  const joinRoom = async () => {
+    if (roomCodeRaw.length !== ROOM_CODE_LENGTH) {
+      setError('방 코드를 6자리로 입력해 주세요.');
+      return;
+    }
 
-    if (parsedCode.length !== 6) return;
+    if (isJoining) return;
 
-    const joinRoom = async () => {
-      setIsJoining(true);
+    setIsJoining(true);
+    setError('');
 
+    try {
       const rooms: string[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
-      if (!rooms.includes(parsedCode)) {
+      if (!rooms.includes(roomCodeRaw)) {
         setError('존재하지 않는 방 코드예요.');
-        setIsJoining(false);
         return;
       }
 
       await new Promise(res => setTimeout(res, 300));
-      router.push(`/rooms/${parsedCode}`);
-    };
+      router.push(`/rooms/${roomCodeRaw}`);
+    } finally {
+      setIsJoining(false);
+    }
+  };
 
-    joinRoom();
-  }, [roomCodeRaw, router]);
-
+  // 입장 상태 초기화
   const resetJoin = () => {
     setRoomCodeRaw('');
     setError('');
+    setIsJoining(false);
     setStep('select');
   };
 
@@ -84,6 +117,7 @@ export function useRoomEntry() {
     isCreating,
     createRoom,
     changeRoomCode,
+    joinRoom,
     resetJoin,
   };
 }
