@@ -5,11 +5,9 @@
   position: fixed;
   inset: 0;
   z-index: 300;
-
   display: flex;
   justify-content: center;
   align-items: flex-end;
-
   @include m.mq(lg) {
     align-items: center;
   }
@@ -23,16 +21,12 @@
   &__content {
     position: relative;
     z-index: 1;
-
     width: 100%;
     max-width: 420px;
     padding: 24px 20px;
-
     background: f.color(white);
-
     border-radius: 24px 24px 0 0;
     animation: modal-slide-up-mobile 0.28s ease-out;
-
     @include m.mq(lg) {
       padding: 28px;
       border-radius: 24px;
@@ -56,7 +50,6 @@
     border: none;
     cursor: pointer;
     color: f.color(gray-700);
-
     &:hover {
       color: f.color(gray-900);
     }
@@ -83,7 +76,6 @@
     border-radius: 16px;
     cursor: pointer;
     text-align: left;
-
     transition: all 0.2s ease;
 
     strong {
@@ -109,7 +101,6 @@
   &__option--primary {
     background: f.color(brand-orange);
     color: f.color(white);
-
     &:hover {
       box-shadow: 0 8px 20px rgba(f.color(brand-orange), 0.35);
     }
@@ -119,7 +110,6 @@
     background: f.color(white);
     border: 2px solid f.color(brand-orange);
     color: f.color(gray-800);
-
     &:hover {
       background: rgba(f.color(brand-orange), 0.06);
     }
@@ -136,7 +126,6 @@
     padding: 0 14px;
     border-radius: 12px;
     border: 1px solid rgba(f.color(gray-400), 0.6);
-
     @include m.text-style('sm', 400);
     transition: all 0.2s ease;
 
@@ -150,15 +139,11 @@
   &__join-button {
     height: 48px;
     margin-top: 4px;
-
     border-radius: 12px;
     border: none;
-
     @include m.text-style('md', 600);
-
     cursor: pointer;
     transition: all 0.2s ease;
-
     background: f.color(gray-300);
     color: f.color(gray-600);
 
@@ -178,7 +163,6 @@
     &:not(:disabled) {
       background: f.color(brand-orange);
       color: f.color(white);
-
       &:hover {
         box-shadow: 0 8px 20px rgba(f.color(brand-orange), 0.35);
       }
