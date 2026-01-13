@@ -1,24 +1,62 @@
 'use client';
 
-import { Copy, Check } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { Copy, Check, Clock, Users } from 'lucide-react';
 
-import Chat from '@/domain/Chat';
-import RoomTabs from '@/shared/components/RoomTabs';
 import { useRoomLogic } from './useRoomLogic';
+import RoomTabs from '@/shared/components/RoomTabs';
+import Chat from '@/domain/Chat';
 
 import styles from './page.module.scss';
 
 // 방 페이지
+
 interface RoomPageProps {
   params: {
     roomId: string;
   };
 }
 
+const LOCAL_KEY_PREFIX = 'roomRouletteHistory_';
+
 export default function RoomPage({ params }: RoomPageProps) {
   const roomId = params.roomId;
-
   const { isSoloMode, isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
+
+  const [results, setResults] = useState<string[]>([]);
+
+  const LOCAL_KEY = `${LOCAL_KEY_PREFIX}${roomId}`;
+
+  const handleRouletteResult = useCallback(
+    (result: string) => {
+      setResults(prev => {
+        const newResults = [result, ...prev];
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            window.localStorage.setItem(LOCAL_KEY, JSON.stringify(newResults));
+          } catch (e) {
+            console.error('localStorage 저장 오류:', e);
+          }
+        }
+        return newResults;
+      });
+    },
+    [LOCAL_KEY]
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.localStorage) return;
+    try {
+      const stored = window.localStorage.getItem(LOCAL_KEY);
+      if (stored) {
+        setResults(JSON.parse(stored));
+      }
+    } catch (err) {
+      console.error('localStorage 룰렛 결과 파싱 오류:', err);
+      window.localStorage.removeItem(LOCAL_KEY);
+      setResults([]);
+    }
+  }, [LOCAL_KEY]);
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다</div>;
@@ -27,9 +65,15 @@ export default function RoomPage({ params }: RoomPageProps) {
   return (
     <div className={styles['room']}>
       <header className={styles['room__header']}>
-        <h1 className={styles['room__title']}>
-          {isSoloMode ? '혼자 메뉴 정하기' : '같이 메뉴 정하기'}
-        </h1>
+        <div className={styles['room__header__left']}>
+          <Users size={32} className={styles['room__header__icon']} />
+          <div>
+            <h1 className={styles['room__title']}>
+              {isSoloMode ? '혼자 메뉴 정하기' : '같이 메뉴 정하기'}
+            </h1>
+            <p className={styles['room__subtitle']}>함께 룰렛을 돌려보세요!</p>
+          </div>
+        </div>
 
         {!isSoloMode && (
           <div className={styles['room__code']}>
@@ -50,9 +94,9 @@ export default function RoomPage({ params }: RoomPageProps) {
       </header>
 
       <div className={styles['room__content']}>
-        <main className={styles['room__left']}>
-          <RoomTabs />
-        </main>
+        <section className={styles['room__roulette-section']}>
+          <RoomTabs onResult={handleRouletteResult} />
+        </section>
 
         {!isSoloMode && (
           <aside className={styles['room__right']}>
@@ -60,6 +104,45 @@ export default function RoomPage({ params }: RoomPageProps) {
           </aside>
         )}
       </div>
+
+      <section className={styles['room__stats-section']}>
+        <div className={styles['room__stats-header']}>
+          <h3>🎲 결과 내역</h3>
+        </div>
+        <div className={styles['room__top-menu']}>
+          <div className={styles['room__top-menu__icon']}>📊</div>
+          <div className={styles['room__top-menu__info']}>
+            <span className={styles['room__top-menu__name']}>돌린횟수</span>
+            <span className={styles['room__top-menu__count']}>{results.length} 회</span>
+          </div>
+        </div>
+        <div className={styles['room__mood-stats']}>
+          <h4>최근 룰렛 결과</h4>
+          <div className={styles['room__mood-stats__list']}>
+            <ul className={styles['room__mood-stats__list__items']}>
+              {results.slice(0, 8).map((item, idx) => (
+                <li key={idx} className={styles['room__mood-stats__list__items__item']}>
+                  <span className={styles['room__mood-stats__list__items__item__badge']}>
+                    {idx + 1}
+                  </span>
+                  {item}
+                </li>
+              ))}
+              {results.length === 0 && (
+                <li className={styles['room__mood-stats__list__items__item--empty']}>
+                  🎰 룰렛을 돌려보세요!
+                </li>
+              )}
+            </ul>
+          </div>
+          <div className={styles['room__time-info']}>
+            <Clock size={18} />
+            <span>
+              {new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

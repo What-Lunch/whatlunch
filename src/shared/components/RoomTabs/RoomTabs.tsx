@@ -18,7 +18,11 @@ const TAB_LIST = [
 const isMainTab = (value: string): value is TopTabItem['value'] =>
   TAB_LIST.some(tab => tab.value === value);
 
-export default function RoomTabs() {
+interface RoomTabsProps {
+  onResult?: (result: string) => void;
+}
+
+export default function RoomTabs({ onResult }: RoomTabsProps) {
   const [activeTab, setActiveTab] = useState<TopTabItem['value']>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
   const [rouletteResult, setRouletteResult] = useState<string | null>(null);
@@ -44,6 +48,7 @@ export default function RoomTabs() {
           onSpinResult={result => {
             setIsSpinning(false);
             setRouletteResult(result);
+            onResult?.(result);
           }}
         />
       );
@@ -82,13 +87,6 @@ export default function RoomTabs() {
         renderPanel={renderPanel}
         lazyMount
       />
-
-      {activeTab === 'roulette' && rouletteResult && (
-        <section className={styles['room-tabs__result']}>
-          <h2 className={styles['room-tabs__result-title']}>“{rouletteResult}” 주변 장소</h2>
-          <KakaoMap keyword={rouletteResult} list />
-        </section>
-      )}
     </>
   );
 }
