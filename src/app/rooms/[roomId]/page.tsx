@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { Copy, Check, Clock, Users } from 'lucide-react';
 
+import { useRoomLogic } from './useRoomLogic';
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
-import { useRoomLogic } from './useRoomLogic';
 
 import styles from './page.module.scss';
 
@@ -32,6 +32,12 @@ export default function RoomPage({ params }: RoomPageProps) {
       setResults(JSON.parse(stored));
     }
   }, [LOCAL_KEY]);
+
+  const handleRouletteResult = (result: string) => {
+    const newResults = [result, ...results];
+    setResults(newResults);
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(newResults));
+  };
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다</div>;
@@ -70,7 +76,7 @@ export default function RoomPage({ params }: RoomPageProps) {
 
       <div className={styles['room__content']}>
         <section className={styles['room__roulette-section']}>
-          <RoomTabs />
+          <RoomTabs onResult={handleRouletteResult} />
         </section>
 
         {!isSoloMode && (

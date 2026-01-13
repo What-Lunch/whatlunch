@@ -13,7 +13,7 @@
   width: 100%;
   padding: 10px var(--input-padding-x);
 
-  border: 2px solid rgba(139, 92, 246, 0.2);
+  border: 2px solid rgba(f.color(purple-600), 0.2);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.8);
 
@@ -22,8 +22,8 @@
     box-shadow 0.1s;
 
   &.focused {
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    border-color: rgba(f.color(purple-600), 0.5);
+    box-shadow: 0 0 0 3px rgba(f.color(purple-600), 0.15);
   }
 
   &.disabled {

@@ -95,30 +95,4 @@
       box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
     }
   }
-
-  &__result {
-    margin-top: 8px;
-    padding: 20px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border: 2px solid rgba(251, 191, 36, 0.25);
-    box-shadow: 0 4px 16px rgba(251, 191, 36, 0.18);
-
-    @include m.mq(md) {
-      padding: 24px;
-    }
-  }
-  &__result-title {
-    @include m.text-style(lg, 700);
-    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 16px;
-
-    @include m.mq(md) {
-      @include m.text-style(xl, 700);
-      margin-bottom: 20px;
-    }
-  }
 }
