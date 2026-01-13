@@ -1,4 +1,4 @@
-import { BaseInputProps } from '../BaseInput/BaseInput.types';
+import { BaseInputProps } from '../BaseInput/types';
 import React from 'react';
 
 export interface SearchInputProps extends Omit<BaseInputProps, 'value'> {

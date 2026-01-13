@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { StarIcon, DicesIcon, Clock } from 'lucide-react';
 
 import Roulette from '@/domain/Roulette/Roulette';
@@ -9,6 +9,7 @@ import KakaoMap from '@/shared/components/KakaoMap';
 import type { MyPageBadge } from '@/domain/Mypage/MyPageHeader/types';
 import styles from './page.module.scss';
 import { BaseInput } from '@/shared/components/Input';
+import Button from '@/shared/components/Button';
 
 // TODO: 뱃지 컴포넌트 분리 필요
 const BADGES: MyPageBadge[] = [
@@ -23,6 +24,7 @@ export default function SoloRoomPage() {
   const [result, setResult] = useState<string | null>(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [results, setResults] = useState<string[]>([]);
+  const searchRef = useRef<HTMLInputElement | null>(null);
 
   const handleSpinStart = () => {
     setIsSpinning(true);
@@ -45,6 +47,12 @@ export default function SoloRoomPage() {
     }
   }, []);
 
+  const handleSearch = () => {
+    if (searchRef.current) {
+      setSearchKeyword(searchRef.current.value);
+    }
+  };
+
   return (
     <div className={styles['solo']}>
       <header className={styles['solo__header']}>
@@ -52,7 +60,7 @@ export default function SoloRoomPage() {
           <DicesIcon size={40} className={styles['solo__header__title__icon']} />
           <div className={styles['solo__header__title__text']}>
             <h2>혼자 메뉴 정하기</h2>
-            <span>혼자서도 그런 곳 룰렛도 골라낼랍니다요</span>
+            <span>혼자서도 룰렛을 돌릴 수 있어요!</span>
           </div>
         </div>
         <div className={styles['solo__header__stats']}>
@@ -82,7 +90,27 @@ export default function SoloRoomPage() {
               <h3>지도</h3>
               <p>결과에 따라 지도가 업데이트 돼요!</p>
             </div>
-            <BaseInput value={searchKeyword} onChange={e => setSearchKeyword(e.target.value)} />
+
+            <div className={styles['solo__map-header']}>
+              <BaseInput
+                ref={searchRef}
+                placeholder="장소를 검색해보세요"
+                onChange={() => {}}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    handleSearch();
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                className={styles['solo__map-header__search-btn']}
+                onClick={handleSearch}
+                aria-label="검색"
+              >
+                검색
+              </Button>
+            </div>
             <div className={styles['solo__map']}>
               <KakaoMap keyword={searchKeyword} list={false} />
             </div>
@@ -97,9 +125,6 @@ export default function SoloRoomPage() {
                 <span className={styles['solo__top-menu__name']}>돌린횟수</span>
                 <span className={styles['solo__top-menu__count']}>{results.length} 회</span>
               </div>
-              {/* <div className={styles['solo__top-menu__bar']}>
-                <div className={styles['solo__top-menu__bar__fill']} style={{ width: '80%' }}></div>
-              </div> */}
             </div>
             <div className={styles['solo__mood-stats']}>
               <h4>룰렛 결과가 표시돼요!</h4>

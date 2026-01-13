@@ -1,5 +1,5 @@
 import { forwardRef, ChangeEvent, useState, FocusEvent } from 'react';
-import { BaseInputProps } from './BaseInput.types';
+import { BaseInputProps } from './types';
 import styles from './BaseInput.module.scss';
 
 const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
@@ -10,13 +10,10 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
       value,
       placeholder,
       disabled,
-
       children,
       wrapperClassName,
-
       'aria-invalid': ariaInvalid,
       'aria-describedby': ariaDescribedby,
-
       onChange,
       onKeyDown,
       onFocus,

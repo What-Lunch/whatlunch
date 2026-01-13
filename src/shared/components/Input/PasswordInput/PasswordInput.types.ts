@@ -1,8 +1,5 @@
-import { BaseInputProps } from '../BaseInput/BaseInput.types';
+import { BaseInputProps } from '../BaseInput/types';
 
-export type PasswordInputProps = Omit<
-  BaseInputProps,
-  | 'type' | 'children'
-> & {
+export type PasswordInputProps = Omit<BaseInputProps, 'type' | 'children'> & {
   showToggle?: boolean;
-}
+};

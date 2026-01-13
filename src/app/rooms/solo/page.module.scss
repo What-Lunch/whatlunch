@@ -80,7 +80,7 @@
 
   &__content {
     display: grid;
-    grid-template-columns: 1fr 0.5fr;
+    grid-template-columns: 1fr 0.7fr;
     gap: 24px;
     width: 100%;
   }
@@ -123,6 +123,13 @@
     p {
       @include m.text-style('sm', 400);
       color: f.color(gray-600);
+    }
+
+    &__search-btn {
+      height: 44px;
+      width: 100px;
+      padding: 4px 14px;
+      @include m.text-style('md', 600);
     }
   }
 
