@@ -1,4 +1,5 @@
-const BASE_URL = process.env.BASE_URL ?? 'https://backend-pik.onrender.com';
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL ?? process.env.BASE_URL ?? 'https://backend-piik.onrender.com';
 
 // fetcher 유틸리티 함수 및 관련 타입 정의
 export interface FetchOptions extends RequestInit {
