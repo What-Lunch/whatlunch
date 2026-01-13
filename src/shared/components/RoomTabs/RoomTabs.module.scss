@@ -2,72 +2,123 @@
 @use 'utils/functions' as f;
 
 .room-tabs {
+  width: 100%;
+  height: 100%;
+
   &__map {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
+    padding: 24px 16px;
+
+    @include m.mq(md) {
+      padding: 28px 24px;
+      gap: 28px;
+    }
   }
 
   &__form {
     display: flex;
-    gap: 8px;
-    padding: 12px;
-    border-radius: 14px;
-    background: f.color(white);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    margin-bottom: 12px;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
+    transition: all 0.3s ease;
+
+    @include m.mq(md) {
+      flex-direction: row;
+      padding: 20px;
+      gap: 14px;
+    }
+
+    &:hover {
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.18);
+    }
   }
 
   &__input {
     flex: 1;
-    height: 44px;
-    padding: 0 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(f.color(gray-400), 0.6);
-    background: f.color(white);
-    @include m.text-style(md, 500);
+    height: 50px;
+    padding: 0 18px;
+    border-radius: 25px;
+    border: 2px solid rgba(99, 102, 241, 0.25);
+    background: rgba(255, 255, 255, 0.95);
+    @include m.text-style(sm, 500);
     transition: all 0.2s ease;
+
+    @include m.mq(md) {
+      height: 52px;
+      padding: 0 20px;
+      @include m.text-style(md, 500);
+    }
 
     &:focus {
       outline: none;
-      border-color: f.color(point-blue);
-      box-shadow: 0 0 0 3px rgba(f.color(point-blue), 0.15);
+      border-color: rgba(99, 102, 241, 0.6);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
     }
     &::placeholder {
-      color: f.color(gray-500);
+      color: rgba(99, 102, 241, 0.5);
     }
   }
 
   &__button {
-    height: 44px;
-    padding: 0 16px;
-    border-radius: 10px;
-    background: f.color(brand-orange);
+    height: 50px;
+    padding: 0 28px;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
     color: f.color(white);
     border: none;
-    @include m.text-style(md, 600);
+    @include m.text-style(sm, 600);
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+
+    @include m.mq(md) {
+      height: 52px;
+      padding: 0 32px;
+      @include m.text-style(md, 600);
+    }
 
     &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
     }
 
     &:active {
       transform: translateY(0);
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
     }
   }
 
   &__result {
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid f.color(gray-200);
+    margin-top: 8px;
+    padding: 20px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid rgba(251, 191, 36, 0.25);
+    box-shadow: 0 4px 16px rgba(251, 191, 36, 0.18);
+
+    @include m.mq(md) {
+      padding: 24px;
+    }
   }
   &__result-title {
-    @include m.text-style(lg, 600);
-    color: f.color(black);
-    margin-bottom: 12px;
+    @include m.text-style(lg, 700);
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+
+    @include m.mq(md) {
+      @include m.text-style(xl, 700);
+      margin-bottom: 20px;
+    }
   }
 }

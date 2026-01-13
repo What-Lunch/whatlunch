@@ -117,30 +117,40 @@ export default function SoloRoomPage() {
           </div>
           <div className={styles['solo__stats-section']}>
             <div className={styles['solo__stats-header']}>
-              <h3>결과 내역</h3>
+              <h3>🎲 결과 내역</h3>
             </div>
             <div className={styles['solo__top-menu']}>
-              <div className={styles['solo__top-menu__icon']}>🍚</div>
+              <div className={styles['solo__top-menu__icon']}>📊</div>
               <div className={styles['solo__top-menu__info']}>
                 <span className={styles['solo__top-menu__name']}>돌린횟수</span>
                 <span className={styles['solo__top-menu__count']}>{results.length} 회</span>
               </div>
             </div>
             <div className={styles['solo__mood-stats']}>
-              <h4>룰렛 결과가 표시돼요!</h4>
+              <h4>최근 룰렛 결과</h4>
               <div className={styles['solo__mood-stats__list']}>
                 <ul className={styles['solo__mood-stats__list__items']}>
-                  {results.map((item, idx) => (
+                  {results.slice(0, 8).map((item, idx) => (
                     <li key={idx} className={styles['solo__mood-stats__list__items__item']}>
+                      <span className={styles['solo__mood-stats__list__items__item__badge']}>
+                        {idx + 1}
+                      </span>
                       {item}
                     </li>
                   ))}
+                  {results.length === 0 && (
+                    <li className={styles['solo__mood-stats__list__items__item--empty']}>
+                      🎰 룰렛을 돌려보세요!
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
             <div className={styles['solo__time-info']}>
-              <Clock size={20} />
-              <span>현재시각 {new Date().toLocaleTimeString()}</span>
+              <Clock size={18} />
+              <span>
+                {new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
             </div>
           </div>
         </section>

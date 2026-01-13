@@ -15,7 +15,10 @@
   @include m.flex-box(center, '', column);
   width: 100%;
   padding: 16px;
-  border: 1px solid f.color(black);
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.12);
+  border-radius: 16px;
   gap: 20px;
   overflow: hidden;
 }
@@ -55,16 +58,17 @@
   @include m.flex-box(center, center, row);
   &__active {
     @include dot;
-    background-color: f.color(black);
+    background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
   }
 
   &__inactive {
     @include dot;
-    background-color: f.color(gray-500);
+    background-color: rgba(139, 92, 246, 0.3);
 
     &:hover {
       transition: background-color 0.3s ease-in-out;
-      background-color: f.color(gray-400);
+      background-color: rgba(139, 92, 246, 0.5);
       transform: scale(1.1);
     }
   }
