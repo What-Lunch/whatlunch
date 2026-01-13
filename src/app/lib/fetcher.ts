@@ -38,6 +38,7 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
   const res = await fetch(`${BASE_URL}${url}`, {
     ...options,
     headers,
+    credentials: 'include',
   });
 
   // 에러 통합 처리
