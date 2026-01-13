@@ -38,9 +38,7 @@
       bottom: 4px;
       width: 24px;
       height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      @include m.flex-box(center, center);
       background: f.color(white);
       border: 1px solid f.color(gray-300);
       border-radius: 999px;

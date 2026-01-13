@@ -2,34 +2,235 @@
 @use 'utils/functions' as f;
 
 .solo {
-  min-height: 100vh;
-  padding: 24px 20px;
-  background: f.color(gray-100);
-  @include m.flex-box(flex-start, stretch, column);
-  gap: 24px;
+  @include m.flex-box(center, stretch, column);
+  gap: 40px;
+  width: 100%;
+  margin: auto;
+  padding: 10px 5px;
 
   &__header {
-    text-align: center;
-    margin-bottom: 8px;
-  }
+    @include m.flex-box(space-between, center);
+    width: 100%;
+    padding: 18px 20px;
+    background: f.color(white);
+    border-radius: 14px;
+    border: 1.5px solid f.color(gray-300);
+    box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.1);
 
-  &__title {
-    @include m.text-style('xl', 700);
-    color: f.color(gray-900);
-    margin-bottom: 6px;
-  }
+    &__title {
+      @include m.flex-box(center, center);
+      gap: 10px;
 
-  &__description {
-    @include m.text-style('sm', 400);
-    color: f.color(gray-600);
+      &__icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+        padding: 4px;
+        background-color: f.color(blue-50);
+        color: f.color(blue-400);
+        border: 1px solid f.color(blue-400);
+      }
+
+      &__text {
+        @include m.flex-box(center, flex-start, column);
+        gap: 4px;
+
+        h2 {
+          @include m.text-style('xl', 700);
+          color: f.color(gray-800);
+        }
+
+        span {
+          @include m.text-style('lg', 400);
+          color: f.color(gray-600);
+        }
+      }
+    }
+
+    &__stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      &__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        background: f.color(gray-100);
+        border: 1px solid f.color(gray-200);
+        border-radius: 999px;
+        @include m.text-style(sm, 500);
+        color: f.color(text-default);
+
+        &--green {
+          background: f.color(green-100);
+          border: 1px solid f.color(green-200);
+          color: f.color(green-700);
+        }
+
+        &-icon {
+          width: 14px;
+          height: 14px;
+          flex-shrink: 0;
+        }
+      }
+    }
   }
 
   &__content {
-    background: f.color(white);
-    border-radius: 24px;
-    padding: 20px 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    display: grid;
+    grid-template-columns: 1fr 0.5fr;
+    gap: 24px;
+    width: 100%;
+  }
+
+  &__left {
     @include m.flex-box(flex-start, stretch, column);
-    gap: 20px;
+    background: f.color(white);
+    border-radius: 14px;
+    border: 1.5px solid f.color(gray-300);
+    box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.1);
+    padding: 24px;
+  }
+
+  &__right {
+    display: grid;
+    width: 100%;
+    grid-auto-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  &__map-section {
+    @include m.flex-box(flex-start, stretch, column);
+    background: f.color(white);
+    border-radius: 14px;
+    border: 1.5px solid f.color(gray-300);
+    box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    gap: 12px;
+  }
+
+  &__map-header {
+    @include m.flex-box(space-between, center);
+    gap: 4px;
+
+    h3 {
+      @include m.text-style('lg', 700);
+      color: f.color(gray-800);
+    }
+
+    p {
+      @include m.text-style('sm', 400);
+      color: f.color(gray-600);
+    }
+  }
+
+  &__map {
+    width: 100%;
+    height: 300px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  &__stats-section {
+    @include m.flex-box(flex-start, stretch, column);
+    background: f.color(white);
+    border-radius: 14px;
+    border: 1.5px solid f.color(gray-300);
+    box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    gap: 16px;
+  }
+
+  &__stats-header {
+    @include m.flex-box(space-between, center);
+
+    h3 {
+      @include m.text-style('lg', 700);
+      color: f.color(gray-800);
+    }
+
+    svg {
+      color: f.color(gray-400);
+    }
+  }
+
+  &__top-menu {
+    @include m.flex-box(flex-start, center);
+    gap: 12px;
+    padding: 12px;
+    background: f.color(gray-100);
+    border-radius: 8px;
+
+    &__icon {
+      font-size: 32px;
+      width: 48px;
+      height: 48px;
+      @include m.flex-box(center, center);
+      background: f.color(white);
+      border-radius: 8px;
+    }
+
+    &__info {
+      @include m.flex-box(space-between, center);
+      flex: 1;
+      gap: 8px;
+    }
+
+    &__name {
+      @include m.text-style('md', 600);
+      color: f.color(gray-800);
+    }
+
+    &__count {
+      @include m.text-style('sm', 500);
+      color: f.color(blue-600);
+    }
+  }
+
+  &__mood-stats {
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 12px;
+
+    h4 {
+      @include m.text-style('sm', 600);
+      color: f.color(gray-700);
+    }
+
+    &__list {
+      @include m.flex-box(flex-start, stretch, column);
+      gap: 8px;
+      overflow: auto;
+      height: 150px;
+
+      &__items {
+        @include m.flex-box(flex-start, stretch, column);
+        gap: 8px;
+
+        &__item {
+          @include m.text-style('md', 600);
+          color: f.color(blue-500);
+        }
+      }
+    }
+  }
+
+  &__time-info {
+    @include m.flex-box(flex-start, center);
+    gap: 6px;
+    padding: 8px 12px;
+    background: f.color(gray-100);
+    border-radius: 8px;
+
+    svg {
+      color: f.color(red-300);
+    }
+
+    span {
+      text-align: center;
+      @include m.text-style('sm', 500);
+      color: f.color(gray-700);
+    }
   }
 }
