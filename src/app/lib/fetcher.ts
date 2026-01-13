@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+const BASE_URL = process.env.BASE_URL ?? '';
 
 // fetcher 유틸리티 함수 및 관련 타입 정의
 export interface FetchOptions extends RequestInit {

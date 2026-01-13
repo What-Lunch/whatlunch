@@ -4,7 +4,7 @@ import type { WeatherData } from '@/types/api/weather';
 import { getWeatherApiKey } from './config';
 import { toLocKeyParts } from './timeSlotCache';
 
-const BASE_URL = 'https://api.openweathermap.org/data/2.5';
+const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
 // 현재 날씨 정보 조회 - 좌표를 toFixed 캐시 키로 통일
 export async function fetchWeather(
@@ -16,7 +16,7 @@ export async function fetchWeather(
   const { fixedLat, fixedLon } = toLocKeyParts(lat, lon);
 
   const url =
-    `${BASE_URL}/weather` +
+    `${WEATHER_BASE_URL}/weather` +
     `?lat=${fixedLat}` +
     `&lon=${fixedLon}` +
     `&appid=${apiKey}` +
@@ -44,7 +44,10 @@ export async function fetchAirPollution(
   const { fixedLat, fixedLon } = toLocKeyParts(lat, lon);
 
   const url =
-    `${BASE_URL}/air_pollution` + `?lat=${fixedLat}` + `&lon=${fixedLon}` + `&appid=${apiKey}`;
+    `${WEATHER_BASE_URL}/air_pollution` +
+    `?lat=${fixedLat}` +
+    `&lon=${fixedLon}` +
+    `&appid=${apiKey}`;
 
   const res = await fetch(url, {
     next: { revalidate: revalidateSeconds },
