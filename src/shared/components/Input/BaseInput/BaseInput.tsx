@@ -51,7 +51,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
       .join(' ');
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      onChange(e);
+      onChange?.(e);
     };
 
     return (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { StarIcon, DicesIcon, Clock } from 'lucide-react';
 
 import Roulette from '@/domain/Roulette/Roulette';
@@ -30,20 +30,35 @@ export default function SoloRoomPage() {
     setIsSpinning(true);
   };
 
-  const handleSpinResult = (menuName: string) => {
+  const handleSpinResult = useCallback((menuName: string) => {
     setResult(menuName);
     setSearchKeyword(menuName);
     setIsSpinning(false);
 
-    const newResults = [menuName, ...results];
-    setResults(newResults);
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(newResults));
-  };
+    setResults(prev => {
+      const newResults = [menuName, ...prev];
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          window.localStorage.setItem(LOCAL_KEY, JSON.stringify(newResults));
+        } catch (e) {
+          console.error('localStorage 저장 오류:', e);
+        }
+      }
+      return newResults;
+    });
+  }, []);
 
   useEffect(() => {
-    const stored = localStorage.getItem(LOCAL_KEY);
-    if (stored) {
-      setResults(JSON.parse(stored));
+    if (typeof window === 'undefined' || !window.localStorage) return;
+    try {
+      const stored = window.localStorage.getItem(LOCAL_KEY);
+      if (stored) {
+        setResults(JSON.parse(stored));
+      }
+    } catch (err) {
+      console.error('localStorage 룰렛 결과 파싱 오류:', err);
+      window.localStorage.removeItem(LOCAL_KEY);
+      setResults([]);
     }
   }, []);
 
@@ -95,7 +110,6 @@ export default function SoloRoomPage() {
               <BaseInput
                 ref={searchRef}
                 placeholder="장소를 검색해보세요"
-                onChange={() => {}}
                 onKeyDown={e => {
                   if (e.key === 'Enter') {
                     handleSearch();

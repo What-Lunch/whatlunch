@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Copy, Check, Clock, Users } from 'lucide-react';
 
 import { useRoomLogic } from './useRoomLogic';
@@ -10,6 +10,7 @@ import Chat from '@/domain/Chat';
 import styles from './page.module.scss';
 
 // 방 페이지
+
 interface RoomPageProps {
   params: {
     roomId: string;
@@ -26,18 +27,36 @@ export default function RoomPage({ params }: RoomPageProps) {
 
   const LOCAL_KEY = `${LOCAL_KEY_PREFIX}${roomId}`;
 
+  const handleRouletteResult = useCallback(
+    (result: string) => {
+      setResults(prev => {
+        const newResults = [result, ...prev];
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            window.localStorage.setItem(LOCAL_KEY, JSON.stringify(newResults));
+          } catch (e) {
+            console.error('localStorage 저장 오류:', e);
+          }
+        }
+        return newResults;
+      });
+    },
+    [LOCAL_KEY]
+  );
+
   useEffect(() => {
-    const stored = localStorage.getItem(LOCAL_KEY);
-    if (stored) {
-      setResults(JSON.parse(stored));
+    if (typeof window === 'undefined' || !window.localStorage) return;
+    try {
+      const stored = window.localStorage.getItem(LOCAL_KEY);
+      if (stored) {
+        setResults(JSON.parse(stored));
+      }
+    } catch (err) {
+      console.error('localStorage 룰렛 결과 파싱 오류:', err);
+      window.localStorage.removeItem(LOCAL_KEY);
+      setResults([]);
     }
   }, [LOCAL_KEY]);
-
-  const handleRouletteResult = (result: string) => {
-    const newResults = [result, ...results];
-    setResults(newResults);
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(newResults));
-  };
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다</div>;
