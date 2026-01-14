@@ -230,6 +230,7 @@
         width: 100%;
         @include m.flex-box(flex-start, center, column);
         height: 300px;
+        overflow-y: auto;
         gap: 10px;
 
         &__item {
