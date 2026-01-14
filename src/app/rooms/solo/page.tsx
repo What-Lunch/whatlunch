@@ -6,14 +6,14 @@ import { StarIcon, DicesIcon, Clock } from 'lucide-react';
 import Roulette from '@/domain/Roulette/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
 
-import type { MyPageBadge } from '@/domain/Mypage/MyPageHeader/types';
+import Badge, { BadgeProps } from '@/shared/components/Badge';
 import styles from './page.module.scss';
 import { BaseInput } from '@/shared/components/Input';
 import Button from '@/shared/components/Button';
 
 // TODO: 뱃지 컴포넌트 분리 필요
-const BADGES: MyPageBadge[] = [
-  { id: 'top-menu', tone: 'green', Icon: StarIcon, text: '현재 1등 메뉴: 치킨' },
+const BADGES: BadgeProps[] = [
+  { id: 'top-menu', variant: 'green', Icon: StarIcon, text: '현재 1등 메뉴: 치킨' },
 ];
 
 const LOCAL_KEY = 'soloRouletteHistory';
@@ -79,14 +79,8 @@ export default function SoloRoomPage() {
           </div>
         </div>
         <div className={styles['solo__header__stats']}>
-          {BADGES.map(({ id, tone, Icon, text }) => (
-            <span
-              key={id}
-              className={`${styles['solo__header__stats__item']} ${styles[`solo__header__stats__item--${tone}`]}`}
-            >
-              <Icon className={styles['solo__header__stats__item-icon']} />
-              {text}
-            </span>
+          {BADGES.map(({ id, variant, Icon, text }) => (
+            <Badge key={id} id={id} variant={variant} Icon={Icon} text={text} />
           ))}
         </div>
       </header>

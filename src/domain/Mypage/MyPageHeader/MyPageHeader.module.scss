@@ -77,64 +77,6 @@
     gap: 8px;
   }
 
-  &__stat {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    background: f.color(gray-100);
-    border: 1px solid f.color(gray-200);
-    border-radius: 999px;
-    @include m.text-style(sm, 500);
-    color: f.color(text-default);
-
-    &-icon {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-    }
-
-    &--blue {
-      background: f.color(blue-100);
-      border: 1px solid f.color(blue-200);
-      color: f.color(blue-700);
-    }
-
-    &--blue &-icon {
-      color: f.color(point-blue);
-    }
-
-    &--green {
-      background: f.color(green-100);
-      border: 1px solid f.color(green-200);
-      color: f.color(green-700);
-    }
-
-    &--green &-icon {
-      color: f.color(brand-primary);
-    }
-
-    &--purple {
-      background: f.color(gray-100);
-      border: 1px solid f.color(point-purple);
-      color: f.color(point-purple);
-    }
-
-    &--purple &-icon {
-      color: f.color(point-purple);
-    }
-
-    &--orange {
-      background: f.color(orange-100);
-      border: 1px solid f.color(orange-200);
-      color: f.color(orange-700);
-    }
-
-    &--orange &-icon {
-      color: f.color(point-orange);
-    }
-  }
-
   &__file-input {
     display: none;
   }
