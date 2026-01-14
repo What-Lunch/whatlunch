@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { FormEvent } from 'react';
 import { Shuffle, MapPin } from 'lucide-react';
 
@@ -27,15 +27,29 @@ export default function RoomTabs({ onResult }: RoomTabsProps) {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rouletteResult, setRouletteResult] = useState<string | null>(null);
 
-  const [searchValue, setSearchValue] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const handleSearch = useCallback(
-    (e: FormEvent) => {
-      e.preventDefault();
-      setSearchKeyword(searchValue);
+  const handleSearch = useCallback((e: FormEvent) => {
+    e.preventDefault();
+    const value = searchRef.current?.value ?? '';
+    setSearchKeyword(value);
+    setRouletteResult(null);
+  }, []);
+
+  const handleRouletteResult = useCallback(
+    (result: string) => {
+      setIsSpinning(false);
+      setRouletteResult(result);
+      setSearchKeyword(result);
+
+      if (searchRef.current) {
+        searchRef.current.value = result;
+      }
+
+      onResult?.(result);
     },
-    [searchValue]
+    [onResult]
   );
 
   const renderPanel = (value: string) => {
@@ -45,11 +59,7 @@ export default function RoomTabs({ onResult }: RoomTabsProps) {
           isSpinning={isSpinning}
           result={rouletteResult}
           onSpinStart={() => setIsSpinning(true)}
-          onSpinResult={result => {
-            setIsSpinning(false);
-            setRouletteResult(result);
-            onResult?.(result);
-          }}
+          onSpinResult={handleRouletteResult}
         />
       );
     }
@@ -61,8 +71,8 @@ export default function RoomTabs({ onResult }: RoomTabsProps) {
             <input
               type="search"
               placeholder="장소를 검색해보세요"
-              value={searchValue}
-              onChange={e => setSearchValue(e.target.value)}
+              ref={searchRef}
+              defaultValue={searchKeyword}
               className={styles['room-tabs__input']}
             />
             <button type="submit" className={styles['room-tabs__button']}>
