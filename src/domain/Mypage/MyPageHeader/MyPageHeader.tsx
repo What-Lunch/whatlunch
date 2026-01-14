@@ -2,29 +2,28 @@
 
 import { useRef, useState } from 'react';
 import Image from 'next/image';
-
 import { Pencil, Star, Timer, Users, Utensils } from 'lucide-react';
 
-import type { MyPageBadge, UserProfile } from './types';
+import Badge, { BadgeProps } from '@/shared/components/Badge';
 
 import styles from './MyPageHeader.module.scss';
 
-const DEFAULT_USER: UserProfile = {
+const DEFAULT_USER = {
   id: 'temp-user',
   nickname: '코딩',
   profileImageUrl: '/icons/default_profile.png',
 };
 
-const BADGES: readonly MyPageBadge[] = [
-  { id: 'decisions', tone: 'blue', Icon: Utensils, text: '결정 12회' },
-  { id: 'top-menu', tone: 'green', Icon: Star, text: '가장 많이 나온 메뉴: 치킨' },
-  { id: 'rooms', tone: 'purple', Icon: Users, text: '참여한 방 5개' },
-  { id: 'avg-time', tone: 'orange', Icon: Timer, text: '평균 결정 시간 6초' },
+const BADGES: readonly BadgeProps[] = [
+  { id: 'decisions', variant: 'blue', Icon: Utensils, text: '결정 12회' },
+  { id: 'top-menu', variant: 'green', Icon: Star, text: '가장 많이 나온 메뉴: 치킨' },
+  { id: 'rooms', variant: 'purple', Icon: Users, text: '참여한 방 5개' },
+  { id: 'avg-time', variant: 'orange', Icon: Timer, text: '평균 결정 시간 6초' },
 ] as const;
 
 const MyPageHeader = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [user, setUser] = useState<UserProfile>(DEFAULT_USER);
+  const [user, setUser] = useState<typeof DEFAULT_USER>(DEFAULT_USER);
 
   const handleClickProfile = () => {
     fileInputRef.current?.click();
@@ -75,14 +74,8 @@ const MyPageHeader = () => {
         <p className={styles['profile-header__subtitle']}>오늘 기록이 여기에 정리돼요</p>
 
         <div className={styles['profile-header__stats']}>
-          {BADGES.map(({ id, tone, Icon, text }) => (
-            <span
-              key={id}
-              className={`${styles['profile-header__stat']} ${styles[`profile-header__stat--${tone}`]}`}
-            >
-              <Icon className={styles['profile-header__stat-icon']} />
-              {text}
-            </span>
+          {BADGES.map(({ id, variant, Icon, text }) => (
+            <Badge key={id} id={id} variant={variant} Icon={Icon} text={text} />
           ))}
         </div>
       </div>
