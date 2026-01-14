@@ -11,7 +11,6 @@ import styles from './page.module.scss';
 import { BaseInput } from '@/shared/components/Input';
 import Button from '@/shared/components/Button';
 
-// TODO: 뱃지 컴포넌트 분리 필요
 const BADGES: BadgeProps[] = [
   { id: 'top-menu', variant: 'green', Icon: StarIcon, text: '현재 1등 메뉴: 치킨' },
 ];
