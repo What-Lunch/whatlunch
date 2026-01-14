@@ -84,7 +84,7 @@
       background: linear-gradient(135deg, f.color(purple-700) 0%, f.color(purple-500) 100%);
       cursor: pointer;
       @include m.text-style('xs', 600);
-      color: f.color(purple-600);
+      color: f.color(purple-200);
       box-shadow: 0 4px 12px rgba(f.color(purple-700), 0.3);
       transition: all 0.2s ease;
 
