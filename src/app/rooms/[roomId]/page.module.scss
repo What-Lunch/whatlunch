@@ -228,7 +228,8 @@
 
       &__items {
         width: 100%;
-        @include m.flex-box(flex-start, center, row);
+        @include m.flex-box(flex-start, center, column);
+        height: 300px;
         gap: 10px;
 
         &__item {
