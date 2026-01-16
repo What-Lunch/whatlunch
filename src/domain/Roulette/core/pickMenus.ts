@@ -1,4 +1,5 @@
 import { MenuItem } from '../utils/menuItem';
+import { MENU_DATA } from '../constants/menuData';
 import { Category, Context } from '@/types/enum';
 import { shuffleMenus } from './shuffleMenus';
 
@@ -25,18 +26,18 @@ export function pickMenus(types: Category[] | null, situation: Context | null): 
 
   // 1차 필터링 (타입 + 상황)
   if (hasType) {
-    pool = pool.filter(item => types!.includes(item.type));
+    pool = pool.filter(item => types!.includes(item.category));
   }
 
   if (hasSituation) {
-    pool = pool.filter(item => item.situations.includes(situation!));
+    pool = pool.filter(item => item.contexts.includes(situation!));
   }
 
   // 결과가 없으면 필터를 완화
   if (pool.length === 0) {
     // 타입 필터 제거하고 상황만 유지
     if (hasSituation) {
-      const fallbackBySituation = MENU_DATA.filter(item => item.situations.includes(situation!));
+      const fallbackBySituation = MENU_DATA.filter(item => item.contexts.includes(situation!));
 
       if (fallbackBySituation.length > 0) {
         pool = fallbackBySituation;

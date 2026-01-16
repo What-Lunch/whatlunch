@@ -1,5 +1,4 @@
 import { fetcher } from '@/app/lib/fetcher';
-import { Menu } from '@/types/api';
 
 class MenusService {
   getMenusRoulette(params: Menu.GetMenuReq): Promise<Menu.GetMenuRes[]> {

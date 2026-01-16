@@ -1,9 +1,9 @@
 import { Category, Context } from '@/types/enum';
 
-export type FilterMode = 'food' | 'situation';
+export type FilterMode = 'category' | 'context';
 
 export const FILTER_CONFIG = {
-  food: {
+  category: {
     label: '음식 종류',
     options: [
       { value: Category.ALL, label: '전체' },
@@ -16,7 +16,7 @@ export const FILTER_CONFIG = {
     ],
   },
 
-  situation: {
+  context: {
     label: '상황별',
     options: [
       { value: Context.LUNCH, label: '점심' },
@@ -28,3 +28,22 @@ export const FILTER_CONFIG = {
     ],
   },
 } as const;
+
+export const FOOD_ICONS: Record<Category, string> = {
+  [Category.ALL]: '🍽️',
+  [Category.BEST]: '⭐',
+  [Category.CHINESE]: '🍜',
+  [Category.WESTERN]: '🍔',
+  [Category.JAPANESE]: '🍣',
+  [Category.KOREAN]: '🍚',
+  [Category.SNACK]: '🌭',
+};
+
+export const SITUATION_ICONS: Record<Context, string> = {
+  [Context.LUNCH]: '🍱',
+  [Context.SOLO]: '🙋‍♂️',
+  [Context.GROUP]: '🍻',
+  [Context.DIET]: '🥗',
+  [Context.DATE]: '💖',
+  [Context.STRESS]: '😡',
+};

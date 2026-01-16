@@ -1,0 +1,73 @@
+import { Context, Category } from '@/types/enum';
+import { MenuItem } from '../utils/menuItem';
+
+// 완전 타입 안전한 MENU_DATA
+export const MENU_DATA: MenuItem[] = [
+  { id: '1', name: '한식1', category: Category.KOREAN, contexts: [Context.DATE] },
+  { id: '2', name: '한식2', category: Category.KOREAN, contexts: [Context.LUNCH, Context.DATE] },
+  { id: '3', name: '한식3', category: Category.KOREAN, contexts: [Context.SOLO, Context.DIET] },
+  { id: '4', name: '한식4', category: Category.KOREAN, contexts: [Context.STRESS] },
+  { id: '5', name: '한식5', category: Category.KOREAN, contexts: [Context.LUNCH, Context.STRESS] },
+  { id: '6', name: '한식6', category: Category.KOREAN, contexts: [Context.SOLO, Context.LUNCH] },
+  { id: '7', name: '한식7', category: Category.KOREAN, contexts: [Context.DATE, Context.LUNCH] },
+  { id: '8', name: '한식8', category: Category.KOREAN, contexts: [Context.SOLO, Context.DIET] },
+
+  {
+    id: '9',
+    name: '중식1',
+    category: Category.CHINESE,
+    contexts: [Context.LUNCH, Context.SOLO, Context.DIET],
+  },
+  { id: '10', name: '중식2', category: Category.CHINESE, contexts: [Context.STRESS] },
+  { id: '11', name: '중식3', category: Category.CHINESE, contexts: [Context.LUNCH, Context.DATE] },
+  { id: '12', name: '중식4', category: Category.CHINESE, contexts: [Context.SOLO, Context.STRESS] },
+  { id: '13', name: '중식5', category: Category.CHINESE, contexts: [Context.LUNCH, Context.SOLO] },
+  { id: '14', name: '중식6', category: Category.CHINESE, contexts: [Context.STRESS] },
+  { id: '15', name: '중식7', category: Category.CHINESE, contexts: [Context.DATE] },
+  { id: '16', name: '중식8', category: Category.CHINESE, contexts: [Context.LUNCH, Context.SOLO] },
+  {
+    id: '17',
+    name: '일식1',
+    category: Category.JAPANESE,
+    contexts: [Context.DATE, Context.LUNCH, Context.DIET],
+  },
+  { id: '18', name: '일식2', category: Category.JAPANESE, contexts: [Context.SOLO, Context.DATE] },
+  {
+    id: '19',
+    name: '일식3',
+    category: Category.JAPANESE,
+    contexts: [Context.STRESS, Context.LUNCH],
+  },
+  {
+    id: '20',
+    name: '일식4',
+    category: Category.JAPANESE,
+    contexts: [Context.SOLO, Context.LUNCH, Context.DIET],
+  },
+  { id: '21', name: '일식5', category: Category.JAPANESE, contexts: [Context.DATE, Context.LUNCH] },
+  {
+    id: '22',
+    name: '일식6',
+    category: Category.JAPANESE,
+    contexts: [Context.SOLO, Context.STRESS],
+  },
+  { id: '23', name: '일식7', category: Category.JAPANESE, contexts: [Context.LUNCH, Context.SOLO] },
+  { id: '24', name: '일식8', category: Category.JAPANESE, contexts: [Context.DATE, Context.SOLO] },
+
+  { id: '25', name: '양식1', category: Category.WESTERN, contexts: [Context.DATE, Context.LUNCH] },
+  { id: '26', name: '양식2', category: Category.WESTERN, contexts: [Context.SOLO, Context.LUNCH] },
+  { id: '27', name: '양식3', category: Category.WESTERN, contexts: [Context.STRESS] },
+  { id: '28', name: '양식4', category: Category.WESTERN, contexts: [Context.DATE, Context.LUNCH] },
+  { id: '29', name: '양식5', category: Category.WESTERN, contexts: [Context.SOLO, Context.DIET] },
+  { id: '30', name: '양식6', category: Category.WESTERN, contexts: [Context.LUNCH] },
+  { id: '31', name: '양식7', category: Category.WESTERN, contexts: [Context.STRESS, Context.DATE] },
+  { id: '32', name: '양식8', category: Category.WESTERN, contexts: [Context.SOLO, Context.LUNCH] },
+  { id: '33', name: '분식1', category: Category.SNACK, contexts: [Context.STRESS, Context.LUNCH] },
+  { id: '34', name: '분식2', category: Category.SNACK, contexts: [Context.SOLO, Context.DIET] },
+  { id: '35', name: '분식3', category: Category.SNACK, contexts: [Context.LUNCH, Context.STRESS] },
+  { id: '36', name: '분식4', category: Category.SNACK, contexts: [Context.SOLO, Context.LUNCH] },
+  { id: '37', name: '분식5', category: Category.SNACK, contexts: [Context.STRESS] },
+  { id: '38', name: '분식6', category: Category.SNACK, contexts: [Context.SOLO, Context.LUNCH] },
+  { id: '39', name: '분식7', category: Category.SNACK, contexts: [Context.DATE, Context.LUNCH] },
+  { id: '40', name: '분식8', category: Category.SNACK, contexts: [Context.STRESS, Context.SOLO] },
+];

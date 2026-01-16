@@ -1,8 +1,19 @@
 import { useMemo } from 'react';
 
-import { FILTER_FULL_CONFIG } from '@/domain/Roulette/constants';
+import { FILTER_CONFIG, FOOD_ICONS, SITUATION_ICONS } from '@/domain/Roulette/constants';
 
 import { Context, Category } from '@/types/enum';
+
+const FILTER_FULL_CONFIG = {
+  food: {
+    ...FILTER_CONFIG.category,
+    icons: FOOD_ICONS,
+  },
+  situation: {
+    ...FILTER_CONFIG.context,
+    icons: SITUATION_ICONS,
+  },
+} as const;
 
 export function useFilterOptions(selectedFoodTypes: Category[], selectedSituation: Context | null) {
   // 음식 옵션 구성

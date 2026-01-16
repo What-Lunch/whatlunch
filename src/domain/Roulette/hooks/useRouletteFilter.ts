@@ -1,23 +1,46 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { pickMenus } from '@/domain/Roulette/core/pickMenus';
 import { FilterMode } from '@/domain/Roulette/constants/filters';
 
 import { Category, Context } from '@/types/enum';
+import { menusService } from '@/app/services/backend/menus.api';
+
 export function useRouletteFilter() {
-  const [mode, setMode] = useState<FilterMode>('food'); // 현재 필터 모드(food/situation)
+  const [mode, setMode] = useState<FilterMode>('category'); // 현재 필터 모드(food/situation)
   const [selectedFoodTypes, setSelectedFoodTypes] = useState<Category[]>([Category.ALL]); // 선택된 음식 타입
   const [selectedSituation, setSelectedSituation] = useState<Context | null>(null); // 선택된 상황
-  const computedTypes = useMemo(() => {
-    return selectedFoodTypes.includes(Category.ALL) ? null : selectedFoodTypes;
-  }, [selectedFoodTypes]); // ALL 제외한 실질 필터 타입 계산
+  const [menus, setMenus] = useState<Menu.GetMenuRes[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const menus = useMemo(() => {
-    return mode === 'food' ? pickMenus(computedTypes, null) : pickMenus(null, selectedSituation);
-  }, [mode, computedTypes, selectedSituation]); // 필터 상태 기반 메뉴 목록 생성
+  useEffect(() => {
+    const fetchMenus = async () => {
+      setIsLoading(true);
+      try {
+        const params: Menu.GetMenuReq = {};
+
+        if (!selectedFoodTypes.includes(Category.ALL)) {
+          params.category = selectedFoodTypes;
+        }
+
+        if (selectedSituation) {
+          params.context = selectedSituation;
+        }
+
+        const data = await menusService.getMenusRoulette(params);
+        setMenus(data);
+      } catch (error) {
+        console.error('메뉴 로딩 실패:', error);
+        setMenus([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMenus();
+  }, [selectedFoodTypes, selectedSituation]);
 
   const changeMode = useCallback((nextMode: FilterMode) => {
-    if (nextMode === 'food') setSelectedSituation(null);
+    if (nextMode === 'category') setSelectedSituation(null);
     else setSelectedFoodTypes([Category.ALL]);
     setMode(nextMode);
   }, []); // 모드 전환 + 상대 필터 초기화
@@ -46,6 +69,7 @@ export function useRouletteFilter() {
     state: {
       mode, // 현재 모드
       menus, // 현재 필터 기반 메뉴 목록
+      isLoading,
       selectedFoodTypes,
       selectedSituation,
     },

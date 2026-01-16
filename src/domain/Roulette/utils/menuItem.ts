@@ -1,8 +1,8 @@
 import { Category, Context } from '@/types/enum';
 
 export interface MenuItem {
-  id: number;
+  id: string;
   name: string;
-  type: Category;
-  situations: Context[];
+  category: Category;
+  contexts: Context[];
 }
