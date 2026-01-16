@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useEscClose } from '@/shared/hooks/useEscClose';
 import { shareContent } from '../../utils/shareContent';
 
+import Modal from '@/shared/components/Modal';
 import Button from '@/shared/components/Button';
 
 import { RouletteModalProps } from './types';
@@ -20,6 +21,7 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
   const [isImageError, setIsImageError] = useState(false);
 
   // 공유 클릭 처리
+  // TODO: 공유로직 개선 필요
   const handleShareClick = async () => {
     const result = await shareContent('오늘의 메뉴', `오늘의 메뉴는 ${menu}입니다!`);
     if (result.ok) console.log('공유 성공');
@@ -30,29 +32,21 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
   const imageSrc = isImageError ? DEFAULT_IMAGE : `/foods/${menu}.png`;
 
   return (
-    <div className={styles.modal__overlay} onClick={onClose}>
-      <div
-        className={styles.modal__content}
-        onClick={e => e.stopPropagation()} // 내부 클릭은 항상 닫힘 방지
-        role="dialog"
-        aria-modal="true"
-      >
+    <Modal isOpen={true} onClose={onClose} description={menu}>
+      <div className={styles['modal__content']}>
         <Image
           src={imageSrc}
           alt={menu}
           width={300}
           height={200}
-          className={styles.modal__image}
+          className={styles['modal__image']}
           onError={() => setIsImageError(true)}
         />
-
-        <p className={styles.modal__name}>{menu}</p>
-
-        <div className={styles.modal__buttons}>
+        <p className={styles['modal__name']}>{menu}</p>
+        <div className={styles['modal__buttons']}>
           <Button variant="primary" size="md" onClick={handleShareClick}>
             공유하기
           </Button>
-
           <Button
             variant="neutral"
             size="md"
@@ -62,12 +56,11 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
           >
             지도 보기
           </Button>
-
           <Button variant="danger" size="md" onClick={onClose}>
             닫기
           </Button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
