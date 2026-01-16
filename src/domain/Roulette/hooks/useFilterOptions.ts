@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import { FILTER_FULL_CONFIG } from '@/domain/Roulette/constants';
-import { FoodTypeFilter, SituationFilter } from '@/domain/Roulette/constants/filters';
+import { Menu } from '@/types/api';
 
 export function useFilterOptions(
-  selectedFoodTypes: FoodTypeFilter[],
-  selectedSituation: SituationFilter | null
+  selectedFoodTypes: Menu.Category[],
+  selectedSituation: Menu.Context | null
 ) {
   // 음식 옵션 구성
   const foodOptions = useMemo(() => {

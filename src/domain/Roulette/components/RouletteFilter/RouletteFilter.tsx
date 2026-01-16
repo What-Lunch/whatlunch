@@ -31,7 +31,6 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
 
   return (
     <div className={styles['filter']}>
-      {/* 필터 모드 전환 (음식 / 상황) */}
       <div className={styles['filter__mode']}>
         <button
           type="button"
@@ -52,9 +51,7 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
         </button>
       </div>
 
-      {/* 필터 옵션 버튼들 */}
       <div className={styles['filter__options']}>
-        {/* 음식 필터 */}
         {mode === 'food' &&
           foodOptions.map(opt => (
             <Button
@@ -72,7 +69,6 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
             </Button>
           ))}
 
-        {/* 상황 필터 */}
         {mode === 'situation' &&
           situationOptions.map(opt => (
             <Button
