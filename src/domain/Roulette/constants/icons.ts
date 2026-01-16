@@ -1,20 +1,20 @@
-import { Menu } from '@/types/api';
+import { Category, Context } from '@/types/enum';
 
-export const FOOD_ICONS: Record<Menu.Category, string> = {
-  [Menu.Category.ALL]: '🍽️',
-  [Menu.Category.BEST]: '⭐',
-  [Menu.Category.CHINESE]: '🍜',
-  [Menu.Category.WESTERN]: '🍔',
-  [Menu.Category.JAPANESE]: '🍣',
-  [Menu.Category.KOREAN]: '🍚',
-  [Menu.Category.SNACK]: '🌭',
+export const FOOD_ICONS: Record<Category, string> = {
+  [Category.ALL]: '🍽️',
+  [Category.BEST]: '⭐',
+  [Category.CHINESE]: '🍜',
+  [Category.WESTERN]: '🍔',
+  [Category.JAPANESE]: '🍣',
+  [Category.KOREAN]: '🍚',
+  [Category.SNACK]: '🌭',
 };
 
-export const SITUATION_ICONS: Record<Menu.Context, string> = {
-  [Menu.Context.LUNCH]: '🍱',
-  [Menu.Context.SOLO]: '🙋‍♂️',
-  [Menu.Context.GROUP]: '🍻',
-  [Menu.Context.DIET]: '🥗',
-  [Menu.Context.DATE]: '💖',
-  [Menu.Context.STRESS]: '😡',
+export const SITUATION_ICONS: Record<Context, string> = {
+  [Context.LUNCH]: '🍱',
+  [Context.SOLO]: '🙋‍♂️',
+  [Context.GROUP]: '🍻',
+  [Context.DIET]: '🥗',
+  [Context.DATE]: '💖',
+  [Context.STRESS]: '😡',
 };

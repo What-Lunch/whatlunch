@@ -10,7 +10,7 @@ import BaseInput from '@/shared/components/Input/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
-import { authService } from '@/app/services/Auth/auth.api';
+import { authService } from '@/app/services/backend/auth.api';
 
 import { LoginModalProps } from '../types';
 
@@ -63,7 +63,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
       setLoading(true);
 
       // 로그인 (토큰 저장)
-      await authService.login({ email, password });
+      await authService.postLogin({ email, password });
 
       // 내 정보 조회
       const me = await authService.getMe();

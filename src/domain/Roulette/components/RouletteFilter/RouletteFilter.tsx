@@ -11,19 +11,19 @@ import { RouletteFilterProps } from './types';
 import styles from './RouletteFilter.module.scss';
 
 export default function RouletteFilter({ onChange, disabled = false }: RouletteFilterProps) {
-  // 룰렛 필터 상태 및 액션 필터링된 menus까지 훅 내부에서 관리
-  const {
-    state: { mode, selectedFoodTypes, selectedSituation, menus },
-    actions: { changeMode, toggleFoodType, toggleSituation },
-  } = useRouletteFilter();
+  // // 룰렛 필터 상태 및 액션 필터링된 menus까지 훅 내부에서 관리
+  // const {
+  //   state: { mode, selectedFoodTypes, selectedSituation, menus },
+  //   actions: { changeMode, toggleFoodType, toggleSituation },
+  // } = useRouletteFilter();
 
-  // UI 렌더링을 위한 옵션 (label, icon, isActive 포함)
-  const { foodOptions, situationOptions } = useFilterOptions(selectedFoodTypes, selectedSituation);
+  // // UI 렌더링을 위한 옵션 (label, icon, isActive 포함)
+  // const { foodOptions, situationOptions } = useFilterOptions(selectedFoodTypes, selectedSituation);
 
   // 룰렛 컴포넌트에 메뉴 목록 전달
-  useEffect(() => {
-    onChange(menus);
-  }, [menus, onChange]);
+  // useEffect(() => {
+  //   onChange(menus);
+  // }, [menus, onChange]);
 
   // 활성/비활성 탭 스타일 생성
   const modeClass = (isActive: boolean) =>
@@ -35,8 +35,8 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
         <button
           type="button"
           disabled={disabled}
-          className={modeClass(mode === 'food')}
-          onClick={() => changeMode('food')}
+          // className={modeClass(mode === 'food')}
+          // onClick={() => changeMode('food')}
         >
           음식 종류
         </button>
@@ -44,15 +44,15 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
         <button
           type="button"
           disabled={disabled}
-          className={modeClass(mode === 'situation')}
-          onClick={() => changeMode('situation')}
+          // className={modeClass(mode === 'situation')}
+          // onClick={() => changeMode('situation')}
         >
           상황별
         </button>
       </div>
 
       <div className={styles['filter__options']}>
-        {mode === 'food' &&
+        {/* {mode === 'food' &&
           foodOptions.map(opt => (
             <Button
               key={opt.value}
@@ -84,7 +84,7 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
               <span className={styles['filter__options__item__icon']}>{opt.icon}</span>
               {opt.label}
             </Button>
-          ))}
+          ))} */}
       </div>
     </div>
   );

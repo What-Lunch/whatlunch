@@ -1,37 +1,43 @@
-export namespace Menu {
-  export enum Category {
-    ALL = 'all',
-    BEST = 'best',
-    KOREAN = 'korean',
-    CHINESE = 'chinese',
-    JAPANESE = 'japanese',
-    WESTERN = 'western',
-    SNACK = 'snack',
+namespace Auth {
+  interface RegisterReq {
+    email: string;
+    password: string;
+    passwordConfirm: string;
+    nickname: string;
   }
 
-  export enum Context {
-    LUNCH = 'lunch',
-    SOLO = 'solo',
-    GROUP = 'group',
-    DIET = 'diet',
-    DATE = 'date',
-    STRESS = 'stress',
+  interface LoginReq {
+    email: string;
+    password: string;
   }
 
-  export interface GetMenuRes {
+  interface LoginRes {
+    accessToken: string;
+    expiresAt: string;
+  }
+
+  interface MeRes {
+    email: string;
+    nickname: string;
+    profileImage: string | null;
+  }
+}
+
+namespace Menu {
+  interface GetMenuRes {
     id: string;
     name: string;
-    category: Category;
-    contexts: Context[];
+    category: import('./enum').Category;
+    contexts: import('./enum').Context[];
     isBest: boolean;
     calorie?: number;
     createdAt: Date;
     updatedAt: Date;
   }
 
-  export interface GetMenuReq {
-    category?: Category;
-    context?: Context;
+  interface GetMenuReq {
+    category?: import('./enum').Category | import('./enum').Category[];
+    context?: import('./enum').Context | import('./enum').Context[] | undefined;
     limit?: number;
   }
 }

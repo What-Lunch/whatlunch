@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
 
 import { FILTER_FULL_CONFIG } from '@/domain/Roulette/constants';
-import { Menu } from '@/types/api';
 
-export function useFilterOptions(
-  selectedFoodTypes: Menu.Category[],
-  selectedSituation: Menu.Context | null
-) {
+import { Context, Category } from '@/types/enum';
+
+export function useFilterOptions(selectedFoodTypes: Category[], selectedSituation: Context | null) {
   // 음식 옵션 구성
   const foodOptions = useMemo(() => {
     return FILTER_FULL_CONFIG.food.options.map(opt => ({

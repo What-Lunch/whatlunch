@@ -1,21 +1,17 @@
 import { MenuItem } from '../utils/menuItem';
-// import { MENU_DATA } from '../constants/menuData';
+import { Category, Context } from '@/types/enum';
 import { shuffleMenus } from './shuffleMenus';
-import { Menu } from '@/types/api';
 
 const pickCache = new Map<string, MenuItem[]>(); // 필터 조합(types + situation)에 따른 결과 메뉴 배열 캐싱
 const MAX_RESULTS = 8; // UX 상 룰렛 섹션을 8개로 고정하기 위한 상수
 
 // 캐시 키 생성: Type 배열은 정렬하여 순서 차이 제거
-function makeCacheKey(types: Menu.Category[] | null, situation: Menu.Context | null) {
+function makeCacheKey(types: Category[] | null, situation: Context | null) {
   const sortedTypes = types ? [...types].sort() : null;
   return JSON.stringify({ types: sortedTypes, situation });
 }
 
-export function pickMenus(
-  types: Menu.Category[] | null,
-  situation: Menu.Context | null
-): MenuItem[] {
+export function pickMenus(types: Category[] | null, situation: Context | null): MenuItem[] {
   const key = makeCacheKey(types, situation);
 
   // 캐싱된 결과 반환

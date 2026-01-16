@@ -1,8 +1,8 @@
-import { Menu } from '@/types/api';
+import { Category, Context } from '@/types/enum';
 
 export interface MenuItem {
   id: number;
   name: string;
-  type: Menu.Category;
-  situations: Menu.Context[];
+  type: Category;
+  situations: Context[];
 }
