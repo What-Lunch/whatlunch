@@ -21,6 +21,12 @@ namespace Auth {
     nickname: string;
     profileImage: string | null;
   }
+
+  interface UpdateMeReq {
+    nickname?: string;
+    profileImage?: string | null;
+    password?: string;
+  }
 }
 
 namespace Menu {
