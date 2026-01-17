@@ -39,6 +39,14 @@ class AuthService {
       auth: true,
     });
   }
+  // 내 정보 수정
+  updateMe(data: Auth.UpdateMeReq): Promise<Auth.MeRes> {
+    return fetcher<Auth.MeRes>('/auth/me', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+      auth: true,
+    });
+  }
 }
 
 export const authService = new AuthService();

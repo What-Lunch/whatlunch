@@ -1,0 +1,37 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.edit-profile {
+  width: 100%;
+  padding-top: 10px;
+  @include m.flex-box(center, center, column);
+  gap: 20px;
+
+  &__body {
+    width: 100%;
+    @include m.flex-box(center, center, column);
+    gap: 20px;
+
+    &-group {
+      width: 100%;
+      @include m.flex-box(center, flex-start, column);
+      gap: 4px;
+
+      &__label {
+        @include m.text-style-extended('md', 500, gray-700);
+      }
+    }
+  }
+
+  &__actions {
+    width: 100%;
+    margin-top: 8px;
+
+    @include m.flex-box(space-between, center);
+    gap: 8px;
+
+    > button {
+      flex: 1;
+    }
+  }
+}

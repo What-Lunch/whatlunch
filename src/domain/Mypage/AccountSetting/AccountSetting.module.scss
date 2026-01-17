@@ -15,7 +15,7 @@
     @include m.flex-box(space-between, center);
 
     &__title {
-      @include m.text-style('xl', 500);
+      @include m.text-style('lg', 500);
       color: f.color(black);
     }
 
@@ -27,16 +27,37 @@
   }
 
   &__menu {
-    @include m.flex-box(center, center, column);
-    gap: 18px;
+    @include m.flex-box(center, stretch, column);
+    gap: 14px;
 
     &__section {
       width: 100%;
+      padding: 12px;
       @include m.flex-box(space-between, center);
-      padding: 10px 8px;
+
       background-color: f.color(gray-100);
       border-radius: 10px;
       border: 1px solid f.color(gray-300);
+      transition:
+        background-color 0.15s ease,
+        transform 0.1s ease;
+
+      &.is-clickable {
+        cursor: pointer;
+
+        &:hover {
+          background-color: f.color(gray-200);
+        }
+
+        &:active {
+          transform: translateY(1px);
+        }
+      }
+
+      &.is-disabled {
+        opacity: 0.55;
+        cursor: default;
+      }
 
       &__info {
         @include m.flex-box(center, center);
@@ -46,6 +67,7 @@
           width: 20px;
           height: 20px;
           @include m.flex-box(center, center);
+          color: f.color(gray-700);
         }
 
         &__title {
@@ -63,7 +85,12 @@
         width: 20px;
         height: 20px;
         color: f.color(gray-600);
-        cursor: pointer;
+      }
+
+      &--logout {
+        .account-setting__menu__section__info__icon {
+          color: f.color(red-600);
+        }
       }
     }
   }
