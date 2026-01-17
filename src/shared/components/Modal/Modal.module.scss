@@ -66,7 +66,7 @@
   &__description {
     margin-top: 8px;
     text-align: left;
-    @include m.text-style('lg', 600);
+    @include m.text-style('md', 600);
     line-height: 20px;
     overflow: hidden;
     display: -webkit-box;
@@ -74,7 +74,7 @@
     -webkit-box-orient: vertical;
 
     @include m.mq(md) {
-      @include m.text-style('2xl', 600);
+      @include m.text-style('lg', 600);
     }
   }
 

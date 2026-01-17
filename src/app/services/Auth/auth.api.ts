@@ -23,6 +23,11 @@ type MeResponse = {
   profileImage: string | null;
 };
 
+type UpdateMePayload = {
+  nickname?: string;
+  password?: string;
+};
+
 class AuthService {
   // 회원가입
   signup(data: SignupPayload): Promise<{ message: string }> {
@@ -59,6 +64,15 @@ class AuthService {
   getMe(): Promise<MeResponse> {
     return fetcher<MeResponse>('/auth/me', {
       method: 'GET',
+      auth: true,
+    });
+  }
+
+  // 내 정보 수정
+  updateMe(data: UpdateMePayload): Promise<MeResponse> {
+    return fetcher<MeResponse>('/auth/me', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
       auth: true,
     });
   }
