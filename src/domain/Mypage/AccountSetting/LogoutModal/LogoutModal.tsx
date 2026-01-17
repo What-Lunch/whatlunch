@@ -3,7 +3,7 @@
 import Modal from '@/shared/components/Modal/Modal';
 import Button from '@/shared/components/Button/Button';
 
-import { authService } from '@/app/services/Auth/auth.api';
+import { authService } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './LogoutModal.module.scss';
@@ -19,7 +19,7 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   if (!isOpen) return null;
 
   const handleLogout = () => {
-    authService.logout();
+    authService.postLogout();
     clearUser();
     onClose();
   };

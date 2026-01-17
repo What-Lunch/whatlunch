@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 
 import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput/PasswordInput';
 import Button from '@/shared/components/Button/Button';
 
-import { authService } from '@/app/services/Auth/auth.api';
+import { authService } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './EditProfileForm.module.scss';
@@ -39,8 +40,6 @@ export default function EditProfileForm({
     confirmPassword: '',
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   // 초기 닉네임 세팅
   useEffect(() => {
     setFormState({
@@ -54,11 +53,20 @@ export default function EditProfileForm({
   const isNicknameChanged = trimmedNickname !== initialNickname;
   const isPasswordChanged = formState.newPassword.length > 0;
 
-  const isSubmitDisabled = isSubmitting || (!isNicknameChanged && !isPasswordChanged);
+  const updateMeMutation = useMutation({
+    mutationFn: (data: Auth.UpdateMeReq) => authService.updateMe(data),
+    onSuccess: updatedUser => {
+      setUser(updatedUser);
+      onSubmitSuccess();
+    },
+    onError: () => {
+      alert('정보 수정에 실패했습니다');
+    },
+  });
 
-  const handleSubmit = async () => {
-    if (isSubmitting) return;
+  const isSubmitDisabled = updateMeMutation.isPending || (!isNicknameChanged && !isPasswordChanged);
 
+  const handleSubmit = () => {
     const { newPassword, confirmPassword } = formState;
 
     if (!isNicknameChanged && !isPasswordChanged) {
@@ -81,31 +89,11 @@ export default function EditProfileForm({
       return;
     }
 
-    // 서버에 보낼 변경된 값만
-    const payload: {
-      nickname?: string;
-      password?: string;
-    } = {};
-
-    if (isNicknameChanged) {
-      payload.nickname = trimmedNickname;
-    }
-
-    if (isPasswordChanged) {
-      payload.password = newPassword;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const updatedUser = await authService.updateMe(payload);
-      setUser(updatedUser);
-      onSubmitSuccess();
-    } catch {
-      alert('정보 수정에 실패했습니다');
-    } finally {
-      setIsSubmitting(false);
-    }
+    // payload 없이 바로 전달
+    updateMeMutation.mutate({
+      ...(isNicknameChanged && { nickname: trimmedNickname }),
+      ...(isPasswordChanged && { password: newPassword }),
+    });
   };
 
   return (
@@ -113,7 +101,7 @@ export default function EditProfileForm({
       className={styles['edit-profile']}
       onSubmit={e => {
         e.preventDefault();
-        void handleSubmit();
+        handleSubmit();
       }}
     >
       <div className={styles['edit-profile__body']}>
@@ -176,14 +164,14 @@ export default function EditProfileForm({
           variant="blue"
           mode="outline"
           type="button"
-          disabled={isSubmitting}
+          disabled={updateMeMutation.isPending}
           onClick={onCancel}
         >
           취소
         </Button>
 
         <Button variant="blue" mode="fill" type="submit" disabled={isSubmitDisabled}>
-          변경하기
+          {updateMeMutation.isPending ? '변경 중...' : '변경하기'}
         </Button>
       </div>
     </form>
