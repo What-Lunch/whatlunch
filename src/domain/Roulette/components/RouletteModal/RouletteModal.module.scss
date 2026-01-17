@@ -3,25 +3,12 @@
 
 // 모달 전체 블록
 .modal {
-  &__overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    @include m.flex-box(center, center);
-    z-index: 999;
-    backdrop-filter: blur(2px);
-  }
-
   &__content {
     background: f.color(white);
     padding: 28px 24px;
     border-radius: 16px;
     width: 320px;
     text-align: center;
-
-    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.18);
-
-    animation: modal-fade-in 0.25s ease;
   }
 
   &__image {
@@ -47,17 +34,5 @@
       width: 100%;
       border-radius: 12px;
     }
-  }
-}
-
-@keyframes modal-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
   }
 }

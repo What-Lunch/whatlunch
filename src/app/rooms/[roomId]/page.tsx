@@ -1,8 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
 import { Copy, Check, Clock, Users } from 'lucide-react';
 
+import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
@@ -17,51 +17,15 @@ interface RoomPageProps {
   };
 }
 
-const LOCAL_KEY_PREFIX = 'roomRouletteHistory_';
-
 export default function RoomPage({ params }: RoomPageProps) {
   const roomId = params.roomId;
   const { isSoloMode, isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
 
-  const [results, setResults] = useState<string[]>([]);
-
-  const LOCAL_KEY = `${LOCAL_KEY_PREFIX}${roomId}`;
-
-  const handleRouletteResult = useCallback(
-    (result: string) => {
-      setResults(prev => {
-        const newResults = [result, ...prev];
-        if (typeof window !== 'undefined' && window.localStorage) {
-          try {
-            window.localStorage.setItem(LOCAL_KEY, JSON.stringify(newResults));
-          } catch (e) {
-            console.error('localStorage 저장 오류:', e);
-          }
-        }
-        return newResults;
-      });
-    },
-    [LOCAL_KEY]
-  );
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.localStorage) return;
-    try {
-      const stored = window.localStorage.getItem(LOCAL_KEY);
-      if (stored) {
-        setResults(JSON.parse(stored));
-      }
-    } catch (err) {
-      console.error('localStorage 룰렛 결과 파싱 오류:', err);
-      window.localStorage.removeItem(LOCAL_KEY);
-      setResults([]);
-    }
-  }, [LOCAL_KEY]);
+  const { results } = useRouletteResultStore();
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다</div>;
   }
-
   return (
     <div className={styles['room']}>
       <header className={styles['room__header']}>
@@ -95,7 +59,7 @@ export default function RoomPage({ params }: RoomPageProps) {
 
       <div className={styles['room__content']}>
         <section className={styles['room__roulette-section']}>
-          <RoomTabs onResult={handleRouletteResult} />
+          <RoomTabs />
         </section>
 
         {!isSoloMode && (
@@ -113,22 +77,22 @@ export default function RoomPage({ params }: RoomPageProps) {
           <div className={styles['room__top-menu__icon']}>📊</div>
           <div className={styles['room__top-menu__info']}>
             <span className={styles['room__top-menu__name']}>돌린횟수</span>
-            <span className={styles['room__top-menu__count']}>{results.length} 회</span>
+            <span className={styles['room__top-menu__count']}>{results?.length} 회</span>
           </div>
         </div>
         <div className={styles['room__mood-stats']}>
           <h4>최근 룰렛 결과</h4>
           <div className={styles['room__mood-stats__list']}>
             <ul className={styles['room__mood-stats__list__items']}>
-              {results.slice(0, 8).map((item, idx) => (
-                <li key={idx} className={styles['room__mood-stats__list__items__item']}>
+              {results?.slice(0, 8).map((item, idx) => (
+                <li key={item.id} className={styles['room__mood-stats__list__items__item']}>
                   <span className={styles['room__mood-stats__list__items__item__badge']}>
                     {idx + 1}
                   </span>
-                  {item}
+                  {item.name}
                 </li>
               ))}
-              {results.length === 0 && (
+              {results?.length === 0 && (
                 <li className={styles['room__mood-stats__list__items__item--empty']}>
                   🎰 룰렛을 돌려보세요!
                 </li>

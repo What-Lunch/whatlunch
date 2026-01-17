@@ -11,7 +11,6 @@ import RouletteModal from './components/RouletteModal';
 import { shuffleMenus } from '@/domain/Roulette/core/shuffleMenus';
 
 import { RouletteControllerProps } from './type';
-import { MenuItem } from './utils/menuItem';
 
 import styles from './Roulette.module.scss';
 
@@ -21,9 +20,12 @@ export const Roulette = memo(function Roulette({
   onSpinResult,
   result,
 }: RouletteControllerProps) {
-  const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [menus, setMenus] = useState<Menu.GetMenuRes[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const handleMenusChange = useCallback((menus: Menu.GetMenuRes[]) => {
+    setMenus(menus);
+  }, []);
   // 섞기 가능 여부
   const canShuffle = menus.length > 1;
 
@@ -35,9 +37,9 @@ export const Roulette = memo(function Roulette({
 
   // 룰렛 결과 처리
   const handleResult = useCallback(
-    (item: MenuItem) => {
+    (item: Menu.GetMenuRes) => {
       setModalOpen(true);
-      onSpinResult(item.name);
+      onSpinResult(item);
     },
     [onSpinResult]
   );
@@ -56,7 +58,7 @@ export const Roulette = memo(function Roulette({
   return (
     <div className={styles['roulette']}>
       <p className={styles['roulette__today']}>
-        오늘의 메뉴 {result ? <span>{result}</span> : <span>?</span>}
+        오늘의 메뉴 {result ? <span>{result.name}</span> : <span>?</span>}
       </p>
 
       <div className={styles['roulette__wheel-wrapper']}>
@@ -86,7 +88,7 @@ export const Roulette = memo(function Roulette({
         </Button>
       </div>
 
-      <RouletteFilter onChange={setMenus} disabled={isSpinning} />
+      <RouletteFilter onChange={handleMenusChange} disabled={isSpinning} />
 
       {modalOpen && result && <RouletteModal menu={result} onClose={handleCloseModal} />}
     </div>

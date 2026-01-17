@@ -1,65 +1,44 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { StarIcon, DicesIcon, Clock } from 'lucide-react';
 
 import Roulette from '@/domain/Roulette/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
-
 import Badge, { BadgeProps } from '@/shared/components/Badge';
-import styles from './page.module.scss';
 import { BaseInput } from '@/shared/components/Input';
 import Button from '@/shared/components/Button';
+
+import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
+import styles from './page.module.scss';
 
 const BADGES: BadgeProps[] = [
   { id: 'top-menu', variant: 'green', Icon: StarIcon, text: '현재 1등 메뉴: 치킨' },
 ];
 
-const LOCAL_KEY = 'soloRouletteHistory';
-
 export default function SoloRoomPage() {
   // 룰렛 상태 관리
   const [isSpinning, setIsSpinning] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<Menu.GetMenuRes | null>(null);
+
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [results, setResults] = useState<string[]>([]);
   const searchRef = useRef<HTMLInputElement | null>(null);
 
   const handleSpinStart = () => {
     setIsSpinning(true);
   };
 
-  const handleSpinResult = useCallback((menuName: string) => {
-    setResult(menuName);
-    setSearchKeyword(menuName);
-    setIsSpinning(false);
+  const { results, addResult } = useRouletteResultStore();
 
-    setResults(prev => {
-      const newResults = [menuName, ...prev];
-      if (typeof window !== 'undefined' && window.localStorage) {
-        try {
-          window.localStorage.setItem(LOCAL_KEY, JSON.stringify(newResults));
-        } catch (e) {
-          console.error('localStorage 저장 오류:', e);
-        }
-      }
-      return newResults;
-    });
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.localStorage) return;
-    try {
-      const stored = window.localStorage.getItem(LOCAL_KEY);
-      if (stored) {
-        setResults(JSON.parse(stored));
-      }
-    } catch (err) {
-      console.error('localStorage 룰렛 결과 파싱 오류:', err);
-      window.localStorage.removeItem(LOCAL_KEY);
-      setResults([]);
-    }
-  }, []);
+  const handleSpinResult = useCallback(
+    (selectedMenu: Menu.GetMenuRes) => {
+      setResult(selectedMenu);
+      setSearchKeyword(selectedMenu.name);
+      setIsSpinning(false);
+      addResult([selectedMenu]);
+    },
+    [addResult]
+  );
 
   const handleSearch = () => {
     if (searchRef.current) {
@@ -137,12 +116,12 @@ export default function SoloRoomPage() {
               <h4>최근 룰렛 결과</h4>
               <div className={styles['solo__mood-stats__list']}>
                 <ul className={styles['solo__mood-stats__list__items']}>
-                  {results.slice(0, 8).map((item, idx) => (
-                    <li key={idx} className={styles['solo__mood-stats__list__items__item']}>
+                  {results.slice(0, 8).map((item: Menu.GetMenuRes, idx: number) => (
+                    <li key={item.id} className={styles['solo__mood-stats__list__items__item']}>
                       <span className={styles['solo__mood-stats__list__items__item__badge']}>
                         {idx + 1}
                       </span>
-                      {item}
+                      {item.name}
                     </li>
                   ))}
                   {results.length === 0 && (

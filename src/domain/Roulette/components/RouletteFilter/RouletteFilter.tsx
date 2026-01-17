@@ -13,7 +13,7 @@ import styles from './RouletteFilter.module.scss';
 export default function RouletteFilter({ onChange, disabled = false }: RouletteFilterProps) {
   // 룰렛 필터 상태 및 액션 필터링된 menus까지 훅 내부에서 관리
   const {
-    state: { mode, selectedFoodTypes, selectedSituation, menus },
+    state: { mode, selectedFoodTypes, selectedSituation, menus, isLoading },
     actions: { changeMode, toggleFoodType, toggleSituation },
   } = useRouletteFilter();
 
@@ -22,6 +22,7 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
 
   // 룰렛 컴포넌트에 메뉴 목록 전달
   useEffect(() => {
+    if (!menus) return;
     onChange(menus);
   }, [menus, onChange]);
 
@@ -31,13 +32,13 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
 
   return (
     <div className={styles['filter']}>
-      {/* 필터 모드 전환 (음식 / 상황) */}
+      {isLoading && <div>로딩 중...</div>}
       <div className={styles['filter__mode']}>
         <button
           type="button"
           disabled={disabled}
-          className={modeClass(mode === 'food')}
-          onClick={() => changeMode('food')}
+          className={modeClass(mode === 'category')}
+          onClick={() => changeMode('category')}
         >
           음식 종류
         </button>
@@ -45,17 +46,15 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
         <button
           type="button"
           disabled={disabled}
-          className={modeClass(mode === 'situation')}
-          onClick={() => changeMode('situation')}
+          className={modeClass(mode === 'context')}
+          onClick={() => changeMode('context')}
         >
           상황별
         </button>
       </div>
 
-      {/* 필터 옵션 버튼들 */}
       <div className={styles['filter__options']}>
-        {/* 음식 필터 */}
-        {mode === 'food' &&
+        {mode === 'category' &&
           foodOptions.map(opt => (
             <Button
               key={opt.value}
@@ -72,8 +71,7 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
             </Button>
           ))}
 
-        {/* 상황 필터 */}
-        {mode === 'situation' &&
+        {mode === 'context' &&
           situationOptions.map(opt => (
             <Button
               key={opt.value}

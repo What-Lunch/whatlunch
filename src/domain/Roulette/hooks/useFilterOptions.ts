@@ -1,18 +1,30 @@
 import { useMemo } from 'react';
 
-import { FILTER_FULL_CONFIG } from '@/domain/Roulette/constants';
-import { FoodTypeFilter, SituationFilter } from '@/domain/Roulette/constants/filters';
+import { FILTER_CONFIG, FOOD_ICONS, SITUATION_ICONS } from '@/domain/Roulette/constants';
+
+import { Context, Category } from '@/types/enum';
+
+const FILTER_FULL_CONFIG = {
+  food: {
+    ...FILTER_CONFIG.category,
+    icons: FOOD_ICONS,
+  },
+  situation: {
+    ...FILTER_CONFIG.context,
+    icons: SITUATION_ICONS,
+  },
+} as const;
 
 export function useFilterOptions(
-  selectedFoodTypes: FoodTypeFilter[],
-  selectedSituation: SituationFilter | null
+  selectedFoodTypes: Category | null,
+  selectedSituation: Context | null
 ) {
   // 음식 옵션 구성
   const foodOptions = useMemo(() => {
     return FILTER_FULL_CONFIG.food.options.map(opt => ({
       ...opt,
       icon: FILTER_FULL_CONFIG.food.icons[opt.value],
-      isActive: selectedFoodTypes.includes(opt.value),
+      isActive: selectedFoodTypes === opt.value,
     }));
   }, [selectedFoodTypes]);
 

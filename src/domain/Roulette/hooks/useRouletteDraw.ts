@@ -1,12 +1,10 @@
 import { useCallback, useMemo } from 'react';
 
-import { MenuItem } from '../utils/menuItem';
-
 import { ROULETTE_STYLE } from '../constants/rouletteStyle';
 
 const FULL_ANGLE = Math.PI * 2;
 
-export function useRouletteDraw(items: MenuItem[], size: number, sectorColors: string[]) {
+export function useRouletteDraw(items: Menu.GetMenuRes[], size: number, sectorColors: string[]) {
   const radius = useMemo(() => size / 2, [size]);
 
   const stepAngle = useMemo(() => {

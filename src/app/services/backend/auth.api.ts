@@ -1,31 +1,8 @@
 import { fetcher } from '@/app/lib/fetcher';
 
-type SignupPayload = {
-  email: string;
-  password: string;
-  passwordConfirm: string;
-  nickname: string;
-};
-
-type LoginPayload = {
-  email: string;
-  password: string;
-};
-
-type LoginResponse = {
-  accessToken: string;
-  expiresAt: string;
-};
-
-type MeResponse = {
-  email: string;
-  nickname: string;
-  profileImage: string | null;
-};
-
 class AuthService {
   // 회원가입
-  signup(data: SignupPayload): Promise<{ message: string }> {
+  postSignup(data: Auth.RegisterReq): Promise<{ message: string }> {
     return fetcher<{ message: string }>('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -33,8 +10,8 @@ class AuthService {
   }
 
   // 로그인
-  async login(data: LoginPayload): Promise<LoginResponse> {
-    const res = await fetcher<LoginResponse>('/auth/login', {
+  async postLogin(data: Auth.LoginReq): Promise<Auth.LoginRes> {
+    const res = await fetcher<Auth.LoginRes>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -48,7 +25,7 @@ class AuthService {
   }
 
   // 로그아웃 (토큰 제거)
-  logout() {
+  postLogout() {
     if (typeof window === 'undefined') return;
 
     localStorage.removeItem('accessToken');
@@ -56,13 +33,12 @@ class AuthService {
   }
 
   // 내 정보 조회
-  getMe(): Promise<MeResponse> {
-    return fetcher<MeResponse>('/auth/me', {
+  getMe(): Promise<Auth.MeRes> {
+    return fetcher<Auth.MeRes>('/auth/me', {
       method: 'GET',
       auth: true,
     });
   }
 }
 
-// 싱글톤 인스턴스 export
 export const authService = new AuthService();
