@@ -79,6 +79,7 @@ export default function AccountSetting() {
                 onKeyDown={e => {
                   if (!isClickable) return;
                   if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
                     menu.onClick?.();
                   }
                 }}

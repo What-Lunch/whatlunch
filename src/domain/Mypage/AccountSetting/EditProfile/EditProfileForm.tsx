@@ -23,6 +23,8 @@ interface EditProfileFormState {
   confirmPassword: string;
 }
 
+const MIN_NICKNAME_LENGTH = 2;
+
 // 개인 정보 수정 폼
 export default function EditProfileForm({
   initialNickname,
@@ -39,7 +41,7 @@ export default function EditProfileForm({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 초기 닉네임 세팅 (모달 열릴 때 / 유저 변경 시)
+  // 초기 닉네임 세팅
   useEffect(() => {
     setFormState({
       nickname: initialNickname,
@@ -48,7 +50,8 @@ export default function EditProfileForm({
     });
   }, [initialNickname]);
 
-  const isNicknameChanged = formState.nickname.trim() !== initialNickname;
+  const trimmedNickname = formState.nickname.trim();
+  const isNicknameChanged = trimmedNickname !== initialNickname;
   const isPasswordChanged = formState.newPassword.length > 0;
 
   const isSubmitDisabled = isSubmitting || (!isNicknameChanged && !isPasswordChanged);
@@ -56,10 +59,15 @@ export default function EditProfileForm({
   const handleSubmit = async () => {
     if (isSubmitting) return;
 
-    const { nickname, newPassword, confirmPassword } = formState;
+    const { newPassword, confirmPassword } = formState;
 
     if (!isNicknameChanged && !isPasswordChanged) {
       alert('변경된 정보가 없습니다');
+      return;
+    }
+
+    if (isNicknameChanged && trimmedNickname.length < MIN_NICKNAME_LENGTH) {
+      alert('닉네임은 2자 이상 입력해주세요');
       return;
     }
 
@@ -80,7 +88,7 @@ export default function EditProfileForm({
     } = {};
 
     if (isNicknameChanged) {
-      payload.nickname = nickname.trim();
+      payload.nickname = trimmedNickname;
     }
 
     if (isPasswordChanged) {
