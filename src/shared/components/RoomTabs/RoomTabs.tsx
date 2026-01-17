@@ -8,6 +8,7 @@ import TopTabs, { TopTabItem } from '@/shared/components/TopTabs';
 import Roulette from '@/domain/Roulette/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
 
+import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import styles from './RoomTabs.module.scss';
 
 const TAB_LIST = [
@@ -18,14 +19,10 @@ const TAB_LIST = [
 const isMainTab = (value: string): value is TopTabItem['value'] =>
   TAB_LIST.some(tab => tab.value === value);
 
-interface RoomTabsProps {
-  onResult?: (result: string) => void;
-}
-
-export default function RoomTabs({ onResult }: RoomTabsProps) {
+export default function RoomTabs() {
   const [activeTab, setActiveTab] = useState<TopTabItem['value']>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
-  const [rouletteResult, setRouletteResult] = useState<string | null>(null);
+  const [rouletteResult, setRouletteResult] = useState<Menu.GetMenuRes | null>(null);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -37,19 +34,19 @@ export default function RoomTabs({ onResult }: RoomTabsProps) {
     setRouletteResult(null);
   }, []);
 
+  const { addResult } = useRouletteResultStore();
   const handleRouletteResult = useCallback(
-    (result: string) => {
+    (result: Menu.GetMenuRes) => {
       setIsSpinning(false);
       setRouletteResult(result);
-      setSearchKeyword(result);
+      setSearchKeyword(result.name);
 
       if (searchRef.current) {
-        searchRef.current.value = result;
+        searchRef.current.value = result.name;
       }
-
-      onResult?.(result);
+      addResult([result]);
     },
-    [onResult]
+    [addResult]
   );
 
   const renderPanel = (value: string) => {

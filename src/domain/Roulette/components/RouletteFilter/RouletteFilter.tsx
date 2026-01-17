@@ -11,17 +11,20 @@ import { RouletteFilterProps } from './types';
 import styles from './RouletteFilter.module.scss';
 
 export default function RouletteFilter({ onChange, disabled = false }: RouletteFilterProps) {
-  // // 룰렛 필터 상태 및 액션 필터링된 menus까지 훅 내부에서 관리
+  // 룰렛 필터 상태 및 액션 필터링된 menus까지 훅 내부에서 관리
   const {
     state: { mode, selectedFoodTypes, selectedSituation, menus, isLoading },
     actions: { changeMode, toggleFoodType, toggleSituation },
   } = useRouletteFilter();
-  // // UI 렌더링을 위한 옵션 (label, icon, isActive 포함)
+
+  // UI 렌더링을 위한 옵션 (label, icon, isActive 포함)
   const { foodOptions, situationOptions } = useFilterOptions(selectedFoodTypes, selectedSituation);
 
   // 룰렛 컴포넌트에 메뉴 목록 전달
   useEffect(() => {
-    onChange(menus);
+    if (menus && menus.length > 0) {
+      onChange(menus);
+    }
   }, [menus, onChange]);
 
   // 활성/비활성 탭 스타일 생성

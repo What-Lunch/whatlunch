@@ -15,13 +15,16 @@ const FILTER_FULL_CONFIG = {
   },
 } as const;
 
-export function useFilterOptions(selectedFoodTypes: Category[], selectedSituation: Context | null) {
+export function useFilterOptions(
+  selectedFoodTypes: Category | null,
+  selectedSituation: Context | null
+) {
   // 음식 옵션 구성
   const foodOptions = useMemo(() => {
     return FILTER_FULL_CONFIG.food.options.map(opt => ({
       ...opt,
       icon: FILTER_FULL_CONFIG.food.icons[opt.value],
-      isActive: selectedFoodTypes.includes(opt.value),
+      isActive: selectedFoodTypes === opt.value,
     }));
   }, [selectedFoodTypes]);
 

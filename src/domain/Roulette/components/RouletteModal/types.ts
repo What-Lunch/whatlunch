@@ -1,4 +1,4 @@
 export interface RouletteModalProps {
-  menu: string;
+  menu: Menu.GetMenuRes | null;
   onClose: () => void;
 }

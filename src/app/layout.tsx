@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Header from '@/shared/components/layout/Header';
 import Main from '@/shared/components/layout/Main';
+import TanstackProvider from '@/shared/context/TanstackProvider';
 import '@/styles/main.scss';
 
 export const metadata: Metadata = {
@@ -22,8 +23,10 @@ export default function RootLayout({ children }: LayoutProps) {
       ) : null}
 
       <body>
-        <Header />
-        <Main>{children}</Main>
+        <TanstackProvider>
+          <Header />
+          <Main>{children}</Main>
+        </TanstackProvider>
       </body>
     </html>
   );

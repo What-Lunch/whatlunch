@@ -32,17 +32,21 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
   const imageSrc = isImageError ? DEFAULT_IMAGE : `/foods/${menu}.png`;
 
   return (
-    <Modal isOpen={true} onClose={onClose} description={menu}>
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      description={menu ? `${menu.name} 선택됨` : '메뉴 선택됨'}
+    >
       <div className={styles['modal__content']}>
         <Image
           src={imageSrc}
-          alt={menu}
+          alt={menu?.name || '선택된 메뉴 이미지'}
           width={300}
           height={200}
           className={styles['modal__image']}
           onError={() => setIsImageError(true)}
         />
-        <p className={styles['modal__name']}>{menu}</p>
+        <p className={styles['modal__name']}>{menu?.name}</p>
         <div className={styles['modal__buttons']}>
           <Button variant="primary" size="md" onClick={handleShareClick}>
             공유하기
@@ -51,7 +55,10 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
             variant="neutral"
             size="md"
             onClick={() =>
-              window.open(`https://map.kakao.com/?q=${encodeURIComponent(menu)}`, '_blank')
+              window.open(
+                `https://map.kakao.com/?q=${encodeURIComponent(menu?.name || '')}`,
+                '_blank'
+              )
             }
           >
             지도 보기
