@@ -22,9 +22,8 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
 
   // 룰렛 컴포넌트에 메뉴 목록 전달
   useEffect(() => {
-    if (menus && menus.length > 0) {
-      onChange(menus);
-    }
+    if (!menus) return;
+    onChange(menus);
   }, [menus, onChange]);
 
   // 활성/비활성 탭 스타일 생성

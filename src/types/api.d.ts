@@ -31,8 +31,8 @@ namespace Menu {
     contexts: import('./enum').Context[];
     isBest: boolean;
     calorie?: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Date | string;
+    updatedAt: Date | string;
   }
 
   interface GetMenuReq {

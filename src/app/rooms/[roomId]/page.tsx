@@ -85,7 +85,7 @@ export default function RoomPage({ params }: RoomPageProps) {
           <div className={styles['room__mood-stats__list']}>
             <ul className={styles['room__mood-stats__list__items']}>
               {results?.slice(0, 8).map((item, idx) => (
-                <li key={idx} className={styles['room__mood-stats__list__items__item']}>
+                <li key={item.id} className={styles['room__mood-stats__list__items__item']}>
                   <span className={styles['room__mood-stats__list__items__item__badge']}>
                     {idx + 1}
                   </span>

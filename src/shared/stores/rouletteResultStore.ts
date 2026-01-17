@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface RouletteResultState {
   results: Menu.GetMenuRes[];
@@ -6,9 +7,16 @@ interface RouletteResultState {
   clearResults: () => void;
 }
 
-export const useRouletteResultStore = create<RouletteResultState>(set => ({
-  results: [],
-  addResult: (result: Menu.GetMenuRes[]) =>
-    set(state => ({ results: [...result, ...state.results] })),
-  clearResults: () => set({ results: [] }),
-}));
+export const useRouletteResultStore = create<RouletteResultState>()(
+  persist(
+    set => ({
+      results: [],
+      addResult: (result: Menu.GetMenuRes[]) =>
+        set(state => ({ results: [...result, ...state.results] })),
+      clearResults: () => set({ results: [] }),
+    }),
+    {
+      name: 'roulette-result-storage',
+    }
+  )
+);

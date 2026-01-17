@@ -16,16 +16,17 @@ export function useRouletteFilter() {
   const params = useParams();
   const roomId = params.roomId as string;
 
+  const activeFilter = mode === 'category' ? selectedFoodTypes : selectedSituation;
+
+  // TODO: 에러 로직 추가 필요
   const { data: fetchedMenus, isLoading: queryLoading } = useQuery({
-    queryKey: ['roulette-menus', roomId, selectedFoodTypes, selectedSituation, mode],
+    queryKey: ['roulette-menus', roomId, activeFilter],
     queryFn: async () => {
       const params: Menu.GetMenuReq = {};
-      if (selectedFoodTypes && !selectedFoodTypes.includes(Category.ALL)) {
+      if (mode === 'category' && selectedFoodTypes && selectedFoodTypes !== Category.ALL) {
         params.category = selectedFoodTypes;
       }
-      if (mode === 'category' && selectedFoodTypes) {
-        params.category = selectedFoodTypes;
-      } else if (mode === 'context' && selectedSituation) {
+      if (mode === 'context' && selectedSituation) {
         params.context = selectedSituation;
       }
       return await menusService.getMenusRoulette(params);
