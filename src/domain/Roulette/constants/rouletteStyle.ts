@@ -1,9 +1,8 @@
-// Roulette 스타일을 SCSS 디자인 시스템에 맞게 재정의한 JS 스타일 토큰
 export const ROULETTE_STYLE = {
   text: {
-    color: '#334155', // f.color(text-primary)
-    large: '700 28px Pretendard, sans-serif', // 폰트: 3XL
-    normal: '600 20px Pretendard, sans-serif', // 폰트: XL
+    color: '#334155',
+    large: '700 28px Pretendard, sans-serif',
+    normal: '600 20px Pretendard, sans-serif',
     offsetRatio: 0.45,
   },
 
@@ -13,7 +12,7 @@ export const ROULETTE_STYLE = {
   },
 
   pointer: {
-    color: '#ef4444', // f.color(status-danger)
+    color: '#ef4444',
     size: 48,
     margin: 4,
   },

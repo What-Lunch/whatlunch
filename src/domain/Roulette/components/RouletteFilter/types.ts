@@ -1,6 +1,4 @@
-import { MenuItem } from '../../utils/menuItem';
-
 export interface RouletteFilterProps {
-  onChange: (menus: MenuItem[]) => void;
+  onChange: (menus: Menu.GetMenuRes[]) => void;
   disabled?: boolean;
 }

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
-import { authService } from '@/app/services/Auth/auth.api';
+import { authService } from '@/app/services/backend/auth.api';
 
 import { Menu, X } from 'lucide-react';
 
@@ -65,7 +65,7 @@ export function Header() {
             message.includes('401') ||
             message.includes('403')
           ) {
-            authService.logout();
+            authService.postLogout();
             clearUser();
           } else {
             // 네트워크/서버 오류 등은 세션 유지
@@ -89,7 +89,7 @@ export function Header() {
     const ok = confirm('로그아웃하시겠어요?');
     if (!ok) return;
 
-    authService.logout();
+    authService.postLogout();
     clearUser(); // 전역 auth 상태 초기화
 
     afterLogout?.();

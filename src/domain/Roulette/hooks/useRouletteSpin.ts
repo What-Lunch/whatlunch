@@ -3,15 +3,13 @@ import { useEffect, useRef, useCallback } from 'react';
 import { calculateSectorIndex } from '../core/calculateSectorIndex';
 import { randomSpinOffset } from '../core/rouletteRandom';
 
-import { MenuItem } from '../utils/menuItem';
-
 export interface UseRouletteSpinProps {
-  items: MenuItem[];
+  items: Menu.GetMenuRes[];
   angle: number;
   setAngle: React.Dispatch<React.SetStateAction<number>>;
   spinning: boolean;
   setSpinning: React.Dispatch<React.SetStateAction<boolean>>;
-  onResult?: (item: MenuItem) => void;
+  onResult?: (item: Menu.GetMenuRes) => void;
   onStart?: () => void;
 }
 
