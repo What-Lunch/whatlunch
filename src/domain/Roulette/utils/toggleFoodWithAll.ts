@@ -1,4 +1,4 @@
-import { Context, Category } from '@/types/enum';
+import { Category } from '@/types/enum';
 // 음식 필터 토글
 export function toggleFoodWithAll(prev: Category[], toggled: Category): Category[] {
   const isAll = toggled === Category.ALL;
