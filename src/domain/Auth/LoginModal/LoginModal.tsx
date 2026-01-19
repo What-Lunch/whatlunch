@@ -2,9 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { useMutation } from '@tanstack/react-query';
-
-import { useAuthStore } from '../store/auth.store';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
@@ -12,8 +10,8 @@ import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
 import { authService } from '@/app/services/backend/auth.api';
-
 import { LoginModalProps } from '../types';
+import { useAuthStore } from '../store/auth.store';
 
 import Google from '../../../../public/icons/google.png';
 
@@ -43,11 +41,14 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [loading, setLoading] = useState(false);
 
   const setUser = useAuthStore(state => state.setUser);
+  const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authService.postLogin(data),
     onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['me'] });
       const me = await authService.getMe();
+
       setUser({
         email: me.email,
         nickname: me.nickname,

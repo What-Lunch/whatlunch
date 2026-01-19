@@ -12,7 +12,6 @@ import Modal from '@/shared/components/Modal';
 
 import { authService } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
-
 import { SignupModalProps } from '../types';
 
 import Google from '../../../../public/icons/google.png';

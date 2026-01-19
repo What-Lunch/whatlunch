@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-import { useAuthStore } from '@/domain/Auth/store/auth.store';
-import { authService } from '@/app/services/backend/auth.api';
-
+import { useQuery } from '@tanstack/react-query';
 import { Menu, X } from 'lucide-react';
 
 import Button from '@/shared/components/Button';
 import LoginModal from '@/domain/Auth/LoginModal';
 import SignupModal from '@/domain/Auth/SignupModal';
+
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
+import { authService } from '@/app/services/backend/auth.api';
 
 import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 
@@ -30,59 +30,22 @@ const getInitial = (nickname?: string) => {
 export function Header() {
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, isAuthLoading, setUser, clearUser, finishAuthCheck } = useAuthStore();
+  const { clearUser } = useAuthStore();
 
-  useEffect(() => {
-    let isMounted = true;
+  const token = localStorage.getItem('accessToken');
 
-    const token = localStorage.getItem('accessToken');
-
-    if (!token) {
-      finishAuthCheck();
-      return;
-    }
-
-    authService
-      .getMe()
-      .then(user => {
-        if (!isMounted) return;
-
-        setUser({
-          email: user.email,
-          nickname: user.nickname,
-          profileImage: user.profileImage,
-        });
-      })
-      .catch(err => {
-        if (!isMounted) return;
-
-        if (err instanceof Error) {
-          const message = err.message.toLowerCase();
-
-          // 인증 오류(401/403)만 로그아웃 처리
-          if (
-            message.includes('unauthorized') ||
-            message.includes('401') ||
-            message.includes('403')
-          ) {
-            authService.postLogout();
-            clearUser();
-          } else {
-            // 네트워크/서버 오류 등은 세션 유지
-            console.error('getMe failed:', err);
-          }
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          finishAuthCheck();
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [setUser, clearUser, finishAuthCheck]);
+  // TODO: 에러 TOAST 처리
+  const {
+    data: me,
+    isLoading: isAuthLoading,
+    // isError,
+    // error,
+  } = useQuery({
+    queryKey: ['me', token],
+    queryFn: () => authService.getMe(),
+    enabled: !!token,
+    staleTime: Infinity,
+  });
 
   // 공통 로그아웃 핸들러
   const handleLogout = (afterLogout?: () => void) => {
@@ -101,9 +64,14 @@ export function Header() {
         <Link href="/">
           <span>홈</span>
         </Link>
-        <Link href="/mypage">
-          <span>마이페이지</span>
-        </Link>
+        {isAuthLoading
+          ? null
+          : me && (
+              <Link href="/mypage">
+                <span>마이페이지</span>
+              </Link>
+            )}
+
         <Link href="/faq">
           <span>고객센터</span>
         </Link>
@@ -115,11 +83,11 @@ export function Header() {
       </Link>
 
       <div className={styles['header__auth']}>
-        {isAuthLoading ? null : user ? (
+        {isAuthLoading ? null : me ? (
           <>
             <div className={styles['header__user']}>
-              <div className={styles['header__user-avatar']}>{getInitial(user.nickname)}</div>
-              <span className={styles['header__user-nickname']}>{user.nickname || '사용자'}님</span>
+              <div className={styles['header__user-avatar']}>{getInitial(me.nickname)}</div>
+              <span className={styles['header__user-nickname']}>{me.nickname || '사용자'}님</span>
             </div>
 
             <Button variant="primary" onClick={() => handleLogout()}>
@@ -186,7 +154,7 @@ export function Header() {
               </li>
 
               {/* 로그인 상태 */}
-              {!isAuthLoading && user && (
+              {!isAuthLoading && me && (
                 <li>
                   <button
                     onClick={() =>
@@ -201,7 +169,7 @@ export function Header() {
               )}
 
               {/* 비로그인 상태 */}
-              {!isAuthLoading && !user && (
+              {!isAuthLoading && !me && (
                 <>
                   <li>
                     <button

@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Users } from 'lucide-react';
 
 import Button from '@/shared/components/Button/Button';
 import { useRoomEntry } from '../hooks/useRoomEntry';
 import RoomEntryModal from '../RoomEntryModal/RoomEntryModal';
+
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './RoomEntryCard.module.scss';
 
@@ -18,6 +20,19 @@ export default function RoomEntryCard() {
 
   const [mode, setMode] = useState<Mode>('together');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // handle together mode click
+  const { user } = useAuthStore();
+  const handleTogetherClick = useCallback(() => {
+    if (!user) {
+      alert('같이 정하기는 로그인 후 이용할 수 있습니다.');
+      router.push('/');
+      return;
+    } else {
+      setIsModalOpen(true);
+      room.setStep('select');
+    }
+  }, [user, router, room]);
 
   return (
     <>
@@ -54,14 +69,7 @@ export default function RoomEntryCard() {
               <span>방을 만들면 6자리 코드가 생성돼요</span>
             </div>
 
-            <Button
-              variant="orange"
-              size="lg"
-              onClick={() => {
-                setIsModalOpen(true);
-                room.setStep('select');
-              }}
-            >
+            <Button variant="orange" size="lg" onClick={handleTogetherClick}>
               <Users size={18} aria-hidden="true" />
               같이 정하기
             </Button>
