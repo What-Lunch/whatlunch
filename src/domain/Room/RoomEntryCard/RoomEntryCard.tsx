@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Users } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 import Button from '@/shared/components/Button/Button';
 import { useRoomEntry } from '../hooks/useRoomEntry';
 import RoomEntryModal from '../RoomEntryModal/RoomEntryModal';
 
 import styles from './RoomEntryCard.module.scss';
+import { authService } from '@/app/services/backend/auth.api';
 
 type Mode = 'together' | 'solo';
 
@@ -18,6 +20,24 @@ export default function RoomEntryCard() {
 
   const [mode, setMode] = useState<Mode>('together');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // handle together mode click
+  const { data: me } = useQuery({
+    queryKey: ['me'],
+    queryFn: () => authService.getMe(),
+    staleTime: Infinity,
+  });
+
+  const handleTogetherClick = useCallback(() => {
+    if (!me) {
+      alert('같이 정하기는 로그인 후 이용할 수 있습니다.');
+      router.push('/');
+      return;
+    } else {
+      setIsModalOpen(true);
+      room.setStep('select');
+    }
+  }, [me, router, room]);
 
   return (
     <>
@@ -54,14 +74,7 @@ export default function RoomEntryCard() {
               <span>방을 만들면 6자리 코드가 생성돼요</span>
             </div>
 
-            <Button
-              variant="orange"
-              size="lg"
-              onClick={() => {
-                setIsModalOpen(true);
-                room.setStep('select');
-              }}
-            >
+            <Button variant="orange" size="lg" onClick={handleTogetherClick}>
               <Users size={18} aria-hidden="true" />
               같이 정하기
             </Button>
