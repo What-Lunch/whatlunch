@@ -13,7 +13,7 @@ import styles from './RouletteFilter.module.scss';
 export default function RouletteFilter({ onChange, disabled = false }: RouletteFilterProps) {
   // 룰렛 필터 상태 및 액션 필터링된 menus까지 훅 내부에서 관리
   const {
-    state: { mode, selectedFoodTypes, selectedSituation, menus, isLoading },
+    state: { mode, selectedFoodTypes, selectedSituation, menus },
     actions: { changeMode, toggleFoodType, toggleSituation },
   } = useRouletteFilter();
 
@@ -32,7 +32,6 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
 
   return (
     <div className={styles['filter']}>
-      {isLoading && <div>로딩 중...</div>}
       <div className={styles['filter__mode']}>
         <button
           type="button"
