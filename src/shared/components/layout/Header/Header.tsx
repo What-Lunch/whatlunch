@@ -30,9 +30,7 @@ const getInitial = (nickname?: string) => {
 export function Header() {
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { clearUser } = useAuthStore();
-
-  const token = localStorage.getItem('accessToken');
+  const { user, clearUser } = useAuthStore();
 
   // TODO: 에러 TOAST 처리
   const {
@@ -41,9 +39,9 @@ export function Header() {
     // isError,
     // error,
   } = useQuery({
-    queryKey: ['me', token],
+    queryKey: ['me'],
     queryFn: () => authService.getMe(),
-    enabled: !!token,
+    enabled: !user,
     staleTime: Infinity,
   });
 
