@@ -81,7 +81,7 @@ export function Header() {
       </Link>
 
       <div className={styles['header__auth']}>
-        {isAuthLoading ? null : me ? (
+        {me ? (
           <>
             <div className={styles['header__user']}>
               <div className={styles['header__user-avatar']}>{getInitial(me.nickname)}</div>

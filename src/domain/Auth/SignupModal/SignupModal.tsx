@@ -3,7 +3,6 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
@@ -26,7 +25,6 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
   // 전역 auth 상태 초기화용
   const clearUser = useAuthStore(state => state.clearUser);
 
@@ -37,7 +35,6 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
       clearUser();
       alert('회원가입이 완료되었습니다');
       onLoginOpen();
-      router.push('/');
     },
     onError: (error: unknown) => {
       if (error instanceof Error) {

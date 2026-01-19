@@ -3,14 +3,14 @@
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Users } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 import Button from '@/shared/components/Button/Button';
 import { useRoomEntry } from '../hooks/useRoomEntry';
 import RoomEntryModal from '../RoomEntryModal/RoomEntryModal';
 
-import { useAuthStore } from '@/domain/Auth/store/auth.store';
-
 import styles from './RoomEntryCard.module.scss';
+import { authService } from '@/app/services/backend/auth.api';
 
 type Mode = 'together' | 'solo';
 
@@ -22,9 +22,14 @@ export default function RoomEntryCard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // handle together mode click
-  const { user } = useAuthStore();
+  const { data: me } = useQuery({
+    queryKey: ['me'],
+    queryFn: () => authService.getMe(),
+    staleTime: Infinity,
+  });
+
   const handleTogetherClick = useCallback(() => {
-    if (!user) {
+    if (!me) {
       alert('같이 정하기는 로그인 후 이용할 수 있습니다.');
       router.push('/');
       return;
@@ -32,7 +37,7 @@ export default function RoomEntryCard() {
       setIsModalOpen(true);
       room.setStep('select');
     }
-  }, [user, router, room]);
+  }, [me, router, room]);
 
   return (
     <>

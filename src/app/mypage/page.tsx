@@ -31,7 +31,7 @@ export default function MyPage() {
     }
   }, [isError, router]);
 
-  if (isLoading || !me) return null;
+  if (isLoading || isError || !me) return null;
 
   return (
     <div className={styles['mypage']}>

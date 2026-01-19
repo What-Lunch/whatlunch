@@ -38,7 +38,6 @@ function getLoginErrorMessage(error: unknown): string {
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const setUser = useAuthStore(state => state.setUser);
   const queryClient = useQueryClient();
@@ -59,10 +58,9 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
     onError: (error: unknown) => {
       alert(getLoginErrorMessage(error));
     },
-    onSettled: () => {
-      setLoading(false);
-    },
   });
+
+  const isLoading = loginMutation.isPending;
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +68,6 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
       alert('이메일과 비밀번호를 입력해주세요');
       return;
     }
-    setLoading(true);
     loginMutation.mutate({ email: emailRef.current.value, password });
   };
 
@@ -80,12 +77,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
         <div className={styles['auth__body']}>
           <div className={styles['auth__body-group']}>
             <span className={styles['auth__body-group__label']}>이메일</span>
-            <BaseInput
-              type="email"
-              placeholder="이메일을 입력하세요"
-              ref={emailRef}
-              disabled={loading}
-            />
+            <BaseInput type="email" placeholder="이메일을 입력하세요" ref={emailRef} />
           </div>
 
           <div className={styles['auth__body-group']}>
@@ -94,7 +86,6 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
               value={password}
               placeholder="비밀번호를 입력하세요"
               onChange={e => setPassword(e.target.value)}
-              disabled={loading}
             />
           </div>
 
@@ -107,7 +98,6 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
                 role="button"
                 className={styles['auth__social__oauth--google']}
                 aria-label="Google로 로그인"
-                disabled={loading}
               >
                 <Image src={Google} alt="Google Logo" width={20} height={20} />
               </button>
@@ -121,7 +111,6 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
                 type="button"
                 className={styles['auth__actions__signup']}
                 onClick={onSignupOpen}
-                disabled={loading}
               >
                 회원가입하기
               </button>
@@ -132,9 +121,9 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
             type="submit"
             variant="blue"
             className={styles['auth__actions__buttons__button']}
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? '로그인 중...' : '로그인'}
+            {isLoading ? '로그인 중...' : '로그인'}
           </Button>
         </div>
       </form>
