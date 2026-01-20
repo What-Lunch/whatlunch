@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { Copy, Check, Clock, Users } from 'lucide-react';
+import { createSocket } from '@/app/lib/socket';
 
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
@@ -20,8 +22,42 @@ interface RoomPageProps {
 export default function RoomPage({ params }: RoomPageProps) {
   const roomId = params.roomId;
   const { isSoloMode, isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
-
   const { results } = useRouletteResultStore();
+  const joinedRef = useRef(false);
+
+  useEffect(() => {
+    if (isSoloMode) return;
+    if (!isValidRoom) return;
+
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+
+    const socket = createSocket(token);
+    if (!socket) return;
+
+    if (joinedRef.current) return;
+    joinedRef.current = true;
+
+    const onConnect = () => {
+      socket.emit('joinRoom', { roomCode: roomId });
+    };
+
+    if (!socket.connected) {
+      socket.connect();
+      socket.once('connect', onConnect);
+    } else {
+      onConnect();
+    }
+
+    return () => {
+      joinedRef.current = false;
+      socket.off('connect', onConnect);
+
+      if (socket.connected) {
+        socket.emit('leaveRoom', { roomCode: roomId });
+      }
+    };
+  }, [roomId, isSoloMode, isValidRoom]);
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다</div>;
@@ -64,7 +100,7 @@ export default function RoomPage({ params }: RoomPageProps) {
 
         {!isSoloMode && (
           <aside className={styles['room__right']}>
-            <Chat />
+            <Chat roomCode={roomId} />
           </aside>
         )}
       </div>
@@ -76,8 +112,8 @@ export default function RoomPage({ params }: RoomPageProps) {
         <div className={styles['room__top-menu']}>
           <div className={styles['room__top-menu__icon']}>📊</div>
           <div className={styles['room__top-menu__info']}>
-            <span className={styles['room__top-menu__name']}>돌린횟수</span>
-            <span className={styles['room__top-menu__count']}>{results?.length} 회</span>
+            <span className={styles['room__top-menu__name']}>돌린 횟수</span>
+            <span className={styles['room__top-menu__count']}>{results?.length ?? 0} 회</span>
           </div>
         </div>
         <div className={styles['room__mood-stats']}>
@@ -102,7 +138,10 @@ export default function RoomPage({ params }: RoomPageProps) {
           <div className={styles['room__time-info']}>
             <Clock size={18} />
             <span>
-              {new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+              {new Date().toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
             </span>
           </div>
         </div>
