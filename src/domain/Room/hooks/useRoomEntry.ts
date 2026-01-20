@@ -5,30 +5,14 @@ import { useRouter } from 'next/navigation';
 
 export type RoomEntryStep = 'select' | 'join';
 
-const STORAGE_KEY = 'rooms';
 const ROOM_CODE_LENGTH = 6;
-const CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-const generateRoomCode = () => {
-  let code = '';
-
-  for (let i = 0; i < ROOM_CODE_LENGTH; i++) {
-    const randomIndex = Math.floor(Math.random() * CHARSET.length);
-    code += CHARSET[randomIndex];
+const getApiBaseUrl = (): string => {
+  const url = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!url) {
+    throw new Error('[API] NEXT_PUBLIC_API_BASE_URL is not defined');
   }
-
-  return code;
-};
-
-// 고유한 방 코드 생성
-const generateUniqueRoomCode = (existingRooms: string[]) => {
-  let roomId = generateRoomCode();
-
-  while (existingRooms.includes(roomId)) {
-    roomId = generateRoomCode();
-  }
-
-  return roomId;
+  return url;
 };
 
 export function useRoomEntry() {
@@ -40,28 +24,38 @@ export function useRoomEntry() {
   const [isJoining, setIsJoining] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
+  // 방 생성
   const createRoom = async () => {
     if (isCreating) return;
-
     setIsCreating(true);
+    setError('');
 
     try {
-      // UX용 딜레이
-      await new Promise(res => setTimeout(res, 300));
+      const API_BASE_URL = getApiBaseUrl();
+      const res = await fetch(`${API_BASE_URL}/rooms`, {
+        method: 'POST',
+        credentials: 'include',
+      });
 
-      const rooms: string[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      if (!res.ok) {
+        setError('방 생성에 실패했어요.');
+        return;
+      }
 
-      const roomId = generateUniqueRoomCode(rooms);
+      const { roomCode } = await res.json();
+      router.push(`/rooms/${roomCode}`);
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify([...rooms, roomId]));
-
-      router.push(`/rooms/${roomId}`);
-    } finally {
-      setIsCreating(false);
+      // 성공 시에만 단계 초기화
       setStep('select');
+    } catch {
+      setError('서버에 연결할 수 없어요.');
+    } finally {
+      // 로딩 상태만 정리
+      setIsCreating(false);
     }
   };
-  // 방 코드 변경
+
+  // 방 코드 입력
   const changeRoomCode = (value: string) => {
     const parsed = value
       .toUpperCase()
@@ -69,7 +63,6 @@ export function useRoomEntry() {
       .slice(0, ROOM_CODE_LENGTH);
 
     setRoomCodeRaw(parsed);
-
     if (error) setError('');
   };
 
@@ -81,26 +74,29 @@ export function useRoomEntry() {
     }
 
     if (isJoining) return;
-
     setIsJoining(true);
     setError('');
 
     try {
-      const rooms: string[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      const API_BASE_URL = getApiBaseUrl();
+      const res = await fetch(`${API_BASE_URL}/rooms/${roomCodeRaw}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-      if (!rooms.includes(roomCodeRaw)) {
-        setError('존재하지 않는 방 코드예요.');
+      if (!res.ok) {
+        setError('존재하지 않는 방이에요.');
         return;
       }
 
-      await new Promise(res => setTimeout(res, 300));
       router.push(`/rooms/${roomCodeRaw}`);
+    } catch {
+      setError('방 정보를 확인할 수 없어요.');
     } finally {
       setIsJoining(false);
     }
   };
 
-  // 입장 상태 초기화
   const resetJoin = () => {
     setRoomCodeRaw('');
     setError('');
