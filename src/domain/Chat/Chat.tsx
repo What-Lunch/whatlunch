@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SendHorizontalIcon, UserIcon } from 'lucide-react';
+
+import type { Socket } from 'socket.io-client';
 
 import { createSocket } from '@/app/lib/socket';
 import styles from './Chat.module.scss';
@@ -20,6 +22,7 @@ interface ChatProps {
 export default function Chat({ roomCode }: ChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -28,6 +31,9 @@ export default function Chat({ roomCode }: ChatProps) {
     const socket = createSocket(token);
     if (!socket) return;
 
+    socketRef.current = socket;
+
+    // 시스템 메시지
     socket.on('systemMessage', ({ message }) => {
       setMessages(prev => [
         ...prev,
@@ -40,6 +46,7 @@ export default function Chat({ roomCode }: ChatProps) {
       ]);
     });
 
+    // 일반 메시지 수신
     socket.on('receiveMessage', ({ sender, message }) => {
       setMessages(prev => [
         ...prev,
@@ -56,17 +63,14 @@ export default function Chat({ roomCode }: ChatProps) {
       socket.off('systemMessage');
       socket.off('receiveMessage');
     };
-  }, []);
+  }, [roomCode]);
 
   // 메시지 전송
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const token = localStorage.getItem('accessToken');
-    if (!token) return;
-
-    const socket = createSocket(token);
+    const socket = socketRef.current;
     if (!socket) return;
 
     const myNickname = localStorage.getItem('nickname') ?? '나';
@@ -135,7 +139,11 @@ export default function Chat({ roomCode }: ChatProps) {
           placeholder="메시지를 입력하세요"
           className={styles['chat__input__field']}
         />
-        <button type="submit" className={styles['chat__input__send__icon']}>
+        <button
+          type="submit"
+          aria-label="메시지 전송"
+          className={styles['chat__input__send__icon']}
+        >
           <SendHorizontalIcon size={20} />
         </button>
       </form>
