@@ -1,7 +1,12 @@
 import type { Metadata } from 'next';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Header from '@/shared/components/layout/Header';
 import Main from '@/shared/components/layout/Main';
 import TanstackProvider from '@/shared/context/TanstackProvider';
+import ClientWarmUp from './ClientWarmup';
+
 import '@/styles/main.scss';
 
 export const metadata: Metadata = {
@@ -23,10 +28,23 @@ export default function RootLayout({ children }: LayoutProps) {
       ) : null}
 
       <body>
+        <ClientWarmUp />
         <TanstackProvider>
           <Header />
           <Main>{children}</Main>
         </TanstackProvider>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </body>
     </html>
   );
