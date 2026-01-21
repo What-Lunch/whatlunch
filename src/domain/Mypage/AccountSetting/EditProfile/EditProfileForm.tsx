@@ -51,7 +51,8 @@ export default function EditProfileForm({
 
   const trimmedNickname = formState.nickname.trim();
   const isNicknameChanged = trimmedNickname !== initialNickname;
-  const isPasswordChanged = formState.newPassword.length > 0;
+  const isPasswordChanged =
+    formState.newPassword.length > 0 || formState.confirmPassword.length > 0;
 
   const updateMeMutation = useMutation({
     mutationFn: (data: Auth.UpdateMeReq) => authService.updateMe(data),
@@ -89,6 +90,15 @@ export default function EditProfileForm({
     }
 
     if (isPasswordChanged) {
+      if (!newPassword) {
+        toast.warn('새 비밀번호를 입력해주세요.', { position: 'top-center' });
+        return;
+      }
+      if (!confirmPassword) {
+        toast.warn('비밀번호 확인을 입력해주세요.', { position: 'top-center' });
+        return;
+      }
+
       if (newPassword !== confirmPassword) {
         toast.warn('비밀번호가 일치하지 않습니다.', { position: 'top-center' });
         return;

@@ -25,15 +25,7 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
     authService.postLogout();
     clearUser();
     onClose();
-
-    // 로그아웃 성공 토스트 메시지 띄우기
-    toast.success('로그아웃 되었습니다.', {
-      position: 'top-center',
-      autoClose: 2000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-    });
+    toast.success('로그아웃 되었습니다.');
     router.replace('/');
   };
 

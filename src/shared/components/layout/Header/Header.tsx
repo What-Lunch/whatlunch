@@ -35,14 +35,7 @@ export function Header() {
     authService.postLogout();
     clearUser();
     afterLogout?.();
-
-    toast.success('로그아웃 되었습니다.', {
-      position: 'top-center',
-      autoClose: 2000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-    });
+    toast.success('로그아웃 되었습니다.');
 
     router.replace('/');
   };
@@ -98,6 +91,7 @@ export function Header() {
       {/* 햄버거 버튼 */}
       {!isMobileMenuOpen && (
         <button
+          type="button"
           className={styles['header__hamburger']}
           onClick={() => setIsMobileMenuOpen(true)}
           aria-label="메뉴 열기"
@@ -117,6 +111,7 @@ export function Header() {
             <div className={styles['header__mobile-menu-header']}>
               <span className={styles['header__mobile-menu-title']}>메뉴</span>
               <button
+                type="button"
                 className={styles['header__mobile-menu-close']}
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-label="메뉴 닫기"
@@ -131,7 +126,7 @@ export function Header() {
                   홈
                 </Link>
               </li>
-              {user && (
+              {!isAuthLoading && user && (
                 <li>
                   <Link href="/mypage" onClick={() => setIsMobileMenuOpen(false)}>
                     마이페이지
@@ -148,7 +143,10 @@ export function Header() {
                 <li>잠시만 기다려주세요...</li>
               ) : user ? (
                 <li>
-                  <button onClick={() => handleLogout(() => setIsMobileMenuOpen(false))}>
+                  <button
+                    type="button"
+                    onClick={() => handleLogout(() => setIsMobileMenuOpen(false))}
+                  >
                     로그아웃
                   </button>
                 </li>
@@ -156,6 +154,7 @@ export function Header() {
                 <>
                   <li>
                     <button
+                      type="button"
                       onClick={() => {
                         setModalType('login');
                         setIsMobileMenuOpen(false);
@@ -166,6 +165,7 @@ export function Header() {
                   </li>
                   <li>
                     <button
+                      type="button"
                       onClick={() => {
                         setModalType('signup');
                         setIsMobileMenuOpen(false);

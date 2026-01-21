@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { authService } from '@/app/services/backend/auth.api';
 
@@ -13,6 +14,9 @@ export default function ClientWarmUp() {
     mounted.current = true;
 
     const initializeAuth = async () => {
+      // SSR 환경 보호
+      if (typeof window === 'undefined') return;
+
       try {
         const token = localStorage.getItem('accessToken');
 
@@ -30,6 +34,7 @@ export default function ClientWarmUp() {
         }
       } catch (error) {
         console.error('[ClientWarmUp] 세션 만료 또는 오류:', error);
+        toast.info('세션이 만료되었습니다. 다시 로그인해주세요.');
         authService.postLogout(); // 로컬스토리지 청소
         clearUser(); // 스토어 초기화
       } finally {
