@@ -58,19 +58,12 @@ export default function EditProfileForm({
     mutationFn: (data: Auth.UpdateMeReq) => authService.updateMe(data),
     onSuccess: updatedUser => {
       setUser(updatedUser);
-
-      toast.success('회원 정보가 수정되었습니다.', {
-        position: 'top-center',
-        autoClose: 2000,
-      });
-
+      toast.success('회원 정보가 수정되었습니다.');
       onSubmitSuccess();
     },
     onError: error => {
       console.error(error);
-      toast.error('정보 수정에 실패했습니다. 다시 시도해주세요.', {
-        position: 'top-center',
-      });
+      toast.error('정보 수정에 실패했습니다. 다시 시도해주세요.');
     },
   });
 
@@ -80,31 +73,33 @@ export default function EditProfileForm({
     const { newPassword, confirmPassword } = formState;
 
     if (!isNicknameChanged && !isPasswordChanged) {
-      toast.info('변경된 정보가 없습니다.', { position: 'top-center' });
+      toast.info('변경된 정보가 없습니다.');
       return;
     }
 
     if (isNicknameChanged && trimmedNickname.length < MIN_NICKNAME_LENGTH) {
-      toast.warn('닉네임은 2자 이상 입력해주세요.', { position: 'top-center' });
+      toast.warn('닉네임은 2자 이상 입력해주세요.');
       return;
     }
 
     if (isPasswordChanged) {
       if (!newPassword) {
-        toast.warn('새 비밀번호를 입력해주세요.', { position: 'top-center' });
+        toast.warn('새 비밀번호를 입력해주세요.');
         return;
       }
+
       if (!confirmPassword) {
-        toast.warn('비밀번호 확인을 입력해주세요.', { position: 'top-center' });
+        toast.warn('비밀번호 확인을 입력해주세요.');
         return;
       }
 
       if (newPassword !== confirmPassword) {
-        toast.warn('비밀번호가 일치하지 않습니다.', { position: 'top-center' });
+        toast.warn('비밀번호가 일치하지 않습니다.');
         return;
       }
+
       if (newPassword.length < 8) {
-        toast.warn('비밀번호는 8자 이상이어야 합니다.', { position: 'top-center' });
+        toast.warn('비밀번호는 8자 이상이어야 합니다.');
         return;
       }
     }

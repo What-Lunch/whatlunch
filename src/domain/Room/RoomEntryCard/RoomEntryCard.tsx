@@ -27,15 +27,7 @@ export default function RoomEntryCard() {
   const handleTogetherClick = useCallback(() => {
     // 비로그인 상태 체크
     if (!user) {
-      // toast 알림 띄우기
-      toast.warn('같이 정하기는 로그인 후 이용할 수 있습니다.', {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.warn('같이 정하기는 로그인 후 이용할 수 있습니다.');
       return;
     }
 
