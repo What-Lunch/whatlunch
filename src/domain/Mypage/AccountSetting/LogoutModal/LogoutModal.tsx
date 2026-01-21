@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 import Modal from '@/shared/components/Modal/Modal';
 import Button from '@/shared/components/Button/Button';
 
@@ -14,6 +16,7 @@ interface LogoutModalProps {
 }
 
 export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
+  const router = useRouter();
   const clearUser = useAuthStore(state => state.clearUser);
 
   if (!isOpen) return null;
@@ -22,6 +25,16 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
     authService.postLogout();
     clearUser();
     onClose();
+
+    // 로그아웃 성공 토스트 메시지 띄우기
+    toast.success('로그아웃 되었습니다.', {
+      position: 'top-center',
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+    });
+    router.replace('/');
   };
 
   return (
