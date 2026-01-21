@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Header from '@/shared/components/layout/Header';
 import Main from '@/shared/components/layout/Main';
 import TanstackProvider from '@/shared/context/TanstackProvider';
-import ClientWarmUp from './ClientWarmUp';
+import ClientWarmup from './ClientWarmup';
 import GlobalToast from '@/shared/components/Toast/GlobalToast';
 
 import '@/styles/main.scss';
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps) {
       ) : null}
 
       <body>
-        <ClientWarmUp />
+        <ClientWarmup />
         <TanstackProvider>
           <Header />
           <Main>{children}</Main>

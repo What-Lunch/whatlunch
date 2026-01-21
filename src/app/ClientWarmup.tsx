@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { authService } from '@/app/services/backend/auth.api';
 
-export default function ClientWarmUp() {
+export default function ClientWarmup() {
   const { setUser, clearUser, finishAuthCheck } = useAuthStore();
   const mounted = useRef(false);
 
