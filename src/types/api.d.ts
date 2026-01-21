@@ -14,6 +14,11 @@ namespace Auth {
   interface LoginRes {
     accessToken: string;
     expiresAt: string;
+    user: {
+      email: string;
+      nickname: string;
+      profileImage: string | null;
+    };
   }
 
   interface MeRes {
