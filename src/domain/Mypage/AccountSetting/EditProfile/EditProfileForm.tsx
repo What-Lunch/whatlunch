@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput/PasswordInput';
@@ -13,7 +14,7 @@ import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import styles from './EditProfileForm.module.scss';
 
 interface EditProfileFormProps {
-  initialNickname: string; // 초기 닉네임
+  initialNickname: string;
   onSubmitSuccess: () => void;
   onCancel: () => void;
 }
@@ -26,7 +27,6 @@ interface EditProfileFormState {
 
 const MIN_NICKNAME_LENGTH = 2;
 
-// 개인 정보 수정 폼
 export default function EditProfileForm({
   initialNickname,
   onSubmitSuccess,
@@ -51,16 +51,19 @@ export default function EditProfileForm({
 
   const trimmedNickname = formState.nickname.trim();
   const isNicknameChanged = trimmedNickname !== initialNickname;
-  const isPasswordChanged = formState.newPassword.length > 0;
+  const isPasswordChanged =
+    formState.newPassword.length > 0 || formState.confirmPassword.length > 0;
 
   const updateMeMutation = useMutation({
     mutationFn: (data: Auth.UpdateMeReq) => authService.updateMe(data),
     onSuccess: updatedUser => {
       setUser(updatedUser);
+      toast.success('회원 정보가 수정되었습니다.');
       onSubmitSuccess();
     },
-    onError: () => {
-      alert('정보 수정에 실패했습니다');
+    onError: error => {
+      console.error(error);
+      toast.error('정보 수정에 실패했습니다. 다시 시도해주세요.');
     },
   });
 
@@ -70,26 +73,37 @@ export default function EditProfileForm({
     const { newPassword, confirmPassword } = formState;
 
     if (!isNicknameChanged && !isPasswordChanged) {
-      alert('변경된 정보가 없습니다');
+      toast.info('변경된 정보가 없습니다.');
       return;
     }
 
     if (isNicknameChanged && trimmedNickname.length < MIN_NICKNAME_LENGTH) {
-      alert('닉네임은 2자 이상 입력해주세요');
+      toast.warn('닉네임은 2자 이상 입력해주세요.');
       return;
     }
 
-    if (isPasswordChanged && newPassword !== confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다');
-      return;
+    if (isPasswordChanged) {
+      if (!newPassword) {
+        toast.warn('새 비밀번호를 입력해주세요.');
+        return;
+      }
+
+      if (!confirmPassword) {
+        toast.warn('비밀번호 확인을 입력해주세요.');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        toast.warn('비밀번호가 일치하지 않습니다.');
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        toast.warn('비밀번호는 8자 이상이어야 합니다.');
+        return;
+      }
     }
 
-    if (isPasswordChanged && newPassword.length < 8) {
-      alert('비밀번호는 8자 이상이어야 합니다');
-      return;
-    }
-
-    // payload 없이 바로 전달
     updateMeMutation.mutate({
       ...(isNicknameChanged && { nickname: trimmedNickname }),
       ...(isPasswordChanged && { password: newPassword }),

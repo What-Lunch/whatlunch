@@ -2,7 +2,8 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
@@ -40,23 +41,15 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [password, setPassword] = useState('');
 
   const setUser = useAuthStore(state => state.setUser);
-  const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authService.postLogin(data),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['me'] });
-      const me = await authService.getMe();
-
-      setUser({
-        email: me.email,
-        nickname: me.nickname,
-        profileImage: me.profileImage,
-      });
+    onSuccess: res => {
+      setUser(res.user);
       onClose();
     },
     onError: (error: unknown) => {
-      alert(getLoginErrorMessage(error));
+      toast.error(getLoginErrorMessage(error));
     },
   });
 
@@ -64,11 +57,16 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!emailRef.current?.value || !password) {
-      alert('이메일과 비밀번호를 입력해주세요');
+      toast.warn('이메일과 비밀번호를 입력해주세요.');
       return;
     }
-    loginMutation.mutate({ email: emailRef.current.value, password });
+
+    loginMutation.mutate({
+      email: emailRef.current.value,
+      password,
+    });
   };
 
   return (
@@ -95,7 +93,6 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
               <span>간편 로그인하기</span>
               <button
                 type="button"
-                role="button"
                 className={styles['auth__social__oauth--google']}
                 aria-label="Google로 로그인"
               >

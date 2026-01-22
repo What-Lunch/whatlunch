@@ -3,14 +3,14 @@
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Users } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import Button from '@/shared/components/Button/Button';
 import { useRoomEntry } from '../hooks/useRoomEntry';
 import RoomEntryModal from '../RoomEntryModal/RoomEntryModal';
 
 import styles from './RoomEntryCard.module.scss';
-import { authService } from '@/app/services/backend/auth.api';
 
 type Mode = 'together' | 'solo';
 
@@ -21,23 +21,20 @@ export default function RoomEntryCard() {
   const [mode, setMode] = useState<Mode>('together');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // handle together mode click
-  const { data: me } = useQuery({
-    queryKey: ['me'],
-    queryFn: () => authService.getMe(),
-    staleTime: Infinity,
-  });
+  // 실시간 유저 상태 (Zustand)
+  const user = useAuthStore(state => state.user);
 
   const handleTogetherClick = useCallback(() => {
-    if (!me) {
-      alert('같이 정하기는 로그인 후 이용할 수 있습니다.');
-      router.push('/');
+    // 비로그인 상태 체크
+    if (!user) {
+      toast.warn('같이 정하기는 로그인 후 이용할 수 있습니다.');
       return;
-    } else {
-      setIsModalOpen(true);
-      room.setStep('select');
     }
-  }, [me, router, room]);
+
+    // 로그인 상태면 모달 열기
+    setIsModalOpen(true);
+    room.setStep('select');
+  }, [user, room]);
 
   return (
     <>
@@ -49,6 +46,7 @@ export default function RoomEntryCard() {
 
         <div className={styles['room-entry__tabs']}>
           <button
+            type="button"
             className={`${styles['room-entry__tab']} ${
               mode === 'together' ? styles['room-entry__tab--active'] : ''
             }`}
@@ -58,6 +56,7 @@ export default function RoomEntryCard() {
           </button>
 
           <button
+            type="button"
             className={`${styles['room-entry__tab']} ${
               mode === 'solo' ? styles['room-entry__tab--active'] : ''
             }`}

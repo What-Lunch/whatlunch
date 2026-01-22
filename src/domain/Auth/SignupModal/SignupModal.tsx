@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
@@ -23,58 +24,46 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
 
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  // 전역 auth 상태 초기화용
   const clearUser = useAuthStore(state => state.clearUser);
 
   const signupMutation = useMutation({
     mutationFn: (data: Auth.RegisterReq) => authService.postSignup(data),
     onSuccess: () => {
-      // 이전 로그인 상태 제거
       clearUser();
-      alert('회원가입이 완료되었습니다');
+      toast.success('회원가입이 완료되었습니다! 로그인해주세요.');
       onLoginOpen();
     },
     onError: (error: unknown) => {
       if (error instanceof Error) {
-        alert(error.message);
+        toast.error(error.message);
       } else {
-        alert('회원가입에 실패했습니다');
+        toast.error('회원가입에 실패했습니다. 다시 시도해주세요.');
       }
-    },
-    onSettled: () => {
-      setLoading(false);
     },
   });
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const isLoading = signupMutation.isPending;
+
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!emailRef.current?.value || !nicknameRef.current?.value || !password || !passwordConfirm) {
-      alert('모든 항목을 입력해주세요');
+      toast.warn('모든 항목을 입력해주세요.');
       return;
     }
+
     if (password !== passwordConfirm) {
-      alert('비밀번호가 일치하지 않습니다');
+      toast.warn('비밀번호가 일치하지 않습니다.');
       return;
     }
-    try {
-      setLoading(true);
-      await signupMutation.mutateAsync({
-        email: emailRef.current.value,
-        password: password,
-        passwordConfirm: passwordConfirm,
-        nickname: nicknameRef.current.value,
-      });
-    } catch (err) {
-      if (err instanceof Error) {
-        alert(err.message);
-      } else {
-        alert('회원가입에 실패했습니다');
-      }
-    } finally {
-      setLoading(false);
-    }
+
+    signupMutation.mutate({
+      email: emailRef.current.value,
+      password,
+      passwordConfirm,
+      nickname: nicknameRef.current.value,
+    });
   };
 
   return (
@@ -87,7 +76,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               ref={nicknameRef}
               type="text"
               placeholder="닉네임을 입력하세요"
-              disabled={loading}
+              disabled={isLoading}
             />
           </div>
 
@@ -97,7 +86,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               ref={emailRef}
               type="email"
               placeholder="이메일을 입력하세요"
-              disabled={loading}
+              disabled={isLoading}
             />
           </div>
 
@@ -107,7 +96,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               value={password}
               placeholder="비밀번호를 입력하세요"
               onChange={e => setPassword(e.target.value)}
-              disabled={loading}
+              disabled={isLoading}
             />
           </div>
 
@@ -117,7 +106,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               value={passwordConfirm}
               placeholder="비밀번호를 다시 입력하세요"
               onChange={e => setPasswordConfirm(e.target.value)}
-              disabled={loading}
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -139,7 +128,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               type="button"
               className={styles['auth__actions__signup']}
               onClick={onLoginOpen}
-              disabled={loading}
+              disabled={isLoading}
             >
               로그인하기
             </button>
@@ -152,7 +141,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               mode="outline"
               className={styles['auth__actions__buttons__button']}
               onClick={onClose}
-              disabled={loading}
+              disabled={isLoading}
             >
               취소
             </Button>
@@ -161,9 +150,9 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
               type="submit"
               variant="blue"
               className={styles['auth__actions__buttons__button']}
-              disabled={loading}
+              disabled={isLoading}
             >
-              {loading ? '처리 중...' : '회원가입'}
+              {isLoading ? '처리 중...' : '회원가입'}
             </Button>
           </div>
         </div>

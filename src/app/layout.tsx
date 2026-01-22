@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import Header from '@/shared/components/layout/Header';
 import Main from '@/shared/components/layout/Main';
 import TanstackProvider from '@/shared/context/TanstackProvider';
+import ClientWarmup from './ClientWarmup';
+import GlobalToast from '@/shared/components/Toast/GlobalToast';
+
 import '@/styles/main.scss';
 
 export const metadata: Metadata = {
@@ -23,10 +26,12 @@ export default function RootLayout({ children }: LayoutProps) {
       ) : null}
 
       <body>
+        <ClientWarmup />
         <TanstackProvider>
           <Header />
           <Main>{children}</Main>
         </TanstackProvider>
+        <GlobalToast />
       </body>
     </html>
   );

@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
 import { Menu, X } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 import Button from '@/shared/components/Button';
 import LoginModal from '@/domain/Auth/LoginModal';
@@ -17,43 +18,26 @@ import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 
 import styles from './Header.module.scss';
 
-// 닉네임에서 첫 글자 추출
 const getInitial = (nickname?: string) => {
   if (!nickname) return '?';
-
   const trimmed = nickname.trim();
   if (!trimmed) return '?';
-
   return Array.from(trimmed)[0];
 };
 
 export function Header() {
+  const router = useRouter();
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, clearUser } = useAuthStore();
+  const { user, clearUser, isAuthLoading } = useAuthStore();
 
-  // TODO: 에러 TOAST 처리
-  const {
-    data: me,
-    isLoading: isAuthLoading,
-    // isError,
-    // error,
-  } = useQuery({
-    queryKey: ['me'],
-    queryFn: () => authService.getMe(),
-    enabled: !user,
-    staleTime: Infinity,
-  });
-
-  // 공통 로그아웃 핸들러
   const handleLogout = (afterLogout?: () => void) => {
-    const ok = confirm('로그아웃하시겠어요?');
-    if (!ok) return;
-
     authService.postLogout();
-    clearUser(); // 전역 auth 상태 초기화
-
+    clearUser();
     afterLogout?.();
+    toast.success('로그아웃 되었습니다.');
+
+    router.replace('/');
   };
 
   return (
@@ -62,13 +46,12 @@ export function Header() {
         <Link href="/">
           <span>홈</span>
         </Link>
-        {isAuthLoading
-          ? null
-          : me && (
-              <Link href="/mypage">
-                <span>마이페이지</span>
-              </Link>
-            )}
+
+        {!isAuthLoading && user && (
+          <Link href="/mypage">
+            <span>마이페이지</span>
+          </Link>
+        )}
 
         <Link href="/faq">
           <span>고객센터</span>
@@ -81,13 +64,14 @@ export function Header() {
       </Link>
 
       <div className={styles['header__auth']}>
-        {me ? (
+        {isAuthLoading ? (
+          <div style={{ width: '80px', height: '40px' }} />
+        ) : user ? (
           <>
             <div className={styles['header__user']}>
-              <div className={styles['header__user-avatar']}>{getInitial(me.nickname)}</div>
-              <span className={styles['header__user-nickname']}>{me.nickname || '사용자'}님</span>
+              <div className={styles['header__user-avatar']}>{getInitial(user.nickname)}</div>
+              <span className={styles['header__user-nickname']}>{user.nickname || '사용자'}님</span>
             </div>
-
             <Button variant="primary" onClick={() => handleLogout()}>
               로그아웃
             </Button>
@@ -107,8 +91,9 @@ export function Header() {
       {/* 햄버거 버튼 */}
       {!isMobileMenuOpen && (
         <button
+          type="button"
           className={styles['header__hamburger']}
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={() => setIsMobileMenuOpen(true)}
           aria-label="메뉴 열기"
         >
           <Menu size={26} />
@@ -121,11 +106,12 @@ export function Header() {
           <div
             className={styles['header__mobile-overlay']}
             onClick={() => setIsMobileMenuOpen(false)}
-          ></div>
+          />
           <div className={styles['header__mobile-menu']}>
             <div className={styles['header__mobile-menu-header']}>
               <span className={styles['header__mobile-menu-title']}>메뉴</span>
               <button
+                type="button"
                 className={styles['header__mobile-menu-close']}
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-label="메뉴 닫기"
@@ -140,37 +126,35 @@ export function Header() {
                   홈
                 </Link>
               </li>
-              <li>
-                <Link href="/mypage" onClick={() => setIsMobileMenuOpen(false)}>
-                  마이페이지
-                </Link>
-              </li>
+              {!isAuthLoading && user && (
+                <li>
+                  <Link href="/mypage" onClick={() => setIsMobileMenuOpen(false)}>
+                    마이페이지
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link href="/faq" onClick={() => setIsMobileMenuOpen(false)}>
                   고객센터
                 </Link>
               </li>
 
-              {/* 로그인 상태 */}
-              {!isAuthLoading && me && (
+              {isAuthLoading ? (
+                <li>잠시만 기다려주세요...</li>
+              ) : user ? (
                 <li>
                   <button
-                    onClick={() =>
-                      handleLogout(() => {
-                        setIsMobileMenuOpen(false);
-                      })
-                    }
+                    type="button"
+                    onClick={() => handleLogout(() => setIsMobileMenuOpen(false))}
                   >
                     로그아웃
                   </button>
                 </li>
-              )}
-
-              {/* 비로그인 상태 */}
-              {!isAuthLoading && !me && (
+              ) : (
                 <>
                   <li>
                     <button
+                      type="button"
                       onClick={() => {
                         setModalType('login');
                         setIsMobileMenuOpen(false);
@@ -181,6 +165,7 @@ export function Header() {
                   </li>
                   <li>
                     <button
+                      type="button"
                       onClick={() => {
                         setModalType('signup');
                         setIsMobileMenuOpen(false);
@@ -202,7 +187,6 @@ export function Header() {
           onSignupOpen={() => setModalType('signup')}
         />
       )}
-
       {modalType === 'signup' && (
         <SignupModal onClose={() => setModalType(null)} onLoginOpen={() => setModalType('login')} />
       )}
