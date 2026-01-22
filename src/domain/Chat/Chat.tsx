@@ -23,6 +23,7 @@ export default function Chat({ roomCode }: ChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const socketRef = useRef<Socket | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -93,10 +94,15 @@ export default function Chat({ roomCode }: ChatProps) {
     setInput('');
   };
 
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [messages]);
   return (
     <section className={styles['chat']}>
       <span className={styles['chat__title']}>실시간 채팅</span>
-      <div className={styles['chat__content']}>
+      <div className={styles['chat__content']} ref={contentRef}>
         {messages.length === 0 && (
           <div className={styles['chat__content__empty']}>
             아직 대화가 없어요. 메시지를 보내보세요!

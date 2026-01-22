@@ -10,7 +10,7 @@ const SEARCH_RADIUS = 3000;
 const DEBOUNCE_DELAY = 300;
 const DEFAULT_COORDS = { lat: 37.5665, lng: 126.978 }; // 서울시청
 
-function KakaoMap({ keyword, list = true }: KakaoMapProps) {
+function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
   const [places, setPlaces] = useState<Kakao.PlacesSearchResult>([]);
   const [mapReady, setMapReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,6 +103,7 @@ function KakaoMap({ keyword, list = true }: KakaoMapProps) {
         const marker = new window.kakao.maps.Marker({
           position,
           map: mapRef.current,
+          anchor: new window.kakao.maps.Point(0.5, 0),
         });
 
         // 마커 클릭 이벤트: InfoWindow 재사용
@@ -344,13 +345,13 @@ function KakaoMap({ keyword, list = true }: KakaoMapProps) {
   );
 
   return (
-    <div className={styles['map-wrapper']}>
+    <div className={styles['map-wrapper' + className]}>
       {error && <div className={styles['error-message']}>{error}</div>}
       <div ref={mapContainerRef} className={styles['map']} />
 
       {list && (
         <div className={styles['map__place-list']}>
-          {places.length > 0 ? (
+          {places.length > 0 && (
             <ul className={styles['map__place-list__list']}>
               {places.map(place => (
                 <li
@@ -372,10 +373,6 @@ function KakaoMap({ keyword, list = true }: KakaoMapProps) {
                 </li>
               ))}
             </ul>
-          ) : (
-            <div className={styles['map__place-list__search-prompt']}>
-              {keyword ? '검색 결과가 없습니다.' : '검색어를 입력하세요.'}
-            </div>
           )}
         </div>
       )}
