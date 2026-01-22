@@ -16,6 +16,7 @@ const BADGES: BadgeProps[] = [
   { id: 'top-menu', variant: 'green', Icon: StarIcon, text: '현재 1등 메뉴: 치킨' },
 ];
 
+// TODO: 시간 렌더링 실시간 업데이트는 구현 필요
 export default function SoloRoomPage() {
   // 룰렛 상태 관리
   const [isSpinning, setIsSpinning] = useState(false);

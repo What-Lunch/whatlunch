@@ -26,9 +26,7 @@ export function useRoomEntry() {
     setError('');
     try {
       const API_BASE_URL = getApiBaseUrl();
-      if (!API_BASE_URL) {
-        throw new Error('API_BASE_URL is not defined');
-      }
+
       const res = await fetch(`${API_BASE_URL}/rooms`, {
         method: 'POST',
         credentials: 'include',

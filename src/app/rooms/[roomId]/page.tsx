@@ -27,7 +27,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   const { isSoloMode, isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
   const { results } = useRouletteResultStore();
   const joinedRoomRef = useRef<string | null>(null);
-  const { user } = useAuthStore();
+  const { user, isAuthLoading } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -79,8 +79,9 @@ export default function RoomPage({ params }: RoomPageProps) {
   }, [roomId, isSoloMode, isValidRoom]);
 
   useEffect(() => {
+    if (isAuthLoading) return;
     if (!user) router.push('/');
-  }, [user, router]);
+  }, [user, router, isAuthLoading]);
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다</div>;

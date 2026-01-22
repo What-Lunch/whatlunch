@@ -103,7 +103,7 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
         const marker = new window.kakao.maps.Marker({
           position,
           map: mapRef.current,
-          anchor: new window.kakao.maps.Point(0.5, 0),
+          anchor: new window.kakao.maps.Point(0.5, 1.0),
         });
 
         // 마커 클릭 이벤트: InfoWindow 재사용
@@ -345,7 +345,7 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
   );
 
   return (
-    <div className={styles['map-wrapper' + className]}>
+    <div className={`${styles['map-wrapper']}${className ? ` ${className}` : ''}`}>
       {error && <div className={styles['error-message']}>{error}</div>}
       <div ref={mapContainerRef} className={styles['map']} />
 
