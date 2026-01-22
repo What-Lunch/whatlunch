@@ -6,9 +6,7 @@ let currentToken: string | null = null;
 const getSocketUrl = (): string => {
   const url = process.env.NEXT_PUBLIC_SOCKET_URL;
   if (!url) {
-    throw new Error(
-      '[Socket] NEXT_PUBLIC_SOCKET_URL is not defined. ' + 'Check your environment variables.'
-    );
+    throw new Error('[Socket] NEXT_PUBLIC_SOCKET_URL is not defined.');
   }
   return url;
 };
@@ -30,7 +28,8 @@ export const createSocket = (token: string): Socket => {
   socket = io(SOCKET_URL, {
     autoConnect: false,
     auth: { token },
-    transports: ['polling', 'websocket'],
+    path: '/socket.io', // 서버와 명시적 일치
+    transports: ['websocket'], // polling 완전 차단
     withCredentials: true,
   });
 
