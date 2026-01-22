@@ -2,18 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+
+import { getApiBaseUrl } from '@/shared/hooks/getApiBaseUrl';
 
 export type RoomEntryStep = 'select' | 'join';
 
 const ROOM_CODE_LENGTH = 6;
-
-const getApiBaseUrl = (): string => {
-  const url = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!url) {
-    throw new Error('[API] NEXT_PUBLIC_API_BASE_URL is not defined');
-  }
-  return url;
-};
 
 export function useRoomEntry() {
   const router = useRouter();
@@ -29,16 +24,16 @@ export function useRoomEntry() {
     if (isCreating) return;
     setIsCreating(true);
     setError('');
-
     try {
       const API_BASE_URL = getApiBaseUrl();
+
       const res = await fetch(`${API_BASE_URL}/rooms`, {
         method: 'POST',
         credentials: 'include',
       });
 
       if (!res.ok) {
-        setError('방 생성에 실패했어요.');
+        toast.error('방 생성에 실패했어요.');
         return;
       }
 
@@ -48,7 +43,7 @@ export function useRoomEntry() {
       // 성공 시에만 단계 초기화
       setStep('select');
     } catch {
-      setError('서버에 연결할 수 없어요.');
+      toast.error('서버에 연결할 수 없어요.');
     } finally {
       // 로딩 상태만 정리
       setIsCreating(false);

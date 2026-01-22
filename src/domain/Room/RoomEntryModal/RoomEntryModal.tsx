@@ -41,7 +41,6 @@ export default function RoomEntryModal({
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
-
   return (
     <div className={styles['room-entry-modal']} role="dialog" aria-modal="true">
       <div className={styles['room-entry-modal__backdrop']} onClick={onClose} aria-hidden="true" />

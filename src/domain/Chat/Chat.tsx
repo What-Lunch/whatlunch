@@ -23,6 +23,7 @@ export default function Chat({ roomCode }: ChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const socketRef = useRef<Socket | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -91,6 +92,12 @@ export default function Chat({ roomCode }: ChatProps) {
     });
 
     setInput('');
+
+    setTimeout(() => {
+      if (contentRef.current) {
+        contentRef.current.scrollTop = contentRef.current.scrollHeight;
+      }
+    }, 100);
   };
 
   return (
@@ -102,9 +109,10 @@ export default function Chat({ roomCode }: ChatProps) {
             아직 대화가 없어요. 메시지를 보내보세요!
           </div>
         )}
-        {messages.map(message => (
+        {messages.map((message, idx) => (
           <div
             key={message.id}
+            ref={idx === messages.length - 1 ? contentRef : undefined}
             className={
               message.isUser
                 ? styles['chat__content__message-wrapper--user']

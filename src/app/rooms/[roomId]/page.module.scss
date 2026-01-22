@@ -312,7 +312,7 @@
     border-radius: 24px;
     border: 2px solid rgba(f.color(purple-600), 0.15);
     box-shadow: 0 8px 32px rgba(f.color(purple-600), 0.12);
-    @include m.flex-box(flex-start, stretch, column);
+    @include m.flex-box(flex-end, stretch, column);
     overflow: hidden;
     transition: all 0.3s ease;
 

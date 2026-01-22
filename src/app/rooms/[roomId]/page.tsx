@@ -1,12 +1,16 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Copy, Check, Clock, Users } from 'lucide-react';
+
+import RoomTabs from '@/shared/components/RoomTabs';
+import Chat from '@/domain/Chat';
+
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { createSocket } from '@/app/lib/socket';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
-import RoomTabs from '@/shared/components/RoomTabs';
-import Chat from '@/domain/Chat';
 
 import styles from './page.module.scss';
 
@@ -23,6 +27,8 @@ export default function RoomPage({ params }: RoomPageProps) {
   const { isSoloMode, isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
   const { results } = useRouletteResultStore();
   const joinedRoomRef = useRef<string | null>(null);
+  const { user, isAuthLoading } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     if (isSoloMode) return;
@@ -71,6 +77,11 @@ export default function RoomPage({ params }: RoomPageProps) {
       joinedRoomRef.current = null;
     };
   }, [roomId, isSoloMode, isValidRoom]);
+
+  useEffect(() => {
+    if (isAuthLoading) return;
+    if (!user) router.push('/');
+  }, [user, router, isAuthLoading]);
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다</div>;
