@@ -24,7 +24,6 @@
 
     background: rgba(f.color(white), 0.6);
     backdrop-filter: blur(6px);
-
     border-radius: 18px;
     border: 1px solid rgba(f.color(gray-400), 0.25);
 
@@ -92,7 +91,6 @@
 
     @include m.flex-box(center, center);
     text-align: center;
-    word-break: keep-all;
     white-space: nowrap;
     background: f.color(white);
     border: 1px solid f.color(gray-400);
@@ -100,6 +98,7 @@
 
     @include m.text-style(sm, 600);
     color: f.color(gray-700);
-    cursor: pointer;
+
+    cursor: default;
   }
 }

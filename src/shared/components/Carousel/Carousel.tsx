@@ -15,18 +15,20 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   const [imageCounter, setImageCounter] = useState(3);
 
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-
   const viewportRef = useRef<HTMLDivElement>(null);
   const startX = useRef(0);
   const isDragging = useRef(false);
 
   useLayoutEffect(() => {
-    const measure = () => setViewportWidth(viewportRef.current?.clientWidth ?? 0);
+    const measure = () => {
+      setViewportWidth(viewportRef.current?.clientWidth ?? 0);
+    };
     measure();
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, []);
 
+  // 반응형 이미지 개수
   useEffect(() => {
     const handleResize = () => {
       const w = window.innerWidth;
@@ -41,10 +43,9 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const nextSlide = useCallback(
-    () => setCurrentIndex(prev => (prev + 1) % items.length),
-    [items.length]
-  );
+  const nextSlide = useCallback(() => {
+    setCurrentIndex(prev => (prev + 1) % items.length);
+  }, [items.length]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -80,9 +81,9 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
     isDragging.current = false;
   };
 
-  // 즐겨찾기
-  const toggleFavorite = (title: string) => {
-    setFavorites(prev => ({ ...prev, [title]: !prev[title] }));
+  // 즐겨찾기 토글 id
+  const toggleFavorite = (id: string) => {
+    setFavorites(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   if (!items.length) return null;
@@ -105,10 +106,10 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
           style={{ transform: `translateX(${translateX}px)` }}
         >
           {items.map(item => {
-            const isFavorite = favorites[item.title];
+            const isFavorite = favorites[item.id];
 
             return (
-              <article key={item.title} className={styles['card']}>
+              <article key={item.id} className={styles['card']}>
                 <div className={styles['card__header']}>
                   <div className={styles['card__titleRow']}>
                     <h2 className={styles['card__title']}>{item.title}</h2>
@@ -116,20 +117,27 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                     <button
                       type="button"
                       className={styles['ratingBadge']}
-                      onClick={() => toggleFavorite(item.title)}
+                      onClick={() => toggleFavorite(item.id)}
                       aria-pressed={isFavorite}
+                      aria-label={
+                        isFavorite ? `${item.title} 즐겨찾기 해제` : `${item.title} 즐겨찾기 추가`
+                      }
                     >
                       <Star size={14} strokeWidth={2} fill={isFavorite ? 'currentColor' : 'none'} />
-                      <span className={styles['ratingBadge__text']}>{item.rating}</span>
+                      {item.rating !== undefined && item.rating !== null && (
+                        <span className={styles['ratingBadge__text']}>{item.rating}</span>
+                      )}
                     </button>
                   </div>
 
                   <div className={styles['card__meta']}>
-                    <span>{item.category}</span>
-                    <span className={styles['card__location']}>
-                      <MapPin size={14} />
-                      {item.location}
-                    </span>
+                    {item.category && <span>{item.category}</span>}
+                    {item.location && (
+                      <span className={styles['card__location']}>
+                        <MapPin size={14} />
+                        {item.location}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -149,10 +157,10 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                         alt={`${item.title} 이미지 ${idx + 1}`}
                         fill
                         sizes="
-                      (max-width: 640px) 50vw,
-                      (max-width: 1024px) 33vw,
-                      200px
-                    "
+                          (max-width: 640px) 50vw,
+                          (max-width: 1024px) 33vw,
+                          200px
+                        "
                       />
                     </div>
                   ))}
@@ -164,13 +172,20 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
       </div>
 
       <nav aria-label="Carousel navigation" className={styles['dots']}>
-        {items.map((_, index) => (
-          <button
-            key={index}
-            className={index === currentIndex ? styles['dots__active'] : styles['dots__inactive']}
-            onClick={() => setCurrentIndex(index)}
-          />
-        ))}
+        {items.map((_, index) => {
+          const isActive = index === currentIndex;
+
+          return (
+            <button
+              key={index}
+              type="button"
+              className={isActive ? styles['dots__active'] : styles['dots__inactive']}
+              onClick={() => setCurrentIndex(index)}
+              aria-label={`Go to slide ${index + 1}`}
+              aria-current={isActive ? 'true' : undefined}
+            />
+          );
+        })}
       </nav>
     </section>
   );

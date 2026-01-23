@@ -21,6 +21,7 @@ const WesternSet = [
 
 const pendingData = [
   {
+    id: 'restaurant-chinese-01',
     src: ChineseSet1,
     title: '청화루',
     category: 'Chinese',
@@ -28,6 +29,7 @@ const pendingData = [
     location: '서울대 입구',
   },
   {
+    id: 'restaurant-chinese-02',
     src: ChineseSet2,
     title: '사천화로',
     category: 'Chinese',
@@ -35,6 +37,7 @@ const pendingData = [
     location: '서울 강남',
   },
   {
+    id: 'restaurant-western-01',
     src: WesternSet,
     title: '비스트로29',
     category: 'Western',
