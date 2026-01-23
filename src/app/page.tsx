@@ -4,6 +4,7 @@ import Carousel, { pendingData } from '@/shared/components/Carousel';
 import Clock from '@/shared/components/Clock/Clock';
 import WeatherMood from '@/domain/WeatherMood/WeatherMood';
 import RoomEntryCard from '@/domain/Room/RoomEntryCard/RoomEntryCard';
+import QuoteCard from '@/domain/QuoteCard';
 
 import styles from './page.module.scss';
 
@@ -26,6 +27,9 @@ export default function HomePage() {
         </section>
         <section className={styles['container__right__weather']}>
           <WeatherMood />
+        </section>
+        <section className={styles['container__right__quote']}>
+          <QuoteCard />
         </section>
       </div>
     </div>
