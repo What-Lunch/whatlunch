@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { QUOTES } from '../QuoteCard/constants/quotes';
 import { getRandomIndex } from './utils';
 
@@ -8,18 +8,18 @@ import styles from './QuoteCard.module.scss';
 
 export default function QuoteCard() {
   const [quote, setQuote] = useState<string | null>(null);
-  const [lastIndex, setLastIndex] = useState<number | null>(null);
+  const lastIndexRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (QUOTES.length === 0) return;
 
     let index = getRandomIndex(QUOTES.length);
 
-    if (lastIndex !== null && QUOTES.length > 1 && index === lastIndex) {
+    if (lastIndexRef.current !== null && QUOTES.length > 1 && index === lastIndexRef.current) {
       index = (index + 1) % QUOTES.length;
     }
 
-    setLastIndex(index);
+    lastIndexRef.current = index;
     setQuote(QUOTES[index]);
   }, []);
 

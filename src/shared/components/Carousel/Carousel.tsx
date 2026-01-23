@@ -68,7 +68,11 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
     if (!isDragging.current) return;
 
     if (Math.abs(dragOffset) > 50) {
-      dragOffset < 0 ? nextSlide() : setCurrentIndex(i => (i === 0 ? items.length - 1 : i - 1));
+      if (dragOffset < 0) {
+        nextSlide();
+      } else {
+        setCurrentIndex(i => (i === 0 ? items.length - 1 : i - 1));
+      }
     }
 
     setDragOffset(0);
