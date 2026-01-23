@@ -1,37 +1,78 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useParams } from 'next/navigation';
 
 import Button from '@/shared/components/Button';
+import { getSocket } from '@/app/lib/socket';
+import { Category, Context } from '@/types/enum';
 
 import { useRouletteFilter } from '../../hooks/useRouletteFilter';
 import { useFilterOptions } from '../../hooks/useFilterOptions';
 
-import { RouletteFilterProps } from './types';
 import styles from './RouletteFilter.module.scss';
 
-export default function RouletteFilter({ onChange, disabled = false }: RouletteFilterProps) {
-  // 룰렛 필터 상태 및 액션 필터링된 menus까지 훅 내부에서 관리
+interface RouletteFilterProps {
+  onChange: (menus: Menu.GetMenuRes[]) => void;
+  onFiltersChange?: (
+    filters: { category?: Category[]; context?: Context[] },
+    mode: 'category' | 'context',
+    selectedFoodTypes: Category | null,
+    selectedSituation: Context | null
+  ) => void;
+  disabled?: boolean;
+  syncedFilterState?: {
+    mode: 'category' | 'context';
+    selectedFoodTypes: Category | null;
+    selectedSituation: Context | null;
+  } | null;
+  isVisible?: boolean;
+}
+
+export default function RouletteFilter({
+  onChange,
+  onFiltersChange,
+  disabled = false,
+  syncedFilterState = null,
+  isVisible = true,
+}: RouletteFilterProps) {
   const {
     state: { mode, selectedFoodTypes, selectedSituation, menus },
     actions: { changeMode, toggleFoodType, toggleSituation },
-  } = useRouletteFilter();
+  } = useRouletteFilter(syncedFilterState);
 
-  // UI 렌더링을 위한 옵션 (label, icon, isActive 포함)
   const { foodOptions, situationOptions } = useFilterOptions(selectedFoodTypes, selectedSituation);
 
-  // 룰렛 컴포넌트에 메뉴 목록 전달
+  const params = useParams();
+  const roomCode = (params.roomId as string) || 'solo';
+  const isSoloMode = roomCode === 'solo';
+
+  // ============ 메뉴 변경 감지 ============
   useEffect(() => {
-    if (!menus) return;
+    if (!menus || menus.length === 0) return;
     onChange(menus);
   }, [menus, onChange]);
 
-  // 활성/비활성 탭 스타일 생성
+  // ============ 필터 변경 감지 ============
+  useEffect(() => {
+    if (isSoloMode) return;
+
+    onFiltersChange?.(
+      {
+        category: selectedFoodTypes ? [selectedFoodTypes] : undefined,
+        context: selectedSituation ? [selectedSituation] : undefined,
+      },
+      mode,
+      selectedFoodTypes,
+      selectedSituation
+    );
+  }, [selectedFoodTypes, selectedSituation, mode, isSoloMode, onFiltersChange]);
+
   const modeClass = (isActive: boolean) =>
     `${styles['filter__mode__tab']} ${isActive ? styles['filter__mode__tab--active'] : ''}`;
 
   return (
-    <div className={styles['filter']}>
+    <div className={styles['filter']} style={{ display: isVisible ? 'block' : 'none' }}>
       <div className={styles['filter__mode']}>
         <button
           type="button"
@@ -63,9 +104,9 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
               padding="8px 18px"
               fontSize="14px"
               className={styles['filter__options__item']}
-              onClick={() => toggleFoodType(opt.value)}
+              onClick={() => toggleFoodType(opt.value as Category)}
             >
-              <span className={styles['filter__options__item__icon']}>{opt.icon}</span>
+              {opt.icon}
               {opt.label}
             </Button>
           ))}
@@ -80,9 +121,9 @@ export default function RouletteFilter({ onChange, disabled = false }: RouletteF
               padding="8px 18px"
               fontSize="14px"
               className={styles['filter__options__item']}
-              onClick={() => toggleSituation(opt.value)}
+              onClick={() => toggleSituation(opt.value as Context)}
             >
-              <span className={styles['filter__options__item__icon']}>{opt.icon}</span>
+              {opt.icon}
               {opt.label}
             </Button>
           ))}

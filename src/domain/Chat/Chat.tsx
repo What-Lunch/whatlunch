@@ -5,7 +5,7 @@ import { SendHorizontalIcon, UserIcon } from 'lucide-react';
 
 import type { Socket } from 'socket.io-client';
 
-import { createSocket } from '@/app/lib/socket';
+import { getSocket } from '@/app/lib/socket';
 import styles from './Chat.module.scss';
 
 interface ChatMessage {
@@ -26,11 +26,11 @@ export default function Chat({ roomCode }: ChatProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) return;
-
-    const socket = createSocket(token);
-    if (!socket) return;
+    const socket = getSocket();
+    if (!socket) {
+      console.log('[Chat] Socket \uc5c6\uc74c');
+      return;
+    }
 
     socketRef.current = socket;
 
@@ -48,13 +48,13 @@ export default function Chat({ roomCode }: ChatProps) {
     });
 
     // 일반 메시지 수신
-    socket.on('receiveMessage', ({ sender, message }) => {
+    socket.on('messageReceived', ({ userName, message }) => {
       setMessages(prev => [
         ...prev,
         {
           id: crypto.randomUUID(),
           text: message,
-          sender,
+          sender: userName,
           isUser: false,
         },
       ]);
@@ -62,7 +62,7 @@ export default function Chat({ roomCode }: ChatProps) {
 
     return () => {
       socket.off('systemMessage');
-      socket.off('receiveMessage');
+      socket.off('messageReceived');
     };
   }, [roomCode]);
 

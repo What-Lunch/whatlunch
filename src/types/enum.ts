@@ -16,3 +16,14 @@ export enum Context {
   DATE = 'date',
   STRESS = 'stress',
 }
+
+export enum UserRole {
+  HOST = 'host',
+  GUEST = 'guest',
+}
+
+export enum RoomStatus {
+  ACTIVE = 'ACTIVE',
+  CLOSED = 'CLOSED',
+  ARCHIVED = 'ARCHIVED',
+}

@@ -1,16 +1,14 @@
-import type { ReactNode } from 'react';
-
 export interface TopTabItem {
-  value: string; // 탭 구분 값
-  label: string; // 탭 텍스트
-  icon?: ReactNode;
+  value: string;
+  label: string;
+  icon?: React.ReactNode;
 }
 
 export interface TopTabsProps {
-  items: readonly TopTabItem[]; // 탭 목록
-  value: string; // 현재 활성 탭 값
-  onChange: (next: string) => void;
-  renderPanel: (active: string) => ReactNode; // 활성 탭 패널 렌더링
+  items: readonly TopTabItem[];
+  value?: string;
+  onChange?: (value: string) => void;
+  renderPanel: (value: string) => React.ReactNode;
   className?: string;
   lazyMount?: boolean;
 }

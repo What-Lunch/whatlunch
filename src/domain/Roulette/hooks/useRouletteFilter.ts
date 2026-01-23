@@ -1,60 +1,111 @@
-import { useCallback, useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-
 import { useQuery } from '@tanstack/react-query';
 
-import { FilterMode } from '@/domain/Roulette/constants/filters';
-
 import { Category, Context } from '@/types/enum';
-import { menusService } from '@/app/services/backend/menus.api';
+import { rouletteApi } from '@/domain/Roulette/api/roulette.api';
 
-export function useRouletteFilter() {
-  const [mode, setMode] = useState<FilterMode>('category'); // 현재 필터 모드(food/situation)
-  const [selectedFoodTypes, setSelectedFoodTypes] = useState<Category | null>(Category.ALL); // 선택된 음식 타입
-  const [selectedSituation, setSelectedSituation] = useState<Context | null>(null); // 선택된 상황
+type FilterMode = 'category' | 'context';
+
+interface State {
+  mode: FilterMode;
+  selectedFoodTypes: Category | null;
+  selectedSituation: Context | null;
+  menus: Menu.GetMenuRes[];
+  isLoading: boolean;
+}
+
+interface Actions {
+  changeMode: (mode: FilterMode) => void;
+  toggleFoodType: (category: Category) => void;
+  toggleSituation: (context: Context) => void;
+}
+
+export function useRouletteFilter(
+  syncedState?: {
+    mode: FilterMode;
+    selectedFoodTypes: Category | null;
+    selectedSituation: Context | null;
+  } | null
+): { state: State; actions: Actions } {
+  const [mode, setMode] = useState<FilterMode>(syncedState?.mode || 'category');
+  const [selectedFoodTypes, setSelectedFoodTypes] = useState<Category>(
+    syncedState?.selectedFoodTypes || Category.ALL
+  );
+  const [selectedSituation, setSelectedSituation] = useState<Context | null>(
+    syncedState?.selectedSituation || null
+  );
 
   const params = useParams();
-  const roomId = params.roomId as string;
+  const roomId = (params.roomId as string) || 'solo';
+
+  // 동기화된 상태가 있으면 업데이트
+  useEffect(() => {
+    if (syncedState) {
+      setMode(syncedState.mode);
+      setSelectedFoodTypes(syncedState.selectedFoodTypes || Category.ALL);
+      setSelectedSituation(syncedState.selectedSituation);
+    }
+  }, [syncedState]);
 
   const activeFilter = mode === 'category' ? selectedFoodTypes : selectedSituation;
 
-  // TODO: 에러 로직 추가 필요
-  const { data: fetchedMenus, isLoading: queryLoading } = useQuery({
-    queryKey: ['roulette-menus', roomId, activeFilter],
+  // 필터에 맞는 메뉴 조회
+  const { data: fetchedMenus = [], isLoading } = useQuery({
+    queryKey: ['roulette-menus', roomId, mode, activeFilter],
     queryFn: async () => {
-      const params: Menu.GetMenuReq = {};
-      if (mode === 'category' && selectedFoodTypes && selectedFoodTypes !== Category.ALL) {
-        params.category = selectedFoodTypes;
+      console.log('[useRouletteFilter] API 호출:', {
+        mode,
+        selectedFoodTypes,
+        selectedSituation,
+        roomId,
+      });
+
+      try {
+        if (mode === 'category' && selectedFoodTypes && selectedFoodTypes !== Category.ALL) {
+          const result = await rouletteApi.getMenusByCategory(selectedFoodTypes, roomId);
+          console.log('[useRouletteFilter] 카테고리별 메뉴:', result.length);
+          return result;
+        } else if (mode === 'category' && selectedFoodTypes === Category.ALL) {
+          const result = await rouletteApi.getAllMenus(roomId);
+          console.log('[useRouletteFilter] 전체 메뉴:', result.length);
+          return result;
+        } else if (mode === 'context' && selectedSituation) {
+          const result = await rouletteApi.getMenusByContext(selectedSituation, roomId);
+          console.log('[useRouletteFilter] 상황별 메뉴:', result.length);
+          return result;
+        }
+        console.log('[useRouletteFilter] 빈 배열 반환');
+        return [];
+      } catch (error) {
+        console.error('[useRouletteFilter] API 에러:', error);
+        throw error;
       }
-      if (mode === 'context' && selectedSituation) {
-        params.context = selectedSituation;
-      }
-      return await menusService.getMenusRoulette(params);
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000, // 5분
+    enabled: !!roomId,
+    retry: 1,
   });
 
-  const changeMode = useCallback((nextMode: FilterMode) => {
-    if (nextMode === 'category') setSelectedSituation(null);
-    else setSelectedFoodTypes(null);
-    setMode(nextMode);
-  }, []); // 모드 전환 + 상대 필터 초기화
+  const changeMode = useCallback((newMode: FilterMode) => {
+    setMode(newMode);
+  }, []);
 
-  const toggleFoodType = useCallback((type: Category) => {
-    setSelectedFoodTypes(prev => (prev === type ? null : type));
-  }, []); // 음식 타입 토글(단일 선택)
+  const toggleFoodType = useCallback((category: Category) => {
+    setSelectedFoodTypes(prev => (prev === category ? Category.ALL : category));
+  }, []);
 
-  const toggleSituation = useCallback((sit: Context) => {
-    setSelectedSituation(prev => (prev === sit ? null : sit));
-  }, []); // 상황 토글(단일 선택)
+  const toggleSituation = useCallback((context: Context) => {
+    setSelectedSituation(prev => (prev === context ? null : context));
+  }, []);
 
   return {
     state: {
-      mode, // 현재 모드
-      menus: fetchedMenus || [], // 현재 필터 기반 메뉴 목록
-      isLoading: queryLoading,
+      mode,
       selectedFoodTypes,
       selectedSituation,
+      menus: fetchedMenus,
+      isLoading,
     },
     actions: {
       changeMode,
