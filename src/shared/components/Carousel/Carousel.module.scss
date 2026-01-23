@@ -1,25 +1,15 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
 
-@mixin dot {
-  height: 10px;
-  width: 10px;
-  margin: 0 5px;
-  border-radius: 50%;
-  display: inline-block;
-  cursor: pointer;
-  transition: background-color 0.25s ease-in-out;
-}
-
 .container {
-  @include m.flex-box(center, '', column);
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, f.color(purple-50) 0%, f.color(purple-100) 100%);
-  border: 2px solid rgba(f.color(purple-600), 0.2);
-  box-shadow: 0 4px 16px rgba(f.color(purple-600), 0.12);
-  border-radius: 16px;
-  gap: 20px;
+  border-radius: 18px;
+  background: f.color(white);
+  border: 1px solid f.color(gray-200);
+
+  @include m.flex-box(center, center, column);
+  gap: 12px;
   overflow: hidden;
 }
 
@@ -28,48 +18,125 @@
   overflow: hidden;
 
   &__track {
-    display: flex;
+    @include m.flex-box(flex-start, stretch, row);
+    transition: transform 0.6s ease;
+  }
+}
 
-    transition: transform 0.6s ease-in-out;
+.card {
+  flex: 0 0 100%;
+  padding: 16px;
+  border-radius: 18px;
+  background: f.color(white);
+
+  @include m.flex-box(flex-start, stretch, column);
+  gap: 14px;
+
+  &__header {
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 6px;
   }
 
-  &__article {
-    flex: 0 0 100%;
-    @include m.flex-box(center, flex-start, column);
-    gap: 12px;
-  }
-  &__info {
-    @include m.flex-box(center, flex-start, column);
+  &__titleRow {
+    @include m.flex-box(space-between, center);
     gap: 8px;
   }
 
+  &__title {
+    @include m.text-style('xl', 700);
+    color: f.color(gray-900);
+  }
+
+  &__meta {
+    @include m.flex-box(flex-start, center);
+    gap: 10px;
+
+    @include m.text-style(md, 500);
+    color: f.color(gray-600);
+  }
+
+  &__location {
+    @include m.flex-box(flex-start, center);
+    gap: 4px;
+
+    svg {
+      color: f.color(gray-500);
+    }
+  }
+
   &__images {
-    @include m.flex-box(space-between, center, row);
-    width: 100%;
-    gap: 12px;
-    transition: transform 0.5s ease;
-    user-select: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  &__images--two {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+
+    .card__image {
+      border-radius: 18px;
+    }
+  }
+
+  &__images--four {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+
+    .card__image {
+      border-radius: 12px;
+    }
+  }
+
+  &__image {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
     overflow: hidden;
+    background: f.color(gray-100);
+  }
+}
+
+.ratingBadge {
+  @include m.flex-box(center, center);
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: f.color(yellow-100);
+
+  cursor: pointer;
+  user-select: none;
+
+  svg {
+    color: f.color(point-yellow);
+    transition: fill 0.15s ease;
+  }
+
+  &:hover {
+    background: f.color(yellow-200);
+  }
+
+  &__text {
+    @include m.text-style(lg, 500);
+    color: f.color(red-400);
   }
 }
 
 .dots {
-  width: 100%;
-  @include m.flex-box(center, center, row);
+  @include m.flex-box(center, center);
+  gap: 6px;
+
   &__active {
-    @include dot;
-    background: linear-gradient(135deg, f.color(purple-700) 0%, f.color(purple-500) 100%);
-    box-shadow: 0 2px 8px rgba(f.color(purple-700), 0.3);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: f.color(gray-800);
   }
 
   &__inactive {
-    @include dot;
-    background-color: rgba(f.color(purple-600), 0.3);
-
-    &:hover {
-      transition: background-color 0.3s ease-in-out;
-      background-color: rgba(f.color(purple-600), 0.5);
-      transform: scale(1.1);
-    }
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: f.color(gray-300);
   }
 }
