@@ -1,6 +1,6 @@
 import { Category, Context } from '@/types/enum';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 interface MenuResponse {
   data: Menu.GetMenuRes[];
@@ -30,7 +30,7 @@ export const rouletteApi = {
       const data: MenuResponse = await response.json();
       return data.data || [];
     } catch (error) {
-      console.error('[API] 메뉴 조회 실패 (카테고리):', error);
+      console.error('getMenusByCategory 오류:', error);
       return [];
     }
   },
@@ -58,7 +58,7 @@ export const rouletteApi = {
       const data: MenuResponse = await response.json();
       return data.data || [];
     } catch (error) {
-      console.error('[API] 메뉴 조회 실패 (상황별):', error);
+      console.error('getMenusByContext 오류:', error);
       return [];
     }
   },
@@ -69,7 +69,6 @@ export const rouletteApi = {
   async getAllMenus(roomId: string): Promise<Menu.GetMenuRes[]> {
     try {
       const url = `${API_BASE_URL}/menus?roomId=${roomId}`;
-      console.log('[API] 전체 메뉴 요청:', { url, roomId, API_BASE_URL });
 
       const response = await fetch(url, {
         method: 'GET',
@@ -79,19 +78,15 @@ export const rouletteApi = {
         credentials: 'include',
       });
 
-      console.log('[API] 응답 상태:', response.status, response.statusText);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('[API] 오류 응답:', errorText);
         throw new Error(`API Error: ${response.status} - ${errorText}`);
       }
 
       const data: MenuResponse = await response.json();
-      console.log('[API] 메뉴 데이터:', data);
       return data.data || [];
     } catch (error) {
-      console.error('[API] 메뉴 조회 실패:', error);
+      console.error('getAllMenus 오류:', error);
       return [];
     }
   },

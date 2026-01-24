@@ -28,7 +28,6 @@ export default function Chat({ roomCode }: ChatProps) {
   useEffect(() => {
     const socket = getSocket();
     if (!socket) {
-      console.log('[Chat] Socket \uc5c6\uc74c');
       return;
     }
 

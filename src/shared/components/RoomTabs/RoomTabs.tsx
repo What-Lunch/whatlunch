@@ -25,9 +25,10 @@ const isMainTab = (value: string): value is TopTabItem['value'] =>
 interface RoomTabsProps {
   userRole?: 'host' | 'guest' | null;
   initialMenus?: Menu.GetMenuRes[];
+  onResult?: (result: Menu.GetMenuRes) => void;
 }
 
-export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps) {
+export default function RoomTabs({ userRole, initialMenus = [], onResult }: RoomTabsProps) {
   const [activeTab, setActiveTab] = useState<TopTabItem['value']>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
   const [rouletteResult, setRouletteResult] = useState<Menu.GetMenuRes | null>(null);
@@ -57,48 +58,26 @@ export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps)
   // ============ WebSocket 이벤트 리스너 설정 ============
   useEffect(() => {
     if (isSoloMode) {
-      console.log('[RoomTabs] 솔로 모드 - WebSocket 이벤트 스킵');
       return;
     }
 
     const socket = getSocket();
     if (!socket) {
-      console.log('[RoomTabs] Socket 없음');
       return;
     }
 
-    console.log('[RoomTabs] WebSocket 이벤트 리스너 등록');
-
-    // 1️⃣ 탭 동기화
+    // 탭 동기화
     const handleTabSync = ({ activeTab: newTab }: { activeTab: TopTabItem['value'] }) => {
-      console.log('[이벤트] 탭 동기화:', newTab);
       setActiveTab(newTab);
     };
 
-    // 2️⃣ 룰렛 회전 시작
-    const handleRouletteSpinStarted = ({
-      rotation,
-      duration,
-      result,
-      startedBy,
-    }: {
-      rotation: number;
-      duration: number;
-      result: Menu.GetMenuRes;
-      startedBy: string;
-    }) => {
-      console.log('[이벤트] 룰렛 시작:', {
-        rotation,
-        duration,
-        result: result.name,
-        startedBy,
-      });
+    // 룰렛 회전 시작
+    const handleRouletteSpinStarted = () => {
       setIsSpinning(true);
     };
 
-    // 3️⃣ 룰렛 결과 - 룸별 저장 및 실시간 동기화
+    // 룰렛 결과 - 룸별 저장 및 실시간 동기화
     const handleRouletteResult = ({ result }: { result: Menu.GetMenuRes; timestamp: string }) => {
-      console.log('[이벤트] 룰렛 결과:', result.name, '방:', roomCode);
       setIsSpinning(false);
       setRouletteResult(result);
       setSearchKeyword(result.name);
@@ -107,11 +86,11 @@ export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps)
         searchRef.current.value = result.name;
       }
 
-      // 룸별 결과 저장
+      // 룸별 결과 저장 (onResult는 Roulette 콜백에서만 호출하여 중복 저장 방지)
       addResult(roomCode, [result]);
     };
 
-    // 4️⃣ 상태 동기화
+    // 상태 동기화
     const handleRouletteStateSync = ({
       state,
     }: {
@@ -121,7 +100,6 @@ export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps)
         result: Menu.GetMenuRes | null;
       };
     }) => {
-      console.log('[이벤트] 상태 동기화:', state);
       setActiveTab(state.activeTab);
       setIsSpinning(state.isSpinning);
       if (state.result) {
@@ -129,39 +107,26 @@ export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps)
       }
     };
 
-    // 5️⃣ 필터 업데이트
-    const handleRouletteFiltersUpdated = ({
-      filters,
-      updatedBy,
-    }: {
-      filters: Record<string, unknown>;
-      updatedBy: string;
-    }) => {
-      console.log('[이벤트] 필터 변경:', { filters, updatedBy });
-    };
-
     // 이벤트 리스너 등록
     socket.on('tabSync', handleTabSync);
     socket.on('rouletteSpinStarted', handleRouletteSpinStarted);
     socket.on('rouletteResult', handleRouletteResult);
     socket.on('rouletteStateSync', handleRouletteStateSync);
-    socket.on('rouletteFiltersUpdated', handleRouletteFiltersUpdated);
+    // socket.on('rouletteFiltersUpdated', handleRouletteFiltersUpdated);
 
     // 현재 상태 요청 (재접속 시 동기화)
     setTimeout(() => {
       socket.emit('requestRouletteState', { roomCode });
-      console.log('[emit] 상태 요청:', roomCode);
     }, 500);
 
     return () => {
-      console.log('[RoomTabs] WebSocket 이벤트 리스너 제거');
       socket.off('tabSync', handleTabSync);
       socket.off('rouletteSpinStarted', handleRouletteSpinStarted);
       socket.off('rouletteResult', handleRouletteResult);
       socket.off('rouletteStateSync', handleRouletteStateSync);
-      socket.off('rouletteFiltersUpdated', handleRouletteFiltersUpdated);
+      // socket.off('rouletteFiltersUpdated', handleRouletteFiltersUpdated);
     };
-  }, [roomCode, isSoloMode, addResult]);
+  }, [roomCode, isSoloMode, addResult, onResult]);
 
   // ============ 탭 변경 핸들러 ============
   const handleTabChange = useCallback(
@@ -169,7 +134,6 @@ export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps)
       if (!isMainTab(tab)) return;
 
       if (isSoloMode) {
-        console.log('[탭변경] 솔로 모드:', tab);
         setActiveTab(tab);
       } else {
         if (!isSocketConnected()) {
@@ -181,7 +145,6 @@ export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps)
         const socket = getSocket();
         if (socket) {
           socket.emit('tabChange', { roomCode, tab });
-          console.log('[emit] 탭 변경:', tab);
         } else {
           setActiveTab(tab);
         }
@@ -192,13 +155,11 @@ export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps)
 
   // ============ 룰렛 이벤트 핸들러 ============
   const handleRouletteStart = useCallback(() => {
-    console.log('[RoomTabs] 룰렛 시작');
     setIsSpinning(true);
   }, []);
 
   const handleRouletteResultLocal = useCallback(
     (result: Menu.GetMenuRes) => {
-      console.log('[RoomTabs] 룰렛 결과:', result.name);
       setIsSpinning(false);
       setRouletteResult(result);
       setSearchKeyword(result.name);
@@ -209,8 +170,12 @@ export default function RoomTabs({ userRole, initialMenus = [] }: RoomTabsProps)
 
       // 룸별 결과 저장
       addResult(roomCode, [result]);
+      // 부모 컴포넌트에 결과 전파
+      if (onResult) {
+        onResult(result);
+      }
     },
-    [roomCode, addResult]
+    [roomCode, addResult, onResult]
   );
 
   // ============ 렌더링 ============

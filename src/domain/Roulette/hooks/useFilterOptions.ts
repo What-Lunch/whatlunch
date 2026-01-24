@@ -18,6 +18,7 @@ const SITUATION_ICONS = {
   [Context.DIET]: '👯',
   [Context.SOLO]: '👨‍👩‍👧‍👦',
   [Context.LUNCH]: '🧎',
+  [Context.STRESS]: '😵', // Added icon for STRESS
 };
 
 interface FilterOption {
@@ -60,12 +61,13 @@ export function useFilterOptions(
       Context.DIET,
       Context.LUNCH,
       Context.SOLO,
+      Context.STRESS,
     ];
 
     return contexts.map(ctx => ({
       value: ctx,
       label: ctx,
-      icon: SITUATION_ICONS[ctx] as any,
+      icon: SITUATION_ICONS[ctx],
       isActive: selectedSituation === ctx,
     }));
   }, [selectedSituation]);

@@ -30,6 +30,7 @@ export const Roulette = memo(function Roulette({
     category?: Category[];
     context?: Context[];
   }>({});
+
   // 게스트용 동기화된 필터 상태
   const [syncedFilterState, setSyncedFilterState] = useState<{
     mode: 'category' | 'context';
@@ -46,7 +47,6 @@ export const Roulette = memo(function Roulette({
   // 초기 메뉴 업데이트
   useEffect(() => {
     if (initialMenus && initialMenus.length > 0 && menus.length === 0) {
-      console.log('[Roulette] 초기 메뉴 설정:', initialMenus.length);
       setMenus(initialMenus);
     }
   }, [initialMenus, menus.length]);
@@ -60,14 +60,12 @@ export const Roulette = memo(function Roulette({
 
     // 메뉴 동기화 이벤트 (서버에서 직접 메뉴 목록 받음)
     const handleMenusSync = ({ menus }: { menus: Menu.GetMenuRes[] }) => {
-      console.log('[메뉴 동기화] 서버로부터 메뉴 받음:', menus.length);
       setMenus(menus);
     };
 
     // 역할 할당 이벤트 - 초기 메뉴 설정
     const handleRoleAssigned = ({ menus }: { role: string; menus: Menu.GetMenuRes[] }) => {
       if (menus && menus.length > 0) {
-        console.log('[초기 메뉴] roleAssigned로부터 받음:', menus.length);
         setMenus(menus);
       }
     };
@@ -87,7 +85,6 @@ export const Roulette = memo(function Roulette({
       updatedBy: string;
       menus: Menu.GetMenuRes[];
     }) => {
-      console.log('[필터 동기화] 서버로부터 받음:', { filters, mode, menuCount: menus.length });
       setFilters(filters);
       setSyncedFilterState({ mode, selectedFoodTypes, selectedSituation });
       setMenus(menus); // 호스트도 서버에서 받은 메뉴 목록 사용
@@ -105,16 +102,10 @@ export const Roulette = memo(function Roulette({
   }, [isSoloMode]);
 
   // ============ 메뉴 변경 ============
-  const handleMenusChange = useCallback(
-    (newMenus: Menu.GetMenuRes[]) => {
-      // 솔로 모드에서만 로컬 메뉴 사용
-      if (roomCode === 'solo') {
-        setMenus(newMenus.slice(0, 6));
-      }
-      // 멀티 모드에서는 서버에서 받은 메뉴만 사용 (handleFiltersUpdated, handleMenusSync에서 처리)
-    },
-    [roomCode]
-  );
+  const handleMenusChange = useCallback((newMenus: Menu.GetMenuRes[]) => {
+    // 모든 모드에서 메뉴를 6개로 제한하여 설정
+    setMenus(newMenus.slice(0, 6));
+  }, []);
 
   // ============ 필터 변경 ============
   const handleFiltersChange = useCallback(
@@ -132,12 +123,6 @@ export const Roulette = memo(function Roulette({
           socket.emit('updateRouletteFilters', {
             roomCode,
             filters: newFilters,
-            mode,
-            selectedFoodTypes,
-            selectedSituation,
-          });
-          console.log('[emit] 필터 변경:', {
-            newFilters,
             mode,
             selectedFoodTypes,
             selectedSituation,

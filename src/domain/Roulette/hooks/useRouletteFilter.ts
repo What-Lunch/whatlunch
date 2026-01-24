@@ -54,31 +54,19 @@ export function useRouletteFilter(
   const { data: fetchedMenus = [], isLoading } = useQuery({
     queryKey: ['roulette-menus', roomId, mode, activeFilter],
     queryFn: async () => {
-      console.log('[useRouletteFilter] API 호출:', {
-        mode,
-        selectedFoodTypes,
-        selectedSituation,
-        roomId,
-      });
-
       try {
         if (mode === 'category' && selectedFoodTypes && selectedFoodTypes !== Category.ALL) {
           const result = await rouletteApi.getMenusByCategory(selectedFoodTypes, roomId);
-          console.log('[useRouletteFilter] 카테고리별 메뉴:', result.length);
-          return result;
+          return result.slice(0, 6);
         } else if (mode === 'category' && selectedFoodTypes === Category.ALL) {
           const result = await rouletteApi.getAllMenus(roomId);
-          console.log('[useRouletteFilter] 전체 메뉴:', result.length);
-          return result;
+          return result.slice(0, 6);
         } else if (mode === 'context' && selectedSituation) {
           const result = await rouletteApi.getMenusByContext(selectedSituation, roomId);
-          console.log('[useRouletteFilter] 상황별 메뉴:', result.length);
-          return result;
+          return result.slice(0, 6);
         }
-        console.log('[useRouletteFilter] 빈 배열 반환');
         return [];
       } catch (error) {
-        console.error('[useRouletteFilter] API 에러:', error);
         throw error;
       }
     },

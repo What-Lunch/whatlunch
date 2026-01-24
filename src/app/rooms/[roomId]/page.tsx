@@ -39,11 +39,15 @@ export default function RoomPage({ params }: RoomPageProps) {
     setRoomResults(getResults(roomId));
   }, [roomId, setCurrentRoom, getResults]);
 
+  // 룰렛 결과 실시간 동기화 핸들러
+  const handleRouletteResult = (result: Menu.GetMenuRes) => {
+    setRoomResults(prev => [result, ...prev]);
+  };
+
   // ============ 인증 확인 ============
   useEffect(() => {
     if (isAuthLoading) return;
     if (!user) {
-      console.log('[인증] 사용자 없음 - 홈으로 이동');
       router.push('/');
     }
   }, [user, router, isAuthLoading]);
@@ -51,28 +55,22 @@ export default function RoomPage({ params }: RoomPageProps) {
   // ============ Socket 연결 (한 번만) ============
   useEffect(() => {
     if (isSoloMode) {
-      console.log('[Socket] 솔로 모드 - 연결 스킵');
       setSocketReady(true);
       return;
     }
 
     if (isValidRoom === null) {
-      console.log('[Socket] 방 유효성 확인 중 - 대기');
       return;
     }
 
     if (!isValidRoom) {
-      console.log('[Socket] 유효하지 않은 방 - 연결 스킵');
       return;
     }
 
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      console.log('[Socket] 토큰 없음 - 연결 불가');
       return;
     }
-
-    console.log('[Socket] 연결 시작...', { roomId, token: token.substring(0, 20) + '...' });
 
     // Socket 생성
     const socket = createSocket(token);
@@ -81,18 +79,12 @@ export default function RoomPage({ params }: RoomPageProps) {
       return;
     }
 
-    console.log('[Socket] 생성 완료, 방 입장 준비 중...');
-
     // 연결 성공 이벤트 대기 (user 정보가 설정된 후)
-    const handleConnected = ({
-      user: connectedUser,
-    }: {
+    const handleConnected = ({}: {
       message: string;
       clientId: string;
       user: { id: string; email: string; nickname: string };
     }) => {
-      console.log('[Socket] 🔗 인증 완료, 방 입장 시작:', { roomId, userId: connectedUser.id });
-
       // 인증 완료 후 방 입장
       socket.emit('joinRoom', { roomCode: roomId });
       joinedRoomRef.current = roomId;
@@ -106,7 +98,6 @@ export default function RoomPage({ params }: RoomPageProps) {
       role: 'host' | 'guest';
       menus?: Menu.GetMenuRes[];
     }) => {
-      console.log('[방] 역할 할당:', role, '메뉴 수:', menus?.length || 0);
       setUserRole(role);
       setSocketReady(true);
       // 역할을 localStorage에 저장
@@ -114,7 +105,6 @@ export default function RoomPage({ params }: RoomPageProps) {
 
       // 초기 메뉴 설정 (상태에 직접 저장 - RoomTabs를 통해 Roulette으로 전달됨)
       if (menus && menus.length > 0) {
-        console.log('[방] 초기 메뉴 설정:', menus.length);
         setInitialMenus(menus);
       }
     };
@@ -141,7 +131,6 @@ export default function RoomPage({ params }: RoomPageProps) {
 
       // 마지막 방 참가자가 나가면 연결 해제
       if (joinedRoomRef.current === roomId) {
-        console.log('[Socket] 방 퇴장:', roomId);
         joinedRoomRef.current = null;
       }
     };
@@ -201,9 +190,13 @@ export default function RoomPage({ params }: RoomPageProps) {
       <div className={styles['room__content']}>
         <section className={styles['room__roulette-section']}>
           {isSoloMode ? (
-            <RoomTabs userRole="host" />
+            <RoomTabs userRole="host" onResult={handleRouletteResult} />
           ) : socketReady && userRole ? (
-            <RoomTabs userRole={userRole} initialMenus={initialMenus} />
+            <RoomTabs
+              userRole={userRole}
+              initialMenus={initialMenus}
+              onResult={handleRouletteResult}
+            />
           ) : (
             <div>연결 중...</div>
           )}

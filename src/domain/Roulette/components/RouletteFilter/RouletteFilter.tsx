@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 
 import Button from '@/shared/components/Button';
-import { getSocket } from '@/app/lib/socket';
 import { Category, Context } from '@/types/enum';
 
 import { useRouletteFilter } from '../../hooks/useRouletteFilter';
