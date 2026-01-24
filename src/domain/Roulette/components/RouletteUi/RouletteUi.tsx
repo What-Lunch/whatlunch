@@ -26,8 +26,6 @@ interface RouletteUiProps {
 }
 
 export default function RouletteUi({
-  // spinning 중에 items가 변경되면 결과가 어긋날 수 있으므로 경고
-
   items,
   onStart,
   onResult,
@@ -78,7 +76,6 @@ export default function RouletteUi({
       duration: number;
     }) => {
       // 서버에서 받은 menus로 상태 갱신(필요시)
-      // 결과는 startSyncedSpin에서 각도 기준으로 계산
       startSyncedSpin(finalRotation, duration);
     };
 
@@ -111,7 +108,6 @@ export default function RouletteUi({
 
   /** 클릭 핸들러 (host만 가능) */
   const handleSpin = useCallback(() => {
-    // emit race condition 방지: menusReady && items.length === 6이 아니면 무시
     if (spinning || items.length !== 6 || disabled || !menusReady) return;
 
     if (!isSoloMode && userRole !== 'host') return;

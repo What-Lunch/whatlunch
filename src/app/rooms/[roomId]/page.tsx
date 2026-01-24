@@ -80,11 +80,7 @@ export default function RoomPage({ params }: RoomPageProps) {
     }
 
     // 연결 성공 이벤트 대기 (user 정보가 설정된 후)
-    const handleConnected = ({}: {
-      message: string;
-      clientId: string;
-      user: { id: string; email: string; nickname: string };
-    }) => {
+    const handleConnected = () => {
       // 인증 완료 후 방 입장
       socket.emit('joinRoom', { roomCode: roomId });
       joinedRoomRef.current = roomId;
@@ -100,10 +96,8 @@ export default function RoomPage({ params }: RoomPageProps) {
     }) => {
       setUserRole(role);
       setSocketReady(true);
-      // 역할을 localStorage에 저장
       localStorage.setItem(`role_${roomId}`, role);
 
-      // 초기 메뉴 설정 (상태에 직접 저장 - RoomTabs를 통해 Roulette으로 전달됨)
       if (menus && menus.length > 0) {
         setInitialMenus(menus);
       }
@@ -139,7 +133,6 @@ export default function RoomPage({ params }: RoomPageProps) {
   // ============ 페이지 이동 시 연결 정리 ============
   useEffect(() => {
     return () => {
-      // 페이지 나갈 때만 연결 해제
       if (!isValidRoom) {
         disconnectSocket();
       }

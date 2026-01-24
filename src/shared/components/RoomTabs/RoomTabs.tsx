@@ -29,7 +29,6 @@ interface RoomTabsProps {
 }
 
 export default function RoomTabs({ userRole, initialMenus = [], onResult }: RoomTabsProps) {
-  // 무한 렌더링 방지: userRole이 없으면 렌더링하지 않음
   const [activeTab, setActiveTab] = useState<TopTabItem['value']>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
   const [rouletteResult, setRouletteResult] = useState<Menu.GetMenuRes | null>(null);
