@@ -55,7 +55,6 @@
   }
 
   &__user {
-    display: inline-flex;
     @include m.flex-box(center, center, row);
     gap: 6px;
   }
@@ -63,14 +62,6 @@
   &__user-avatar {
     width: 20px;
     height: 20px;
-    border-radius: 50%;
-
-    background-color: f.color(brand-secondary);
-    color: f.color(white);
-
-    @include m.flex-box(center, center);
-    font-size: 13px;
-    font-weight: 600;
     flex-shrink: 0;
   }
 
@@ -134,7 +125,6 @@
     &__user-avatar {
       width: 28px;
       height: 28px;
-      font-size: 14px;
     }
 
     &__auth button {
@@ -181,7 +171,6 @@
   }
 }
 
-// 768px 이상: 햄버거 버튼 및 모바일 메뉴 숨김
 @media (min-width: 768px) {
   .header {
     &__hamburger,
@@ -192,7 +181,6 @@
   }
 }
 
-// 767px 이하: 데스크톱 메뉴 숨김, 모바일 메뉴 표시
 @media (max-width: 767px) {
   .header {
     &__menu,

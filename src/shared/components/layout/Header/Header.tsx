@@ -13,17 +13,11 @@ import SignupModal from '@/domain/Auth/SignupModal';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { authService } from '@/app/services/backend/auth.api';
+import { ProfileImage } from '@/shared/components/ProfileImage';
 
 import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 
 import styles from './Header.module.scss';
-
-const getInitial = (nickname?: string) => {
-  if (!nickname) return '?';
-  const trimmed = nickname.trim();
-  if (!trimmed) return '?';
-  return Array.from(trimmed)[0];
-};
 
 export function Header() {
   const router = useRouter();
@@ -36,7 +30,6 @@ export function Header() {
     clearUser();
     afterLogout?.();
     toast.success('로그아웃 되었습니다.');
-
     router.replace('/');
   };
 
@@ -52,14 +45,10 @@ export function Header() {
             <span>마이페이지</span>
           </Link>
         )}
-
-        <Link href="/faq">
-          <span>고객센터</span>
-        </Link>
       </div>
 
       <Link href="/" className={styles['header__logo']}>
-        <Image src={WhatLunchLogo} alt="What Lunch Logo" width={60} height={60} />
+        <Image src={WhatLunchLogo} alt="What Lunch Logo" width={60} height={60} priority />
         <span>What Lunch</span>
       </Link>
 
@@ -69,7 +58,9 @@ export function Header() {
         ) : user ? (
           <>
             <div className={styles['header__user']}>
-              <div className={styles['header__user-avatar']}>{getInitial(user.nickname)}</div>
+              <div className={styles['header__user-avatar']}>
+                <ProfileImage src={user.profileImage ?? '/icons/default_profile.png'} priority />
+              </div>
               <span className={styles['header__user-nickname']}>{user.nickname || '사용자'}님</span>
             </div>
             <Button variant="primary" onClick={() => handleLogout()}>
@@ -88,7 +79,6 @@ export function Header() {
         )}
       </div>
 
-      {/* 햄버거 버튼 */}
       {!isMobileMenuOpen && (
         <button
           type="button"
@@ -100,7 +90,6 @@ export function Header() {
         </button>
       )}
 
-      {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
         <>
           <div
@@ -133,11 +122,6 @@ export function Header() {
                   </Link>
                 </li>
               )}
-              <li>
-                <Link href="/faq" onClick={() => setIsMobileMenuOpen(false)}>
-                  고객센터
-                </Link>
-              </li>
 
               {isAuthLoading ? (
                 <li>잠시만 기다려주세요...</li>
