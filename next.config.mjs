@@ -14,6 +14,13 @@ const nextConfig = {
         port: '',
         pathname: '/img/wn/**',
       },
+
+      {
+        protocol: 'https',
+        hostname: 'whatlunch-bucket.s3.ap-northeast-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
