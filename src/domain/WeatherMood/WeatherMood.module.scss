@@ -6,16 +6,9 @@
   width: 100%;
   height: auto;
   min-height: 0;
-  padding: 20px 16px;
-
-  background: f.color(white);
-  border: 1px solid f.color(gray-300);
-  border-radius: 16px;
-
-  display: flex;
-  flex-direction: column;
-
   max-width: 100%;
+  padding: 20px 16px;
+  @include m.flex-box(flex-start, stretch, column);
 
   @include m.mq(lg) {
     max-width: 360px;
@@ -26,7 +19,7 @@
     display: flex;
     background: f.color(gray-100);
     padding: 4px;
-    border-radius: 10px;
+    border-radius: 12px;
   }
 
   &__tab {

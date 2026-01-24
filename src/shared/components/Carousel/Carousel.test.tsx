@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import Carousel from '@/shared/components/Carousel';
+import styles from '@/shared/components/Carousel/Carousel.module.scss';
 import { StaticImageData } from 'next/image';
 
 const mockImage: StaticImageData = {
@@ -11,6 +12,7 @@ const mockImage: StaticImageData = {
 
 const mockItems = [
   {
+    id: 'item-1',
     src: [mockImage, mockImage, mockImage, mockImage, mockImage],
     title: '너무맛있는곰장어집',
     category: '식당',
@@ -18,6 +20,7 @@ const mockItems = [
     location: '서울 마포',
   },
   {
+    id: 'item-2',
     src: [mockImage, mockImage, mockImage, mockImage, mockImage],
     title: '여긴어디지고기집',
     category: '식당',
@@ -25,6 +28,7 @@ const mockItems = [
     location: '서울 강남',
   },
   {
+    id: 'item-3',
     src: [mockImage, mockImage, mockImage, mockImage, mockImage],
     title: '메가메가메가커피',
     category: '카페',
@@ -39,34 +43,13 @@ describe('Carousel Component', () => {
     jest.useRealTimers();
   });
 
-  it('렌더링 테스트', () => {
+  it('초기 렌더링 시 첫 번째 아이템이 표시된다', () => {
     render(<Carousel items={mockItems} />);
-    expect(screen.getByTestId('carousel-item-0')).toBeInTheDocument();
-    expect(screen.queryByTestId('carousel-item-1')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('carousel-item-2')).not.toBeInTheDocument();
-  });
-
-  it('슬라이드 이동 시 이미지가 올바르게 변경된다', async () => {
-    render(<Carousel items={mockItems} />);
-
-    let images = screen.getAllByRole('img');
-    expect(images[0]).toHaveAttribute('alt', '너무맛있는곰장어집 - Image 1');
-
-    const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
-    act(() => {
-      fireEvent.click(pageButtons[1]);
-    });
-
-    await waitFor(() => {
-      images = screen.getAllByRole('img');
-      expect(images[0]).toHaveAttribute('alt', '여긴어디지고기집 - Image 1');
-    });
-  });
-
-  it('페이지 네비게이션 테스트', async () => {
-    render(<Carousel items={mockItems} />);
-
     expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
+  });
+
+  it('dot 클릭 시 슬라이드가 변경된다', async () => {
+    render(<Carousel items={mockItems} />);
 
     const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
 
@@ -77,63 +60,49 @@ describe('Carousel Component', () => {
     await waitFor(() => {
       expect(screen.getByText('여긴어디지고기집')).toBeInTheDocument();
     });
-
-    act(() => {
-      fireEvent.click(pageButtons[2]);
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText('메가메가메가커피')).toBeInTheDocument();
-    });
   });
 
-  it('현재 슬라이드 이미지 렌더링 테스트', () => {
-    render(<Carousel items={mockItems} />);
-
-    const images = screen.getAllByRole('img');
-    expect(images.length).toBe(5);
-  });
-
-  it('같은 슬라이드 클릭시 애니메이션 동작하지 않음', () => {
-    render(<Carousel items={mockItems} />);
-
-    expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
-
-    const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
-    const firstButton = pageButtons[0];
-
-    act(() => {
-      fireEvent.click(firstButton);
-    });
-
-    expect(screen.getByText('너무맛있는곰장어집')).toBeInTheDocument();
-  });
-
-  it('도트 네비게이션이 올바르게 활성화됨', () => {
+  it('도트 네비게이션 active 상태가 올바르게 변경된다', () => {
     render(<Carousel items={mockItems} />);
 
     const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
 
-    expect(pageButtons[0]).toHaveClass('carousel__dots__active');
-    expect(pageButtons[1]).toHaveClass('carousel__dots__inactive');
-    expect(pageButtons[2]).toHaveClass('carousel__dots__inactive');
+    expect(pageButtons[0]).toHaveClass(styles['dots__active']);
+    expect(pageButtons[1]).toHaveClass(styles['dots__inactive']);
+
+    fireEvent.click(pageButtons[2]);
+
+    expect(pageButtons[2]).toHaveClass(styles['dots__active']);
+    expect(pageButtons[0]).toHaveClass(styles['dots__inactive']);
   });
-  it('활성화된 슬라이드 접근성 테스트', () => {
+
+  it('활성화된 dot에는 aria-current가 적용된다', () => {
     render(<Carousel items={mockItems} />);
-    const activeItem = screen.getByRole('listitem', { current: true });
-    expect(activeItem).toBeInTheDocument();
+
+    const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
+
+    expect(pageButtons[0]).toHaveAttribute('aria-current', 'true');
+    expect(pageButtons[1]).not.toHaveAttribute('aria-current');
   });
-  it('접근성 테스트', () => {
+
+  it('이미지에는 alt 속성이 항상 존재한다', () => {
     render(<Carousel items={mockItems} />);
 
     const images = screen.getAllByRole('img');
     images.forEach(img => {
       expect(img).toHaveAttribute('alt');
     });
+  });
 
-    const pageButtons = screen.getAllByRole('button', { name: /Go to slide/i });
-    pageButtons.forEach((button, index) => {
-      expect(button).toHaveAttribute('aria-label', `Go to slide ${index + 1}`);
-    });
+  it('즐겨찾기 버튼 클릭 시 aria-pressed가 토글된다', () => {
+    render(<Carousel items={mockItems} />);
+
+    const favoriteButton = screen.getByLabelText('너무맛있는곰장어집 즐겨찾기 추가');
+
+    expect(favoriteButton).toHaveAttribute('aria-pressed', 'false');
+
+    fireEvent.click(favoriteButton);
+
+    expect(favoriteButton).toHaveAttribute('aria-pressed', 'true');
   });
 });

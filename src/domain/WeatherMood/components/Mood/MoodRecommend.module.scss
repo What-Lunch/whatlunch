@@ -4,29 +4,26 @@
 
 .mood-recommend {
   width: 100%;
-  height: auto;
-  padding: 14px 4px;
-  display: flex;
-  flex-direction: column;
+  padding: 16px 18px;
+
+  @include m.flex-box(flex-start, stretch, column);
 
   &__list {
-    display: flex;
-    justify-content: space-between;
+    @include m.flex-box(space-between, stretch);
     gap: 6px;
     margin-bottom: 24px;
   }
 
   &__button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
     width: 68px;
+    min-height: 88px;
     padding: 12px 0;
+
+    @include m.flex-box(center, center, column);
+    gap: 6px;
 
     background: rgba(f.color(white), 0.6);
     backdrop-filter: blur(6px);
-
     border-radius: 18px;
     border: 1px solid rgba(f.color(gray-400), 0.25);
 
@@ -65,22 +62,22 @@
   &__label {
     @include m.text-style(sm, 500);
     color: f.color(gray-700);
+    white-space: nowrap;
   }
 
   &__recommend {
     margin-top: 10px;
 
     h4 {
-      @include m.text-style(lg, 600);
-      margin-bottom: 14px;
-      color: f.color(black);
+      @include m.text-style('2lg', 600);
+      margin-bottom: 10px;
+      color: f.color(gray-800);
     }
   }
 
   &__cards {
     display: grid;
     gap: 14px;
-
     grid-template-columns: repeat(2, 1fr);
 
     @include m.mq(lg) {
@@ -89,21 +86,19 @@
   }
 
   &__card {
-    padding: 10px 16px;
-    border-radius: 12px;
-    border: 1px solid f.color(gray-300);
-    background: f.color(white);
-    text-align: center;
+    min-height: 48px;
+    padding: 8px 12px;
 
-    @include m.text-style(md, 600);
+    @include m.flex-box(center, center);
+    text-align: center;
+    white-space: nowrap;
+    background: f.color(white);
+    border: 1px solid f.color(gray-400);
+    border-radius: 12px;
+
+    @include m.text-style(sm, 600);
     color: f.color(gray-700);
 
-    transition: all 0.2s ease;
-    cursor: pointer;
-
-    &:hover {
-      border-color: f.color(point-blue);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
+    cursor: default;
   }
 }
