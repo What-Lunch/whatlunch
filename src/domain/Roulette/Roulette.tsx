@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useCallback, useState, useEffect } from 'react';
-import { Shuffle } from 'lucide-react';
+// import { Shuffle } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 import Button from '@/shared/components/Button';
@@ -9,7 +9,7 @@ import RouletteFilter from './components/RouletteFilter';
 import RouletteUi from './components/RouletteUi';
 import RouletteModal from './components/RouletteModal';
 
-import { shuffleMenus } from './core/shuffleMenus';
+// import { shuffleMenus } from './core/shuffleMenus';
 import { getSocket } from '@/app/lib/socket';
 import { Category, Context } from '@/types/enum';
 
@@ -17,12 +17,10 @@ import type { RouletteControllerProps } from './type';
 import styles from './Roulette.module.scss';
 
 export const Roulette = memo(function Roulette({
-  isSpinning,
-  onSpinStart,
   onSpinResult,
-  result,
   userRole,
   initialMenus = [],
+  isSpinning = false,
 }: RouletteControllerProps) {
   const [menus, setMenus] = useState<Menu.GetMenuRes[]>(initialMenus);
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,6 +28,7 @@ export const Roulette = memo(function Roulette({
     category?: Category[];
     context?: Context[];
   }>({});
+  const [localResult, setLocalResult] = useState<Menu.GetMenuRes | null>(null);
 
   // 게스트용 동기화된 필터 상태
   const [syncedFilterState, setSyncedFilterState] = useState<{
@@ -42,14 +41,12 @@ export const Roulette = memo(function Roulette({
   const roomCode = (params.roomId as string) || 'solo';
   const isSoloMode = roomCode === 'solo';
 
-  const canShuffle = menus.length > 1;
-
-  // 초기 메뉴 업데이트
+  // 최초 입장/재입장 시 서버 menus만 사용
   useEffect(() => {
-    if (initialMenus && initialMenus.length > 0 && menus.length === 0) {
+    if (initialMenus && initialMenus.length > 0) {
       setMenus(initialMenus);
     }
-  }, [initialMenus, menus.length]);
+  }, [initialMenus]);
 
   // ============ WebSocket 이벤트 리스너 ============
   useEffect(() => {
@@ -102,10 +99,15 @@ export const Roulette = memo(function Roulette({
   }, [isSoloMode]);
 
   // ============ 메뉴 변경 ============
-  const handleMenusChange = useCallback((newMenus: Menu.GetMenuRes[]) => {
-    // 모든 모드에서 메뉴를 6개로 제한하여 설정
-    setMenus(newMenus.slice(0, 6));
-  }, []);
+  const handleMenusChange = useCallback(
+    (newMenus: Menu.GetMenuRes[]) => {
+      // 서버에서 받은 menus 배열을 그대로 사용 (섞거나 정렬하지 않음)
+      if (userRole === 'host' || isSoloMode) {
+        setMenus(newMenus.slice(0, 6));
+      }
+    },
+    [userRole, isSoloMode]
+  );
 
   // ============ 필터 변경 ============
   const handleFiltersChange = useCallback(
@@ -116,7 +118,7 @@ export const Roulette = memo(function Roulette({
       selectedSituation: Context | null
     ) => {
       setFilters(newFilters);
-
+      // 서버에서 받은 menus 배열을 그대로 사용 (섞거나 정렬하지 않음)
       if (!isSoloMode && userRole === 'host') {
         const socket = getSocket();
         if (socket) {
@@ -133,53 +135,38 @@ export const Roulette = memo(function Roulette({
     [roomCode, isSoloMode, userRole]
   );
 
-  // ============ 메뉴 섞기 ============
-  const handleShuffle = useCallback(() => {
-    if (!canShuffle) return;
-    setMenus(prevMenus => shuffleMenus(prevMenus));
-  }, [canShuffle]);
-
   // ============ 룰렛 결과 ============
   const handleResult = useCallback(
     (item: Menu.GetMenuRes) => {
+      setLocalResult(item);
       setModalOpen(true);
       onSpinResult(item);
     },
     [onSpinResult]
   );
 
+  // ============ 스핀 시작 시 결과 초기화 ============
+  const handleSpinStart = useCallback(() => {
+    setLocalResult(null);
+    setModalOpen(false);
+    onSpinResult(null);
+  }, [onSpinResult]);
+
   // ============ 모달 제어 ============
   const handleCloseModal = useCallback(() => {
     setModalOpen(false);
   }, []);
 
-  const openResultModal = useCallback(() => {
-    if (!result) return;
-    setModalOpen(true);
-  }, [result]);
-
   return (
     <div className={styles['roulette']}>
       <p className={styles['roulette__today']}>
-        오늘의 메뉴 {result ? <span>{result.name}</span> : <span>?</span>}
+        오늘의 메뉴 {localResult ? <span>{localResult.name}</span> : <span>?</span>}
       </p>
 
       <div className={styles['roulette__wheel-wrapper']}>
-        <Button
-          variant="neutral"
-          mode="fill"
-          padding="0"
-          fontSize="0"
-          disabled={isSpinning || !canShuffle}
-          onClick={handleShuffle}
-          className={styles['roulette__shuffle-btn']}
-        >
-          <Shuffle size={20} />
-        </Button>
-
         <RouletteUi
           items={menus}
-          onStart={onSpinStart}
+          onStart={handleSpinStart}
           onResult={handleResult}
           filters={filters}
           userRole={userRole}
@@ -190,25 +177,24 @@ export const Roulette = memo(function Roulette({
         <Button
           variant="neutral"
           mode="fill"
-          disabled={!result || isSpinning}
-          onClick={openResultModal}
+          disabled={!localResult}
+          onClick={() => setModalOpen(true)}
         >
           결과 보기
         </Button>
       </div>
 
-      {/* 호스트만 필터 UI 보임, 게스트는 서버에서 받은 메뉴만 사용 */}
       {(isSoloMode || userRole === 'host') && (
         <RouletteFilter
           onChange={handleMenusChange}
-          onFiltersChange={handleFiltersChange}
-          disabled={isSpinning}
+          onFiltersChange={userRole === 'host' ? handleFiltersChange : undefined}
+          disabled={userRole !== 'host' || isSpinning}
           syncedFilterState={syncedFilterState}
           isVisible={true}
         />
       )}
 
-      {modalOpen && result && <RouletteModal menu={result} onClose={handleCloseModal} />}
+      {modalOpen && localResult && <RouletteModal menu={localResult} onClose={handleCloseModal} />}
     </div>
   );
 });

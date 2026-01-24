@@ -184,7 +184,6 @@ export default function RoomPage({ params }: RoomPageProps) {
             </button>
           </div>
         )}
-        ㅇ
       </header>
 
       <div className={styles['room__content']}>

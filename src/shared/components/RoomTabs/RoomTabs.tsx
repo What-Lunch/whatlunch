@@ -29,6 +29,8 @@ interface RoomTabsProps {
 }
 
 export default function RoomTabs({ userRole, initialMenus = [], onResult }: RoomTabsProps) {
+  // 무한 렌더링 방지: userRole, initialMenus가 없으면 렌더링하지 않음
+  if (!userRole || !initialMenus) return null;
   const [activeTab, setActiveTab] = useState<TopTabItem['value']>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
   const [rouletteResult, setRouletteResult] = useState<Menu.GetMenuRes | null>(null);
@@ -66,6 +68,9 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
       return;
     }
 
+    // 호스트/게스트 역할 요청 (재접속 시에도)
+    socket.emit('joinRoom', { roomCode, role: userRole });
+
     // 탭 동기화
     const handleTabSync = ({ activeTab: newTab }: { activeTab: TopTabItem['value'] }) => {
       setActiveTab(newTab);
@@ -74,20 +79,6 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
     // 룰렛 회전 시작
     const handleRouletteSpinStarted = () => {
       setIsSpinning(true);
-    };
-
-    // 룰렛 결과 - 룸별 저장 및 실시간 동기화
-    const handleRouletteResult = ({ result }: { result: Menu.GetMenuRes; timestamp: string }) => {
-      setIsSpinning(false);
-      setRouletteResult(result);
-      setSearchKeyword(result.name);
-
-      if (searchRef.current) {
-        searchRef.current.value = result.name;
-      }
-
-      // 룸별 결과 저장 (onResult는 Roulette 콜백에서만 호출하여 중복 저장 방지)
-      addResult(roomCode, [result]);
     };
 
     // 상태 동기화
@@ -110,9 +101,7 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
     // 이벤트 리스너 등록
     socket.on('tabSync', handleTabSync);
     socket.on('rouletteSpinStarted', handleRouletteSpinStarted);
-    socket.on('rouletteResult', handleRouletteResult);
     socket.on('rouletteStateSync', handleRouletteStateSync);
-    // socket.on('rouletteFiltersUpdated', handleRouletteFiltersUpdated);
 
     // 현재 상태 요청 (재접속 시 동기화)
     setTimeout(() => {
@@ -122,11 +111,9 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
     return () => {
       socket.off('tabSync', handleTabSync);
       socket.off('rouletteSpinStarted', handleRouletteSpinStarted);
-      socket.off('rouletteResult', handleRouletteResult);
       socket.off('rouletteStateSync', handleRouletteStateSync);
-      // socket.off('rouletteFiltersUpdated', handleRouletteFiltersUpdated);
     };
-  }, [roomCode, isSoloMode, addResult, onResult]);
+  }, [roomCode, isSoloMode, addResult, onResult, userRole]);
 
   // ============ 탭 변경 핸들러 ============
   const handleTabChange = useCallback(
@@ -159,19 +146,19 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
   }, []);
 
   const handleRouletteResultLocal = useCallback(
-    (result: Menu.GetMenuRes) => {
+    (result: Menu.GetMenuRes | null) => {
       setIsSpinning(false);
       setRouletteResult(result);
-      setSearchKeyword(result.name);
+      setSearchKeyword(result?.name ?? '');
 
       if (searchRef.current) {
-        searchRef.current.value = result.name;
+        searchRef.current.value = result?.name ?? '';
       }
 
       // 룸별 결과 저장
-      addResult(roomCode, [result]);
+      if (result) addResult(roomCode, [result]);
       // 부모 컴포넌트에 결과 전파
-      if (onResult) {
+      if (onResult && result) {
         onResult(result);
       }
     },

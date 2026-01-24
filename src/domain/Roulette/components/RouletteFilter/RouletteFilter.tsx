@@ -49,8 +49,10 @@ export default function RouletteFilter({
   // ============ 메뉴 변경 감지 ============
   useEffect(() => {
     if (!menus || menus.length === 0) return;
-    onChange(menus);
-  }, [menus, onChange]);
+    if (isSoloMode || localStorage.getItem(`role_${roomCode}`) === 'host') {
+      onChange(menus);
+    }
+  }, [menus, onChange, isSoloMode, roomCode]);
 
   // ============ 필터 변경 감지 ============
   useEffect(() => {

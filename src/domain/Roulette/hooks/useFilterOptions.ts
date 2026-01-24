@@ -4,21 +4,21 @@ import { Category, Context } from '@/types/enum';
 
 const FOOD_ICONS = {
   [Category.ALL]: '🍽️',
-  [Category.KOREAN]: '🥘',
-  [Category.CHINESE]: '🥡',
-  [Category.JAPANESE]: '🍱',
-  [Category.WESTERN]: '🍽️',
-  [Category.SNACK]: '🍔',
-  [Category.BEST]: '☕',
+  [Category.BEST]: '⭐',
+  [Category.CHINESE]: '🍜',
+  [Category.WESTERN]: '🍔',
+  [Category.JAPANESE]: '🍣',
+  [Category.KOREAN]: '🍚',
+  [Category.SNACK]: '🌭',
 };
 
 const SITUATION_ICONS = {
-  [Context.GROUP]: '💼',
-  [Context.DATE]: '🥂',
-  [Context.DIET]: '👯',
-  [Context.SOLO]: '👨‍👩‍👧‍👦',
-  [Context.LUNCH]: '🧎',
-  [Context.STRESS]: '😵', // Added icon for STRESS
+  [Context.LUNCH]: '🍱',
+  [Context.SOLO]: '🙋‍♂️',
+  [Context.GROUP]: '🍻',
+  [Context.DIET]: '🥗',
+  [Context.DATE]: '💖',
+  [Context.STRESS]: '😡',
 };
 
 interface FilterOption {

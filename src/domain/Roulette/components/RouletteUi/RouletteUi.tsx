@@ -7,7 +7,6 @@ import { getSocket, isSocketConnected } from '@/app/lib/socket';
 import { useRouletteSync } from '../../hooks/useRouletteSync';
 import { useSectorColors } from '@/domain/Roulette/hooks/useSectorColors';
 import { useRouletteDraw } from '@/domain/Roulette/hooks/useRouletteDraw';
-import { useRouletteSpin } from '@/domain/Roulette/hooks/useRouletteSpin';
 import { Category, Context } from '@/types/enum';
 
 import styles from './RouletteUi.module.scss';
@@ -22,15 +21,21 @@ interface RouletteUiProps {
   };
   userRole?: 'host' | 'guest' | null;
   size?: number;
+  disabled?: boolean;
+  menusReady?: boolean;
 }
 
 export default function RouletteUi({
+  // spinning 중에 items가 변경되면 결과가 어긋날 수 있으므로 경고
+
   items,
   onStart,
   onResult,
   filters = {},
   userRole,
   size = 480,
+  disabled = false,
+  menusReady = true,
 }: RouletteUiProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -50,36 +55,37 @@ export default function RouletteUi({
 
   /** 동기화 스핀 훅 */
   const { startSyncedSpin } = useRouletteSync({
-    angle,
     setAngle,
     setSpinning,
     onResult,
     items,
   });
 
-  /** 서버에서 스핀 시작 수신 */
+  /** 서버에서 스핀 시작 수신 (id 기반 결과 동기화) */
   useEffect(() => {
     if (isSoloMode) return;
 
     const socket = getSocket();
     if (!socket) return;
 
-    const handleRouletteSpinStarted = ({
-      rotation,
+    const handleRouletteSpin = ({
+      // menus,
+      finalRotation,
       duration,
-      result,
     }: {
-      rotation: number;
+      menus: Menu.GetMenuRes[];
+      finalRotation: number;
       duration: number;
-      result: Menu.GetMenuRes;
     }) => {
-      startSyncedSpin(rotation, duration, result);
+      // 서버에서 받은 menus로 상태 갱신(필요시)
+      // 결과는 startSyncedSpin에서 각도 기준으로 계산
+      startSyncedSpin(finalRotation, duration);
     };
 
-    socket.on('rouletteSpinStarted', handleRouletteSpinStarted);
+    socket.on('rouletteSpin', handleRouletteSpin);
 
     return () => {
-      socket.off('rouletteSpinStarted', handleRouletteSpinStarted);
+      socket.off('rouletteSpin', handleRouletteSpin);
     };
   }, [isSoloMode, startSyncedSpin]);
 
@@ -97,9 +103,16 @@ export default function RouletteUi({
     draw(ctxRef.current, angle);
   }, [angle, draw]);
 
+  useEffect(() => {
+    if (spinning) {
+      console.warn('[룰렛] spinning 중에 items가 변경됨! 결과가 어긋날 수 있음');
+    }
+  }, [items, spinning]);
+
   /** 클릭 핸들러 (host만 가능) */
   const handleSpin = useCallback(() => {
-    if (spinning || items.length === 0) return;
+    // emit race condition 방지: menusReady && items.length === 6이 아니면 무시
+    if (spinning || items.length !== 6 || disabled || !menusReady) return;
 
     if (!isSoloMode && userRole !== 'host') return;
 
@@ -107,11 +120,12 @@ export default function RouletteUi({
       onStart();
 
       const randomIndex = Math.floor(Math.random() * items.length);
-      const baseRotation = 360 * (8 + Math.random() * 4);
-      const itemAngle = (360 / items.length) * randomIndex;
+      const baseRotation = Math.PI * 2 * (8 + Math.random() * 4); // 8~12바퀴
+      const step = (Math.PI * 2) / items.length;
+      const itemAngle = step * randomIndex;
       const finalRotation = baseRotation + itemAngle;
 
-      startSyncedSpin(finalRotation, 5000, items[randomIndex]);
+      startSyncedSpin(finalRotation, 5000);
     } else {
       if (!isSocketConnected()) {
         console.warn('[룰렛] Socket 미연결');
@@ -130,7 +144,18 @@ export default function RouletteUi({
         onStart();
       }
     }
-  }, [spinning, items, isSoloMode, userRole, onStart, startSyncedSpin, roomCode, filters]);
+  }, [
+    spinning,
+    items,
+    isSoloMode,
+    userRole,
+    onStart,
+    startSyncedSpin,
+    roomCode,
+    filters,
+    disabled,
+    menusReady,
+  ]);
 
   const canvasClass = spinning
     ? `${styles['roulette-ui__canvas']} ${styles['roulette-ui__canvas--spinning']}`
@@ -148,11 +173,12 @@ export default function RouletteUi({
         tabIndex={0}
         aria-label="룰렛을 돌리려면 클릭하세요"
         onKeyDown={e => {
-          if (!spinning && e.key === 'Enter') {
+          if (!spinning && !disabled && e.key === 'Enter') {
             e.preventDefault();
             handleSpin();
           }
         }}
+        style={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1 }}
       />
     </div>
   );
