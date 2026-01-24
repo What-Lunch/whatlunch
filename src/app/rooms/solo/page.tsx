@@ -39,12 +39,14 @@ export default function SoloRoomPage() {
   };
 
   const handleSpinResult = useCallback(
-    (selectedMenu: Menu.GetMenuRes) => {
+    (selectedMenu: Menu.GetMenuRes | null) => {
       setResult(selectedMenu);
-      setSearchKeyword(selectedMenu.name);
+      setSearchKeyword(selectedMenu?.name ?? '');
       setIsSpinning(false);
-      addResult('solo', [selectedMenu]);
-      setRoomResults(prev => [selectedMenu, ...prev]);
+      if (selectedMenu) {
+        addResult('solo', [selectedMenu]);
+        setRoomResults(prev => [selectedMenu, ...prev]);
+      }
     },
     [addResult]
   );

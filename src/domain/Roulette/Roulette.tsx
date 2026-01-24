@@ -23,6 +23,7 @@ export const Roulette = memo(function Roulette({
   isSpinning = false,
 }: RouletteControllerProps) {
   const [menus, setMenus] = useState<Menu.GetMenuRes[]>(initialMenus);
+  const [spinning, setSpinning] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [filters, setFilters] = useState<{
     category?: Category[];
@@ -130,6 +131,7 @@ export const Roulette = memo(function Roulette({
       setLocalResult(item);
       setModalOpen(true);
       onSpinResult(item);
+      setSpinning(false);
     },
     [onSpinResult]
   );
@@ -139,6 +141,7 @@ export const Roulette = memo(function Roulette({
     setLocalResult(null);
     setModalOpen(false);
     onSpinResult(null);
+    setSpinning(true);
   }, [onSpinResult]);
 
   // ============ 모달 제어 ============
@@ -177,7 +180,7 @@ export const Roulette = memo(function Roulette({
         <RouletteFilter
           onChange={() => {}}
           onFiltersChange={userRole === 'host' ? handleFiltersChange : undefined}
-          disabled={userRole !== 'host' || isSpinning}
+          disabled={userRole !== 'host' || spinning || isSpinning}
           syncedFilterState={syncedFilterState}
           isVisible={true}
         />

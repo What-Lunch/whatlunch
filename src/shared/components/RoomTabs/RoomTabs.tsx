@@ -121,19 +121,25 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
 
       if (isSoloMode) {
         setActiveTab(tab);
-      } else {
+        return;
+      }
+
+      // 룰렛 탭만 실시간 동기화, 지도(map)는 각자 조작
+      if (tab === 'roulette') {
         if (!isSocketConnected()) {
           console.warn('[탭변경] Socket 미연결');
           setActiveTab(tab);
           return;
         }
-
         const socket = getSocket();
         if (socket) {
           socket.emit('tabChange', { roomCode, tab });
         } else {
           setActiveTab(tab);
         }
+      } else {
+        // 지도(map) 탭은 로컬 상태만 변경
+        setActiveTab(tab);
       }
     },
     [roomCode, isSoloMode]
