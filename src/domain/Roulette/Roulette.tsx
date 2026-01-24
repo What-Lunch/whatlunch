@@ -98,17 +98,6 @@ export const Roulette = memo(function Roulette({
     };
   }, [isSoloMode]);
 
-  // ============ 메뉴 변경 ============
-  const handleMenusChange = useCallback(
-    (newMenus: Menu.GetMenuRes[]) => {
-      // 서버에서 받은 menus 배열을 그대로 사용 (섞거나 정렬하지 않음)
-      if (userRole === 'host' || isSoloMode) {
-        setMenus(newMenus.slice(0, 6));
-      }
-    },
-    [userRole, isSoloMode]
-  );
-
   // ============ 필터 변경 ============
   const handleFiltersChange = useCallback(
     (
@@ -186,7 +175,7 @@ export const Roulette = memo(function Roulette({
 
       {(isSoloMode || userRole === 'host') && (
         <RouletteFilter
-          onChange={handleMenusChange}
+          onChange={() => {}}
           onFiltersChange={userRole === 'host' ? handleFiltersChange : undefined}
           disabled={userRole !== 'host' || isSpinning}
           syncedFilterState={syncedFilterState}

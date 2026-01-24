@@ -29,8 +29,7 @@ interface RoomTabsProps {
 }
 
 export default function RoomTabs({ userRole, initialMenus = [], onResult }: RoomTabsProps) {
-  // 무한 렌더링 방지: userRole, initialMenus가 없으면 렌더링하지 않음
-  if (!userRole || !initialMenus) return null;
+  // 무한 렌더링 방지: userRole이 없으면 렌더링하지 않음
   const [activeTab, setActiveTab] = useState<TopTabItem['value']>('roulette');
   const [isSpinning, setIsSpinning] = useState(false);
   const [rouletteResult, setRouletteResult] = useState<Menu.GetMenuRes | null>(null);
@@ -113,7 +112,7 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
       socket.off('rouletteSpinStarted', handleRouletteSpinStarted);
       socket.off('rouletteStateSync', handleRouletteStateSync);
     };
-  }, [roomCode, isSoloMode, addResult, onResult, userRole]);
+  }, [roomCode, isSoloMode, userRole]);
 
   // ============ 탭 변경 핸들러 ============
   const handleTabChange = useCallback(
@@ -164,6 +163,7 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
     },
     [roomCode, addResult, onResult]
   );
+  if (!userRole) return null;
 
   // ============ 렌더링 ============
   const renderPanel = (value: string) => {
