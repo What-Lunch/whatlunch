@@ -9,6 +9,9 @@ import '@/styles/main.scss';
 
 export const metadata: Metadata = {
   title: '오늘 뭐먹지?',
+  icons: {
+    icon: '/icons/what-lunch-logo.svg',
+  },
 };
 
 interface LayoutProps {
