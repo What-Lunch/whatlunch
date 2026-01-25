@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Copy, Check, Clock, Users } from 'lucide-react';
 
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
+import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { createSocket } from '@/app/lib/socket';
@@ -13,9 +14,7 @@ import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
 
 import styles from './page.module.scss';
-
 // 방 페이지
-
 interface RoomPageProps {
   params: {
     roomId: string;
@@ -26,13 +25,13 @@ export default function RoomPage({ params }: RoomPageProps) {
   const roomId = params.roomId;
   const { isSoloMode, isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
   const { results } = useRouletteResultStore();
-  const joinedRoomRef = useRef<string | null>(null);
   const { user, isAuthLoading } = useAuthStore();
   const router = useRouter();
+  const joinedRoomRef = useRef<string | null>(null);
+  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    if (isSoloMode) return;
-    if (!isValidRoom) return;
+    if (isSoloMode || !isValidRoom) return;
 
     const token = localStorage.getItem('accessToken');
     if (!token) return;
@@ -58,11 +57,8 @@ export default function RoomPage({ params }: RoomPageProps) {
     socket.on('connect', onConnect);
 
     // 이미 연결된 상태라면 즉시 처리
-    if (socket.connected) {
-      onConnect();
-    } else {
-      socket.connect();
-    }
+    if (socket.connected) onConnect();
+    else socket.connect();
 
     return () => {
       socket.off('connect', onConnect);
@@ -82,6 +78,13 @@ export default function RoomPage({ params }: RoomPageProps) {
     if (isAuthLoading) return;
     if (!user) router.push('/');
   }, [user, router, isAuthLoading]);
+
+  const handleFavoriteToggle = (menuId: string) => {
+    setFavoriteMap(prev => ({
+      ...prev,
+      [menuId]: !prev[menuId],
+    }));
+  };
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다</div>;
@@ -148,14 +151,30 @@ export default function RoomPage({ params }: RoomPageProps) {
 
           <div className={styles['room__mood-stats__list']}>
             <ul className={styles['room__mood-stats__list__items']}>
-              {results?.slice(0, 8).map((item, idx) => (
-                <li key={item.id} className={styles['room__mood-stats__list__items__item']}>
-                  <span className={styles['room__mood-stats__list__items__item__badge']}>
-                    {idx + 1}
-                  </span>
-                  {item.name}
-                </li>
-              ))}
+              {results?.slice(0, 8).map((item, idx) => {
+                const isActive = favoriteMap[item.id] ?? false;
+
+                return (
+                  <li
+                    key={`${item.id}-${idx}`}
+                    className={styles['room__mood-stats__list__items__item']}
+                  >
+                    <span className={styles['room__mood-stats__list__items__item__badge']}>
+                      {idx + 1}
+                    </span>
+
+                    <span className={styles['room__mood-stats__list__items__item__name']}>
+                      {item.name}
+                    </span>
+
+                    <FavoriteToggle
+                      isActive={isActive}
+                      onToggle={() => handleFavoriteToggle(item.id)}
+                      size={18}
+                    />
+                  </li>
+                );
+              })}
 
               {results?.length === 0 && (
                 <li className={styles['room__mood-stats__list__items__item--empty']}>
