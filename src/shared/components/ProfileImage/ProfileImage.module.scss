@@ -16,26 +16,5 @@
 
   &--editable {
     border: 2px solid f.color(text-tertiary);
-
-    .profile-image__edit {
-      position: absolute;
-      right: -2px;
-      bottom: -2px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 1px solid f.color(text-tertiary);
-      background-color: f.color(white);
-      color: f.color(text-default);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      &::before {
-        content: '✎';
-        font-size: 14px;
-      }
-    }
   }
 }

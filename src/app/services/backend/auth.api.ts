@@ -50,7 +50,7 @@ class AuthService {
     });
   }
 
-  getProfileImagePresign(contentType: string): Promise<{
+  createProfileImagePresign(contentType: string): Promise<{
     uploadUrl: string;
     fileUrl: string;
   }> {

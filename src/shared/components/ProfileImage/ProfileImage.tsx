@@ -1,5 +1,6 @@
 'use client';
 
+import { Pencil } from 'lucide-react';
 import Image from 'next/image';
 import clsx from 'clsx';
 
@@ -13,6 +14,7 @@ export interface ProfileImageProps {
   alt?: string;
   className?: string;
   priority?: boolean;
+  onEditClick?: () => void;
 }
 
 const DEFAULT_PROFILE_IMAGE = '/icons/default_profile.png';
@@ -23,8 +25,10 @@ export default function ProfileImage({
   alt = '프로필 이미지',
   className,
   priority = false,
+  onEditClick,
 }: ProfileImageProps) {
   const imageSrc = src || DEFAULT_PROFILE_IMAGE;
+  const isEditable = variant === 'editable';
 
   return (
     <div className={clsx(styles['profile-image'], styles[`profile-image--${variant}`], className)}>
@@ -36,6 +40,17 @@ export default function ProfileImage({
         className={styles['profile-image__img']}
         priority={priority}
       />
+
+      {isEditable && (
+        <button
+          type="button"
+          className={styles['profile-image__edit']}
+          aria-label="프로필 이미지 수정"
+          onClick={onEditClick}
+        >
+          <Pencil size={16} />
+        </button>
+      )}
     </div>
   );
 }

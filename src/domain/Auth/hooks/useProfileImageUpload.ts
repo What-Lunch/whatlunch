@@ -10,26 +10,30 @@ export function useProfileImageUpload() {
 
     setIsUploading(true);
     try {
-      const { uploadUrl, fileUrl } = await authService.getProfileImagePresign(file.type);
+      const { uploadUrl, fileUrl } = await authService.createProfileImagePresign(file.type);
 
       const uploadResponse = await fetch(uploadUrl, {
         method: 'PUT',
-        headers: { 'Content-Type': file.type },
+        headers: {
+          'Content-Type': file.type,
+        },
         body: file,
       });
 
       if (!uploadResponse.ok) {
-        throw new Error(`S3 Upload Failed: ${uploadResponse.statusText}`);
+        throw new Error(`S3 upload failed: ${uploadResponse.statusText}`);
       }
 
-      const updatedUser = await authService.updateMe({ profileImage: fileUrl });
-
-      setUser({
-        ...user,
-        ...updatedUser,
+      const updatedUser = await authService.updateMe({
+        profileImage: fileUrl,
       });
 
+      setUser(updatedUser);
+
       return fileUrl;
+    } catch (error) {
+      console.error('[ProfileImageUpload]', error);
+      throw error;
     } finally {
       setIsUploading(false);
     }
@@ -39,17 +43,18 @@ export function useProfileImageUpload() {
     if (!user) return;
 
     setIsUploading(true);
+
     try {
       const updatedUser = await authService.deleteProfileImage();
-
-      setUser({
-        ...user,
-        ...updatedUser,
-      });
+      setUser(updatedUser);
     } finally {
       setIsUploading(false);
     }
   };
 
-  return { uploadProfileImage, removeProfileImage, isUploading };
+  return {
+    uploadProfileImage,
+    removeProfileImage,
+    isUploading,
+  };
 }
