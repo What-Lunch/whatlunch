@@ -134,14 +134,20 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
         </div>
       </div>
 
-      <nav className={styles['dots']}>
-        {items.map((_, index) => (
-          <button
-            key={index}
-            className={index === currentIndex ? styles['dots__active'] : styles['dots__inactive']}
-            onClick={() => setCurrentIndex(index)}
-          />
-        ))}
+      <nav className={styles['dots']} aria-label="슬라이드 이동 메뉴">
+        {items.map((_, index) => {
+          const isActive = index === currentIndex;
+          return (
+            <button
+              type="button"
+              key={index}
+              aria-label={`Go to slide ${index + 1}`} // 접근 가능한 이름 부여
+              aria-current={isActive ? 'true' : undefined} // 현재 상태 전달
+              className={isActive ? styles['dots__active'] : styles['dots__inactive']}
+              onClick={() => setCurrentIndex(index)}
+            />
+          );
+        })}
       </nav>
     </section>
   );

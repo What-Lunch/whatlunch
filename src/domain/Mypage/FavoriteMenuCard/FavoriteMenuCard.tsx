@@ -17,7 +17,12 @@ export default function FavoriteMenuCard() {
    * key: menuId
    * value: boolean
    */
-  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
+  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>(() =>
+    FAVORITE_MEAL_MOCK.reduce<Record<string, boolean>>((acc, item) => {
+      acc[item.id] = true;
+      return acc;
+    }, {})
+  );
 
   const handleToggle = (menuId: string) => {
     setFavoriteMap(prev => ({
