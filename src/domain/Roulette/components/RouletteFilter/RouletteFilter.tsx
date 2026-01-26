@@ -49,7 +49,7 @@ export default function RouletteFilter({
   // ============ 메뉴 변경 감지 ============
   useEffect(() => {
     if (!menus || menus.length === 0) return;
-    if (isSoloMode || localStorage.getItem(`role_${roomCode}`) === 'host') {
+    if (isSoloMode) {
       onChange(menus);
     }
   }, [menus, onChange, isSoloMode, roomCode]);
