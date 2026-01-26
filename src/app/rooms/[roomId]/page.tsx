@@ -78,12 +78,27 @@ export default function RoomPage({ params }: RoomPageProps) {
       console.error('[Socket] 생성 실패');
       return;
     }
+    // 방 입장 처리 함수
+    const joinRoomIfNeeded = () => {
+      // 이미 같은 방에 참가 중이면 무시
+      if (joinedRoomRef.current === roomId) return;
+
+      // 다른 방에 남아 있다면 먼저 leave
+      if (joinedRoomRef.current) {
+        socket.emit('leaveRoom', {
+          roomCode: joinedRoomRef.current,
+        });
+      }
+
+      // 현재 방에 입장
+      socket.emit('joinRoom', { roomCode: roomId });
+      joinedRoomRef.current = roomId;
+    };
 
     // 연결 성공 이벤트 대기 (user 정보가 설정된 후)
     const handleConnected = () => {
       // 인증 완료 후 방 입장
-      socket.emit('joinRoom', { roomCode: roomId });
-      joinedRoomRef.current = roomId;
+      joinRoomIfNeeded();
     };
 
     // 방 입장 응답
@@ -117,7 +132,9 @@ export default function RoomPage({ params }: RoomPageProps) {
     socket.on('roleAssigned', handleRoleAssigned);
     socket.on('joinError', handleJoinError);
 
-    // 정리
+    if (socket.connected) {
+      joinRoomIfNeeded();
+    }
     return () => {
       socket.off('connected', handleConnected);
       socket.off('roleAssigned', handleRoleAssigned);
