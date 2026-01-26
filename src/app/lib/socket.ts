@@ -2,19 +2,28 @@ import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
 
+const getSocketUrl = (): string => {
+  const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+  if (!url) {
+    throw new Error('[Socket] NEXT_PUBLIC_SOCKET_URL is not defined.');
+  }
+  return url;
+};
+
 export const createSocket = (token: string): Socket | null => {
   if (socket?.connected) {
     return socket;
   }
 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-
+    const apiUrl = getSocketUrl();
     socket = io(apiUrl, {
       auth: {
         token,
       },
-      transports: ['websocket', 'polling'],
+      path: '/socket.io',
+      transports: ['websocket'],
+      withCredentials: true,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
