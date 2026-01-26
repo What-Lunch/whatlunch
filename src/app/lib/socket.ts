@@ -18,7 +18,6 @@ export const createSocket = (token: string): Socket | null => {
   try {
     const apiUrl = getSocketUrl();
     socket = io(apiUrl, {
-      autoConnect: false,
       auth: {
         token,
       },
