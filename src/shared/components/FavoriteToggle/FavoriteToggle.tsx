@@ -1,7 +1,6 @@
 'use client';
 
 import { Heart } from 'lucide-react';
-
 import styles from './FavoriteToggle.module.scss';
 
 interface FavoriteToggleProps {
@@ -9,6 +8,7 @@ interface FavoriteToggleProps {
   onToggle?: () => void;
   size?: number;
   readOnly?: boolean;
+  ariaLabel?: string;
 }
 
 export default function FavoriteToggle({
@@ -17,20 +17,20 @@ export default function FavoriteToggle({
   size = 18,
   readOnly = false,
 }: FavoriteToggleProps) {
-  const heartIcon = (
-    <Heart
-      size={size}
-      fill={isActive ? '#ef4444' : 'none'}
-      stroke={isActive ? '#ef4444' : '#9ca3af'}
-    />
-  );
-
-  // 읽기 전용 모드 (단순 표시, 클릭 X)
+  // 읽기 전용 모드
   if (readOnly) {
-    return <div className={styles['favorite-display']}>{heartIcon}</div>;
+    return (
+      <div className={styles['favorite-display']}>
+        <Heart
+          size={size}
+          fill={isActive ? '#ef4444' : 'none'}
+          stroke={isActive ? '#ef4444' : '#9ca3af'}
+        />
+      </div>
+    );
   }
 
-  // 인터랙션 모드 (버튼, 클릭 O)
+  // 인터랙션 모드 (버튼)
   return (
     <button
       type="button"
@@ -39,7 +39,11 @@ export default function FavoriteToggle({
       onClick={onToggle}
       className={styles['favorite-btn']}
     >
-      {heartIcon}
+      <Heart
+        size={size}
+        fill={isActive ? '#ef4444' : 'none'}
+        stroke={isActive ? '#ef4444' : '#9ca3af'}
+      />
     </button>
   );
 }

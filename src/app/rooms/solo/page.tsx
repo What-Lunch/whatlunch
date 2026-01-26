@@ -159,6 +159,7 @@ export default function SoloRoomPage() {
                         isActive={isActive}
                         onToggle={() => handleFavoriteToggle(item.id)}
                         size={18}
+                        ariaLabel={`${item.name} ${isActive ? '찜 해제' : '찜하기'}`}
                       />
                     </li>
                   );
