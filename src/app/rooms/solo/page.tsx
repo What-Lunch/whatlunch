@@ -144,14 +144,11 @@ export default function SoloRoomPage() {
 
             <div className={styles['solo__mood-stats__list']}>
               <ul className={styles['solo__mood-stats__list__items']}>
-                {results.slice(0, 8).map((item, idx) => {
+                {roomResults.slice(0, 8).map((item, idx) => {
                   const isActive = favoriteMap[item.id] ?? false;
 
                   return (
-                    <li
-                      key={`${item.id}-${idx}`}
-                      className={styles['solo__mood-stats__list__items__item']}
-                    >
+                    <li key={item.id} className={styles['solo__mood-stats__list__items__item']}>
                       <span className={styles['solo__mood-stats__list__items__item__badge']}>
                         {idx + 1}
                       </span>
@@ -167,18 +164,6 @@ export default function SoloRoomPage() {
                   );
                 })}
 
-                {results.length === 0 && (
-                {roomResults.slice(0, 8).map((item: Menu.GetMenuRes, idx: number) => (
-                  <li
-                    key={`${item.id}-${idx}`}
-                    className={styles['solo__mood-stats__list__items__item']}
-                  >
-                    <span className={styles['solo__mood-stats__list__items__item__badge']}>
-                      {idx + 1}
-                    </span>
-                    {item.name}
-                  </li>
-                ))}
                 {roomResults.length === 0 && (
                   <li className={styles['solo__mood-stats__list__items__item--empty']}>
                     🎰 룰렛을 돌려보세요!

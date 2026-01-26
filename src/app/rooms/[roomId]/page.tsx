@@ -244,24 +244,31 @@ export default function RoomPage({ params }: RoomPageProps) {
 
           <div className={styles['room__mood-stats__list']}>
             <ul className={styles['room__mood-stats__list__items']}>
-              {roomResults?.slice(0, 8).map((item, idx) => (
-                <li
-                  key={`${item.id}-${idx}`}
-                  className={styles['room__mood-stats__list__items__item']}
-                >
-                  <span className={styles['room__mood-stats__list__items__item__badge']}>
-                    {idx + 1}
-                  </span>
-                  {item.name}
-                </li>
-              ))}
+              {roomResults?.slice(0, 8).map((item, idx) => {
+                const isActive = favoriteMap[item.id] ?? false;
 
-              {!roomResults ||
-                (roomResults.length === 0 && (
-                  <li className={styles['room__mood-stats__list__items__item--empty']}>
-                    🎰 룰렛을 돌려보세요!
+                return (
+                  <li key={item.id} className={styles['room__mood-stats__list__items__item']}>
+                    <span className={styles['room__mood-stats__list__items__item__badge']}>
+                      {idx + 1}
+                    </span>
+
+                    <span>{item.name}</span>
+
+                    <FavoriteToggle
+                      isActive={isActive}
+                      onToggle={() => handleFavoriteToggle(item.id)}
+                      size={18}
+                    />
                   </li>
-                ))}
+                );
+              })}
+
+              {(!roomResults || roomResults.length === 0) && (
+                <li className={styles['room__mood-stats__list__items__item--empty']}>
+                  🎰 룰렛을 돌려보세요!
+                </li>
+              )}
             </ul>
           </div>
 
