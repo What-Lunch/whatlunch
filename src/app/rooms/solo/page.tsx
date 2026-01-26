@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { StarIcon, DicesIcon, Clock } from 'lucide-react';
 
 import Roulette from '@/domain/Roulette/Roulette';
@@ -25,18 +25,28 @@ export default function SoloRoomPage() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const searchRef = useRef<HTMLInputElement | null>(null);
 
+  const { getResults, addResult, setCurrentRoom } = useRouletteResultStore();
+  const [roomResults, setRoomResults] = useState<Menu.GetMenuRes[]>([]);
+
+  // 솔로 모드 설정
+  useEffect(() => {
+    setCurrentRoom('solo');
+    setRoomResults(getResults('solo'));
+  }, [setCurrentRoom, getResults]);
+
   const handleSpinStart = () => {
     setIsSpinning(true);
   };
 
-  const { results, addResult } = useRouletteResultStore();
-
   const handleSpinResult = useCallback(
-    (selectedMenu: Menu.GetMenuRes) => {
+    (selectedMenu: Menu.GetMenuRes | null) => {
       setResult(selectedMenu);
-      setSearchKeyword(selectedMenu.name);
+      setSearchKeyword(selectedMenu?.name ?? '');
       setIsSpinning(false);
-      addResult([selectedMenu]);
+      if (selectedMenu) {
+        addResult('solo', [selectedMenu]);
+        setRoomResults(prev => [selectedMenu, ...prev]);
+      }
     },
     [addResult]
   );
@@ -113,22 +123,25 @@ export default function SoloRoomPage() {
             <div className={styles['solo__top-menu__icon']}>📊</div>
             <div className={styles['solo__top-menu__info']}>
               <span className={styles['solo__top-menu__name']}>돌린횟수</span>
-              <span className={styles['solo__top-menu__count']}>{results.length} 회</span>
+              <span className={styles['solo__top-menu__count']}>{roomResults.length} 회</span>
             </div>
           </div>
           <div className={styles['solo__mood-stats']}>
             <h4>최근 룰렛 결과</h4>
             <div className={styles['solo__mood-stats__list']}>
               <ul className={styles['solo__mood-stats__list__items']}>
-                {results.slice(0, 8).map((item: Menu.GetMenuRes, idx: number) => (
-                  <li key={item.id} className={styles['solo__mood-stats__list__items__item']}>
+                {roomResults.slice(0, 8).map((item: Menu.GetMenuRes, idx: number) => (
+                  <li
+                    key={`${item.id}-${idx}`}
+                    className={styles['solo__mood-stats__list__items__item']}
+                  >
                     <span className={styles['solo__mood-stats__list__items__item__badge']}>
                       {idx + 1}
                     </span>
                     {item.name}
                   </li>
                 ))}
-                {results.length === 0 && (
+                {roomResults.length === 0 && (
                   <li className={styles['solo__mood-stats__list__items__item--empty']}>
                     🎰 룰렛을 돌려보세요!
                   </li>

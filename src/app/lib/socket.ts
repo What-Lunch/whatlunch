@@ -1,43 +1,47 @@
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
-let currentToken: string | null = null;
 
-const getSocketUrl = (): string => {
-  const url = process.env.NEXT_PUBLIC_SOCKET_URL;
-  if (!url) {
-    throw new Error('[Socket] NEXT_PUBLIC_SOCKET_URL is not defined.');
-  }
-  return url;
-};
-
-export const createSocket = (token: string): Socket => {
-  const SOCKET_URL = getSocketUrl();
-
-  if (socket && currentToken === token) {
+export const createSocket = (token: string): Socket | null => {
+  if (socket?.connected) {
     return socket;
   }
 
-  if (socket) {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
+    socket = io(apiUrl, {
+      auth: {
+        token,
+      },
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
+      forceNew: false,
+    });
+
+    socket.on('connect_error', error => {
+      console.error('[Socket] 연결 오류:', error);
+    });
+
+    socket.on('joinError', (data: unknown) => {
+      console.error('[Socket] joinError:', data);
+    });
+
+    return socket;
+  } catch (error) {
+    console.error('[Socket] 생성 오류:', error);
+    return null;
+  }
+};
+
+export const getSocket = (): Socket | null => socket;
+export const disconnectSocket = (): void => {
+  if (socket?.connected) {
     socket.disconnect();
     socket = null;
   }
-
-  currentToken = token;
-
-  socket = io(SOCKET_URL, {
-    autoConnect: false,
-    auth: { token },
-    path: '/socket.io', // 서버와 명시적 일치
-    transports: ['websocket'], // polling 완전 차단
-    withCredentials: true,
-  });
-
-  return socket;
 };
-
-export const disconnectSocket = () => {
-  socket?.disconnect();
-  socket = null;
-  currentToken = null;
-};
+export const isSocketConnected = (): boolean => socket?.connected ?? false;

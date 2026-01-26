@@ -1,128 +1,82 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
-import type { KeyboardEvent, MutableRefObject } from 'react';
-
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { TopTabItem } from '../types';
 
-interface UseTopTabsArgs {
+interface UseTopTabsProps {
   items: readonly TopTabItem[];
-  value: string;
-  onChange: (next: string) => void; // 탭 변경 시 호출되는 콜백
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export interface TopTabsController {
-  items: readonly TopTabItem[];
-  activeValue: string;
-  activeIndex: number;
-  focusIndex: number; // 키보드 이동 기준이 되는 포커스 인덱스
-
-  setActive: (next: string) => void;
-
-  registerButtonRef: (index: number, element: HTMLButtonElement | null) => void;
-  onKeyDownTab: (event: KeyboardEvent<HTMLButtonElement>, index: number) => void;
-
-  buttonRefs: MutableRefObject<Array<HTMLButtonElement | null>>;
-}
-
-export function useTopTabs({ items, value, onChange }: UseTopTabsArgs): TopTabsController {
-  const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
-
-  // 현재 value가 items에 포함되어 있는지 여부
-  const hasValidValue = useMemo(() => items.some(item => item.value === value), [items, value]);
-
-  // value가 유효하지 않을 경우 사용할 fallback 값
-  const fallbackValue = useMemo(() => items[0]?.value ?? value, [items, value]);
-
-  const activeValue = useMemo(() => {
-    if (items.length === 0) return value;
-    return hasValidValue ? value : fallbackValue;
-  }, [items, hasValidValue, value, fallbackValue]);
+export function useTopTabs({ items, value, onChange }: UseTopTabsProps) {
+  const [activeValue, setActiveValue] = useState<string>(value ?? items[0]?.value ?? '');
+  const [focusIndex, setFocusIndex] = useState(0);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
-    if (items.length === 0 || hasValidValue || value === fallbackValue) return;
+    if (value !== undefined) {
+      setActiveValue(value);
+      const index = items.findIndex(item => item.value === value);
+      setFocusIndex(Math.max(0, index));
+    }
+  }, [value, items]);
 
-    onChange(fallbackValue);
-  }, [items, hasValidValue, value, fallbackValue, onChange]);
-
-  const activeIndex = useMemo(() => {
-    const foundIndex = items.findIndex(item => item.value === activeValue);
-    return foundIndex >= 0 ? foundIndex : 0;
-  }, [items, activeValue]);
-
-  const [focusIndex, setFocusIndex] = useState<number>(activeIndex);
-
-  useEffect(() => {
-    setFocusIndex(activeIndex);
-  }, [activeIndex]);
-
-  // items 길이가 변할 때 focusIndex 방어
-  useEffect(() => {
-    if (items.length === 0) return;
-    setFocusIndex(prev => Math.min(prev, items.length - 1));
-  }, [items.length]);
-
-  const registerButtonRef = useCallback((index: number, element: HTMLButtonElement | null) => {
-    buttonRefs.current[index] = element;
-  }, []);
-
-  const focusTabByIndex = useCallback(
-    (targetIndex: number) => {
-      const itemCount = items.length;
-      if (itemCount === 0) return;
-
-      const normalizedIndex = (targetIndex + itemCount) % itemCount;
-      setFocusIndex(normalizedIndex);
-      buttonRefs.current[normalizedIndex]?.focus();
+  const setActive = useCallback(
+    (newValue: string) => {
+      setActiveValue(newValue);
+      onChange?.(newValue);
+      const index = items.findIndex(item => item.value === newValue);
+      setFocusIndex(Math.max(0, index));
     },
-    [items]
+    [items, onChange]
   );
 
+  const registerButtonRef = useCallback((index: number, el: HTMLButtonElement | null) => {
+    buttonRefs.current[index] = el;
+  }, []);
+
   const onKeyDownTab = useCallback(
-    (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
-      const itemCount = items.length;
-      if (itemCount === 0) return;
+    (event: React.KeyboardEvent, currentIndex: number) => {
+      let nextIndex = currentIndex;
+      let handled = false;
 
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        focusTabByIndex(index - 1);
-        return;
+      switch (event.key) {
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          nextIndex = (currentIndex - 1 + items.length) % items.length;
+          handled = true;
+          break;
+        case 'ArrowRight':
+        case 'ArrowDown':
+          nextIndex = (currentIndex + 1) % items.length;
+          handled = true;
+          break;
+        case 'Home':
+          nextIndex = 0;
+          handled = true;
+          break;
+        case 'End':
+          nextIndex = items.length - 1;
+          handled = true;
+          break;
+        default:
+          break;
       }
 
-      if (event.key === 'ArrowRight') {
+      if (handled) {
         event.preventDefault();
-        focusTabByIndex(index + 1);
-        return;
-      }
-
-      if (event.key === 'Home') {
-        event.preventDefault();
-        focusTabByIndex(0);
-        return;
-      }
-
-      if (event.key === 'End') {
-        event.preventDefault();
-        focusTabByIndex(itemCount - 1);
-        return;
-      }
-
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        const next = items[focusIndex]?.value; // 포커스 기준 확정
-        if (next) onChange(next);
+        setFocusIndex(nextIndex);
+        buttonRefs.current[nextIndex]?.focus();
+        setActive(items[nextIndex].value);
       }
     },
-    [focusTabByIndex, focusIndex, items, onChange]
+    [items, setActive]
   );
 
   return {
-    items,
     activeValue,
-    activeIndex,
     focusIndex,
-    setActive: onChange,
     registerButtonRef,
+    setActive,
     onKeyDownTab,
-    buttonRefs,
   };
 }

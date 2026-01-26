@@ -1,39 +1,74 @@
 import { useMemo } from 'react';
 
-import { FILTER_CONFIG, FOOD_ICONS, SITUATION_ICONS } from '@/domain/Roulette/constants';
+import { Category, Context } from '@/types/enum';
 
-import { Context, Category } from '@/types/enum';
+const FOOD_ICONS = {
+  [Category.ALL]: '🍽️',
+  [Category.BEST]: '⭐',
+  [Category.CHINESE]: '🍜',
+  [Category.WESTERN]: '🍔',
+  [Category.JAPANESE]: '🍣',
+  [Category.KOREAN]: '🍚',
+  [Category.SNACK]: '🌭',
+};
 
-const FILTER_FULL_CONFIG = {
-  food: {
-    ...FILTER_CONFIG.category,
-    icons: FOOD_ICONS,
-  },
-  situation: {
-    ...FILTER_CONFIG.context,
-    icons: SITUATION_ICONS,
-  },
-} as const;
+const SITUATION_ICONS = {
+  [Context.LUNCH]: '🍱',
+  [Context.SOLO]: '🙋‍♂️',
+  [Context.GROUP]: '🍻',
+  [Context.DIET]: '🥗',
+  [Context.DATE]: '💖',
+  [Context.STRESS]: '😡',
+};
+
+interface FilterOption {
+  value: string;
+  label: string;
+  icon: string;
+  isActive: boolean;
+}
 
 export function useFilterOptions(
   selectedFoodTypes: Category | null,
   selectedSituation: Context | null
-) {
-  // 음식 옵션 구성
+): {
+  foodOptions: FilterOption[];
+  situationOptions: FilterOption[];
+} {
   const foodOptions = useMemo(() => {
-    return FILTER_FULL_CONFIG.food.options.map(opt => ({
-      ...opt,
-      icon: FILTER_FULL_CONFIG.food.icons[opt.value],
-      isActive: selectedFoodTypes === opt.value,
+    const categories: Category[] = [
+      Category.ALL,
+      Category.KOREAN,
+      Category.CHINESE,
+      Category.JAPANESE,
+      Category.WESTERN,
+      Category.SNACK,
+      Category.BEST,
+    ];
+
+    return categories.map(cat => ({
+      value: cat,
+      label: cat,
+      icon: FOOD_ICONS[cat],
+      isActive: selectedFoodTypes === cat,
     }));
   }, [selectedFoodTypes]);
 
-  // 상황 옵션 구성
   const situationOptions = useMemo(() => {
-    return FILTER_FULL_CONFIG.situation.options.map(opt => ({
-      ...opt,
-      icon: FILTER_FULL_CONFIG.situation.icons[opt.value],
-      isActive: selectedSituation === opt.value,
+    const contexts: Context[] = [
+      Context.GROUP,
+      Context.DATE,
+      Context.DIET,
+      Context.LUNCH,
+      Context.SOLO,
+      Context.STRESS,
+    ];
+
+    return contexts.map(ctx => ({
+      value: ctx,
+      label: ctx,
+      icon: SITUATION_ICONS[ctx],
+      isActive: selectedSituation === ctx,
     }));
   }, [selectedSituation]);
 
