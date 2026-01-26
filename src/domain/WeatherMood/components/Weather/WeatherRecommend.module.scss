@@ -4,103 +4,95 @@
 
 .weather-recommend {
   width: 100%;
-  height: auto;
-  padding: 14px 4px;
+  padding: 16px 18px;
 
-  display: flex;
-  flex-direction: column;
+  @include m.flex-box(flex-start, stretch, column);
 
   &__text {
     @include m.text-style(lg, 600);
-    color: f.color(black);
-
-    @include m.mq(lg) {
-      @include m.text-style('2lg', 600);
-    }
+    color: f.color(gray-800);
   }
 
   &__card {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 16px 18px;
+    @include m.flex-box(flex-start, center);
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 16px;
     margin-bottom: 20px;
-
-    background: f.color(white);
-    border: 1px solid f.color(gray-300);
+    background: f.color(blue-50);
     border-radius: 14px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   }
 
   &__icon-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    flex: 0 0 auto;
+
+    @include m.flex-box();
   }
 
   &__icon {
+    width: 100%;
+    height: 100%;
     object-fit: contain;
   }
 
   &__temp {
-    @include m.text-style('2xl', 700);
+    @include m.text-style('2xl', 600);
     color: f.color(black);
     line-height: 1;
-
-    @include m.mq(lg) {
-      @include m.text-style('3xl', 700);
-    }
   }
 
   &__content {
+    flex: 1 1 240px;
+    min-width: 240px;
     display: grid;
     grid-template-columns: 1fr;
     row-gap: 4px;
-
     text-align: left;
   }
 
   &__summary {
-    @include m.text-style(sm, 600);
-    color: f.color(black);
-
-    white-space: nowrap;
-
-    @include m.mq(lg) {
-      @include m.text-style(lg, 600);
-    }
+    @include m.text-style('lg', 400);
+    color: f.color(gray-800);
+    white-space: normal;
+    word-break: keep-all;
   }
 
   &__aqi {
-    display: block;
-    @include m.text-style(sm, 600);
-    margin-top: 2px;
-
-    @include m.mq(lg) {
-      @include m.text-style(md, 600);
-    }
+    @include m.text-style('lg', 500);
   }
 
-  &__humidity {
-    @include m.text-style(sm, 600);
-    color: f.color(black);
+  &__meta {
+    @include m.flex-box(flex-start, center);
+    flex-wrap: wrap;
+    gap: 6px 14px;
 
-    @include m.mq(lg) {
-      @include m.text-style(lg, 600);
-    }
+    @include m.text-style('lg', 400);
+    color: f.color(gray-800);
+  }
+
+  &__meta-item {
+    @include m.flex-box(flex-start, center);
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  &__meta-icon {
+    width: 16px;
+    height: 16px;
+    color: f.color(icon-primary);
   }
 
   &__title {
-    @include m.text-style(lg, 600);
+    @include m.text-style('2lg', 600);
     margin-bottom: 10px;
-    color: f.color(black);
+    color: f.color(gray-800);
   }
 
   &__list {
     display: grid;
     gap: 14px;
-
     grid-template-columns: repeat(2, 1fr);
 
     @include m.mq(lg) {
@@ -109,42 +101,34 @@
   }
 
   &__item {
-    padding: 10px 16px;
+    min-height: 48px;
+    padding: 8px 12px;
+
+    @include m.flex-box(center, center);
     text-align: center;
-    min-width: 100px;
+    word-break: keep-all;
     background: f.color(white);
-    border: 1px solid f.color(gray-300);
+    border: 1px solid f.color(gray-400);
     border-radius: 12px;
 
     @include m.text-style(sm, 600);
     color: f.color(gray-700);
-
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    @include m.mq(lg) {
-      @include m.text-style(md, 600);
-    }
-
-    &:hover {
-      border-color: f.color(point-blue);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
   }
 }
 
+/* 공기질 색상 */
 .aqi-1 {
-  color: #2ecc71; // 좋음
+  color: #2ecc71;
 }
 .aqi-2 {
-  color: #f1c40f; // 보통
+  color: #f1c40f;
 }
 .aqi-3 {
-  color: #e67e22; // 한때 나쁨
+  color: #e67e22;
 }
 .aqi-4 {
-  color: #e74c3c; // 나쁨
+  color: #e74c3c;
 }
 .aqi-5 {
-  color: #8e44ad; // 매우 나쁨
+  color: #8e44ad;
 }

@@ -1,0 +1,36 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.quote-card {
+  width: 100%;
+  padding: 8px 24px;
+
+  @include m.flex-box(center, center, column);
+
+  &::before {
+    content: '';
+    width: 40px;
+    height: 4px;
+    margin-bottom: 14px;
+
+    background-color: f.color(orange-200);
+    border-radius: 2px;
+  }
+
+  &__text {
+    width: 100%;
+    margin: 0;
+
+    @include m.text-style('lg', 400);
+    color: f.color(gray-700);
+    text-align: center;
+  }
+
+  &__sentence {
+    display: block;
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
+    }
+  }
+}
