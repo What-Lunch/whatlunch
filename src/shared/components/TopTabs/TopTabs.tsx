@@ -3,7 +3,7 @@
 import { useEffect, useId, useState } from 'react';
 
 import { useTopTabs } from './hooks/useTopTabs';
-import type { TopTabsProps } from './types';
+import type { TopTabsProps, TopTabItem } from './types';
 
 import styles from './TopTabs.module.scss';
 
@@ -51,7 +51,6 @@ function TopTabs({ items, value, onChange, renderPanel, className, lazyMount }: 
               ]
                 .filter(Boolean)
                 .join(' ')}
-              // 클릭 시에는 활성 탭만 변경
               onClick={() => setActive(item.value)}
               onKeyDown={event => onKeyDownTab(event, index)}
             >
@@ -68,7 +67,6 @@ function TopTabs({ items, value, onChange, renderPanel, className, lazyMount }: 
 
       {items.map(item => {
         const isSelected = item.value === activeValue;
-        // 활성화된 적 없는 탭은 아예 렌더하지 않음
         if (lazyMount && !mountedValues[item.value] && !isSelected) return null;
 
         const tabId = `${tabsId}-tab-${item.value}`;
@@ -97,3 +95,4 @@ function TopTabs({ items, value, onChange, renderPanel, className, lazyMount }: 
 }
 
 export default TopTabs;
+export type { TopTabItem };
