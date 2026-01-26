@@ -79,11 +79,17 @@
           transform: translateX(2px);
         }
 
+        &__header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 8px;
+        }
+
         &__name {
           @include m.text-style('lg', 600);
           color: f.color(purple-700);
           display: block;
-          margin-bottom: 8px;
         }
 
         &__address {

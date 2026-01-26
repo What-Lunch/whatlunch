@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState, useRef, memo } from 'react';
+import FavoriteToggle from '../FavoriteToggle';
 import styles from './KakaoMap.module.scss';
 import { KakaoMapProps } from './types';
 
@@ -344,6 +345,15 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
     [createInfoWindowContent]
   );
 
+  // 즐겨찾기 토글 상태
+  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
+
+  const handleFavoriteToggle = useCallback((placeId: string) => {
+    setFavoriteMap(prev => ({
+      ...prev,
+      [placeId]: !prev[placeId],
+    }));
+  }, []);
   return (
     <div className={`${styles['map-wrapper']}${className ? ` ${className}` : ''}`}>
       {error && <div className={styles['error-message']}>{error}</div>}
@@ -351,29 +361,34 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
 
       {list && (
         <div className={styles['map__place-list']}>
-          {places.length > 0 && (
-            <ul className={styles['map__place-list__list']}>
-              {places.map(place => (
-                <li
-                  key={place.id}
-                  className={styles['map__place-list__list__item']}
-                  onClick={() => handlePlaceClick(place)}
-                >
+          {places.map(place => {
+            const isActive = !!favoriteMap[place.id];
+            return (
+              <li
+                key={place.id}
+                className={styles['map__place-list__list__item']}
+                onClick={() => handlePlaceClick(place)}
+              >
+                <div className={styles['map__place-list__list__item__header']}>
                   <span className={styles['map__place-list__list__item__name']}>
                     {place.place_name}
                   </span>
-                  <div className={styles['map__place-list__list__item__address']}>
-                    {place.road_address_name || place.address_name}
-                  </div>
-                  {place.phone && (
-                    <div className={styles['map__place-list__list__item__phone']}>
-                      {place.phone}
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
+                  <FavoriteToggle
+                    isActive={isActive}
+                    onToggle={() => handleFavoriteToggle(place.id)}
+                    size={18}
+                    ariaLabel={`${place.place_name} ${isActive ? '찜 해제' : '찜하기'}`}
+                  />
+                </div>
+                <div className={styles['map__place-list__list__item__address']}>
+                  {place.road_address_name || place.address_name}
+                </div>
+                {place.phone && (
+                  <div className={styles['map__place-list__list__item__phone']}>{place.phone}</div>
+                )}
+              </li>
+            );
+          })}
         </div>
       )}
     </div>
