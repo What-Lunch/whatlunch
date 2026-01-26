@@ -13,7 +13,9 @@ export const rouletteApi = {
   async getMenusByCategory(category: Category, roomId: string): Promise<Menu.GetMenuRes[]> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/menus/roulette?category=${category}&roomId=${roomId}`,
+        `${API_BASE_URL}/menus/roulette?category=${encodeURIComponent(
+          category
+        )}&roomId=${encodeURIComponent(roomId)}`,
         {
           method: 'GET',
           headers: {
@@ -41,7 +43,9 @@ export const rouletteApi = {
   async getMenusByContext(context: Context, roomId: string): Promise<Menu.GetMenuRes[]> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/menus/roulette?context=${context}&roomId=${roomId}`,
+        `${API_BASE_URL}/menus/roulette?context=${encodeURIComponent(
+          context
+        )}&roomId=${encodeURIComponent(roomId)}`,
         {
           method: 'GET',
           headers: {
@@ -68,7 +72,7 @@ export const rouletteApi = {
    */
   async getAllMenus(roomId: string): Promise<Menu.GetMenuRes[]> {
     try {
-      const url = `${API_BASE_URL}/menus?roomId=${roomId}`;
+      const url = `${API_BASE_URL}/menus?roomId=${encodeURIComponent(roomId)}`;
 
       const response = await fetch(url, {
         method: 'GET',

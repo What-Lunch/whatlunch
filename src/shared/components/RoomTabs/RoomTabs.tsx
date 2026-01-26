@@ -93,6 +93,16 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
       setIsSpinning(state.isSpinning);
       if (state.result) {
         setRouletteResult(state.result);
+        setSearchKeyword(state.result.name ?? '');
+        if (searchRef.current) {
+          searchRef.current.value = state.result.name ?? '';
+        }
+      } else {
+        setRouletteResult(null);
+        setSearchKeyword('');
+        if (searchRef.current) {
+          searchRef.current.value = '';
+        }
       }
     };
 
@@ -102,7 +112,7 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
     socket.on('rouletteStateSync', handleRouletteStateSync);
 
     // 현재 상태 요청 (재접속 시 동기화)
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       socket.emit('requestRouletteState', { roomCode });
     }, 500);
 
@@ -110,6 +120,7 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
       socket.off('tabSync', handleTabSync);
       socket.off('rouletteSpinStarted', handleRouletteSpinStarted);
       socket.off('rouletteStateSync', handleRouletteStateSync);
+      clearTimeout(timeoutId);
     };
   }, [roomCode, isSoloMode, userRole]);
 
@@ -151,7 +162,9 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
 
   const handleRouletteResultLocal = useCallback(
     (result: Menu.GetMenuRes | null) => {
-      setIsSpinning(false);
+      if (result !== null) {
+        setIsSpinning(false);
+      }
       setRouletteResult(result);
       setSearchKeyword(result?.name ?? '');
 
@@ -168,6 +181,7 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
     },
     [roomCode, addResult, onResult]
   );
+
   if (!userRole) return null;
 
   // ============ 렌더링 ============

@@ -150,11 +150,11 @@ export default function RoomPage({ params }: RoomPageProps) {
   // ============ 페이지 이동 시 연결 정리 ============
   useEffect(() => {
     return () => {
-      if (!isValidRoom) {
+      if (!isSoloMode) {
         disconnectSocket();
       }
     };
-  }, [isValidRoom]);
+  }, [isSoloMode]);
 
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다...</div>;

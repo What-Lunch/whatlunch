@@ -1,7 +1,6 @@
 'use client';
 
 import { memo, useCallback, useState, useEffect } from 'react';
-// import { Shuffle } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 import Button from '@/shared/components/Button';
@@ -9,7 +8,6 @@ import RouletteFilter from './components/RouletteFilter';
 import RouletteUi from './components/RouletteUi';
 import RouletteModal from './components/RouletteModal';
 
-// import { shuffleMenus } from './core/shuffleMenus';
 import { getSocket } from '@/app/lib/socket';
 import { Category, Context } from '@/types/enum';
 
@@ -18,6 +16,7 @@ import styles from './Roulette.module.scss';
 
 export const Roulette = memo(function Roulette({
   onSpinResult,
+  onSpinStart,
   userRole,
   initialMenus = [],
   isSpinning = false,
@@ -140,9 +139,10 @@ export const Roulette = memo(function Roulette({
   const handleSpinStart = useCallback(() => {
     setLocalResult(null);
     setModalOpen(false);
+    onSpinStart?.();
     onSpinResult(null);
     setSpinning(true);
-  }, [onSpinResult]);
+  }, [onSpinStart, onSpinResult]);
 
   // ============ 모달 제어 ============
   const handleCloseModal = useCallback(() => {
@@ -178,7 +178,7 @@ export const Roulette = memo(function Roulette({
 
       {(isSoloMode || userRole === 'host') && (
         <RouletteFilter
-          onChange={() => {}}
+          onChange={setMenus}
           onFiltersChange={userRole === 'host' ? handleFiltersChange : undefined}
           disabled={userRole !== 'host' || spinning || isSpinning}
           syncedFilterState={syncedFilterState}
