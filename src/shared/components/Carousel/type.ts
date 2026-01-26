@@ -1,17 +1,21 @@
 import { StaticImageData } from 'next/image';
-/*
-이미지와 타이틀 제외 나머지 옵셔널 처리
- */
-export interface CarouselItemsProps {
+
+export interface CarouselStore {
   id: string;
-  src: (string | StaticImageData)[];
-  title: string;
-  category?: string;
-  rating?: number | null;
-  location?: string | null;
+  name: string;
+  location: string;
+  image: string | StaticImageData;
+}
+
+export interface CarouselItem {
+  id: string;
+  menuName: string;
+  rank: number;
+  favoriteCount: number;
+  stores: CarouselStore[];
 }
 
 export interface CarouselProps {
-  items: CarouselItemsProps[];
+  items: CarouselItem[];
   duration?: number;
 }

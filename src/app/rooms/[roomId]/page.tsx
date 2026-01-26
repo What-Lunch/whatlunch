@@ -6,6 +6,7 @@ import { Copy, Check, Clock, Users } from 'lucide-react';
 
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
+import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { createSocket, disconnectSocket } from '@/app/lib/socket';
@@ -13,7 +14,7 @@ import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
 
 import styles from './page.module.scss';
-
+// 방 페이지
 interface RoomPageProps {
   params: {
     roomId: string;
@@ -29,7 +30,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   const joinedRoomRef = useRef<string | null>(null);
   const { user, isAuthLoading } = useAuthStore();
   const router = useRouter();
-
+  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
   const [socketReady, setSocketReady] = useState(false);
   const [userRole, setUserRole] = useState<'host' | 'guest' | null>(null);
 
@@ -156,6 +157,13 @@ export default function RoomPage({ params }: RoomPageProps) {
     };
   }, [isSoloMode]);
 
+  const handleFavoriteToggle = (menuId: string) => {
+    setFavoriteMap(prev => ({
+      ...prev,
+      [menuId]: !prev[menuId],
+    }));
+  };
+
   if (isValidRoom === null) {
     return <div className={styles['room__loading']}>방 정보를 확인 중입니다...</div>;
   }
@@ -236,24 +244,32 @@ export default function RoomPage({ params }: RoomPageProps) {
 
           <div className={styles['room__mood-stats__list']}>
             <ul className={styles['room__mood-stats__list__items']}>
-              {roomResults?.slice(0, 8).map((item, idx) => (
-                <li
-                  key={`${item.id}-${idx}`}
-                  className={styles['room__mood-stats__list__items__item']}
-                >
-                  <span className={styles['room__mood-stats__list__items__item__badge']}>
-                    {idx + 1}
-                  </span>
-                  {item.name}
-                </li>
-              ))}
+              {roomResults?.slice(0, 8).map((item, idx) => {
+                const isActive = favoriteMap[item.id] ?? false;
 
-              {!roomResults ||
-                (roomResults.length === 0 && (
-                  <li className={styles['room__mood-stats__list__items__item--empty']}>
-                    🎰 룰렛을 돌려보세요!
+                return (
+                  <li key={item.id} className={styles['room__mood-stats__list__items__item']}>
+                    <span className={styles['room__mood-stats__list__items__item__badge']}>
+                      {idx + 1}
+                    </span>
+
+                    <span>{item.name}</span>
+
+                    <FavoriteToggle
+                      isActive={isActive}
+                      onToggle={() => handleFavoriteToggle(item.id)}
+                      size={18}
+                      ariaLabel={`${item.name} ${isActive ? '찜 해제' : '찜하기'}`}
+                    />
                   </li>
-                ))}
+                );
+              })}
+
+              {(!roomResults || roomResults.length === 0) && (
+                <li className={styles['room__mood-stats__list__items__item--empty']}>
+                  🎰 룰렛을 돌려보세요!
+                </li>
+              )}
             </ul>
           </div>
 
