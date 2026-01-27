@@ -348,12 +348,16 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
   // 즐겨찾기 토글 상태
   const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
 
-  const handleFavoriteToggle = useCallback((placeId: string) => {
-    setFavoriteMap(prev => ({
-      ...prev,
-      [placeId]: !prev[placeId],
-    }));
-  }, []);
+  const handleFavoriteToggle = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>, placeId: string) => {
+      e.stopPropagation();
+      setFavoriteMap(prev => ({
+        ...prev,
+        [placeId]: !prev[placeId],
+      }));
+    },
+    []
+  );
   return (
     <div className={`${styles['map-wrapper']}${className ? ` ${className}` : ''}`}>
       {error && <div className={styles['error-message']}>{error}</div>}
@@ -375,7 +379,7 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
                   </span>
                   <FavoriteToggle
                     isActive={isActive}
-                    onToggle={() => handleFavoriteToggle(place.id)}
+                    onToggle={e => handleFavoriteToggle(e, place.id)}
                     size={18}
                     ariaLabel={`${place.place_name} ${isActive ? '찜 해제' : '찜하기'}`}
                   />

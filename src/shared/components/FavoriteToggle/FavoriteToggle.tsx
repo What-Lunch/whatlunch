@@ -5,7 +5,7 @@ import styles from './FavoriteToggle.module.scss';
 
 interface FavoriteToggleProps {
   isActive: boolean;
-  onToggle?: () => void;
+  onToggle?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   size?: number;
   readOnly?: boolean;
   ariaLabel?: string;
@@ -16,6 +16,7 @@ export default function FavoriteToggle({
   onToggle,
   size = 18,
   readOnly = false,
+  ariaLabel,
 }: FavoriteToggleProps) {
   // 읽기 전용 모드
   if (readOnly) {
@@ -35,7 +36,7 @@ export default function FavoriteToggle({
     <button
       type="button"
       aria-pressed={isActive}
-      aria-label={isActive ? '찜 해제' : '찜하기'}
+      aria-label={ariaLabel ?? (isActive ? '찜 해제' : '찜하기')}
       onClick={onToggle}
       className={styles['favorite-btn']}
     >
