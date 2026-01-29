@@ -1,8 +1,6 @@
 import { Category, Context } from '@/types/enum';
 import { getApiBaseUrl } from '@/shared/hooks/getApiBaseUrl';
 
-const API_BASE_URL = getApiBaseUrl();
-
 interface MenuResponse {
   data: Menu.GetMenuRes[];
 }
@@ -11,11 +9,10 @@ export const rouletteApi = {
   /**
    * 카테고리별 메뉴 조회
    */
-
   async getMenusByCategory(category: Category, roomId: string): Promise<Menu.GetMenuRes[]> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/menus/roulette?category=${encodeURIComponent(
+        `${getApiBaseUrl()}/menus/roulette?category=${encodeURIComponent(
           category
         )}&roomId=${encodeURIComponent(roomId)}`,
         {
@@ -45,7 +42,7 @@ export const rouletteApi = {
   async getMenusByContext(context: Context, roomId: string): Promise<Menu.GetMenuRes[]> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/menus/roulette?context=${encodeURIComponent(
+        `${getApiBaseUrl()}/menus/roulette?context=${encodeURIComponent(
           context
         )}&roomId=${encodeURIComponent(roomId)}`,
         {
@@ -74,7 +71,7 @@ export const rouletteApi = {
    */
   async getAllMenus(roomId: string): Promise<Menu.GetMenuRes[]> {
     try {
-      const url = `${API_BASE_URL}/menus?roomId=${encodeURIComponent(roomId)}`;
+      const url = `${getApiBaseUrl()}/menus?roomId=${encodeURIComponent(roomId)}`;
 
       const response = await fetch(url, {
         method: 'GET',
