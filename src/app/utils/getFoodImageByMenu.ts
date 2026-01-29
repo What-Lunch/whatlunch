@@ -17,7 +17,7 @@ export function getFoodImageByMenu(menuName: string, category: MenuCategory): st
   if (category === MenuCategory.CHINESE) {
     if (normalized.includes('볶음밥')) return '/foods/Chinese/Fried_Rice.png';
     if (normalized.includes('마라탕')) return '/foods/Chinese/Spicy_Hotpot.png';
-    if (normalized.includes('짜장면')) return '/foods/Chinese/Sweet_Pork.png';
+    if (normalized.includes('탕수육')) return '/foods/Chinese/Sweet_Pork.png';
     if (normalized.includes('짬뽕')) return '/foods/Chinese/Jjambbong.png';
     return '/foods/Chinese/noimg.png';
   }

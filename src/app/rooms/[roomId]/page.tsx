@@ -62,7 +62,10 @@ export default function RoomPage({ params }: RoomPageProps) {
   // ============ 인증 확인 ============
   useEffect(() => {
     if (isAuthLoading) return;
-    if (!user) router.push('/');
+    if (!user) {
+      router.push('/');
+      return;
+    }
   }, [user, router, isAuthLoading]);
 
   // ============ Socket 연결 (한 번만) ============
@@ -128,9 +131,6 @@ export default function RoomPage({ params }: RoomPageProps) {
     onError: (_err, menuId) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
-    },
   });
 
   const removeFavoriteMutation = useMutation({
@@ -140,9 +140,6 @@ export default function RoomPage({ params }: RoomPageProps) {
     },
     onError: (_err, menuId) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
     },
   });
 

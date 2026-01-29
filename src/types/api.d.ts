@@ -62,7 +62,7 @@ declare namespace Favorite {
 
   interface GetMyFavoritesRes {
     id: string;
-    menuId: Menu;
+    menuId: Menu | null;
     createdAt: string;
   }
 }

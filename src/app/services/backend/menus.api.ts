@@ -8,11 +8,6 @@ export interface TopFavoriteMenu {
   favoriteCount: number;
 }
 
-export interface GetTopFavoritesRes {
-  data: TopFavoriteMenu[];
-  count: number;
-}
-
 class MenusService {
   // 룰렛 메뉴 조회
   getMenusRoulette(params: Menu.GetMenuReq): Promise<Menu.GetMenuRes[]> {
