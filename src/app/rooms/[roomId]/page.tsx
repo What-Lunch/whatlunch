@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Copy, Check, Clock, Users } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
@@ -13,10 +14,13 @@ import { createSocket, disconnectSocket } from '@/app/lib/socket';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
 
-import styles from './page.module.scss';
 import KakaoMap from '@/shared/components/KakaoMap/KakaoMap';
 import Button from '@/shared/components/Button/Button';
 import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
+import { favoritesService } from '@/app/services/backend/favorites.api';
+
+import styles from './page.module.scss';
+
 // 방 페이지
 interface RoomPageProps {
   params: {
@@ -36,6 +40,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
   const [socketReady, setSocketReady] = useState(false);
   const [userRole, setUserRole] = useState<'host' | 'guest' | null>(null);
+  const queryClient = useQueryClient();
 
   // 현재 룸 설정 및 결과 가져오기
   useEffect(() => {
@@ -57,9 +62,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   // ============ 인증 확인 ============
   useEffect(() => {
     if (isAuthLoading) return;
-    if (!user) {
-      router.push('/');
-    }
+    if (!user) router.push('/');
   }, [user, router, isAuthLoading]);
 
   // ============ Socket 연결 (한 번만) ============
@@ -69,111 +72,90 @@ export default function RoomPage({ params }: RoomPageProps) {
       return;
     }
 
-    if (isValidRoom === null) {
-      return;
-    }
-
-    if (!isValidRoom) {
-      return;
-    }
+    if (!isValidRoom) return;
 
     const token = localStorage.getItem('accessToken');
-    if (!token) {
-      return;
-    }
+    if (!token) return;
 
-    // Socket 생성
     const socket = createSocket(token);
-    if (!socket) {
-      console.error('[Socket] 생성 실패');
-      return;
-    }
-    // 방 입장 처리 함수
+    if (!socket) return;
+
     const joinRoomIfNeeded = () => {
-      // 이미 같은 방에 참가 중이면 무시
       if (joinedRoomRef.current === roomId) return;
 
-      // 다른 방에 남아 있다면 먼저 leave
       if (joinedRoomRef.current) {
-        socket.emit('leaveRoom', {
-          roomCode: joinedRoomRef.current,
-        });
+        socket.emit('leaveRoom', { roomCode: joinedRoomRef.current });
       }
 
-      // 현재 방에 입장
       socket.emit('joinRoom', { roomCode: roomId });
       joinedRoomRef.current = roomId;
     };
 
-    // 연결 성공 이벤트 대기 (user 정보가 설정된 후)
-    const handleConnected = () => {
-      // 인증 완료 후 방 입장
-      joinRoomIfNeeded();
-    };
+    socket.on('connected', joinRoomIfNeeded);
 
-    // 방 입장 응답
-    const handleRoleAssigned = ({
-      role,
-      menus,
-    }: {
-      role: 'host' | 'guest';
-      menus?: Menu.GetMenuRes[];
-    }) => {
+    socket.on('roleAssigned', ({ role, menus }) => {
       setUserRole(role);
       setSocketReady(true);
       localStorage.setItem(`role_${roomId}`, role);
+      if (menus?.length) setInitialMenus(menus);
+    });
 
-      if (menus && menus.length > 0) {
-        setInitialMenus(menus);
-      }
-    };
+    socket.on('joinError', () => {
+      localStorage.removeItem('accessToken');
+      router.push('/');
+    });
 
-    const handleJoinError = ({ reason }: { reason: string }) => {
-      console.error('[방] 입장 실패:', reason);
-      // 토큰 만료 시 재로그인 필요
-      if (reason === 'UNAUTHORIZED' || reason === 'INVALID_TOKEN') {
-        localStorage.removeItem('accessToken');
-        router.push('/');
-      }
-    };
-
-    // 이벤트 리스너 등록
-    socket.on('connected', handleConnected);
-    socket.on('roleAssigned', handleRoleAssigned);
-    socket.on('joinError', handleJoinError);
-
-    if (socket.connected) {
-      joinRoomIfNeeded();
-    }
     return () => {
-      socket.off('connected', handleConnected);
-      socket.off('roleAssigned', handleRoleAssigned);
-      socket.off('joinError', handleJoinError);
-
-      // 마지막 방 참가자가 나가면 연결 해제
-      if (joinedRoomRef.current === roomId) {
-        joinedRoomRef.current = null;
-      }
+      socket.off('connected');
+      socket.off('roleAssigned');
+      socket.off('joinError');
+      joinedRoomRef.current = null;
     };
   }, [roomId, isSoloMode, isValidRoom, router]);
 
-  // ============ 페이지 이동 시 연결 정리 ============
   useEffect(() => {
     return () => {
-      if (!isSoloMode) {
-        disconnectSocket();
-      }
+      if (!isSoloMode) disconnectSocket();
     };
   }, [isSoloMode]);
 
-  // TODO: 19로 마이그레이션 할 때 useOptimistic 고려 https://ko.react.dev/reference/react/useOptimistic
+  // 찜 API
+  const addFavoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesService.addFavorite(menuId),
+    onMutate: (menuId: string) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
+    },
+    onError: (_err, menuId) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
+    },
+  });
+
+  const removeFavoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesService.removeFavorite(menuId),
+    onMutate: (menuId: string) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
+    },
+    onError: (_err, menuId) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
+    },
+  });
+
   const handleFavoriteToggle = (menuId: string) => {
-    setFavoriteMap(prev => ({
-      ...prev,
-      [menuId]: !prev[menuId],
-    }));
+    const isActive = favoriteMap[menuId] ?? false;
+    if (isActive) {
+      removeFavoriteMutation.mutate(menuId);
+    } else {
+      addFavoriteMutation.mutate(menuId);
+    }
   };
 
+  // 지도 검색
   const [searchKeyword, setSearchKeyword] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -182,10 +164,6 @@ export default function RoomPage({ params }: RoomPageProps) {
       setSearchKeyword(searchRef.current.value);
     }
   };
-
-  if (isValidRoom === null) {
-    return <div className={styles['room__loading']}>방 정보를 확인 중입니다...</div>;
-  }
 
   if (!isValidRoom) {
     return <div className={styles['room__loading']}>유효하지 않은 방입니다.</div>;
