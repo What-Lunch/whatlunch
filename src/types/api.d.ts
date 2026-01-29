@@ -54,12 +54,6 @@ namespace Menu {
 }
 
 declare namespace Favorite {
-  interface Menu {
-    id: string;
-    name: string;
-    category: string;
-  }
-
   interface GetMyFavoritesRes {
     id: string;
     menuId: Menu | null;

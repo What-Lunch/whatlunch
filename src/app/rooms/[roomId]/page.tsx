@@ -131,6 +131,9 @@ export default function RoomPage({ params }: RoomPageProps) {
     onError: (_err, menuId) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
+    },
   });
 
   const removeFavoriteMutation = useMutation({
@@ -140,6 +143,9 @@ export default function RoomPage({ params }: RoomPageProps) {
     },
     onError: (_err, menuId) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
     },
   });
 
@@ -184,7 +190,6 @@ export default function RoomPage({ params }: RoomPageProps) {
           <div className={styles['room__code']}>
             <span className={styles['room__code__label']}>방 코드</span>
             <strong className={styles['room__code__value']}>{roomId}</strong>
-
             <button
               type="button"
               aria-label="방 코드 복사"
@@ -231,17 +236,12 @@ export default function RoomPage({ params }: RoomPageProps) {
               <BaseInput
                 ref={searchRef}
                 placeholder="장소를 검색해보세요"
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    handleSearch();
-                  }
-                }}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
               />
               <Button
                 type="button"
                 className={styles['room__map-header__search-btn']}
                 onClick={handleSearch}
-                aria-label="검색"
               >
                 검색
               </Button>
@@ -250,10 +250,12 @@ export default function RoomPage({ params }: RoomPageProps) {
               <KakaoMap keyword={searchKeyword} list />
             </div>
           </div>
+
           <div className={styles['room__result-section']}>
             <div className={styles['room__stats-header']}>
               <h3>🎲 결과 내역</h3>
             </div>
+
             <div className={styles['room__top-menu']}>
               <div className={styles['room__top-menu__icon']}>📊</div>
               <div className={styles['room__top-menu__info']}>
@@ -263,6 +265,7 @@ export default function RoomPage({ params }: RoomPageProps) {
                 </span>
               </div>
             </div>
+
             <div className={styles['room__mood-stats-content']}>
               <div className={styles['room__mood-stats']}>
                 <h4>최근 룰렛 결과</h4>
@@ -293,6 +296,7 @@ export default function RoomPage({ params }: RoomPageProps) {
                   </ul>
                 </div>
               </div>
+
               <div className={styles['room__time-info']}>
                 <Clock size={18} />
                 <span>

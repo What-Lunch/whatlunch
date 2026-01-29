@@ -1,5 +1,5 @@
 import { fetcher } from '@/app/lib/fetcher';
-import { MenuCategory } from '@/domain/Mypage/FavoriteMenuCard';
+import type { MenuCategory } from '@/domain/Mypage/FavoriteMenuCard';
 
 export interface TopFavoriteMenu {
   id: string;

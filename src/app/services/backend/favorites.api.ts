@@ -19,8 +19,8 @@ class FavoritesService {
   }
 
   // 찜 제거
-  removeFavorite(menuId: string): Promise<{ isDeleted: boolean; message: string }> {
-    return fetcher<{ isDeleted: boolean; message: string }>('/favorites/remove', {
+  removeFavorite(menuId: string): Promise<{ isDeleted: true }> {
+    return fetcher<{ isDeleted: true }>('/favorites/remove', {
       method: 'DELETE',
       auth: true,
       body: JSON.stringify({ menuId }),
