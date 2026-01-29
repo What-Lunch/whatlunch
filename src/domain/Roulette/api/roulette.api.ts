@@ -1,6 +1,7 @@
 import { Category, Context } from '@/types/enum';
+import { getApiBaseUrl } from '@/shared/hooks/getApiBaseUrl';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = getApiBaseUrl();
 
 interface MenuResponse {
   data: Menu.GetMenuRes[];
@@ -10,6 +11,7 @@ export const rouletteApi = {
   /**
    * 카테고리별 메뉴 조회
    */
+
   async getMenusByCategory(category: Category, roomId: string): Promise<Menu.GetMenuRes[]> {
     try {
       const response = await fetch(

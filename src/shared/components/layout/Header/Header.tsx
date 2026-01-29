@@ -23,6 +23,7 @@ export function Header() {
   const router = useRouter();
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const { user, clearUser, isAuthLoading } = useAuthStore();
 
   const handleLogout = useCallback(() => {
