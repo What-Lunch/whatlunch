@@ -1,35 +1,69 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Sparkles } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Modal from '@/shared/components/Modal';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
-import { FAVORITE_MEAL_MOCK } from './mock';
 import styles from './FavoriteMenuCard.module.scss';
+import { favoritesService } from '@/app/services/backend/favorites.api';
+
+import type { GetMyFavoritesRes, FavoriteMenu } from './types';
 
 export default function FavoriteMenuCard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  /**
-   * 찜하기 상태
-   * key: menuId
-   * value: boolean
-   */
-  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>(() =>
-    FAVORITE_MEAL_MOCK.reduce<Record<string, boolean>>((acc, item) => {
-      acc[item.id] = true;
-      return acc;
-    }, {})
+  // 내찜 목록 조회
+  const { data: favorites = [], isLoading } = useQuery({
+    queryKey: ['favorites', 'list'],
+    queryFn: favoritesService.getMyFavorites,
+  });
+
+  const validFavorites = useMemo(
+    () =>
+      favorites.filter(
+        (
+          item
+        ): item is Omit<GetMyFavoritesRes, 'menuId'> & {
+          menuId: FavoriteMenu;
+        } => item.menuId !== null
+      ),
+    [favorites]
   );
 
-  const handleToggle = (menuId: string) => {
-    setFavoriteMap(prev => ({
-      ...prev,
-      [menuId]: !prev[menuId],
-    }));
-  };
+  // 찜 삭제
+  const removeFavoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesService.removeFavorite(menuId),
+
+    onMutate: async menuId => {
+      await queryClient.cancelQueries({ queryKey: ['favorites', 'list'] });
+
+      const prev = queryClient.getQueryData<GetMyFavoritesRes[]>(['favorites', 'list']);
+
+      // 목록에서 제거
+      queryClient.setQueryData<GetMyFavoritesRes[]>(['favorites', 'list'], old => {
+        if (!old) return old;
+        return old.filter(item => item.menuId?.id !== menuId);
+      });
+
+      return { prev };
+    },
+
+    onError: (_err, _menuId, context) => {
+      if (context?.prev) {
+        queryClient.setQueryData(['favorites', 'list'], context.prev);
+      }
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'list'] });
+    },
+  });
+
+  if (isLoading) return null;
 
   return (
     <>
@@ -39,7 +73,7 @@ export default function FavoriteMenuCard() {
           <Sparkles className={styles['meal-favorite__header__icon']} />
         </header>
 
-        {FAVORITE_MEAL_MOCK.length === 0 ? (
+        {validFavorites.length === 0 ? (
           <div className={styles['meal-favorite__empty']}>
             <Sparkles className={styles['meal-favorite__empty__icon']} />
             <p className={styles['meal-favorite__empty__text']}>아직 찜한 메뉴가 없어요!</p>
@@ -47,32 +81,27 @@ export default function FavoriteMenuCard() {
         ) : (
           <>
             <ul className={styles['meal-favorite__list']}>
-              {FAVORITE_MEAL_MOCK.slice(0, 4).map(item => {
-                const isActive = favoriteMap[item.id] ?? false;
+              {validFavorites.slice(0, 4).map(({ menuId: menu }) => (
+                <li key={menu.id} className={styles['meal-favorite__list__item']}>
+                  <div className={styles['meal-favorite__list__item__info']}>
+                    <span className={styles['meal-favorite__list__item__info__name']}>
+                      {menu.name}
+                    </span>
+                    <span className={styles['meal-favorite__list__item__info__category']}>
+                      {menu.category}
+                    </span>
+                  </div>
 
-                return (
-                  <li key={item.id} className={styles['meal-favorite__list__item']}>
-                    {/* TODO: 각 음식 사진이나 아이콘 추가 필요 -> 스타일 재검토 */}
-                    <div className={styles['meal-favorite__list__item__info']}>
-                      <span className={styles['meal-favorite__list__item__info__name']}>
-                        {item.menuName}
-                      </span>
-                      <span className={styles['meal-favorite__list__item__info__category']}>
-                        {item.category}
-                      </span>
-                    </div>
-
-                    <FavoriteToggle
-                      isActive={isActive}
-                      onToggle={() => handleToggle(item.id)}
-                      size={18}
-                    />
-                  </li>
-                );
-              })}
+                  <FavoriteToggle
+                    isActive
+                    onToggle={() => removeFavoriteMutation.mutate(menu.id)}
+                    size={18}
+                  />
+                </li>
+              ))}
             </ul>
 
-            {FAVORITE_MEAL_MOCK.length > 4 && (
+            {validFavorites.length > 4 && (
               <div className={styles['meal-favorite__view-all']}>
                 <button
                   type="button"
@@ -87,6 +116,7 @@ export default function FavoriteMenuCard() {
         )}
       </section>
 
+      {/* 전체보기 모달 */}
       {isModalOpen && (
         <Modal
           isOpen={isModalOpen}
@@ -95,26 +125,22 @@ export default function FavoriteMenuCard() {
           innerClassName={styles['modal']}
         >
           <ul className={styles['modal__list']}>
-            {FAVORITE_MEAL_MOCK.map(item => {
-              const isActive = favoriteMap[item.id] ?? false;
+            {validFavorites.map(({ menuId: menu }) => (
+              <li key={menu.id} className={styles['modal__list__item']}>
+                <div className={styles['modal__list__item__info']}>
+                  <span className={styles['modal__list__item__info__name']}>{menu.name}</span>
+                  <span className={styles['modal__list__item__info__category']}>
+                    {menu.category}
+                  </span>
+                </div>
 
-              return (
-                <li key={item.id} className={styles['modal__list__item']}>
-                  <div className={styles['modal__list__item__info']}>
-                    <span className={styles['modal__list__item__info__name']}>{item.menuName}</span>
-                    <span className={styles['modal__list__item__info__category']}>
-                      {item.category}
-                    </span>
-                  </div>
-
-                  <FavoriteToggle
-                    isActive={isActive}
-                    onToggle={() => handleToggle(item.id)}
-                    size={18}
-                  />
-                </li>
-              );
-            })}
+                <FavoriteToggle
+                  isActive
+                  onToggle={() => removeFavoriteMutation.mutate(menu.id)}
+                  size={18}
+                />
+              </li>
+            ))}
           </ul>
         </Modal>
       )}

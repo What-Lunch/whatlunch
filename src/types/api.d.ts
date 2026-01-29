@@ -52,3 +52,11 @@ namespace Menu {
     limit?: number;
   }
 }
+
+declare namespace Favorite {
+  interface GetMyFavoritesRes {
+    id: string;
+    menuId: Menu | null;
+    createdAt: string;
+  }
+}
