@@ -8,15 +8,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
+import KakaoMap from '@/shared/components/KakaoMap/KakaoMap';
+import Button from '@/shared/components/Button/Button';
+import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
+import Loading from '@/shared/components/Loading';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { createSocket, disconnectSocket } from '@/app/lib/socket';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
 
-import KakaoMap from '@/shared/components/KakaoMap/KakaoMap';
-import Button from '@/shared/components/Button/Button';
-import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
 import { favoritesService } from '@/app/services/backend/favorites.api';
 
 import styles from './page.module.scss';
@@ -214,7 +215,7 @@ export default function RoomPage({ params }: RoomPageProps) {
               onResult={handleRouletteResult}
             />
           ) : (
-            <div>연결 중...</div>
+            <Loading />
           )}
         </section>
 
