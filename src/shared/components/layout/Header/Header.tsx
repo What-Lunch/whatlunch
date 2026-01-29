@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,10 +10,10 @@ import { toast } from 'react-toastify';
 import Button from '@/shared/components/Button';
 import LoginModal from '@/domain/Auth/LoginModal';
 import SignupModal from '@/domain/Auth/SignupModal';
+import { ProfileImage } from '@/shared/components/ProfileImage';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { authService } from '@/app/services/backend/auth.api';
-import { ProfileImage } from '@/shared/components/ProfileImage';
 
 import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 
@@ -25,13 +25,12 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, clearUser, isAuthLoading } = useAuthStore();
 
-  const handleLogout = (afterLogout?: () => void) => {
+  const handleLogout = useCallback(() => {
     authService.postLogout();
     clearUser();
-    afterLogout?.();
     toast.success('로그아웃 되었습니다.');
     router.replace('/');
-  };
+  }, [clearUser, router]);
 
   return (
     <header className={styles['header']}>
@@ -40,7 +39,7 @@ export function Header() {
           <span>홈</span>
         </Link>
 
-        {!isAuthLoading && user && (
+        {user && (
           <Link href="/mypage">
             <span>마이페이지</span>
           </Link>
@@ -53,9 +52,8 @@ export function Header() {
       </Link>
 
       <div className={styles['header__auth']}>
-        {isAuthLoading ? (
-          <div style={{ width: '80px', height: '40px' }} />
-        ) : user ? (
+        <div style={{ width: '80px', height: '40px' }} />
+        {user ? (
           <>
             <div className={styles['header__user']}>
               <div className={styles['header__user-avatar']}>
@@ -115,7 +113,7 @@ export function Header() {
                   홈
                 </Link>
               </li>
-              {!isAuthLoading && user && (
+              {user && (
                 <li>
                   <Link href="/mypage" onClick={() => setIsMobileMenuOpen(false)}>
                     마이페이지
@@ -129,7 +127,10 @@ export function Header() {
                 <li>
                   <button
                     type="button"
-                    onClick={() => handleLogout(() => setIsMobileMenuOpen(false))}
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
                   >
                     로그아웃
                   </button>
