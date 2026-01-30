@@ -22,6 +22,11 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+
+    domains: [
+      'lh3.googleusercontent.com',
+      // 필요시 다른 외부 이미지 도메인도 추가
+    ],
   },
 };
 

@@ -60,6 +60,21 @@ class AuthService {
       auth: true,
     });
   }
+
+  // 구글 로그인
+  async loginWithGoogle({ idToken }: { idToken: string }): Promise<Auth.LoginRes> {
+    const res = await fetcher<Auth.LoginRes>('/auth/oauth/google', {
+      method: 'POST',
+      body: JSON.stringify({ idToken }),
+    });
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('accessToken', res.accessToken);
+      localStorage.setItem('expiresAt', res.expiresAt);
+    }
+
+    return res;
+  }
 }
 
 export const authService = new AuthService();
