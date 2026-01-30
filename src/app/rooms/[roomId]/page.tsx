@@ -272,10 +272,13 @@ export default function RoomPage({ params }: RoomPageProps) {
                 <h4>최근 룰렛 결과</h4>
                 <div className={styles['room__mood-stats__list']}>
                   <ul className={styles['room__mood-stats__list__items']}>
-                    {roomResults?.slice(0, 8).map((item, idx) => {
+                    {roomResults?.map((item, idx) => {
                       const isActive = favoriteMap[item.id] ?? false;
                       return (
-                        <li key={item.id} className={styles['room__mood-stats__list__items__item']}>
+                        <li
+                          key={`${item.id} + ${idx}`}
+                          className={styles['room__mood-stats__list__items__item']}
+                        >
                           <span className={styles['room__mood-stats__list__items__item__badge']}>
                             {idx + 1}
                           </span>
