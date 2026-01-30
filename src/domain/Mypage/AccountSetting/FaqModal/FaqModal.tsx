@@ -1,8 +1,13 @@
-import Modal from '@/shared/components/Modal';
-import type { FaqModalProps } from './types';
 import { useCallback, useRef, useState } from 'react';
-import styles from './FaqModal.module.scss';
+import { toast } from 'react-toastify';
+
+import Modal from '@/shared/components/Modal';
 import { BaseInput } from '@/shared/components/Input';
+
+import { faqService } from '@/app/services/backend/faq.api';
+import type { FaqModalProps } from './types';
+
+import styles from './FaqModal.module.scss';
 
 export default function FaqModal({ isOpen, onClose }: FaqModalProps) {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -14,17 +19,25 @@ export default function FaqModal({ isOpen, onClose }: FaqModalProps) {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
+      if (submitting) return;
       setSubmitting(true);
-      setTimeout(() => {
-        alert('문의가 정상적으로 접수되었습니다!');
-        setSubmitting(false);
-        nameRef.current!.value = '';
-        emailRef.current!.value = '';
-        messageRef.current!.value = '';
+
+      try {
+        await faqService.postFaq({
+          name: nameRef.current!.value,
+          email: emailRef.current!.value,
+          message: messageRef.current!.value,
+        });
+        toast.success('문의가 성공적으로 제출되었습니다.');
         onClose();
-      }, 800);
+      } catch (err) {
+        console.error(err);
+        toast.error('오류가 발생했습니다. 다시 시도하세요.');
+      } finally {
+        setSubmitting(false);
+      }
     },
-    [onClose]
+    [submitting, onClose]
   );
 
   return (
