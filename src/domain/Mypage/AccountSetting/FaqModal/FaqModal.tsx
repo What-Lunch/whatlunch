@@ -23,10 +23,19 @@ export default function FaqModal({ isOpen, onClose }: FaqModalProps) {
       setSubmitting(true);
 
       try {
+        const name = nameRef.current?.value.trim();
+        const email = emailRef.current?.value.trim();
+        const message = messageRef.current?.value.trim();
+
+        if (!name || !email || !message) {
+          toast.error('모든 필드를 입력해주세요.');
+          return;
+        }
+
         await faqService.postFaq({
-          name: nameRef.current!.value,
-          email: emailRef.current!.value,
-          message: messageRef.current!.value,
+          name,
+          email,
+          message,
         });
         toast.success('문의가 성공적으로 제출되었습니다.');
         onClose();

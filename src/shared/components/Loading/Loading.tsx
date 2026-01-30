@@ -18,7 +18,7 @@ export default function Loading() {
   return createPortal(
     <div className={styles['overlay']}>
       <div className={styles['animation']}>
-        <Lottie animationData={food} loop={true} />
+        <Lottie animationData={food} loop={true} className={styles['animation']} />
       </div>
 
       <span className={styles['title']}>Loading...</span>
