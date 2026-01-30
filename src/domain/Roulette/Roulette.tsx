@@ -157,13 +157,17 @@ export const Roulette = memo(function Roulette({
       </p>
 
       <div className={styles['roulette__wheel-wrapper']}>
-        <RouletteUi
-          items={menus}
-          onStart={handleSpinStart}
-          onResult={handleResult}
-          filters={filters}
-          userRole={userRole}
-        />
+        {isSoloMode && menus.length === 0 ? (
+          <Loading />
+        ) : (
+          <RouletteUi
+            items={menus}
+            onStart={handleSpinStart}
+            onResult={handleResult}
+            filters={filters}
+            userRole={userRole}
+          />
+        )}
       </div>
 
       <div className={styles['roulette__result-btn-wrapper']}>

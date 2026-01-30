@@ -93,5 +93,45 @@
         }
       }
     }
+
+    &__help {
+      width: 100%;
+      @include m.flex-box(flex-start, flex-start);
+      gap: 10px;
+      padding: 12px 8px;
+      background-color: f.color(blue-50);
+      border-radius: 10px;
+      border: 1px solid f.color(blue-400);
+
+      &__icon {
+        width: 28px;
+        height: 28px;
+        color: f.color(blue-700);
+        padding: 4px;
+        border-radius: 10px;
+        border: 1px solid f.color(blue-300);
+        background-color: f.color(blue-100);
+      }
+
+      &__content {
+        @include m.flex-box(center, flex-start, column);
+        gap: 5px;
+
+        &__text {
+          @include m.flex-box(center, flex-start, column);
+          gap: 5px;
+
+          &__title {
+            @include m.text-style('md', 600);
+            color: f.color(blue-800);
+          }
+
+          &__description {
+            @include m.text-style('sm', 400);
+            color: f.color(blue-700);
+          }
+        }
+      }
+    }
   }
 }

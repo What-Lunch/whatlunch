@@ -19,8 +19,6 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   const router = useRouter();
   const clearUser = useAuthStore(state => state.clearUser);
 
-  if (!isOpen) return null;
-
   const handleLogout = () => {
     authService.postLogout();
     clearUser();
