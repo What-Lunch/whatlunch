@@ -9,23 +9,18 @@ const COPY_FEEDBACK_DURATION = 1000;
 export function useRoomLogic(roomId: string) {
   const router = useRouter();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isSoloMode = roomId === 'solo';
-  const [isValidRoom, setIsValidRoom] = useState<boolean | null>(isSoloMode ? true : null);
+  const [isValidRoom, setIsValidRoom] = useState<boolean | null>(null);
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
 
   useEffect(() => {
-    if (isSoloMode) {
-      setIsValidRoom(true);
-      return;
-    }
     // 형식 검증
     if (!ROOM_CODE_REGEX.test(roomId)) {
       router.replace('/');
       return;
     }
     setIsValidRoom(true);
-  }, [roomId, isSoloMode, router]);
+  }, [roomId, router]);
 
   // 방 코드 복사
   const copyRoomCode = useCallback(async () => {
@@ -54,7 +49,6 @@ export function useRoomLogic(roomId: string) {
   }, []);
 
   return {
-    isSoloMode,
     isValidRoom,
     copied,
     copyError,

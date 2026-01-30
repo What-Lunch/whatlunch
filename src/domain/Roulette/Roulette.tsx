@@ -7,6 +7,7 @@ import Button from '@/shared/components/Button';
 import RouletteFilter from './components/RouletteFilter';
 import RouletteUi from './components/RouletteUi';
 import RouletteModal from './components/RouletteModal';
+import Loading from '@/shared/components/Loading';
 
 import { getSocket } from '@/app/lib/socket';
 import { Category, Context } from '@/types/enum';
@@ -179,8 +180,8 @@ export const Roulette = memo(function Roulette({
       {(isSoloMode || userRole === 'host') && (
         <RouletteFilter
           onChange={setMenus}
-          onFiltersChange={userRole === 'host' ? handleFiltersChange : undefined}
-          disabled={userRole !== 'host' || spinning || isSpinning}
+          onFiltersChange={userRole === 'host' || isSoloMode ? handleFiltersChange : undefined}
+          disabled={(userRole !== 'host' && !isSoloMode) || spinning || isSpinning}
           syncedFilterState={syncedFilterState}
           isVisible={true}
         />
