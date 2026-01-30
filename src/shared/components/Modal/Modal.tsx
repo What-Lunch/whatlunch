@@ -63,7 +63,7 @@ export default function Modal({
     setMounted(true);
   }, []);
 
-  if (!mounted || !isOpen) return null;
+  if (!mounted || !isOpen || typeof window === 'undefined') return null;
 
   return createPortal(
     <section

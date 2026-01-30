@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Lottie from 'lottie-react';
 
@@ -8,6 +8,13 @@ import food from '../../../../public/animations/food.json';
 import styles from './Loading.module.scss';
 
 export default function Loading() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (typeof window === 'undefined' || !mounted) return null;
   return createPortal(
     <div className={styles['overlay']}>
       <div className={styles['animation']}>
