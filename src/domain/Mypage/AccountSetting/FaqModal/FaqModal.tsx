@@ -29,6 +29,7 @@ export default function FaqModal({ isOpen, onClose }: FaqModalProps) {
 
         if (!name || !email || !message) {
           toast.error('모든 필드를 입력해주세요.');
+          setSubmitting(false);
           return;
         }
 
