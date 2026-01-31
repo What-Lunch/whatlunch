@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import Image from 'next/image';
+import Image from 'next/image'; // [추가] 이미지 사용을 위해 추가
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
+import { GoogleLogin } from '@react-oauth/google';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
@@ -13,8 +14,7 @@ import Modal from '@/shared/components/Modal';
 import { authService } from '@/app/services/backend/auth.api';
 import { LoginModalProps } from '../types';
 import { useAuthStore } from '../store/auth.store';
-
-import Google from '../../../../public/icons/google.png';
+import Google from '../../../../public/icons/google.png'; // [추가] 구글 아이콘 경로 확인 필요
 
 import styles from '../AuthModal.module.scss';
 
@@ -40,6 +40,9 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
 
+  // [추가] 구글 로그인 버튼 제어를 위한 Ref
+  const googleLoginButtonRef = useRef<HTMLDivElement>(null);
+
   const setUser = useAuthStore(state => state.setUser);
 
   const loginMutation = useMutation({
@@ -50,6 +53,17 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
     },
     onError: (error: unknown) => {
       toast.error(getLoginErrorMessage(error));
+    },
+  });
+
+  const googleLoginMutation = useMutation({
+    mutationFn: (data: { idToken: string }) => authService.loginWithGoogle(data),
+    onSuccess: res => {
+      setUser(res.user);
+      onClose();
+    },
+    onError: () => {
+      toast.error('구글 로그인에 실패했습니다.');
     },
   });
 
@@ -70,8 +84,9 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} innerClassName={styles['modal']} title="로그인">
+    <Modal isOpen={true} onClose={onClose} innerClassName={styles['modal']}>
       <form className={styles['auth']} onSubmit={onSubmit}>
+        <h2 className={styles['auth__title']}>로그인</h2>
         <div className={styles['auth__body']}>
           <div className={styles['auth__body-group']}>
             <span className={styles['auth__body-group__label']}>이메일</span>
@@ -90,23 +105,50 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
           <div className={styles['auth__social']}>
             <span className={styles['auth__social__or']}>OR</span>
             <div className={styles['auth__social__oauth']}>
-              <span>간편 로그인하기</span>
               <button
                 type="button"
                 className={styles['auth__social__oauth--google']}
-                aria-label="Google로 로그인"
+                onClick={() => {
+                  setTimeout(() => {
+                    const btn = googleLoginButtonRef.current?.querySelector('div[role="button"]');
+                    if (btn && typeof (btn as HTMLElement).click === 'function') {
+                      (btn as HTMLElement).click();
+                    } else {
+                      toast.error('구글 버튼을 찾을 수 없습니다. 새로고침 후 다시 시도해주세요.');
+                    }
+                  }, 0);
+                }}
               >
                 <Image src={Google} alt="Google Logo" width={20} height={20} />
+                <span>Google 계정으로 시작하기</span>
               </button>
+
+              <div ref={googleLoginButtonRef} style={{ display: 'none' }}>
+                <GoogleLogin
+                  onSuccess={credentialResponse => {
+                    if (credentialResponse.credential) {
+                      googleLoginMutation.mutate({ idToken: credentialResponse.credential });
+                    } else {
+                      toast.error('구글 로그인에 실패했습니다.');
+                    }
+                  }}
+                  onError={() => {
+                    toast.error('구글 로그인에 실패했습니다.');
+                  }}
+                  width="200"
+                  useOneTap={false}
+                  auto_select={false}
+                />
+              </div>
             </div>
           </div>
 
           <div className={styles['auth__actions']}>
-            <div>
+            <div className={styles['auth__actions__text-group']}>
               <span className={styles['auth__actions__boolean']}>회원이 아니신가요? </span>
               <button
                 type="button"
-                className={styles['auth__actions__signup']}
+                className={styles['auth__actions__link']}
                 onClick={onSignupOpen}
               >
                 회원가입하기
@@ -114,14 +156,16 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
             </div>
           </div>
 
-          <Button
-            type="submit"
-            variant="blue"
-            className={styles['auth__actions__buttons__button']}
-            disabled={isLoading}
-          >
-            {isLoading ? '로그인 중...' : '로그인'}
-          </Button>
+          <div className={styles['auth__actions__buttons']}>
+            <Button
+              type="submit"
+              variant="orange"
+              className={styles['auth__actions__buttons__button']}
+              disabled={isLoading}
+            >
+              {isLoading ? '로그인 중...' : '로그인'}
+            </Button>
+          </div>
         </div>
       </form>
     </Modal>

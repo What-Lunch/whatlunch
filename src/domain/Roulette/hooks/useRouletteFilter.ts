@@ -37,7 +37,7 @@ export function useRouletteFilter(
   );
 
   const params = useParams();
-  const roomId = (params.roomId as string) || 'solo';
+  const roomId = (params?.roomId as string) || 'solo';
 
   // 동기화된 상태가 있으면 업데이트
   useEffect(() => {

@@ -39,7 +39,7 @@ export const Roulette = memo(function Roulette({
   } | null>(null);
 
   const params = useParams();
-  const roomCode = (params.roomId as string) || 'solo';
+  const roomCode = (params?.roomId as string) || 'solo';
   const isSoloMode = roomCode === 'solo';
 
   // 최초 입장/재입장 시 서버 menus만 사용

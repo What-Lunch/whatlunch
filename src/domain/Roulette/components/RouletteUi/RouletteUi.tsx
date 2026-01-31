@@ -42,7 +42,7 @@ export default function RouletteUi({
   const [spinning, setSpinning] = useState(false);
 
   const params = useParams();
-  const roomCode = (params.roomId as string) || 'solo';
+  const roomCode = (params?.roomId as string) || 'solo';
   const isSoloMode = roomCode === 'solo';
 
   /** 색상 */

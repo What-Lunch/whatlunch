@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
+import { GoogleLogin } from '@react-oauth/google';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
@@ -25,7 +26,9 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
+  // 무한 루프 방지를 위해 selector를 분리
   const clearUser = useAuthStore(state => state.clearUser);
+  const setUser = useAuthStore(state => state.setUser);
 
   const signupMutation = useMutation({
     mutationFn: (data: Auth.RegisterReq) => authService.postSignup(data),
@@ -40,6 +43,24 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
       } else {
         toast.error('회원가입에 실패했습니다. 다시 시도해주세요.');
       }
+    },
+  });
+
+  // 구글 로그인 버튼 ref
+  const googleLoginButtonRef = useRef<HTMLDivElement>(null);
+
+  // 구글 회원가입 mutation
+  const googleSignupMutation = useMutation({
+    mutationFn: (data: { idToken: string }) => authService.loginWithGoogle(data),
+    onSuccess: res => {
+      // 성공 시 바로 로그인
+      setUser(res.user);
+
+      toast.success('구글 계정으로 회원가입 및 로그인되었습니다!');
+      onClose();
+    },
+    onError: () => {
+      toast.error('구글 회원가입에 실패했습니다.');
     },
   });
 
@@ -67,8 +88,9 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   };
 
   return (
-    <Modal isOpen={true} onClose={onClose} innerClassName={styles['modal']} title="회원가입">
+    <Modal isOpen={true} onClose={onClose} innerClassName={styles['modal']}>
       <form className={styles['auth']} onSubmit={onSubmit}>
+        <h2 className={styles['auth__title']}>회원가입</h2>
         <div className={styles['auth__body']}>
           <div className={styles['auth__body-group']}>
             <span className={styles['auth__body-group__label']}>닉네임</span>
@@ -114,10 +136,38 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
         <div className={styles['auth__social']}>
           <span className={styles['auth__social__or']}>OR</span>
           <div className={styles['auth__social__oauth']}>
-            <span>간편 회원가입하기</span>
-            <button type="button" className={styles['auth__social__oauth__button']}>
-              <Image src={Google} alt="Google 로그인" width={24} height={24} />
+            <button
+              type="button"
+              className={styles['auth__social__oauth--google']}
+              onClick={() => {
+                setTimeout(() => {
+                  const btn = googleLoginButtonRef.current?.querySelector('div[role="button"]');
+                  if (btn && typeof (btn as HTMLElement).click === 'function') {
+                    (btn as HTMLElement).click();
+                  } else {
+                    toast.error('구글 버튼을 찾을 수 없습니다. 새로고침 후 다시 시도해주세요.');
+                  }
+                }, 0);
+              }}
+            >
+              <Image src={Google} alt="Google Logo" width={20} height={20} />
+              <span>Google 계정으로 시작하기</span>
             </button>
+            <div ref={googleLoginButtonRef} style={{ display: 'none' }}>
+              <GoogleLogin
+                onSuccess={credentialResponse => {
+                  if (credentialResponse.credential) {
+                    googleSignupMutation.mutate({ idToken: credentialResponse.credential });
+                  } else {
+                    toast.error('구글 회원가입에 실패했습니다.');
+                  }
+                }}
+                onError={() => {
+                  toast.error('구글 회원가입에 실패했습니다.');
+                }}
+                width={200}
+              />
+            </div>
           </div>
         </div>
 
@@ -126,7 +176,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
             <span className={styles['auth__actions__boolean']}>이미 회원이신가요? </span>
             <button
               type="button"
-              className={styles['auth__actions__signup']}
+              className={styles['auth__actions__link']}
               onClick={onLoginOpen}
               disabled={isLoading}
             >
@@ -137,7 +187,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
           <div className={styles['auth__actions__buttons']}>
             <Button
               type="button"
-              variant="blue"
+              variant="orange"
               mode="outline"
               className={styles['auth__actions__buttons__button']}
               onClick={onClose}
@@ -148,7 +198,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
 
             <Button
               type="submit"
-              variant="blue"
+              variant="orange"
               className={styles['auth__actions__buttons__button']}
               disabled={isLoading}
             >

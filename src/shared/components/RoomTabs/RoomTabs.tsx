@@ -21,7 +21,7 @@ export default function RoomTabs({ userRole, initialMenus = [], onResult }: Room
   const searchRef = useRef<HTMLInputElement>(null);
 
   const params = useParams();
-  const roomCode = (params.roomId as string) || 'solo';
+  const roomCode = (params?.roomId as string) || 'solo';
   const isSoloMode = roomCode === 'solo';
 
   // 룸별 독립적인 결과 저장소

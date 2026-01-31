@@ -9,11 +9,9 @@
 
   @include m.flex-box(flex-start, center);
   position: relative;
-
   width: 100%;
   padding: 10px var(--input-padding-x);
-
-  border: 2px solid rgba(f.color(purple-600), 0.2);
+  border: 1px solid f.color(orange-800);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.8);
 
@@ -22,8 +20,8 @@
     box-shadow 0.1s;
 
   &.focused {
-    border-color: rgba(f.color(purple-600), 0.5);
-    box-shadow: 0 0 0 3px rgba(f.color(purple-600), 0.15);
+    border-color: rgba(f.color(orange-800), 0.8);
+    box-shadow: 0 0 0 3px rgba(f.color(orange-600), 0.15);
   }
 
   &.disabled {
@@ -55,10 +53,13 @@
 
   padding: 0;
   margin: 0;
-}
 
-.wrapper__children {
-  @include m.flex-box;
-  color: f.color(icon-primary);
-  cursor: pointer;
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    // 텍스트 색상 유지
+    -webkit-text-fill-color: f.color(bg-primary) !important;
+  }
 }

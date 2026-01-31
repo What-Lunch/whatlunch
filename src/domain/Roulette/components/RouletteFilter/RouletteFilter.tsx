@@ -43,7 +43,7 @@ export default function RouletteFilter({
   const { foodOptions, situationOptions } = useFilterOptions(selectedFoodTypes, selectedSituation);
 
   const params = useParams();
-  const roomCode = (params.roomId as string) || 'solo';
+  const roomCode = (params?.roomId as string) || 'solo';
   const isSoloMode = roomCode === 'solo';
 
   // ============ 메뉴 변경 감지 ============

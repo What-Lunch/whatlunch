@@ -11,39 +11,62 @@
   @include m.flex-box(center, center, column);
   gap: 20px;
 
+  &__title {
+    @include m.text-style-extended('xl', 700, bg-primary);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
   &__body {
     width: 100%;
     @include m.flex-box(center, center, column);
-    gap: 20px;
+    gap: 16px;
 
     &-group {
       width: 100%;
       @include m.flex-box(center, flex-start, column);
-      gap: 2px;
+      gap: 6px;
 
       &__label {
         @include m.text-style-extended('md', 500, bg-tertiary);
+        margin-left: 2px;
       }
     }
   }
 
   &__social {
+    width: 100%;
     @include m.flex-box(center, center, column);
-    gap: 2px;
+    gap: 12px;
 
     &__or {
       @include m.text-style-extended('xs', 500, bg-primary);
+      opacity: 0.6;
     }
 
     &__oauth {
       width: 100%;
       @include m.flex-box(center, center);
-      gap: 8px;
 
+      // 구글 버튼
       &--google {
-        width: fit-content;
-        height: 100%;
+        width: 100%;
+        height: 44px;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+
         @include m.flex-box(center, center);
+        gap: 8px;
+
+        span {
+          @include m.text-style-extended('sm', 500, bg-primary);
+        }
+
+        &:hover {
+          background-color: #f5f5f5;
+        }
       }
     }
   }
@@ -51,70 +74,46 @@
   &__actions {
     width: 100%;
     @include m.flex-box(center, center, column);
-    gap: 8px;
+    gap: 16px;
+    margin-top: 8px;
 
-    &__boolean {
-      display: inline;
-      @include m.text-style-extended('md', 400, bg-primary);
+    &__text-group {
+      @include m.flex-box(center, center);
+      gap: 6px;
     }
 
-    &__signup {
-      display: inline;
-      @include m.text-style-extended('md', 500, blue-700);
+    &__boolean {
+      @include m.text-style-extended('sm', 400, bg-secondary);
+      line-height: 1.5;
+    }
+
+    &__link {
+      @include m.text-style-extended('sm', 600, blue-700);
       cursor: pointer;
       text-decoration: underline;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      line-height: 1.5;
+      vertical-align: middle;
+
+      &:hover {
+        opacity: 0.8;
+      }
     }
 
     &__buttons {
       width: 100%;
       @include m.flex-box(center, center);
-      gap: 8px;
+      gap: 10px;
 
       &__button {
         width: 100%;
-        border-radius: 5px;
+        height: 44px;
+        border-radius: 6px;
+        font-weight: 600;
       }
     }
   }
-
-  // &__title {
-  //   @include m.text-style-extended('2xl', 700, bg-primary);
-  //   margin-bottom: 16px;
-  // }
-
-  // &-group {
-  //   width: 100%;
-  //   @include m.flex-box(center, flex-start, column);
-  //   gap: 8px;
-
-  //   &__label {
-  //     @include m.text-style-extended('md', 500, bg-primary);
-  //   }
-  // }
-
-  // &__forget {
-  //   @include m.text-style-extended('sm', 500, brand-primary);
-  //   text-decoration: underline;
-  //   cursor: pointer;
-  // }
-
-  // &__buttons {
-  //   width: 100%;
-  //   @include m.flex-box(center, center, column);
-  //   gap: 12px;
-
-  //   &__button {
-  //     width: 100%;
-  //   }
-  //   &__boolean {
-  //     display: inline;
-  //     @include m.text-style-extended('md', 400, bg-primary);
-  //   }
-  //   &__signup {
-  //     display: inline;
-  //     @include m.text-style-extended('md', 500, brand-primary);
-  //     cursor: pointer;
-  //     text-decoration: underline;
-  //   }
-  // }
 }
