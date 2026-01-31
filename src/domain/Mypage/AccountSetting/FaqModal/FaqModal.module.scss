@@ -1,0 +1,45 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.faq-modal {
+  margin: 0 auto;
+}
+
+.faq-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 16px;
+
+  &__label {
+    @include m.flex-box(center, flex-start, column);
+    @include m.text-style('lg', 500);
+    gap: 6px;
+  }
+
+  &__textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid f.color(gray-300);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: f.color(gray-100);
+    resize: none;
+  }
+
+  &__submit {
+    width: 100%;
+    padding: 12px 0;
+    background-color: f.color(purple-600);
+    color: f.color(white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  &__submit:hover {
+    background-color: f.color(purple-700);
+  }
+}

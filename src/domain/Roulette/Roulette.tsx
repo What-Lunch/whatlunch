@@ -7,6 +7,7 @@ import Button from '@/shared/components/Button';
 import RouletteFilter from './components/RouletteFilter';
 import RouletteUi from './components/RouletteUi';
 import RouletteModal from './components/RouletteModal';
+import Loading from '@/shared/components/Loading';
 
 import { getSocket } from '@/app/lib/socket';
 import { Category, Context } from '@/types/enum';
@@ -156,13 +157,17 @@ export const Roulette = memo(function Roulette({
       </p>
 
       <div className={styles['roulette__wheel-wrapper']}>
-        <RouletteUi
-          items={menus}
-          onStart={handleSpinStart}
-          onResult={handleResult}
-          filters={filters}
-          userRole={userRole}
-        />
+        {isSoloMode && menus.length === 0 ? (
+          <Loading />
+        ) : (
+          <RouletteUi
+            items={menus}
+            onStart={handleSpinStart}
+            onResult={handleResult}
+            filters={filters}
+            userRole={userRole}
+          />
+        )}
       </div>
 
       <div className={styles['roulette__result-btn-wrapper']}>
@@ -179,8 +184,8 @@ export const Roulette = memo(function Roulette({
       {(isSoloMode || userRole === 'host') && (
         <RouletteFilter
           onChange={setMenus}
-          onFiltersChange={userRole === 'host' ? handleFiltersChange : undefined}
-          disabled={userRole !== 'host' || spinning || isSpinning}
+          onFiltersChange={userRole === 'host' || isSoloMode ? handleFiltersChange : undefined}
+          disabled={(userRole !== 'host' && !isSoloMode) || spinning || isSpinning}
           syncedFilterState={syncedFilterState}
           isVisible={true}
         />

@@ -1,0 +1,51 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: f.color(white);
+  @include m.flex-box(center, center, column);
+  z-index: 9999;
+}
+
+.animation,
+.lottie {
+  width: 300px;
+  height: 200px;
+
+  @include m.mq(md) {
+    width: 450px;
+    height: 250px;
+  }
+
+  @include m.mq(lg) {
+    width: 600px;
+    height: 300px;
+  }
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: f.color(black);
+  margin-top: 5px;
+
+  @include m.mq(lg) {
+    font-size: 64px;
+    margin-top: 60px;
+  }
+}
+
+.subtitle {
+  font-size: 12px;
+  color: f.color(black);
+  font-weight: 500;
+
+  @include m.mq(lg) {
+    font-size: 24px;
+  }
+}

@@ -1,14 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { UserIcon, MailIcon, SettingsIcon, LogOutIcon, ChevronRightIcon } from 'lucide-react';
+import {
+  UserIcon,
+  MailIcon,
+  SettingsIcon,
+  LogOutIcon,
+  ChevronRightIcon,
+  MessageCircleIcon,
+} from 'lucide-react';
 
-import EditProfileModal from '../AccountSetting/EditProfile/EditProfileModal';
-import LogoutModal from '../AccountSetting/LogoutModal/LogoutModal';
-
+import EditProfileModal from '../AccountSetting/EditProfile';
+import LogoutModal from '../AccountSetting/LogoutModal';
+import FaqModal from '../AccountSetting/FaqModal';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './AccountSetting.module.scss';
+import Button from '@/shared/components/Button/Button';
 
 // 활성화된 모달 타입
 type AccountSettingActiveModal = 'edit-profile' | 'logout' | null;
@@ -25,6 +33,7 @@ interface AccountSettingMenuItem {
 
 export default function AccountSetting() {
   const [activeModal, setActiveModal] = useState<AccountSettingActiveModal>(null);
+  const [faqModal, setFaqModal] = useState(false);
 
   const user = useAuthStore(state => state.user);
 
@@ -105,6 +114,22 @@ export default function AccountSetting() {
               </div>
             );
           })}
+          <div className={styles['account-setting__menu__help']}>
+            <MessageCircleIcon className={styles['account-setting__menu__help__icon']} />
+            <div className={styles['account-setting__menu__help__content']}>
+              <div className={styles['account-setting__menu__help__content__text']}>
+                <div className={styles['account-setting__menu__help__content__text__title']}>
+                  도움이 필요하신가요?
+                </div>
+                <div className={styles['account-setting__menu__help__content__text__description']}>
+                  메뉴 선택이나 서비스 이용에 어려움이 있으시면 언제든지 문의해주세요.
+                </div>
+              </div>
+              <Button variant="blue" onClick={() => setFaqModal(true)}>
+                지금 문의하기
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -113,6 +138,7 @@ export default function AccountSetting() {
         onClose={() => setActiveModal(null)}
       />
 
+      <FaqModal isOpen={faqModal} onClose={() => setFaqModal(false)} />
       <LogoutModal isOpen={activeModal === 'logout'} onClose={() => setActiveModal(null)} />
     </>
   );

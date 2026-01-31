@@ -13,7 +13,7 @@ interface EditProfileModalProps {
 export default function EditProfileModal({ isOpen, onClose }: EditProfileModalProps) {
   const user = useAuthStore(state => state.user);
 
-  if (!isOpen || !user) return null;
+  if (!user) return null;
 
   return (
     <Modal

@@ -294,10 +294,27 @@
       &__items {
         width: 100%;
         @include m.flex-box(flex-start, center, column);
-        height: 300px;
+        max-height: 560px;
+        overflow-x: hidden;
         overflow-y: auto;
-        gap: 10px;
 
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: rgba(f.color(purple-600), 0.05);
+          border-radius: 999px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: rgba(f.color(purple-600), 0.3);
+          border-radius: 999px;
+
+          &:hover {
+            background: rgba(f.color(purple-600), 0.5);
+          }
+        }
         &__item {
           width: 100%;
           @include m.flex-box(flex-start, center);

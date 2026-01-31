@@ -8,15 +8,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
-
-import { useAuthStore } from '@/domain/Auth/store/auth.store';
-import { createSocket, disconnectSocket } from '@/app/lib/socket';
-import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
-import { useRoomLogic } from './useRoomLogic';
-
 import KakaoMap from '@/shared/components/KakaoMap/KakaoMap';
 import Button from '@/shared/components/Button/Button';
 import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
+import Loading from '@/shared/components/Loading';
+
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
+import { createSocket } from '@/app/lib/socket';
+import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
+import { useRoomLogic } from './useRoomLogic';
+
 import { favoritesService } from '@/app/services/backend/favorites.api';
 
 import styles from './page.module.scss';
@@ -30,7 +31,7 @@ interface RoomPageProps {
 
 export default function RoomPage({ params }: RoomPageProps) {
   const roomId = params.roomId;
-  const { isSoloMode, isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
+  const { isValidRoom, copied, copyRoomCode } = useRoomLogic(roomId);
   const { getResults, setCurrentRoom } = useRouletteResultStore();
   const [roomResults, setRoomResults] = useState<Menu.GetMenuRes[]>([]);
   const [initialMenus, setInitialMenus] = useState<Menu.GetMenuRes[]>([]);
@@ -70,11 +71,6 @@ export default function RoomPage({ params }: RoomPageProps) {
 
   // ============ Socket 연결 (한 번만) ============
   useEffect(() => {
-    if (isSoloMode) {
-      setSocketReady(true);
-      return;
-    }
-
     if (!isValidRoom) return;
 
     const token = localStorage.getItem('accessToken');
@@ -114,13 +110,7 @@ export default function RoomPage({ params }: RoomPageProps) {
       socket.off('joinError');
       joinedRoomRef.current = null;
     };
-  }, [roomId, isSoloMode, isValidRoom, router]);
-
-  useEffect(() => {
-    return () => {
-      if (!isSoloMode) disconnectSocket();
-    };
-  }, [isSoloMode]);
+  }, [roomId, isValidRoom, router]);
 
   // 찜 API
   const addFavoriteMutation = useMutation({
@@ -178,47 +168,40 @@ export default function RoomPage({ params }: RoomPageProps) {
         <div className={styles['room__header__left']}>
           <Users size={32} className={styles['room__header__icon']} />
           <div>
-            <h1 className={styles['room__title']}>
-              {isSoloMode ? '혼자 메뉴 정하기' : '같이 메뉴 정하기'}
-            </h1>
-            <p className={styles['room__subtitle']}>
-              {isSoloMode ? '룰렛을 돌려보세요!' : '함께 룰렛을 돌려보세요!'}
-            </p>
+            <h1 className={styles['room__title']}>같이 메뉴 정하기</h1>
+            <p className={styles['room__subtitle']}>함께 룰렛을 돌려보세요!</p>
           </div>
         </div>
-        {!isSoloMode && (
-          <div className={styles['room__code']}>
-            <span className={styles['room__code__label']}>방 코드</span>
-            <strong className={styles['room__code__value']}>{roomId}</strong>
-            <button
-              type="button"
-              aria-label="방 코드 복사"
-              className={styles['room__code__copy']}
-              onClick={copyRoomCode}
-            >
-              {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? '복사됨' : '복사'}
-            </button>
-          </div>
-        )}
+
+        <div className={styles['room__code']}>
+          <span className={styles['room__code__label']}>방 코드</span>
+          <strong className={styles['room__code__value']}>{roomId}</strong>
+          <button
+            type="button"
+            aria-label="방 코드 복사"
+            className={styles['room__code__copy']}
+            onClick={copyRoomCode}
+          >
+            {copied ? <Check size={16} /> : <Copy size={16} />}
+            {copied ? '복사됨' : '복사'}
+          </button>
+        </div>
       </header>
 
       <div className={styles['room__content']}>
         <section className={styles['room__roulette-section']}>
-          {isSoloMode ? (
-            <RoomTabs userRole="host" onResult={handleRouletteResult} />
-          ) : socketReady && userRole ? (
+          {socketReady && userRole ? (
             <RoomTabs
               userRole={userRole}
               initialMenus={initialMenus}
               onResult={handleRouletteResult}
             />
           ) : (
-            <div>연결 중...</div>
+            <Loading />
           )}
         </section>
 
-        {!isSoloMode && socketReady && (
+        {socketReady && (
           <aside className={styles['room__right']}>
             <Chat roomCode={roomId} />
           </aside>
@@ -271,10 +254,13 @@ export default function RoomPage({ params }: RoomPageProps) {
                 <h4>최근 룰렛 결과</h4>
                 <div className={styles['room__mood-stats__list']}>
                   <ul className={styles['room__mood-stats__list__items']}>
-                    {roomResults?.slice(0, 8).map((item, idx) => {
+                    {roomResults?.map((item, idx) => {
                       const isActive = favoriteMap[item.id] ?? false;
                       return (
-                        <li key={item.id} className={styles['room__mood-stats__list__items__item']}>
+                        <li
+                          key={`${item.id} + ${idx}`}
+                          className={styles['room__mood-stats__list__items__item']}
+                        >
                           <span className={styles['room__mood-stats__list__items__item__badge']}>
                             {idx + 1}
                           </span>

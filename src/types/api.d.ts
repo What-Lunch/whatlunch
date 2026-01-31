@@ -53,10 +53,36 @@ namespace Menu {
   }
 }
 
-declare namespace Favorite {
+namespace Favorite {
   interface GetMyFavoritesRes {
     id: string;
     menuId: Menu | null;
+    createdAt: string;
+  }
+}
+
+namespace Faq {
+  interface CreateFaqReq {
+    name: string;
+    email: string;
+    message: string;
+  }
+
+  interface CreateFaqRes {
+    faq: {
+      id: number;
+      name: string;
+      email: string;
+      message: string;
+      createdAt: string;
+    };
+  }
+
+  interface GetFaqsRes {
+    id: number;
+    name: string;
+    email: string;
+    message: string;
     createdAt: string;
   }
 }
