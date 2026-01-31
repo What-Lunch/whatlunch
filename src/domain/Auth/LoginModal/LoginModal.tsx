@@ -159,7 +159,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
           <div className={styles['auth__actions__buttons']}>
             <Button
               type="submit"
-              variant="blue"
+              variant="orange"
               className={styles['auth__actions__buttons__button']}
               disabled={isLoading}
             >

@@ -68,10 +68,8 @@ class AuthService {
       body: JSON.stringify({ idToken }),
     });
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('accessToken', res.accessToken);
-      localStorage.setItem('expiresAt', res.expiresAt);
-    }
+    localStorage.setItem('accessToken', res.accessToken);
+    localStorage.setItem('expiresAt', res.expiresAt);
 
     return res;
   }

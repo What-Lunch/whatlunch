@@ -26,7 +26,9 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
+  // 무한 루프 방지를 위해 selector를 분리
   const clearUser = useAuthStore(state => state.clearUser);
+  const setUser = useAuthStore(state => state.setUser);
 
   const signupMutation = useMutation({
     mutationFn: (data: Auth.RegisterReq) => authService.postSignup(data),
@@ -47,11 +49,13 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   // 구글 로그인 버튼 ref
   const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
-  // 구글 회원가입 mutation (로그인과 동일하게 처리)
+  // 구글 회원가입 mutation
   const googleSignupMutation = useMutation({
     mutationFn: (data: { idToken: string }) => authService.loginWithGoogle(data),
-    onSuccess: () => {
-      clearUser();
+    onSuccess: res => {
+      // 성공 시 바로 로그인
+      setUser(res.user);
+
       toast.success('구글 계정으로 회원가입 및 로그인되었습니다!');
       onClose();
     },
