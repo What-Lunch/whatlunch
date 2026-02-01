@@ -12,7 +12,7 @@ import Loading from '@/shared/components/Loading';
 import { getSocket } from '@/app/lib/socket';
 import { Category, Context } from '@/types/enum';
 
-import type { RouletteControllerProps } from './type';
+import type { RouletteControllerProps } from './types';
 import styles from './Roulette.module.scss';
 
 export const Roulette = memo(function Roulette({

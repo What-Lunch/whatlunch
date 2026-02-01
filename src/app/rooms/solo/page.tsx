@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { StarIcon, DicesIcon, Clock } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 import Roulette from '@/domain/Roulette/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
@@ -9,8 +10,11 @@ import Badge, { BadgeProps } from '@/shared/components/Badge';
 import { BaseInput } from '@/shared/components/Input';
 import Button from '@/shared/components/Button';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
+import GlobalToast from '@/shared/components/Toast/GlobalToast';
 
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
+
 import styles from './page.module.scss';
 
 const BADGES: BadgeProps[] = [
@@ -27,6 +31,10 @@ export default function SoloRoomPage() {
   const { getResults, addResult, setCurrentRoom } = useRouletteResultStore();
   const [roomResults, setRoomResults] = useState<Menu.GetMenuRes[]>([]);
 
+  // 로그인 여부
+  const user = useAuthStore(state => state.user);
+  const isLoggedIn = !!user;
+
   // 솔로 모드 설정
   useEffect(() => {
     setCurrentRoom('solo');
@@ -42,6 +50,7 @@ export default function SoloRoomPage() {
       setResult(selectedMenu);
       setSearchKeyword(selectedMenu?.name ?? '');
       setIsSpinning(false);
+
       if (selectedMenu) {
         addResult('solo', [selectedMenu]);
         setRoomResults(prev => [selectedMenu, ...prev]);
@@ -56,7 +65,13 @@ export default function SoloRoomPage() {
     }
   };
 
+  // 로그인 토스트
   const handleFavoriteToggle = (menuId: string) => {
+    if (!isLoggedIn) {
+      toast.info('찜 기능은 로그인 후 사용할 수 있어요');
+      return;
+    }
+
     setFavoriteMap(prev => ({
       ...prev,
       [menuId]: !prev[menuId],
@@ -64,92 +79,92 @@ export default function SoloRoomPage() {
   };
 
   return (
-    <div className={styles['solo']}>
-      <header className={styles['solo__header']}>
-        <div className={styles['solo__header__title']}>
-          <DicesIcon size={40} className={styles['solo__header__title__icon']} />
-          <div className={styles['solo__header__title__text']}>
-            <h2>혼자 메뉴 정하기</h2>
-            <span>혼자서도 룰렛을 돌릴 수 있어요!</span>
-          </div>
-        </div>
+    <>
+      <GlobalToast />
 
-        <div className={styles['solo__header__stats']}>
-          {BADGES.map(({ id, variant, Icon, text }) => (
-            <Badge key={id} id={id} variant={variant} Icon={Icon} text={text} />
-          ))}
-        </div>
-      </header>
-
-      <main className={styles['solo__content']}>
-        <div className={styles['solo__main-section']}>
-          <section className={styles['solo__left']}>
-            <Roulette
-              isSpinning={isSpinning}
-              onSpinStart={handleSpinStart}
-              onSpinResult={handleSpinResult}
-              result={result}
-            />
-          </section>
-
-          <section className={styles['solo__right']}>
-            <div className={styles['solo__map-section']}>
-              <div className={styles['solo__map-header']}>
-                <h3>지도</h3>
-                <p>결과에 따라 지도가 업데이트 돼요!</p>
-              </div>
-
-              <div className={styles['solo__map-header']}>
-                <BaseInput
-                  ref={searchRef}
-                  placeholder="장소를 검색해보세요"
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') {
-                      handleSearch();
-                    }
-                  }}
-                />
-                <Button
-                  type="button"
-                  className={styles['solo__map-header__search-btn']}
-                  onClick={handleSearch}
-                  aria-label="검색"
-                >
-                  검색
-                </Button>
-              </div>
-
-              <div className={styles['solo__map']}>
-                <KakaoMap keyword={searchKeyword} list />
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <div className={styles['solo__stats-section']}>
-          <div className={styles['solo__stats-header']}>
-            <h3>🎲 결과 내역</h3>
-          </div>
-
-          <div className={styles['solo__top-menu']}>
-            <div className={styles['solo__top-menu__icon']}>📊</div>
-            <div className={styles['solo__top-menu__info']}>
-              <span className={styles['solo__top-menu__name']}>돌린횟수</span>
-              <span className={styles['solo__top-menu__count']}>{roomResults.length} 회</span>
+      <div className={styles['solo']}>
+        <header className={styles['solo__header']}>
+          <div className={styles['solo__header__title']}>
+            <DicesIcon size={40} className={styles['solo__header__title__icon']} />
+            <div className={styles['solo__header__title__text']}>
+              <h2>혼자 메뉴 정하기</h2>
+              <span>혼자서도 룰렛을 돌릴 수 있어요!</span>
             </div>
           </div>
 
-          <div className={styles['solo__mood-stats']}>
-            <h4>최근 룰렛 결과</h4>
+          <div className={styles['solo__header__stats']}>
+            {BADGES.map(({ id, variant, Icon, text }) => (
+              <Badge key={id} id={id} variant={variant} Icon={Icon} text={text} />
+            ))}
+          </div>
+        </header>
 
-            <div className={styles['solo__mood-stats__list']}>
+        <main className={styles['solo__content']}>
+          <div className={styles['solo__main-section']}>
+            <section className={styles['solo__left']}>
+              <Roulette
+                isSpinning={isSpinning}
+                onSpinStart={handleSpinStart}
+                onSpinResult={handleSpinResult}
+                result={result}
+              />
+            </section>
+
+            <section className={styles['solo__right']}>
+              <div className={styles['solo__map-section']}>
+                <div className={styles['solo__map-header']}>
+                  <h3>지도</h3>
+                  <p>결과에 따라 지도가 업데이트 돼요!</p>
+                </div>
+
+                <div className={styles['solo__map-header']}>
+                  <BaseInput
+                    ref={searchRef}
+                    placeholder="장소를 검색해보세요"
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') handleSearch();
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    className={styles['solo__map-header__search-btn']}
+                    onClick={handleSearch}
+                    aria-label="검색"
+                  >
+                    검색
+                  </Button>
+                </div>
+
+                <div className={styles['solo__map']}>
+                  <KakaoMap keyword={searchKeyword} list />
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div className={styles['solo__stats-section']}>
+            <div className={styles['solo__stats-header']}>
+              <h3>🎲 결과 내역</h3>
+            </div>
+
+            <div className={styles['solo__top-menu']}>
+              <div className={styles['solo__top-menu__icon']}>📊</div>
+              <div className={styles['solo__top-menu__info']}>
+                <span className={styles['solo__top-menu__name']}>돌린횟수</span>
+                <span className={styles['solo__top-menu__count']}>{roomResults.length} 회</span>
+              </div>
+            </div>
+
+            <div className={styles['solo__mood-stats']}>
+              <h4>최근 룰렛 결과</h4>
+
               <ul className={styles['solo__mood-stats__list__items']}>
                 {roomResults.slice(0, 8).map((item, idx) => {
                   const isActive = favoriteMap[item.id] ?? false;
 
                   return (
                     <li
-                      key={`${item.id}` + `${idx}`}
+                      key={`${item.id}-${idx}`}
                       className={styles['solo__mood-stats__list__items__item']}
                     >
                       <span className={styles['solo__mood-stats__list__items__item__badge']}>
@@ -175,19 +190,19 @@ export default function SoloRoomPage() {
                 )}
               </ul>
             </div>
-          </div>
 
-          <div className={styles['solo__time-info']}>
-            <Clock size={18} />
-            <span>
-              {new Date().toLocaleTimeString('ko-KR', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </span>
+            <div className={styles['solo__time-info']}>
+              <Clock size={18} />
+              <span>
+                {new Date().toLocaleTimeString('ko-KR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </span>
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
