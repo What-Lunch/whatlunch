@@ -5,7 +5,19 @@ const nextConfig = {
   sassOptions: {
     includePaths: [join(process.cwd(), 'src', 'styles')],
   },
-
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Credentials',
+            value: 'true',
+          },
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

@@ -72,9 +72,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   // ============ Socket 연결 (한 번만) ============
   useEffect(() => {
     if (!isValidRoom) return;
-
-    const token = localStorage.getItem('accessToken');
-    if (!token) return;
+    if (!user) return;
 
     const socket = createSocket(token);
     if (!socket) return;
@@ -110,7 +108,7 @@ export default function RoomPage({ params }: RoomPageProps) {
       socket.off('joinError');
       joinedRoomRef.current = null;
     };
-  }, [roomId, isValidRoom, router]);
+  }, [roomId, isValidRoom, router, user]);
 
   // 찜 API
   const addFavoriteMutation = useMutation({

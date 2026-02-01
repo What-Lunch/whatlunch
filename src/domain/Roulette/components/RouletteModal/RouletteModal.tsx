@@ -24,9 +24,9 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
   // TODO: 공유로직 개선 필요
   const handleShareClick = async () => {
     const result = await shareContent('오늘의 메뉴', `오늘의 메뉴는 ${menu?.name}입니다!`);
-    if (result.ok) console.log('공유 성공');
-    else if (result.cancelled) console.log('사용자 취소');
-    else console.error('공유 실패:', result.error);
+    if (!result) {
+      alert('공유하기가 지원되지 않는 환경입니다.');
+    }
   };
 
   const imageSrc = isImageError || !menu ? DEFAULT_IMAGE : `/foods/${menu.name}.png`;

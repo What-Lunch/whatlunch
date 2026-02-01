@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import Header from '@/shared/components/layout/Header';
 import Main from '@/shared/components/layout/Main';
 import TanstackProvider from '@/shared/context/TanstackProvider';
-import ClientWarmup from './ClientWarmup';
+
 import GlobalToast from '@/shared/components/Toast/GlobalToast';
 import GoogleProvider from '@/shared/components/Providers/GoogleProvider';
+import ClientWarmup from './ClientWarmup';
 
 import '@/styles/main.scss';
 
@@ -19,7 +20,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: LayoutProps) {
+export default async function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="ko">
       {process.env.NODE_ENV === 'development' ? (
@@ -31,8 +32,8 @@ export default function RootLayout({ children }: LayoutProps) {
 
       <body>
         <GoogleProvider>
-          <ClientWarmup />
           <TanstackProvider>
+            <ClientWarmup />
             <Header />
             <Main>{children}</Main>
           </TanstackProvider>

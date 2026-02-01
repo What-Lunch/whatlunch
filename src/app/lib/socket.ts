@@ -10,12 +10,27 @@ const getSocketUrl = (): string => {
   return url;
 };
 
-export const createSocket = (token: string): Socket | null => {
+function getTokenFromCookies(): string | null {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+  const match = document.cookie.match(/accessToken=([^;]+)/);
+  return match ? match[1] : null;
+}
+
+export const createSocket = (): Socket | null => {
   if (socket?.connected) {
     return socket;
   }
 
   try {
+    const token = getTokenFromCookies();
+
+    if (!token) {
+      console.error('[Socket] 액세스 토큰이 없습니다.');
+      return null;
+    }
+
     const apiUrl = getSocketUrl();
     socket = io(apiUrl, {
       auth: {

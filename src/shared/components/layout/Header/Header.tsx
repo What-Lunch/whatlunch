@@ -26,11 +26,16 @@ export function Header() {
 
   const { user, clearUser, isAuthLoading } = useAuthStore();
 
-  const handleLogout = useCallback(() => {
-    authService.postLogout();
-    clearUser();
-    toast.success('로그아웃 되었습니다.');
-    router.replace('/');
+  const handleLogout = useCallback(async () => {
+    try {
+      await authService.postLogout();
+      clearUser();
+      toast.success('로그아웃 되었습니다.');
+      router.replace('/');
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      toast.error('로그아웃에 실패했습니다.');
+    }
   }, [clearUser, router]);
 
   return (

@@ -1,37 +1,35 @@
 import { fetcher } from '@/app/lib/fetcher';
 
 class AuthService {
-  postSignup(data: Auth.RegisterReq): Promise<{ message: string }> {
-    return fetcher<{ message: string }>('/auth/signup', {
+  postSignup(data: Auth.RegisterReq): Promise<Auth.MeRes> {
+    return fetcher('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async postLogin(data: Auth.LoginReq): Promise<Auth.LoginRes> {
-    const res = await fetcher<Auth.LoginRes>('/auth/login', {
+    return await fetcher<Auth.LoginRes>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
     });
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('accessToken', res.accessToken);
-      localStorage.setItem('expiresAt', res.expiresAt);
-    }
-
-    return res;
   }
 
-  postLogout() {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('expiresAt');
+  async postLogout(): Promise<void> {
+    await fetcher('/auth/logout', {
+      method: 'POST',
+    });
   }
 
   getMe(): Promise<Auth.MeRes> {
     return fetcher<Auth.MeRes>('/auth/me', {
       method: 'GET',
-      auth: true,
+    });
+  }
+
+  async refresh(): Promise<{ user: Auth.MeRes }> {
+    return fetcher<{ user: Auth.MeRes }>('/auth/refresh', {
+      method: 'POST',
     });
   }
 
@@ -39,7 +37,6 @@ class AuthService {
     return fetcher<Auth.MeRes>('/auth/me', {
       method: 'PATCH',
       body: JSON.stringify(data),
-      auth: true,
     });
   }
 
@@ -68,10 +65,11 @@ class AuthService {
       body: JSON.stringify({ idToken }),
     });
 
-    localStorage.setItem('accessToken', res.accessToken);
-    localStorage.setItem('expiresAt', res.expiresAt);
-
-    return res;
+    return {
+      user: res.user,
+      accessToken: '',
+      expiresAt: '',
+    };
   }
 }
 

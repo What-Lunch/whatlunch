@@ -22,9 +22,11 @@ namespace Auth {
   }
 
   interface MeRes {
+    id: string;
     email: string;
     nickname: string;
     profileImage: string | null;
+    provider?: string;
   }
 
   interface UpdateMeReq {

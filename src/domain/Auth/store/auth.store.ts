@@ -6,6 +6,7 @@ type User = {
   nickname: string;
   profileImage: string | null;
 };
+
 type AuthState = {
   user: User | null;
   isAuthLoading: boolean;
@@ -21,3 +22,9 @@ export const useAuthStore = create<AuthState>(set => ({
   clearUser: () => set({ user: null, isAuthLoading: false }),
   finishAuthCheck: () => set({ isAuthLoading: false }),
 }));
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('auth:expired', () => {
+    useAuthStore.getState().clearUser();
+  });
+}
