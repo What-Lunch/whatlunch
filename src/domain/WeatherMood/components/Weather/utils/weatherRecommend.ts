@@ -1,6 +1,6 @@
 import type { TempGroup } from '@/domain/WeatherMood/components/Weather/constants/recommend';
 
-import type { WeatherMain } from '@/types/api/weather'; // OpenWeather 날씨 상태 코드
+import type { WeatherMain } from '@/types/api/weather';
 
 import { TEMP_BOUNDARY } from '@/domain/WeatherMood/components/Weather/constants/recommend';
 import { fallbackMenus } from '@/domain/WeatherMood/components/Weather/constants/recommend';
@@ -28,7 +28,7 @@ export function makeFinalRecommend(weather: WeatherMain, temp: number): string[]
   const tempMenu = tempMenus[tempGroup] ?? fallbackMenus;
 
   // 두 메뉴 합치고 중복 제거
-  const unique = Array.from(new Set(tempMenu.concat(weatherMenu)));
+  const unique: string[] = Array.from(new Set([...tempMenu, ...weatherMenu]));
 
   // 최소 추천 개수 미만이면 fallback으로 보정
   const safeMenus =
