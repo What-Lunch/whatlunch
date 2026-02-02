@@ -9,7 +9,7 @@ import AccountSetting from '@/domain/Mypage/AccountSetting';
 import styles from './page.module.scss';
 
 /**
- * @warning 이 페이지는 서버 컴포넌트입니다. 클라이언트 컴포넌트로 변경하지 마세요.
+ * @description 이 페이지는 서버 컴포넌트입니다. 클라이언트 컴포넌트로 변경하지 마세요.
  */
 export default async function Page() {
   try {

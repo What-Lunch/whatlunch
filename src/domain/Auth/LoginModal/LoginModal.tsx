@@ -47,15 +47,15 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
 
   const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
-  const setUser = useAuthStore(state => state.setUser);
+  const { setUser } = useAuthStore();
 
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
+      setUser(res.user);
+
       toast.success('로그인에 성공했습니다.');
       router.refresh();
-
-      setUser(res.user);
       onClose();
     },
     onError: (error: unknown) => {

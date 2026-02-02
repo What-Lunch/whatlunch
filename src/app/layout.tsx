@@ -5,7 +5,6 @@ import TanstackProvider from '@/shared/context/TanstackProvider';
 
 import GlobalToast from '@/shared/components/Toast/GlobalToast';
 import GoogleProvider from '@/shared/components/Providers/GoogleProvider';
-// import ClientWarmup from './ClientWarmup';
 
 import '@/styles/main.scss';
 
@@ -33,7 +32,6 @@ export default function RootLayout({ children }: LayoutProps) {
       <body>
         <GoogleProvider>
           <TanstackProvider>
-            {/* <ClientWarmup /> */}
             <Header />
             <Main>{children}</Main>
           </TanstackProvider>

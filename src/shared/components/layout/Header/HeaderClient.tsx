@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,33 +15,51 @@ import { ProfileImage } from '@/shared/components/ProfileImage';
 
 import { authServiceClient } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
+import { disconnectSocket } from '@/app/lib/socket';
 
 import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 
 import styles from './Header.module.scss';
 
-export default function HeaderClient({ user }: { user: Auth.MeRes }) {
+export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes | null }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const clearUser = useAuthStore(state => state.clearUser);
-  const setUser = useAuthStore(state => state.setUser);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const { user: storeUser, clearUser, setUser } = useAuthStore();
+
+  useEffect(() => {
+    if (initialUser) {
+      setUser(initialUser);
+    }
+  }, [initialUser, setUser]);
+
+  const displayUser = storeUser;
 
   const handleLogout = useCallback(async () => {
     try {
-      await authServiceClient.postLogout();
-      toast.success('로그아웃 되었습니다.');
-      clearUser();
-      router.refresh();
-    } catch (error) {
-      console.error('로그아웃 실패:', error);
-      toast.error('로그아웃에 실패했습니다.');
-    }
-  }, [router, clearUser]);
+      setIsLoggingOut(true);
 
-  useEffect(() => {
-    setUser(user);
-  }, [setUser, user]);
+      await authServiceClient.postLogout();
+      disconnectSocket();
+      queryClient.clear();
+
+      clearUser();
+
+      toast.success('로그아웃 되었습니다.');
+
+      setTimeout(() => {
+        router.refresh();
+      }, 300);
+    } catch (error) {
+      console.error('[Header] 로그아웃 실패:', error);
+      toast.error('로그아웃에 실패했습니다.');
+      setIsLoggingOut(false);
+    }
+  }, [router, queryClient, clearUser]);
+
   return (
     <header className={styles['header']}>
       <div className={styles['header__menu']}>
@@ -48,7 +67,7 @@ export default function HeaderClient({ user }: { user: Auth.MeRes }) {
           <span>홈</span>
         </Link>
 
-        {user && (
+        {displayUser && (
           <Link href="/mypage">
             <span>마이페이지</span>
           </Link>
@@ -62,16 +81,21 @@ export default function HeaderClient({ user }: { user: Auth.MeRes }) {
 
       <div className={styles['header__auth']}>
         <div style={{ width: '80px', height: '40px' }} />
-        {user ? (
+        {displayUser ? (
           <>
             <div className={styles['header__user']}>
               <div className={styles['header__user-avatar']}>
-                <ProfileImage src={user.profileImage ?? '/icons/default_profile.png'} priority />
+                <ProfileImage
+                  src={displayUser.profileImage ?? '/icons/default_profile.png'}
+                  priority
+                />
               </div>
-              <span className={styles['header__user-nickname']}>{user.nickname || '사용자'}님</span>
+              <span className={styles['header__user-nickname']}>
+                {displayUser.nickname || '사용자'}님
+              </span>
             </div>
-            <Button variant="primary" onClick={() => handleLogout()}>
-              로그아웃
+            <Button variant="primary" onClick={handleLogout} disabled={isLoggingOut}>
+              {isLoggingOut ? '로그아웃 중...' : '로그아웃'}
             </Button>
           </>
         ) : (
@@ -122,7 +146,7 @@ export default function HeaderClient({ user }: { user: Auth.MeRes }) {
                   홈
                 </Link>
               </li>
-              {user && (
+              {displayUser && (
                 <li>
                   <Link href="/mypage" onClick={() => setIsMobileMenuOpen(false)}>
                     마이페이지
@@ -130,7 +154,7 @@ export default function HeaderClient({ user }: { user: Auth.MeRes }) {
                 </li>
               )}
 
-              {user ? (
+              {displayUser ? (
                 <li>
                   <button
                     type="button"
@@ -138,8 +162,9 @@ export default function HeaderClient({ user }: { user: Auth.MeRes }) {
                       handleLogout();
                       setIsMobileMenuOpen(false);
                     }}
+                    disabled={isLoggingOut}
                   >
-                    로그아웃
+                    {isLoggingOut ? '로그아웃 중...' : '로그아웃'}
                   </button>
                 </li>
               ) : (

@@ -1,12 +1,16 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
+
 import Modal from '@/shared/components/Modal/Modal';
 import Button from '@/shared/components/Button/Button';
 
 import { authServiceClient } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
+import { disconnectSocket } from '@/app/lib/socket';
 
 import styles from './LogoutModal.module.scss';
 
@@ -17,15 +21,39 @@ interface LogoutModalProps {
 
 export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   const router = useRouter();
-  const clearUser = useAuthStore(state => state.clearUser);
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogout = () => {
-    authServiceClient.postLogout();
-    clearUser();
-    onClose();
-    toast.success('로그아웃 되었습니다.');
-    router.replace('/');
-  };
+  const { clearUser } = useAuthStore();
+
+  const logoutMutation = useMutation({
+    mutationFn: () => authServiceClient.postLogout(),
+    onSuccess: () => {
+      disconnectSocket();
+      queryClient.clear();
+
+      clearUser();
+
+      toast.success('로그아웃 되었습니다.');
+      onClose();
+
+      setTimeout(() => {
+        router.refresh();
+      }, 300);
+
+      router.push('/');
+    },
+    onError: error => {
+      console.error('[LogoutModal] 로그아웃 실패:', error);
+      toast.error('로그아웃에 실패했습니다.');
+      setIsLoading(false);
+    },
+  });
+
+  const handleLogout = useCallback(() => {
+    setIsLoading(true);
+    logoutMutation.mutate();
+  }, [logoutMutation]);
 
   return (
     <Modal
@@ -36,12 +64,24 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
       innerClassName={styles['logout-modal']}
     >
       <div className={styles['logout-modal__actions']}>
-        <Button variant="neutral" mode="outline" type="button" onClick={onClose}>
+        <Button
+          variant="neutral"
+          mode="outline"
+          type="button"
+          onClick={onClose}
+          disabled={isLoading}
+        >
           취소
         </Button>
 
-        <Button variant="danger" mode="fill" type="button" onClick={handleLogout}>
-          로그아웃
+        <Button
+          variant="danger"
+          mode="fill"
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoading}
+        >
+          {isLoading ? '로그아웃 중...' : '로그아웃'}
         </Button>
       </div>
     </Modal>

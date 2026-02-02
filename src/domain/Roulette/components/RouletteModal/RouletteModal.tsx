@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-import { useEscClose } from '@/shared/hooks/useEscClose';
 import { shareContent } from '../../utils/shareContent';
 
 import Modal from '@/shared/components/Modal';
@@ -23,9 +22,6 @@ function isValidFoodCategory(
 }
 
 export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
-  // ESC 키로 닫기
-  useEscClose(onClose);
-
   const [isImageError, setIsImageError] = useState(false);
 
   // 공유 클릭 처리
