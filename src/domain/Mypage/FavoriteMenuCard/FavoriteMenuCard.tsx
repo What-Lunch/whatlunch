@@ -17,37 +17,44 @@ export default function FavoriteMenuCard({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
-
+  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
   const validFavorites = useMemo(() => favoriteMenus.filter(item => item != null), [favoriteMenus]);
 
   // 찜 삭제
-  const removeFavoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
-
-    onMutate: async menuId => {
-      await queryClient.cancelQueries({ queryKey: ['favorites', 'list'] });
-
-      const prev = queryClient.getQueryData<Favorite.GetMyFavoritesRes[]>(['favorites', 'list']);
-
-      // 목록에서 제거
-      queryClient.setQueryData<Favorite.GetMyFavoritesRes[]>(['favorites', 'list'], old => {
-        if (!old) return old;
-        return old.filter(item => item._id !== menuId);
-      });
-
-      return { prev };
+  const addFavoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
+    onMutate: (menuId: string) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
     },
-
-    onError: (_err, _menuId, context) => {
-      if (context?.prev) {
-        queryClient.setQueryData<Favorite.GetMyFavoritesRes[]>(['favorites', 'list'], context.prev);
-      }
+    onError: (_err, menuId) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
     },
-
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', 'list'] });
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
     },
   });
+
+  const removeFavoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
+    onMutate: (menuId: string) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
+    },
+    onError: (_err, menuId) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
+    },
+  });
+
+  const handleFavoriteToggle = (menuId: string) => {
+    const isActive = favoriteMap[menuId] ?? false;
+    if (isActive) {
+      removeFavoriteMutation.mutate(menuId);
+    } else {
+      addFavoriteMutation.mutate(menuId);
+    }
+  };
 
   return (
     <>
@@ -77,8 +84,8 @@ export default function FavoriteMenuCard({
                   </div>
 
                   <FavoriteToggle
-                    isActive
-                    onToggle={() => removeFavoriteMutation.mutate(menu._id)}
+                    isActive={favoriteMap[menu._id] ?? true}
+                    onToggle={() => handleFavoriteToggle(menu._id)}
                     size={18}
                   />
                 </li>
@@ -119,8 +126,8 @@ export default function FavoriteMenuCard({
                 </div>
 
                 <FavoriteToggle
-                  isActive
-                  onToggle={() => removeFavoriteMutation.mutate(menu._id)}
+                  isActive={favoriteMap[menu._id] ?? true}
+                  onToggle={() => handleFavoriteToggle(menu._id)}
                   size={18}
                 />
               </li>

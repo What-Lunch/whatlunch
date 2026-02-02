@@ -11,7 +11,6 @@ class FavoritesService {
   getMyFavorites(): Promise<Favorite.GetMyFavoritesRes[]> {
     return this.fetcher<Favorite.GetMyFavoritesRes[]>('/favorites/list', {
       method: 'GET',
-      auth: true,
     });
   }
 
@@ -19,7 +18,6 @@ class FavoritesService {
   addFavorite(menuId: string): Promise<{ isFavorite: boolean }> {
     return this.fetcher<{ isFavorite: boolean }>('/favorites/add', {
       method: 'POST',
-      auth: true,
       body: JSON.stringify({ menuId }),
     });
   }
@@ -28,7 +26,6 @@ class FavoritesService {
   removeFavorite(menuId: string): Promise<{ isDeleted: boolean }> {
     return this.fetcher<{ isDeleted: boolean }>('/favorites/remove', {
       method: 'DELETE',
-      auth: true,
       body: JSON.stringify({ menuId }),
     });
   }

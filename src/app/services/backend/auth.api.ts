@@ -50,7 +50,6 @@ class AuthService {
   deleteProfileImage(): Promise<Auth.MeRes> {
     return this.fetcher<Auth.MeRes>('/auth/me/profile-image', {
       method: 'DELETE',
-      auth: true,
     });
   }
 
@@ -61,7 +60,6 @@ class AuthService {
     return this.fetcher('/auth/profile-image/presign', {
       method: 'POST',
       body: JSON.stringify({ contentType }),
-      auth: true,
     });
   }
 

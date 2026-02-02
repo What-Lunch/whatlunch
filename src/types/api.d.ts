@@ -13,6 +13,7 @@ namespace Auth {
 
   interface LoginRes {
     accessToken: string;
+    expiresAt: string;
     user: {
       id: string;
       email: string;
