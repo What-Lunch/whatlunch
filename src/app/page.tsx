@@ -9,7 +9,7 @@ import WeatherMood from '@/domain/WeatherMood/WeatherMood';
 import RoomEntryCard from '@/domain/Room/RoomEntryCard/RoomEntryCard';
 import QuoteCard from '@/domain/QuoteCard';
 
-import { menusService } from '@/app/services/backend/menus.api';
+import { menusServiceClient } from '@/app/services/backend/menus.api';
 import { mapTopFavoritesToCarousel } from '@/app/utils/mapTopFavoritesToCarousel';
 
 import styles from './page.module.scss';
@@ -46,7 +46,7 @@ export default function HomePage() {
     isError,
   } = useQuery({
     queryKey: ['menus', 'favorites', 'top'],
-    queryFn: () => menusService.getTopFavoriteMenus(3),
+    queryFn: () => menusServiceClient.getTopFavoriteMenus(3),
     staleTime: 30_000,
   });
 

@@ -2,68 +2,62 @@
 
 import { useState, useMemo } from 'react';
 import { Sparkles } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Modal from '@/shared/components/Modal';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
 import styles from './FavoriteMenuCard.module.scss';
-import { favoritesService } from '@/app/services/backend/favorites.api';
+import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
-import type { GetMyFavoritesRes, FavoriteMenu } from './types';
-
-export default function FavoriteMenuCard() {
+export default function FavoriteMenuCard({
+  favoriteMenus,
+}: {
+  favoriteMenus: Favorite.GetMyFavoritesRes[];
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
-
-  // 내찜 목록 조회
-  const { data: favorites = [], isLoading } = useQuery({
-    queryKey: ['favorites', 'list'],
-    queryFn: favoritesService.getMyFavorites,
-  });
-
-  const validFavorites = useMemo(
-    () =>
-      favorites.filter(
-        (
-          item
-        ): item is Omit<GetMyFavoritesRes, 'menuId'> & {
-          menuId: FavoriteMenu;
-        } => item.menuId !== null
-      ),
-    [favorites]
+  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>(() =>
+    favoriteMenus
+      .filter((menu): menu is Favorite.GetMyFavoritesRes => menu != null)
+      .reduce((acc, menu) => ({ ...acc, [menu._id]: true }), {} as Record<string, boolean>)
   );
+  const validFavorites = useMemo(() => favoriteMenus.filter(item => item != null), [favoriteMenus]);
 
-  // 찜 삭제
-  const removeFavoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesService.removeFavorite(menuId),
-
-    onMutate: async menuId => {
-      await queryClient.cancelQueries({ queryKey: ['favorites', 'list'] });
-
-      const prev = queryClient.getQueryData<GetMyFavoritesRes[]>(['favorites', 'list']);
-
-      // 목록에서 제거
-      queryClient.setQueryData<GetMyFavoritesRes[]>(['favorites', 'list'], old => {
-        if (!old) return old;
-        return old.filter(item => item.menuId?.id !== menuId);
-      });
-
-      return { prev };
+  const favoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
+    onMutate: (menuId: string) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
     },
-
-    onError: (_err, _menuId, context) => {
-      if (context?.prev) {
-        queryClient.setQueryData(['favorites', 'list'], context.prev);
-      }
+    onError: (_err, menuId) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
     },
-
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', 'list'] });
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
     },
   });
 
-  if (isLoading) return null;
+  const unfavoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
+    onMutate: (menuId: string) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
+    },
+    onError: (_err, menuId) => {
+      setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
+    },
+  });
+
+  const handleFavoriteToggle = (menuId: string) => {
+    const isActive = favoriteMap[menuId] ?? false;
+    if (isActive) {
+      unfavoriteMutation.mutate(menuId);
+    } else {
+      favoriteMutation.mutate(menuId);
+    }
+  };
 
   return (
     <>
@@ -81,8 +75,8 @@ export default function FavoriteMenuCard() {
         ) : (
           <>
             <ul className={styles['meal-favorite__list']}>
-              {validFavorites.slice(0, 4).map(({ menuId: menu }) => (
-                <li key={menu.id} className={styles['meal-favorite__list__item']}>
+              {validFavorites.slice(0, 4).map(menu => (
+                <li key={menu._id} className={styles['meal-favorite__list__item']}>
                   <div className={styles['meal-favorite__list__item__info']}>
                     <span className={styles['meal-favorite__list__item__info__name']}>
                       {menu.name}
@@ -93,8 +87,8 @@ export default function FavoriteMenuCard() {
                   </div>
 
                   <FavoriteToggle
-                    isActive
-                    onToggle={() => removeFavoriteMutation.mutate(menu.id)}
+                    isActive={favoriteMap[menu._id] ?? true}
+                    onToggle={() => handleFavoriteToggle(menu._id)}
                     size={18}
                   />
                 </li>
@@ -125,8 +119,8 @@ export default function FavoriteMenuCard() {
           innerClassName={styles['modal']}
         >
           <ul className={styles['modal__list']}>
-            {validFavorites.map(({ menuId: menu }) => (
-              <li key={menu.id} className={styles['modal__list__item']}>
+            {validFavorites.map(menu => (
+              <li key={menu._id} className={styles['modal__list__item']}>
                 <div className={styles['modal__list__item__info']}>
                   <span className={styles['modal__list__item__info__name']}>{menu.name}</span>
                   <span className={styles['modal__list__item__info__category']}>
@@ -135,8 +129,8 @@ export default function FavoriteMenuCard() {
                 </div>
 
                 <FavoriteToggle
-                  isActive
-                  onToggle={() => removeFavoriteMutation.mutate(menu.id)}
+                  isActive={favoriteMap[menu._id] ?? true}
+                  onToggle={() => handleFavoriteToggle(menu._id)}
                   size={18}
                 />
               </li>

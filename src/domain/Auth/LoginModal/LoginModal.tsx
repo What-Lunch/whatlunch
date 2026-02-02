@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image'; // [추가] 이미지 사용을 위해 추가
+
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google';
@@ -11,7 +13,7 @@ import BaseInput from '@/shared/components/Input/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
-import { authService } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 import { LoginModalProps } from '../types';
 import { useAuthStore } from '../store/auth.store';
 import Google from '../../../../public/icons/google.png';
@@ -40,15 +42,23 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
 
+  const router = useRouter();
+  // [추가] 구글 로그인 버튼 제어를 위한 Ref
+
   const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
-  const setUser = useAuthStore(state => state.setUser);
+  const { setUser } = useAuthStore();
 
   const loginMutation = useMutation({
-    mutationFn: (data: Auth.LoginReq) => authService.postLogin(data),
+    mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
       setUser(res.user);
+
+      toast.success('로그인에 성공했습니다.');
       onClose();
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
     },
     onError: (error: unknown) => {
       toast.error(getLoginErrorMessage(error));
@@ -56,7 +66,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   });
 
   const googleLoginMutation = useMutation({
-    mutationFn: (data: { idToken: string }) => authService.loginWithGoogle(data),
+    mutationFn: (data: { idToken: string }) => authServiceClient.loginWithGoogle(data),
     onSuccess: res => {
       setUser(res.user);
       onClose();

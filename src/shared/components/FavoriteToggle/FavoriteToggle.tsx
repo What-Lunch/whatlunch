@@ -18,6 +18,13 @@ export default function FavoriteToggle({
   readOnly = false,
   ariaLabel,
 }: FavoriteToggleProps) {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (onToggle) {
+      onToggle(e);
+    }
+  };
+
   // 읽기 전용 모드
   if (readOnly) {
     return (
@@ -37,7 +44,7 @@ export default function FavoriteToggle({
       type="button"
       aria-pressed={isActive}
       aria-label={ariaLabel ?? (isActive ? '찜 해제' : '찜하기')}
-      onClick={onToggle}
+      onClick={handleClick}
       className={styles['favorite-btn']}
     >
       <Heart

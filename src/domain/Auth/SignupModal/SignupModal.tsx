@@ -11,7 +11,7 @@ import BaseInput from '@/shared/components/Input/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
-import { authService } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { SignupModalProps } from '../types';
 
@@ -31,7 +31,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const setUser = useAuthStore(state => state.setUser);
 
   const signupMutation = useMutation({
-    mutationFn: (data: Auth.RegisterReq) => authService.postSignup(data),
+    mutationFn: (data: Auth.RegisterReq) => authServiceClient.postSignup(data),
     onSuccess: () => {
       clearUser();
       toast.success('회원가입이 완료되었습니다! 로그인해주세요.');
@@ -51,7 +51,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
 
   // 구글 회원가입 mutation
   const googleSignupMutation = useMutation({
-    mutationFn: (data: { idToken: string }) => authService.loginWithGoogle(data),
+    mutationFn: (data: { idToken: string }) => authServiceClient.loginWithGoogle(data),
     onSuccess: res => {
       // 성공 시 바로 로그인
       setUser(res.user);

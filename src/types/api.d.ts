@@ -15,16 +15,20 @@ namespace Auth {
     accessToken: string;
     expiresAt: string;
     user: {
+      id: string;
       email: string;
       nickname: string;
       profileImage: string | null;
+      provider?: string;
     };
   }
 
   interface MeRes {
+    id: string;
     email: string;
     nickname: string;
     profileImage: string | null;
+    provider?: string;
   }
 
   interface UpdateMeReq {
@@ -54,9 +58,8 @@ namespace Menu {
 }
 
 namespace Favorite {
-  interface GetMyFavoritesRes {
-    id: string;
-    menuId: Menu | null;
+  interface GetMyFavoritesRes extends Menu.GetMenuRes {
+    _id: string;
     createdAt: string;
   }
 }

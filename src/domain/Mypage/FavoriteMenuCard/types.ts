@@ -8,9 +8,3 @@ export interface FavoriteMenu {
   name: string;
   category: MenuCategory;
 }
-
-export interface GetMyFavoritesRes {
-  id: string;
-  menuId: FavoriteMenu | null;
-  createdAt: string;
-}

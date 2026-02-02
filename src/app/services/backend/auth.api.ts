@@ -1,52 +1,55 @@
-import { fetcher } from '@/app/lib/fetcher';
+import { fetcherClient } from '@/app/lib/fetcher-client';
+import { fetcherServer } from '@/app/lib/fetcher-server';
+
+interface Fetcher {
+  <T>(url: string, options?: RequestInit): Promise<T>;
+}
 
 class AuthService {
-  postSignup(data: Auth.RegisterReq): Promise<{ message: string }> {
-    return fetcher<{ message: string }>('/auth/signup', {
+  constructor(private fetcher: Fetcher) {}
+
+  postSignup(data: Auth.RegisterReq): Promise<Auth.MeRes> {
+    return this.fetcher<Auth.MeRes>('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async postLogin(data: Auth.LoginReq): Promise<Auth.LoginRes> {
-    const res = await fetcher<Auth.LoginRes>('/auth/login', {
+    return await this.fetcher<Auth.LoginRes>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
     });
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('accessToken', res.accessToken);
-      localStorage.setItem('expiresAt', res.expiresAt);
-    }
-
-    return res;
   }
 
-  postLogout() {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('expiresAt');
+  async postLogout(): Promise<void> {
+    await this.fetcher('/auth/logout', {
+      method: 'POST',
+    });
   }
 
   getMe(): Promise<Auth.MeRes> {
-    return fetcher<Auth.MeRes>('/auth/me', {
+    return this.fetcher<Auth.MeRes>('/auth/me', {
       method: 'GET',
-      auth: true,
+    });
+  }
+
+  async refresh(): Promise<{ user: Auth.MeRes }> {
+    return this.fetcher<{ user: Auth.MeRes }>('/auth/refresh', {
+      method: 'POST',
     });
   }
 
   updateMe(data: Auth.UpdateMeReq): Promise<Auth.MeRes> {
-    return fetcher<Auth.MeRes>('/auth/me', {
+    return this.fetcher<Auth.MeRes>('/auth/me', {
       method: 'PATCH',
       body: JSON.stringify(data),
-      auth: true,
     });
   }
 
   deleteProfileImage(): Promise<Auth.MeRes> {
-    return fetcher<Auth.MeRes>('/auth/me/profile-image', {
+    return this.fetcher<Auth.MeRes>('/auth/me/profile-image', {
       method: 'DELETE',
-      auth: true,
     });
   }
 
@@ -54,25 +57,22 @@ class AuthService {
     uploadUrl: string;
     fileUrl: string;
   }> {
-    return fetcher('/auth/profile-image/presign', {
+    return this.fetcher('/auth/profile-image/presign', {
       method: 'POST',
       body: JSON.stringify({ contentType }),
-      auth: true,
     });
   }
 
   // 구글 로그인
   async loginWithGoogle({ idToken }: { idToken: string }): Promise<Auth.LoginRes> {
-    const res = await fetcher<Auth.LoginRes>('/auth/oauth/google', {
+    const res = await this.fetcher<Auth.LoginRes>('/auth/oauth/google', {
       method: 'POST',
       body: JSON.stringify({ idToken }),
     });
-
-    localStorage.setItem('accessToken', res.accessToken);
-    localStorage.setItem('expiresAt', res.expiresAt);
 
     return res;
   }
 }
 
-export const authService = new AuthService();
+export const authServiceClient = new AuthService(fetcherClient);
+export const authServiceServer = new AuthService(fetcherServer);

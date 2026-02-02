@@ -12,6 +12,7 @@ import Button from '@/shared/components/Button';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 import GlobalToast from '@/shared/components/Toast/GlobalToast';
 
+import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
@@ -34,6 +35,25 @@ export default function SoloRoomPage() {
   // 로그인 여부
   const user = useAuthStore(state => state.user);
   const isLoggedIn = !!user;
+
+  useEffect(() => {
+    // 찜한 메뉴 불러오기
+    const fetchFavorites = async () => {
+      if (!isLoggedIn) return;
+      try {
+        const favorites = await favoritesServiceClient.getMyFavorites();
+        const favMap: Record<string, boolean> = {};
+        favorites.forEach(menu => {
+          favMap[menu._id] = true;
+        });
+        setFavoriteMap(favMap);
+      } catch (error) {
+        console.error('찜한 메뉴 불러오기 실패:', error);
+      }
+    };
+
+    fetchFavorites();
+  }, [isLoggedIn]);
 
   // 솔로 모드 설정
   useEffect(() => {
@@ -66,16 +86,31 @@ export default function SoloRoomPage() {
   };
 
   // 로그인 토스트
-  const handleFavoriteToggle = (menuId: string) => {
+
+  const handleFavoriteToggle = async (menuId: string) => {
     if (!isLoggedIn) {
       toast.info('찜 기능은 로그인 후 사용할 수 있어요');
       return;
     }
 
-    setFavoriteMap(prev => ({
-      ...prev,
-      [menuId]: !prev[menuId],
-    }));
+    try {
+      const isCurrentlyActive = favoriteMap[menuId] ?? false;
+
+      if (isCurrentlyActive) {
+        await favoritesServiceClient.removeFavorite(menuId);
+      } else {
+        await favoritesServiceClient.addFavorite(menuId);
+      }
+
+      // 상태 토글
+      setFavoriteMap(prev => ({
+        ...prev,
+        [menuId]: !prev[menuId],
+      }));
+    } catch (error) {
+      console.error('찜 처리 실패:', error);
+      toast.error('찜 처리에 실패했습니다');
+    }
   };
 
   return (
