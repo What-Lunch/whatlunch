@@ -33,10 +33,12 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
   useEffect(() => {
     if (initialUser) {
       setUser(initialUser);
+    } else {
+      clearUser();
     }
-  }, [initialUser, setUser]);
+  }, [initialUser, setUser, clearUser]);
 
-  const displayUser = storeUser;
+  const displayUser = storeUser || initialUser;
 
   const handleLogout = useCallback(async () => {
     try {
@@ -52,7 +54,7 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
 
       setTimeout(() => {
         router.refresh();
-      }, 300);
+      }, 10);
     } catch (error) {
       console.error('[Header] 로그아웃 실패:', error);
       toast.error('로그아웃에 실패했습니다.');

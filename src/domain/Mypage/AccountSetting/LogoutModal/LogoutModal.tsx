@@ -39,7 +39,7 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
 
       setTimeout(() => {
         router.refresh();
-      }, 300);
+      }, 10);
 
       router.push('/');
     },
