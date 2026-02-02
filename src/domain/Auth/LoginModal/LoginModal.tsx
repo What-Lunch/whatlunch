@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image'; // [추가] 이미지 사용을 위해 추가
+
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google';
@@ -15,7 +16,7 @@ import Modal from '@/shared/components/Modal';
 import { authServiceClient } from '@/app/services/backend/auth.api';
 import { LoginModalProps } from '../types';
 import { useAuthStore } from '../store/auth.store';
-import Google from '../../../../public/icons/google.png'; // [추가] 구글 아이콘 경로 확인 필요
+import Google from '../../../../public/icons/google.png';
 
 import styles from '../AuthModal.module.scss';
 
@@ -40,8 +41,10 @@ function getLoginErrorMessage(error: unknown): string {
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
+
   const router = useRouter();
   // [추가] 구글 로그인 버튼 제어를 위한 Ref
+
   const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
   const setUser = useAuthStore(state => state.setUser);
