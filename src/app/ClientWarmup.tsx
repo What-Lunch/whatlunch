@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
-import { authService } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 
 export default function ClientWarmup() {
   const { setUser, clearUser, finishAuthCheck } = useAuthStore();
@@ -14,7 +14,7 @@ export default function ClientWarmup() {
 
     const initializeAuth = async () => {
       try {
-        const userData = await authService.getMe();
+        const userData = await authServiceClient.getMe();
         setUser(userData);
       } catch (error) {
         console.error('사용자 정보 가져오기 실패:', error);

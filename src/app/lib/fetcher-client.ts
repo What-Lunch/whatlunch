@@ -17,17 +17,17 @@ async function refreshAccessToken(): Promise<boolean> {
   try {
     const res = await fetch(`${BASE_URL}/auth/refresh`, {
       method: 'POST',
-      credentials: 'include', // 중요!
+      credentials: 'include',
     });
 
     return res.ok;
   } catch (error) {
-    console.error('[Fetcher] Refresh 실패:', error);
+    console.error('[FetcherClient] Refresh 실패:', error);
     return false;
   }
 }
 
-export async function fetcher<T>(url: string, options: FetchOptions = {}): Promise<T> {
+export async function fetcherClient<T>(url: string, options: FetchOptions = {}): Promise<T> {
   if (!BASE_URL) {
     throw new Error('API base URL is not configured');
   }
@@ -49,9 +49,9 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
     const refreshed = await refreshAccessToken();
 
     if (refreshed) {
-      return fetcher<T>(url, { ...options, _retry: true });
+      return fetcherClient<T>(url, { ...options, _retry: true });
     } else {
-      console.error('[Fetcher] Refresh 실패, 로그아웃 처리');
+      console.error('[FetcherClient] Refresh 실패, 로그아웃 처리');
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('auth:expired'));
       }
@@ -59,7 +59,7 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
   }
 
   if (!res.ok) {
-    let message = '요청에 실패했습니다';
+    let message = '[FetcherClient] 요청에 실패했습니다';
 
     try {
       const data: ApiErrorResponse = await res.json();
@@ -67,7 +67,7 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
         message = data.message;
       }
     } catch (err) {
-      console.error('응답 파싱 실패:', err);
+      console.error('[FetcherClient] 응답 파싱 실패:', err);
     }
 
     throw new Error(message);
@@ -76,7 +76,7 @@ export async function fetcher<T>(url: string, options: FetchOptions = {}): Promi
   const text = await res.text();
 
   if (!text) {
-    throw new Error(`Unexpected empty response: ${res.status} ${res.url}`);
+    throw new Error(`[FetcherClient] Unexpected empty response: ${res.status} ${res.url}`);
   }
 
   return JSON.parse(text) as T;

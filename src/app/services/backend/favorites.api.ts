@@ -1,9 +1,15 @@
-import { fetcher } from '@/app/lib/fetcher';
+import { fetcherClient } from '@/app/lib/fetcher-client';
+import { fetcherServer } from '@/app/lib/fetcher-server';
+
+interface Fetcher {
+  <T>(url: string, options?: RequestInit): Promise<T>;
+}
 
 class FavoritesService {
+  constructor(private fetcher: Fetcher) {}
   // 찜 목록 조회
   getMyFavorites(): Promise<Favorite.GetMyFavoritesRes[]> {
-    return fetcher<Favorite.GetMyFavoritesRes[]>('/favorites/list', {
+    return this.fetcher<Favorite.GetMyFavoritesRes[]>('/favorites/list', {
       method: 'GET',
       auth: true,
     });
@@ -11,7 +17,7 @@ class FavoritesService {
 
   // 찜 추가
   addFavorite(menuId: string): Promise<{ isFavorite: boolean }> {
-    return fetcher<{ isFavorite: boolean }>('/favorites/add', {
+    return this.fetcher<{ isFavorite: boolean }>('/favorites/add', {
       method: 'POST',
       auth: true,
       body: JSON.stringify({ menuId }),
@@ -20,7 +26,7 @@ class FavoritesService {
 
   // 찜 제거
   removeFavorite(menuId: string): Promise<{ isDeleted: boolean }> {
-    return fetcher<{ isDeleted: boolean }>('/favorites/remove', {
+    return this.fetcher<{ isDeleted: boolean }>('/favorites/remove', {
       method: 'DELETE',
       auth: true,
       body: JSON.stringify({ menuId }),
@@ -28,4 +34,5 @@ class FavoritesService {
   }
 }
 
-export const favoritesService = new FavoritesService();
+export const favoritesServiceClient = new FavoritesService(fetcherClient);
+export const favoritesServiceServer = new FavoritesService(fetcherServer);

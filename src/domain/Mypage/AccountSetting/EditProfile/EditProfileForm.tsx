@@ -8,7 +8,7 @@ import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput/PasswordInput';
 import Button from '@/shared/components/Button/Button';
 
-import { authService } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './EditProfileForm.module.scss';
@@ -55,7 +55,7 @@ export default function EditProfileForm({
     formState.newPassword.length > 0 || formState.confirmPassword.length > 0;
 
   const updateMeMutation = useMutation({
-    mutationFn: (data: Auth.UpdateMeReq) => authService.updateMe(data),
+    mutationFn: (data: Auth.UpdateMeReq) => authServiceClient.updateMe(data),
     onSuccess: updatedUser => {
       setUser(updatedUser);
       toast.success('회원 정보가 수정되었습니다.');

@@ -10,7 +10,7 @@ import MenuSummaryCard from '@/domain/Mypage/MenuSummaryCard';
 import AccountSetting from '@/domain/Mypage/AccountSetting';
 import styles from './page.module.scss';
 
-import { authService } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 
 // TODO: 토스트 로그인 요청 처리
 export default function MyPage() {
@@ -21,7 +21,7 @@ export default function MyPage() {
     isError,
   } = useQuery({
     queryKey: ['me'],
-    queryFn: authService.getMe,
+    queryFn: authServiceClient.getMe,
     retry: false,
   });
 

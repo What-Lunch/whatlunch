@@ -11,7 +11,7 @@ import BaseInput from '@/shared/components/Input/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import Modal from '@/shared/components/Modal';
 
-import { authService } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 import { LoginModalProps } from '../types';
 import { useAuthStore } from '../store/auth.store';
 import Google from '../../../../public/icons/google.png'; // [추가] 구글 아이콘 경로 확인 필요
@@ -46,7 +46,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const setUser = useAuthStore(state => state.setUser);
 
   const loginMutation = useMutation({
-    mutationFn: (data: Auth.LoginReq) => authService.postLogin(data),
+    mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
       setUser(res.user);
       onClose();
@@ -57,7 +57,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   });
 
   const googleLoginMutation = useMutation({
-    mutationFn: (data: { idToken: string }) => authService.loginWithGoogle(data),
+    mutationFn: (data: { idToken: string }) => authServiceClient.loginWithGoogle(data),
     onSuccess: res => {
       setUser(res.user);
       onClose();

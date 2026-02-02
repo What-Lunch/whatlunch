@@ -5,7 +5,7 @@ import TanstackProvider from '@/shared/context/TanstackProvider';
 
 import GlobalToast from '@/shared/components/Toast/GlobalToast';
 import GoogleProvider from '@/shared/components/Providers/GoogleProvider';
-import ClientWarmup from './ClientWarmup';
+// import ClientWarmup from './ClientWarmup';
 
 import '@/styles/main.scss';
 
@@ -20,7 +20,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default async function RootLayout({ children }: LayoutProps) {
+export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="ko">
       {process.env.NODE_ENV === 'development' ? (
@@ -33,7 +33,7 @@ export default async function RootLayout({ children }: LayoutProps) {
       <body>
         <GoogleProvider>
           <TanstackProvider>
-            <ClientWarmup />
+            {/* <ClientWarmup /> */}
             <Header />
             <Main>{children}</Main>
           </TanstackProvider>

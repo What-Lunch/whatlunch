@@ -1,13 +1,15 @@
-import { fetcher } from '@/app/lib/fetcher';
+import { fetcherClient } from '@/app/lib/fetcher-client';
+import { fetcherServer } from '@/app/lib/fetcher-server';
 
-function isServer() {
-  return typeof window === 'undefined';
+interface Fetcher {
+  <T>(url: string, options?: RequestInit): Promise<T>;
 }
 
 class FaqService {
+  constructor(private fetcher: Fetcher) {}
   // 문의 등록
   postFaq(data: Faq.CreateFaqReq): Promise<{ faq: Faq.CreateFaqRes['faq'] }> {
-    return fetcher<{ faq: Faq.CreateFaqRes['faq'] }>('/faq', {
+    return this.fetcher<{ faq: Faq.CreateFaqRes['faq'] }>('/faq', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -19,11 +21,12 @@ class FaqService {
       throw new Error('서버 환경에서는 별도 fetch 로직 필요');
     }
     // 클라이언트용 fetcher 사용
-    return fetcher<Faq.GetFaqsRes[]>('/faq', {
+    return this.fetcher<Faq.GetFaqsRes[]>('/faq', {
       method: 'GET',
       auth: true,
     });
   }
 }
 
-export const faqService = new FaqService();
+export const faqServiceClient = new FaqService(fetcherClient);
+export const faqServiceServer = new FaqService(fetcherServer);

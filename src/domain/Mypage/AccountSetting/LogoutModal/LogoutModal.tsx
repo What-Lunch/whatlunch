@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import Modal from '@/shared/components/Modal/Modal';
 import Button from '@/shared/components/Button/Button';
 
-import { authService } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './LogoutModal.module.scss';
@@ -20,7 +20,7 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   const clearUser = useAuthStore(state => state.clearUser);
 
   const handleLogout = () => {
-    authService.postLogout();
+    authServiceClient.postLogout();
     clearUser();
     onClose();
     toast.success('로그아웃 되었습니다.');
