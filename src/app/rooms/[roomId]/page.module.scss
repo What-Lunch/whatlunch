@@ -269,7 +269,6 @@
 
     &__list {
       @include m.flex-box(flex-start, stretch, row);
-      gap: 10px;
       overflow-x: auto;
       padding: 4px;
 
@@ -294,6 +293,7 @@
       &__items {
         width: 100%;
         @include m.flex-box(flex-start, center, column);
+        gap: 5px;
         max-height: 560px;
         overflow-x: hidden;
         overflow-y: auto;
