@@ -27,7 +27,7 @@ export default function HeaderClient({ user }: { user: Auth.MeRes }) {
     try {
       await authServiceClient.postLogout();
       toast.success('로그아웃 되었습니다.');
-      router.replace('/');
+      router.refresh();
     } catch (error) {
       console.error('로그아웃 실패:', error);
       toast.error('로그아웃에 실패했습니다.');
@@ -123,9 +123,7 @@ export default function HeaderClient({ user }: { user: Auth.MeRes }) {
                 </li>
               )}
 
-              {isAuthLoading ? (
-                <li>잠시만 기다려주세요...</li>
-              ) : user ? (
+              {user ? (
                 <li>
                   <button
                     type="button"

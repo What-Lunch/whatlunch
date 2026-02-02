@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image'; // [추가] 이미지 사용을 위해 추가
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -39,7 +40,7 @@ function getLoginErrorMessage(error: unknown): string {
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
-
+  const router = useRouter();
   // [추가] 구글 로그인 버튼 제어를 위한 Ref
   const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +49,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
+      router.refresh();
       setUser(res.user);
       onClose();
     },
