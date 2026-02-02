@@ -3,56 +3,101 @@ import { Category } from '@/types/enum';
 // 메뉴 카테고리 (ALL, BEST 제외)
 type MenuCategory = Exclude<Category, Category.ALL | Category.BEST>;
 
+const GLOBAL_FALLBACK_IMAGE = '/foods/noimg.png';
+
+type FoodImageRule = {
+  keywords: string[];
+  src: string;
+};
+
+type CategoryImageConfig = {
+  defaultSrc: string;
+  rules: FoodImageRule[];
+};
+
+// 카테고리별 이미지 설정
+const FOOD_IMAGE_CONFIG: Record<MenuCategory, CategoryImageConfig> = {
+  [Category.KOREAN]: {
+    defaultSrc: '/foods/Korean/noimg.png',
+    rules: [
+      { keywords: ['비빔밥'], src: '/foods/Korean/Bibimbap.png' },
+      { keywords: ['김치찌개'], src: '/foods/Korean/Kimchi_Jjigae.png' },
+      { keywords: ['불고기'], src: '/foods/Korean/Bulgogi.png' },
+      { keywords: ['삼겹살'], src: '/foods/Korean/Samgyeopsal.png' },
+      { keywords: ['냉면'], src: '/foods/Korean/Naengmyeon.png' },
+      { keywords: ['잡채'], src: '/foods/Korean/Japchae.png' },
+      { keywords: ['떡국'], src: '/foods/Korean/Tteokguk.png' },
+      { keywords: ['순두부'], src: '/foods/Korean/Sundubu_Jjigae.png' },
+    ],
+  },
+
+  [Category.CHINESE]: {
+    defaultSrc: '/foods/Chinese/noimg.png',
+    rules: [
+      { keywords: ['짜장'], src: '/foods/Chinese/Jajangmyeon.png' },
+      { keywords: ['짬뽕'], src: '/foods/Chinese/Jjamppong.png' },
+      { keywords: ['탕수육'], src: '/foods/Chinese/Tangsuyuk.png' },
+      { keywords: ['마파'], src: '/foods/Chinese/Mapo_Tofu.png' },
+      { keywords: ['양장피'], src: '/foods/Chinese/Yangjangpi.png' },
+      { keywords: ['유산슬'], src: '/foods/Chinese/Yusanseul.png' },
+      { keywords: ['깐풍'], src: '/foods/Chinese/Kkanpunggi.png' },
+      { keywords: ['동파'], src: '/foods/Chinese/Dongpo_Pork.png' },
+    ],
+  },
+
+  [Category.JAPANESE]: {
+    defaultSrc: '/foods/Japanese/noimg.png',
+    rules: [
+      { keywords: ['초밥', '스시'], src: '/foods/Japanese/Sushi.png' },
+      { keywords: ['라멘'], src: '/foods/Japanese/Tonkotsu_Ramen.png' },
+      { keywords: ['우동'], src: '/foods/Japanese/Udon.png' },
+      { keywords: ['야키토리'], src: '/foods/Japanese/Yakitori.png' },
+      { keywords: ['타코야키'], src: '/foods/Japanese/Takoyaki.png' },
+      { keywords: ['튀김'], src: '/foods/Japanese/Tempura.png' },
+      { keywords: ['규동'], src: '/foods/Japanese/Gyudon.png' },
+      { keywords: ['오코노미'], src: '/foods/Japanese/Okonomiyaki.png' },
+    ],
+  },
+
+  [Category.WESTERN]: {
+    defaultSrc: '/foods/Western/noimg.png',
+    rules: [
+      { keywords: ['피시'], src: '/foods/Western/FishandChips.png' },
+      { keywords: ['리조또'], src: '/foods/Western/Risotto.png' },
+      { keywords: ['라자냐'], src: '/foods/Western/Lasagna.png' },
+      { keywords: ['샐러드'], src: '/foods/Western/Caesar_Salad.png' },
+      { keywords: ['햄버거'], src: '/foods/Western/Hamburger.png' },
+      { keywords: ['피자'], src: '/foods/Western/Pizza.png' },
+      { keywords: ['파스타'], src: '/foods/Western/Pasta.png' },
+      { keywords: ['스테이크'], src: '/foods/Western/Steak.png' },
+    ],
+  },
+
+  [Category.SNACK]: {
+    defaultSrc: '/foods/Snack/noimg.png',
+    rules: [
+      { keywords: ['떡볶이'], src: '/foods/Snack/Tteokbokki.png' },
+      { keywords: ['김밥'], src: '/foods/Snack/Gimbap.png' },
+      { keywords: ['라면'], src: '/foods/Snack/Ramyeon.png' },
+      { keywords: ['토스트'], src: '/foods/Snack/Street_Toast.png' },
+      { keywords: ['핫도그'], src: '/foods/Snack/Corn_Dog.png' },
+      { keywords: ['만두'], src: '/foods/Snack/Assorted_Mandu.png' },
+      { keywords: ['닭강정'], src: '/foods/Snack/Dakgangjeong.png' },
+      { keywords: ['순대'], src: '/foods/Snack/Sundae.png' },
+    ],
+  },
+};
+
+// 메뉴 이름과 카테고리에 따른 음식 이미지 경로 반환
 export function getFoodImageByMenu(menuName: string, category: MenuCategory): string {
   const normalized = menuName.replace(/\s/g, '');
+  const config = FOOD_IMAGE_CONFIG[category];
 
-  // 한식
-  if (category === Category.KOREAN) {
-    if (normalized.includes('제육볶음')) return '/foods/Korean/Jeyuk_bokkeum.png';
-    if (normalized.includes('불고기')) return '/foods/Korean/Bulgogi.png';
-    if (normalized.includes('된장찌개')) return '/foods/Korean/Doenjang.png';
-    if (normalized.includes('김치찌개')) return '/foods/Korean/Kimchi_jjigae.png';
-    if (normalized.includes('비빔밥')) return '/foods/Korean/Bibimbap.png';
-    return '/foods/Korean/noimg.png';
-  }
+  if (!config) return GLOBAL_FALLBACK_IMAGE;
 
-  // 중식
-  if (category === Category.CHINESE) {
-    if (normalized.includes('볶음밥')) return '/foods/Chinese/Fried_Rice.png';
-    if (normalized.includes('마라탕')) return '/foods/Chinese/Spicy_Hotpot.png';
-    if (normalized.includes('탕수육')) return '/foods/Chinese/Sweet_Pork.png';
-    if (normalized.includes('짬뽕')) return '/foods/Chinese/Jjambbong.png';
-    return '/foods/Chinese/noimg.png';
-  }
+  const matched = config.rules.find(rule =>
+    rule.keywords.some(keyword => normalized.includes(keyword))
+  );
 
-  // 양식
-  if (category === Category.WESTERN) {
-    if (normalized.includes('파스타')) return '/foods/Western/Pasta.png';
-    if (normalized.includes('피자')) return '/foods/Western/Pizza.png';
-    if (normalized.includes('스테이크')) return '/foods/Western/Steak.png';
-    if (normalized.includes('샐러드')) return '/foods/Western/Salad.png';
-    return '/foods/Western/noimg.png';
-  }
-
-  // 일식
-  if (category === Category.JAPANESE) {
-    if (normalized.includes('초밥') || normalized.includes('스시'))
-      return '/foods/Japanese/Sushi.png';
-    if (normalized.includes('라멘')) return '/foods/Japanese/Miso_ramen.png';
-    if (normalized.includes('돈카츠') || normalized.includes('돈까스'))
-      return '/foods/Japanese/Tonkatsu.png';
-    if (normalized.includes('우동')) return '/foods/Japanese/Udon.png';
-    return '/foods/Japanese/noimg.png';
-  }
-
-  // 스낵
-  if (category === Category.SNACK) {
-    if (normalized.includes('떡볶이')) return '/foods/Snack/Tteokbokki.png';
-    if (normalized.includes('튀김')) return '/foods/Snack/Fried.png';
-    if (normalized.includes('라면')) return '/foods/Snack/Ramen.png';
-    return '/foods/Snack/noimg.png';
-  }
-
-  // fallback
-  return '/foods/Korean/noimg.png';
+  return matched?.src ?? config.defaultSrc ?? GLOBAL_FALLBACK_IMAGE;
 }

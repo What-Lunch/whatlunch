@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { Category, Context } from '@/types/enum';
 
-const FOOD_ICONS = {
+const FOOD_ICONS: Record<Category, string> = {
   [Category.ALL]: '🍽️',
   [Category.BEST]: '⭐',
   [Category.CHINESE]: '🍜',
@@ -12,12 +12,14 @@ const FOOD_ICONS = {
   [Category.SNACK]: '🌭',
 };
 
-const SITUATION_ICONS = {
+const SITUATION_ICONS: Record<Context, string> = {
   [Context.LUNCH]: '🍱',
   [Context.SOLO]: '🙋‍♂️',
-  [Context.GROUP]: '🍻',
-  [Context.DIET]: '🥗',
+  [Context.CELEBRATION]: '🎉',
+
   [Context.DATE]: '💖',
+  [Context.LIGHT]: '☕',
+  [Context.LATE_NIGHT]: '🌙',
   [Context.STRESS]: '😡',
 };
 
@@ -46,29 +48,30 @@ export function useFilterOptions(
       Category.BEST,
     ];
 
-    return categories.map(cat => ({
-      value: cat,
-      label: cat,
-      icon: FOOD_ICONS[cat],
-      isActive: selectedFoodTypes === cat,
+    return categories.map(category => ({
+      value: category,
+      label: category,
+      icon: FOOD_ICONS[category],
+      isActive: selectedFoodTypes === category,
     }));
   }, [selectedFoodTypes]);
 
   const situationOptions = useMemo(() => {
     const contexts: Context[] = [
-      Context.GROUP,
-      Context.DATE,
-      Context.DIET,
       Context.LUNCH,
       Context.SOLO,
+      Context.DATE,
+      Context.LIGHT,
+      Context.LATE_NIGHT,
       Context.STRESS,
+      Context.CELEBRATION,
     ];
 
-    return contexts.map(ctx => ({
-      value: ctx,
-      label: ctx,
-      icon: SITUATION_ICONS[ctx],
-      isActive: selectedSituation === ctx,
+    return contexts.map(context => ({
+      value: context,
+      label: context,
+      icon: SITUATION_ICONS[context],
+      isActive: selectedSituation === context,
     }));
   }, [selectedSituation]);
 
