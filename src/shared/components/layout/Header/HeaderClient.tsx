@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,6 +13,7 @@ import SignupModal from '@/domain/Auth/SignupModal';
 import { ProfileImage } from '@/shared/components/ProfileImage';
 
 import { authServiceClient } from '@/app/services/backend/auth.api';
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
 
@@ -22,18 +23,24 @@ export default function HeaderClient({ user }: { user: Auth.MeRes }) {
   const router = useRouter();
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const clearUser = useAuthStore(state => state.clearUser);
+  const setUser = useAuthStore(state => state.setUser);
 
   const handleLogout = useCallback(async () => {
     try {
       await authServiceClient.postLogout();
       toast.success('로그아웃 되었습니다.');
+      clearUser();
       router.refresh();
     } catch (error) {
       console.error('로그아웃 실패:', error);
       toast.error('로그아웃에 실패했습니다.');
     }
-  }, [router]);
+  }, [router, clearUser]);
 
+  useEffect(() => {
+    setUser(user);
+  }, [setUser, user]);
   return (
     <header className={styles['header']}>
       <div className={styles['header__menu']}>

@@ -12,6 +12,7 @@ import Button from '@/shared/components/Button';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 import GlobalToast from '@/shared/components/Toast/GlobalToast';
 
+import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
@@ -66,16 +67,31 @@ export default function SoloRoomPage() {
   };
 
   // 로그인 토스트
-  const handleFavoriteToggle = (menuId: string) => {
+
+  const handleFavoriteToggle = async (menuId: string) => {
     if (!isLoggedIn) {
       toast.info('찜 기능은 로그인 후 사용할 수 있어요');
       return;
     }
 
-    setFavoriteMap(prev => ({
-      ...prev,
-      [menuId]: !prev[menuId],
-    }));
+    try {
+      const isCurrentlyActive = favoriteMap[menuId] ?? false;
+
+      if (isCurrentlyActive) {
+        await favoritesServiceClient.removeFavorite(menuId);
+      } else {
+        await favoritesServiceClient.addFavorite(menuId);
+      }
+
+      // 상태 토글
+      setFavoriteMap(prev => ({
+        ...prev,
+        [menuId]: !prev[menuId],
+      }));
+    } catch (error) {
+      console.error('찜 처리 실패:', error);
+      toast.error('찜 처리에 실패했습니다');
+    }
   };
 
   return (

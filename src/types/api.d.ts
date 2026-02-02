@@ -56,9 +56,8 @@ namespace Menu {
 }
 
 namespace Favorite {
-  interface GetMyFavoritesRes {
-    id: string;
-    menuId: Menu | null;
+  interface GetMyFavoritesRes extends Menu.GetMenuRes {
+    _id: string;
     createdAt: string;
   }
 }

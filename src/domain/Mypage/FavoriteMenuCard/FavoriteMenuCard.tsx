@@ -10,27 +10,17 @@ import FavoriteToggle from '@/shared/components/FavoriteToggle';
 import styles from './FavoriteMenuCard.module.scss';
 import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
-import type { GetMyFavoritesRes, FavoriteMenu } from './types';
-
 export default function FavoriteMenuCard({
   favoriteMenus,
 }: {
-  favoriteMenus: GetMyFavoritesRes[];
+  favoriteMenus: Favorite.GetMyFavoritesRes[];
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const validFavorites = useMemo(
-    () =>
-      favoriteMenus.filter(
-        (
-          item
-        ): item is Omit<GetMyFavoritesRes, 'menuId'> & {
-          menuId: FavoriteMenu;
-        } => item.menuId !== null
-      ),
-    [favoriteMenus]
-  );
+  const validFavorites = useMemo(() => favoriteMenus.filter(item => item != null), [favoriteMenus]);
+
+  console.log('favoriteMenus', favoriteMenus);
 
   // 찜 삭제
   const removeFavoriteMutation = useMutation({
@@ -39,12 +29,12 @@ export default function FavoriteMenuCard({
     onMutate: async menuId => {
       await queryClient.cancelQueries({ queryKey: ['favorites', 'list'] });
 
-      const prev = queryClient.getQueryData<GetMyFavoritesRes[]>(['favorites', 'list']);
+      const prev = queryClient.getQueryData<Favorite.GetMyFavoritesRes[]>(['favorites', 'list']);
 
       // 목록에서 제거
-      queryClient.setQueryData<GetMyFavoritesRes[]>(['favorites', 'list'], old => {
+      queryClient.setQueryData<Favorite.GetMyFavoritesRes[]>(['favorites', 'list'], old => {
         if (!old) return old;
-        return old.filter(item => item.menuId?.id !== menuId);
+        return old.filter(item => item._id !== menuId);
       });
 
       return { prev };
@@ -52,7 +42,7 @@ export default function FavoriteMenuCard({
 
     onError: (_err, _menuId, context) => {
       if (context?.prev) {
-        queryClient.setQueryData(['favorites', 'list'], context.prev);
+        queryClient.setQueryData<Favorite.GetMyFavoritesRes[]>(['favorites', 'list'], context.prev);
       }
     },
 
@@ -77,8 +67,8 @@ export default function FavoriteMenuCard({
         ) : (
           <>
             <ul className={styles['meal-favorite__list']}>
-              {validFavorites.slice(0, 4).map(({ menuId: menu }) => (
-                <li key={menu.id} className={styles['meal-favorite__list__item']}>
+              {validFavorites.slice(0, 4).map(menu => (
+                <li key={menu._id} className={styles['meal-favorite__list__item']}>
                   <div className={styles['meal-favorite__list__item__info']}>
                     <span className={styles['meal-favorite__list__item__info__name']}>
                       {menu.name}
@@ -90,7 +80,7 @@ export default function FavoriteMenuCard({
 
                   <FavoriteToggle
                     isActive
-                    onToggle={() => removeFavoriteMutation.mutate(menu.id)}
+                    onToggle={() => removeFavoriteMutation.mutate(menu._id)}
                     size={18}
                   />
                 </li>
@@ -121,8 +111,8 @@ export default function FavoriteMenuCard({
           innerClassName={styles['modal']}
         >
           <ul className={styles['modal__list']}>
-            {validFavorites.map(({ menuId: menu }) => (
-              <li key={menu.id} className={styles['modal__list__item']}>
+            {validFavorites.map(menu => (
+              <li key={menu._id} className={styles['modal__list__item']}>
                 <div className={styles['modal__list__item__info']}>
                   <span className={styles['modal__list__item__info__name']}>{menu.name}</span>
                   <span className={styles['modal__list__item__info__category']}>
@@ -132,7 +122,7 @@ export default function FavoriteMenuCard({
 
                 <FavoriteToggle
                   isActive
-                  onToggle={() => removeFavoriteMutation.mutate(menu.id)}
+                  onToggle={() => removeFavoriteMutation.mutate(menu._id)}
                   size={18}
                 />
               </li>
