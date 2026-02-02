@@ -2,41 +2,39 @@
 
 import { useState, useMemo } from 'react';
 import { Sparkles } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Modal from '@/shared/components/Modal';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
 import styles from './FavoriteMenuCard.module.scss';
-import { favoritesService } from '@/app/services/backend/favorites.api';
+import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
 import type { GetMyFavoritesRes, FavoriteMenu } from './types';
 
-export default function FavoriteMenuCard() {
+export default function FavoriteMenuCard({
+  favoriteMenus,
+}: {
+  favoriteMenus: GetMyFavoritesRes[];
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // 내찜 목록 조회
-  const { data: favorites = [], isLoading } = useQuery({
-    queryKey: ['favorites', 'list'],
-    queryFn: favoritesService.getMyFavorites,
-  });
-
   const validFavorites = useMemo(
     () =>
-      favorites.filter(
+      favoriteMenus.filter(
         (
           item
         ): item is Omit<GetMyFavoritesRes, 'menuId'> & {
           menuId: FavoriteMenu;
         } => item.menuId !== null
       ),
-    [favorites]
+    [favoriteMenus]
   );
 
   // 찜 삭제
   const removeFavoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesService.removeFavorite(menuId),
+    mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
 
     onMutate: async menuId => {
       await queryClient.cancelQueries({ queryKey: ['favorites', 'list'] });
@@ -62,8 +60,6 @@ export default function FavoriteMenuCard() {
       queryClient.invalidateQueries({ queryKey: ['favorites', 'list'] });
     },
   });
-
-  if (isLoading) return null;
 
   return (
     <>

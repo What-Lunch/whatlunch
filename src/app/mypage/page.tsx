@@ -1,7 +1,5 @@
-'use client';
-import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { authServiceServer } from '@/app/services/backend/auth.api';
+import { favoritesServiceServer } from '@/app/services/backend/favorites.api';
 
 import MyPageHeader from '@/domain/Mypage/MyPageHeader';
 import RecentMenuDecisionCard from '@/domain/Mypage/RecentMenuDecisionCard';
@@ -10,44 +8,32 @@ import MenuSummaryCard from '@/domain/Mypage/MenuSummaryCard';
 import AccountSetting from '@/domain/Mypage/AccountSetting';
 import styles from './page.module.scss';
 
-import { authServiceClient } from '@/app/services/backend/auth.api';
+/**
+ * @warning 이 페이지는 서버 컴포넌트입니다. 클라이언트 컴포넌트로 변경하지 마세요.
+ */
+export default async function Page() {
+  try {
+    const user = await authServiceServer.getMe();
+    const favoriteMenus = await favoritesServiceServer.getMyFavorites();
 
-// TODO: 토스트 로그인 요청 처리
-export default function MyPage() {
-  const router = useRouter();
-  const {
-    data: me,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['me'],
-    queryFn: authServiceClient.getMe,
-    retry: false,
-  });
+    return (
+      <div className={styles['mypage']}>
+        <MyPageHeader user={user} />
 
-  useEffect(() => {
-    if (isError) {
-      router.replace('/');
-    }
-  }, [isError, router]);
+        <main className={styles['mypage__content']}>
+          <div className={styles['mypage__top']}>
+            <RecentMenuDecisionCard />
+            <FavoriteMenuCard favoriteMenus={favoriteMenus} />
+          </div>
 
-  if (isLoading || isError || !me) return null;
-
-  return (
-    <div className={styles['mypage']}>
-      <MyPageHeader />
-
-      <main className={styles['mypage__content']}>
-        <div className={styles['mypage__top']}>
-          <RecentMenuDecisionCard />
-          <FavoriteMenuCard />
-        </div>
-
-        <div className={styles['mypage__bottom']}>
-          <MenuSummaryCard />
-          <AccountSetting />
-        </div>
-      </main>
-    </div>
-  );
+          <div className={styles['mypage__bottom']}>
+            <MenuSummaryCard />
+            <AccountSetting />
+          </div>
+        </main>
+      </div>
+    );
+  } catch {
+    return null;
+  }
 }

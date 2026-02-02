@@ -1,12 +1,12 @@
 'use client';
 
 import { useRef, useState, useEffect, ChangeEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { Pencil, Star, Timer, Users, Utensils, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import { ProfileImage } from '@/shared/components/ProfileImage';
 import Badge, { BadgeProps } from '@/shared/components/Badge';
-import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { useProfileImageUpload } from '@/domain/Auth/hooks/useProfileImageUpload';
 
 import styles from './MyPageHeader.module.scss';
@@ -26,8 +26,7 @@ const BADGES: readonly BadgeProps[] = [
   { id: 'avg-time', variant: 'orange', Icon: Timer, text: '평균 결정 시간 6초' },
 ] as const;
 
-const MyPageHeader = () => {
-  const { user } = useAuthStore();
+const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
   const { uploadProfileImage, removeProfileImage, isUploading } = useProfileImageUpload();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -108,6 +107,16 @@ const MyPageHeader = () => {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.replace('/');
+    }
+  }, [user, router]);
+
+  if (!user) return null;
 
   return (
     <section className={styles['profile-header']} aria-labelledby="profile-header-title">
