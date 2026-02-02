@@ -36,7 +36,7 @@ export const createSocket = (): Socket | null => {
 
     socket = io(apiUrl, {
       path: '/socket.io',
-      transports: ['websocket', 'polling'],
+      transports: ['websocket'],
       withCredentials: true,
       reconnection: true,
       reconnectionDelay: 1000,
