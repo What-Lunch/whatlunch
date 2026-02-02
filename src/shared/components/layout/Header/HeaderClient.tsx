@@ -58,6 +58,7 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
     } catch (error) {
       console.error('[Header] 로그아웃 실패:', error);
       toast.error('로그아웃에 실패했습니다.');
+    } finally {
       setIsLoggingOut(false);
     }
   }, [router, queryClient, clearUser]);
@@ -70,7 +71,7 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
         </Link>
 
         {displayUser && (
-          <Link href="/mypage">
+          <Link href="/mypage" onClick={() => router.push(`/mypage?refresh=${Date.now()}`)}>
             <span>마이페이지</span>
           </Link>
         )}

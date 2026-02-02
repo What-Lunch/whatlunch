@@ -49,6 +49,24 @@ export default function RoomPage({ params }: RoomPageProps) {
     setRoomResults(getResults(roomId));
   }, [roomId, setCurrentRoom, getResults]);
 
+  useEffect(() => {
+    // 찜한 메뉴 불러오기
+    const fetchFavorites = async () => {
+      try {
+        const favorites = await favoritesServiceClient.getMyFavorites();
+        const favMap: Record<string, boolean> = {};
+        favorites.forEach(menu => {
+          favMap[menu._id] = true;
+        });
+        setFavoriteMap(favMap);
+      } catch (error) {
+        console.error('찜한 메뉴 불러오기 실패:', error);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
   // 룰렛 결과 실시간 동기화 핸들러
   const handleRouletteResult = useCallback((result: Menu.GetMenuRes) => {
     setRoomResults(prev => [result, ...prev]);

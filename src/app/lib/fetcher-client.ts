@@ -74,7 +74,7 @@ export async function fetcherClient<T>(url: string, options: FetchOptions = {}):
   const text = await res.text();
 
   if (!text) {
-    throw new Error(`[FetcherClient] Unexpected empty response: ${res.status} ${res.url}`);
+    return null as T;
   }
 
   return JSON.parse(text) as T;

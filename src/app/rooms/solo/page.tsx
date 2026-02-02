@@ -36,6 +36,25 @@ export default function SoloRoomPage() {
   const user = useAuthStore(state => state.user);
   const isLoggedIn = !!user;
 
+  useEffect(() => {
+    // 찜한 메뉴 불러오기
+    const fetchFavorites = async () => {
+      if (!isLoggedIn) return;
+      try {
+        const favorites = await favoritesServiceClient.getMyFavorites();
+        const favMap: Record<string, boolean> = {};
+        favorites.forEach(menu => {
+          favMap[menu._id] = true;
+        });
+        setFavoriteMap(favMap);
+      } catch (error) {
+        console.error('찜한 메뉴 불러오기 실패:', error);
+      }
+    };
+
+    fetchFavorites();
+  }, [isLoggedIn]);
+
   // 솔로 모드 설정
   useEffect(() => {
     setCurrentRoom('solo');

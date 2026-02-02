@@ -15,6 +15,12 @@ export const createSocket = (): Socket | null => {
     return socket;
   }
 
+  if (socket) {
+    socket.removeAllListeners();
+    socket.disconnect();
+    socket = null;
+  }
+
   try {
     const apiUrl = getSocketUrl();
 

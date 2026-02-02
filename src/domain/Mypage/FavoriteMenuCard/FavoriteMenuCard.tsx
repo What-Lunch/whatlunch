@@ -18,10 +18,9 @@ export default function FavoriteMenuCard({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
   const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>(() =>
-    favoriteMenus.reduce(
-      (acc, menu) => ({ ...acc, [menu._id]: true }),
-      {} as Record<string, boolean>
-    )
+    favoriteMenus
+      .filter((menu): menu is Favorite.GetMyFavoritesRes => menu != null)
+      .reduce((acc, menu) => ({ ...acc, [menu._id]: true }), {} as Record<string, boolean>)
   );
   const validFavorites = useMemo(() => favoriteMenus.filter(item => item != null), [favoriteMenus]);
 
