@@ -33,10 +33,9 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
     if (!menu) return;
 
     const result = await shareContent('오늘의 메뉴', `오늘은 ${menu.name}로 가볼까요?`);
-
-    if (result.ok) console.log('공유 성공');
-    else if (result.cancelled) console.log('사용자 취소');
-    else console.error('공유 실패:', result.error);
+    if (result) {
+      alert('메뉴가 성공적으로 공유되었습니다!');
+    }
   };
   const imageSrc =
     !menu || isImageError || !isValidFoodCategory(menu.category)

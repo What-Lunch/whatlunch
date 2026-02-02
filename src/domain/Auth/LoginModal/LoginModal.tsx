@@ -52,7 +52,9 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
+      toast.success('로그인에 성공했습니다.');
       router.refresh();
+
       setUser(res.user);
       onClose();
     },

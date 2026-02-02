@@ -1,0 +1,40 @@
+'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+import MyPageHeader from '@/domain/Mypage/MyPageHeader';
+import RecentMenuDecisionCard from '@/domain/Mypage/RecentMenuDecisionCard';
+import FavoriteMenuCard from '@/domain/Mypage/FavoriteMenuCard';
+import MenuSummaryCard from '@/domain/Mypage/MenuSummaryCard';
+import AccountSetting from '@/domain/Mypage/AccountSetting';
+import styles from './page.module.scss';
+
+export default function MyPage({ user }: { user: Auth.MeRes | null }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.replace('/');
+    }
+  }, [user, router]);
+
+  if (!user) return null;
+
+  return (
+    <div className={styles['mypage']}>
+      <MyPageHeader />
+
+      <main className={styles['mypage__content']}>
+        <div className={styles['mypage__top']}>
+          <RecentMenuDecisionCard />
+          <FavoriteMenuCard />
+        </div>
+
+        <div className={styles['mypage__bottom']}>
+          <MenuSummaryCard />
+          <AccountSetting />
+        </div>
+      </main>
+    </div>
+  );
+}

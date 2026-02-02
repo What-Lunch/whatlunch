@@ -20,8 +20,6 @@ export default function FavoriteMenuCard({
 
   const validFavorites = useMemo(() => favoriteMenus.filter(item => item != null), [favoriteMenus]);
 
-  console.log('favoriteMenus', favoriteMenus);
-
   // 찜 삭제
   const removeFavoriteMutation = useMutation({
     mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),

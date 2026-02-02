@@ -43,7 +43,6 @@ export async function fetcherClient<T>(url: string, options: FetchOptions = {}):
     headers,
     credentials: 'include',
   });
-
   // 401 에러 시 자동 Refresh 시도
   if (res.status === 401 && !options._retry && url !== '/auth/refresh' && url !== '/auth/login') {
     const refreshed = await refreshAccessToken();

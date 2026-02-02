@@ -18,7 +18,7 @@ import { createSocket } from '@/app/lib/socket';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
 
-import { favoritesService } from '@/app/services/backend/favorites.api';
+import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
 import styles from './page.module.scss';
 
@@ -74,7 +74,7 @@ export default function RoomPage({ params }: RoomPageProps) {
     if (!isValidRoom) return;
     if (!user) return;
 
-    const socket = createSocket(token);
+    const socket = createSocket();
     if (!socket) return;
 
     const joinRoomIfNeeded = () => {
@@ -112,7 +112,7 @@ export default function RoomPage({ params }: RoomPageProps) {
 
   // 찜 API
   const addFavoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesService.addFavorite(menuId),
+    mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
     },
@@ -125,7 +125,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   });
 
   const removeFavoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesService.removeFavorite(menuId),
+    mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
     },
