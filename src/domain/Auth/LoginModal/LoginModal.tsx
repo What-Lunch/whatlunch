@@ -55,8 +55,10 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
       setUser(res.user);
 
       toast.success('로그인에 성공했습니다.');
-      router.refresh();
       onClose();
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
     },
     onError: (error: unknown) => {
       toast.error(getLoginErrorMessage(error));

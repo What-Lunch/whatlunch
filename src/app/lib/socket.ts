@@ -10,28 +10,12 @@ const getSocketUrl = (): string => {
   return url;
 };
 
-function getCookieValue(name: string): string | null {
-  if (typeof document === 'undefined') {
-    return null;
-  }
-
-  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
-  return match?.[1] || null;
-}
-
 export const createSocket = (): Socket | null => {
   if (socket?.connected) {
     return socket;
   }
 
   try {
-    const accessToken = getCookieValue('accessToken');
-
-    if (!accessToken) {
-      console.warn('[Socket]  로그인 필요 - Socket 연결을 건너뜁니다');
-      return null;
-    }
-
     const apiUrl = getSocketUrl();
 
     socket = io(apiUrl, {

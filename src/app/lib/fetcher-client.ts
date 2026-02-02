@@ -5,7 +5,6 @@ const BASE_URL =
   'http://localhost:8080';
 
 export interface FetchOptions extends RequestInit {
-  auth?: boolean;
   _retry?: boolean;
 }
 

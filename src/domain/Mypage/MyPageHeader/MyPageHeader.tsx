@@ -37,6 +37,14 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
   const isDefaultImage =
     !displayUser.profileImage || displayUser.profileImage === DEFAULT_PROFILE_IMAGE_PATH;
 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.replace('/');
+    }
+  }, [user, router]);
+
   useEffect(() => {
     if (!isMenuOpen) return;
 
@@ -107,14 +115,6 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!user) {
-      router.replace('/');
-    }
-  }, [user, router]);
 
   if (!user) return null;
 

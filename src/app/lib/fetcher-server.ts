@@ -7,7 +7,10 @@
 import { cookies } from 'next/headers';
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL ?? process.env.BASE_URL ?? 'http://localhost:8080';
+  process.env.NEXT_PUBLIC_BASE_URL ??
+  process.env.BASE_URL ??
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  'http://localhost:8080';
 
 export async function fetcherServer<T>(url: string, options: RequestInit = {}): Promise<T> {
   if (!BASE_URL) {
@@ -15,15 +18,14 @@ export async function fetcherServer<T>(url: string, options: RequestInit = {}): 
   }
 
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken')?.value;
-
+  const allCookies = cookieStore.getAll();
   const headers = new Headers(options.headers);
   if (!headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
-
-  if (accessToken) {
-    headers.set('Cookie', `accessToken=${accessToken}`);
+  if (allCookies.length > 0) {
+    const cookieHeaderValue = allCookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+    headers.set('Cookie', cookieHeaderValue);
   }
 
   const res = await fetch(`${BASE_URL}${url}`, {
@@ -49,7 +51,7 @@ export async function fetcherServer<T>(url: string, options: RequestInit = {}): 
 
   const text = await res.text();
   if (!text) {
-    throw new Error('응답 데이터가 없습니다');
+    return null as T;
   }
 
   return JSON.parse(text) as T;

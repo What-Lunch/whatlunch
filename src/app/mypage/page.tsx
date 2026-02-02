@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { authServiceServer } from '@/app/services/backend/auth.api';
 import { favoritesServiceServer } from '@/app/services/backend/favorites.api';
 
@@ -34,6 +35,6 @@ export default async function Page() {
       </div>
     );
   } catch {
-    return null;
+    redirect('/');
   }
 }

@@ -54,7 +54,7 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
 
       setTimeout(() => {
         router.refresh();
-      }, 10);
+      }, 100);
     } catch (error) {
       console.error('[Header] 로그아웃 실패:', error);
       toast.error('로그아웃에 실패했습니다.');

@@ -9,7 +9,7 @@ class AuthService {
   constructor(private fetcher: Fetcher) {}
 
   postSignup(data: Auth.RegisterReq): Promise<Auth.MeRes> {
-    return this.fetcher('/auth/signup', {
+    return this.fetcher<Auth.MeRes>('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -70,11 +70,7 @@ class AuthService {
       body: JSON.stringify({ idToken }),
     });
 
-    return {
-      user: res.user,
-      accessToken: '',
-      expiresAt: '',
-    };
+    return res;
   }
 }
 

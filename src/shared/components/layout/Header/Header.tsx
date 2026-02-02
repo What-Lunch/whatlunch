@@ -15,6 +15,7 @@ async function HeaderContent() {
   }
 }
 
+// TODO: fallback 스켈레톤 UI로 교체 필요
 export default function Header() {
   return (
     <Suspense fallback={null}>

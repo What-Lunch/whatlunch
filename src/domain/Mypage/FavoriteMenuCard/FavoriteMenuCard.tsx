@@ -17,11 +17,15 @@ export default function FavoriteMenuCard({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
-  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
+  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>(() =>
+    favoriteMenus.reduce(
+      (acc, menu) => ({ ...acc, [menu._id]: true }),
+      {} as Record<string, boolean>
+    )
+  );
   const validFavorites = useMemo(() => favoriteMenus.filter(item => item != null), [favoriteMenus]);
 
-  // 찜 삭제
-  const addFavoriteMutation = useMutation({
+  const favoriteMutation = useMutation({
     mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
@@ -34,7 +38,7 @@ export default function FavoriteMenuCard({
     },
   });
 
-  const removeFavoriteMutation = useMutation({
+  const unfavoriteMutation = useMutation({
     mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
@@ -50,9 +54,9 @@ export default function FavoriteMenuCard({
   const handleFavoriteToggle = (menuId: string) => {
     const isActive = favoriteMap[menuId] ?? false;
     if (isActive) {
-      removeFavoriteMutation.mutate(menuId);
+      unfavoriteMutation.mutate(menuId);
     } else {
-      addFavoriteMutation.mutate(menuId);
+      favoriteMutation.mutate(menuId);
     }
   };
 
