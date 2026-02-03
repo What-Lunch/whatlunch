@@ -3,7 +3,6 @@ import { StaticImageData } from 'next/image';
 export interface CarouselStore {
   id: string;
   name: string;
-  location: string;
   image: string | StaticImageData;
 }
 

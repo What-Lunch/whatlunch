@@ -68,6 +68,15 @@
     }
   }
 
+  &__menuName {
+    @include m.text-style(md, 600);
+    color: f.color(orange-800);
+
+    @include m.mq(sm) {
+      @include m.text-style('xl', 600);
+    }
+  }
+
   &__images {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -125,7 +134,6 @@
   &__storeName {
     @include m.text-style(sm, 600);
     color: f.color(gray-800);
-
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
