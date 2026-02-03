@@ -58,7 +58,13 @@ export function createBrandCardsByMenu(menuName: string, image: string): Carouse
 
   const keyword = Object.keys(FIXED_BRANDS_BY_KEYWORD).find(k => normalized.includes(k));
 
-  if (!keyword) return [];
+  if (!keyword) {
+    return Array.from({ length: 4 }, (_, index) => ({
+      id: `${normalized || 'menu'}-brand-${index + 1}`,
+      name: '',
+      image,
+    }));
+  }
 
   return FIXED_BRANDS_BY_KEYWORD[keyword].map((brandName, index) => ({
     id: `${keyword}-brand-${index + 1}`,
