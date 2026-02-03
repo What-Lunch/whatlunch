@@ -54,6 +54,7 @@ export default function RoomPage({ params }: RoomPageProps) {
     const fetchFavorites = async () => {
       try {
         const favorites = await favoritesServiceClient.getMyFavorites();
+        console.log('찜한 메뉴:', favorites);
         const favMap: Record<string, boolean> = {};
         favorites.forEach(menu => {
           favMap[menu._id] = true;

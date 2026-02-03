@@ -17,8 +17,11 @@ async function refreshAccessToken(): Promise<boolean> {
     const res = await fetch(`${BASE_URL}/auth/refresh`, {
       method: 'POST',
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-
+    console.log('토큰 리프레시 응답:', res);
     return res.ok;
   } catch (error) {
     console.error('[FetcherClient] Refresh 실패:', error);

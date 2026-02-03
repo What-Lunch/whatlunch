@@ -7,7 +7,7 @@ import { KakaoMapProps } from './types';
 
 const KAKAO_MAP = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
 const DEFAULT_MAP_LEVEL = 3;
-const SEARCH_RADIUS = 3000;
+const SEARCH_RADIUS = 5000;
 const DEBOUNCE_DELAY = 300;
 const DEFAULT_COORDS = { lat: 37.5665, lng: 126.978 }; // 서울시청
 
@@ -177,14 +177,38 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
           if (status === window.kakao.maps.services.Status.OK && data.length > 0) {
             // 주변에 결과 있음
             displaySearchResults(data);
-          } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-            // 주변에 결과 없음 → 전국 검색
-            searchNationwide(ps, searchKeyword);
           } else {
             setPlaces([]);
           }
         },
         { location: center, radius: SEARCH_RADIUS }
+      );
+    },
+    [displaySearchResults]
+  );
+
+  /**
+   * 서울 중심 검색 (위치 권한 없을 때)
+   */
+  const searchSeoul = useCallback(
+    (ps: Kakao.maps.services.Places, searchKeyword: string) => {
+      const seoulCenter = new window.kakao.maps.LatLng(DEFAULT_COORDS.lat, DEFAULT_COORDS.lng);
+
+      if (mapRef.current) {
+        mapRef.current.setCenter(seoulCenter);
+        mapRef.current.setLevel(DEFAULT_MAP_LEVEL);
+      }
+
+      ps.keywordSearch(
+        searchKeyword,
+        (data: Kakao.PlacesSearchResult, status: Kakao.Status) => {
+          if (status === window.kakao.maps.services.Status.OK && data.length > 0) {
+            displaySearchResults(data);
+          } else {
+            searchNationwide(ps, searchKeyword);
+          }
+        },
+        { location: seoulCenter, radius: SEARCH_RADIUS }
       );
     },
     [displaySearchResults, searchNationwide]
@@ -209,10 +233,10 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
       if (hasPermission) {
         searchNearby(ps, searchKeyword);
       } else {
-        searchNationwide(ps, searchKeyword);
+        searchSeoul(ps, searchKeyword);
       }
     },
-    [hasPermission, clearSearchMarkers, searchNearby, searchNationwide]
+    [hasPermission, clearSearchMarkers, searchNearby, searchSeoul]
   );
 
   /**

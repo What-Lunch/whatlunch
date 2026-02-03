@@ -65,6 +65,12 @@ export default function Chat({ roomCode }: ChatProps) {
     };
   }, [roomCode]);
 
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   // 메시지 전송
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -91,27 +97,20 @@ export default function Chat({ roomCode }: ChatProps) {
     });
 
     setInput('');
-
-    setTimeout(() => {
-      if (contentRef.current) {
-        contentRef.current.scrollTop = contentRef.current.scrollHeight;
-      }
-    }, 100);
   };
 
   return (
     <section className={styles['chat']}>
       <span className={styles['chat__title']}>실시간 채팅</span>
-      <div className={styles['chat__content']}>
+      <div className={styles['chat__content']} ref={contentRef}>
         {messages.length === 0 && (
           <div className={styles['chat__content__empty']}>
             아직 대화가 없어요. 메시지를 보내보세요!
           </div>
         )}
-        {messages.map((message, idx) => (
+        {messages.map(message => (
           <div
             key={message.id}
-            ref={idx === messages.length - 1 ? contentRef : undefined}
             className={
               message.isUser
                 ? styles['chat__content__message-wrapper--user']

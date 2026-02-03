@@ -71,7 +71,7 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
         </Link>
 
         {displayUser && (
-          <Link href="/mypage" onClick={() => router.push(`/mypage?refresh=${Date.now()}`)}>
+          <Link href={`/mypage?refresh=${Date.now()}`}>
             <span>마이페이지</span>
           </Link>
         )}
