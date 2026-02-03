@@ -97,12 +97,6 @@ export default function Chat({ roomCode }: ChatProps) {
     });
 
     setInput('');
-
-    setTimeout(() => {
-      if (contentRef.current) {
-        contentRef.current.scrollTop = contentRef.current.scrollHeight;
-      }
-    }, 100);
   };
 
   return (

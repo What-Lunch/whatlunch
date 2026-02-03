@@ -40,7 +40,6 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
 
   const displayUser = storeUser || initialUser;
 
-  console.log('HeaderClient 렌더링, displayUser:', displayUser);
   const handleLogout = useCallback(async () => {
     try {
       setIsLoggingOut(true);
