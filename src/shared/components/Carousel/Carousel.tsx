@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
-import { MapPin } from 'lucide-react';
+import { Store } from 'lucide-react';
 import Image from 'next/image';
 
 import { CarouselProps } from './type';
@@ -101,7 +101,6 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                 : Array.from({ length: 4 }, (_, idx) => ({
                     id: `fallback-store-${idx}`,
                     name: '',
-                    location: '',
                     image: DEFAULT_IMAGE,
                   }));
 
@@ -115,7 +114,11 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                   <div className={styles['card__rankBadge']}>{item.rank}위</div>
 
                   <div className={styles['card__titleRow']}>
-                    <h2 className={styles['card__title']}>인기 급상승! {item.menuName} 맛집</h2>
+                    <h2 className={styles['card__title']}>
+                      요즘 많이 선택되는{' '}
+                      <span className={styles['card__menuName']}>{item.menuName}</span> · 대표
+                      브랜드
+                    </h2>
 
                     <div className={styles['ratingBadge']}>
                       <span className={styles['ratingBadge__text']}>
@@ -145,10 +148,9 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
 
                       {store.name && (
                         <div className={styles['card__storeInfo']}>
+                          <Store size={16} />
                           <p className={styles['card__storeName']}>{store.name}</p>
-                          <p className={styles['card__storeLoc']}>
-                            <MapPin size={10} /> {store.location}
-                          </p>
+                          <p className={styles['card__storeLoc']}></p>
                         </div>
                       )}
                     </div>
