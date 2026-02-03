@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { authService } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 export function useProfileImageUpload() {
@@ -10,7 +10,7 @@ export function useProfileImageUpload() {
 
     setIsUploading(true);
     try {
-      const { uploadUrl, fileUrl } = await authService.createProfileImagePresign(file.type);
+      const { uploadUrl, fileUrl } = await authServiceClient.createProfileImagePresign(file.type);
 
       const uploadResponse = await fetch(uploadUrl, {
         method: 'PUT',
@@ -24,7 +24,7 @@ export function useProfileImageUpload() {
         throw new Error(`S3 upload failed: ${uploadResponse.statusText}`);
       }
 
-      const updatedUser = await authService.updateMe({
+      const updatedUser = await authServiceClient.updateMe({
         profileImage: fileUrl,
       });
 
@@ -45,7 +45,7 @@ export function useProfileImageUpload() {
     setIsUploading(true);
 
     try {
-      const updatedUser = await authService.deleteProfileImage();
+      const updatedUser = await authServiceClient.deleteProfileImage();
       setUser(updatedUser);
     } finally {
       setIsUploading(false);

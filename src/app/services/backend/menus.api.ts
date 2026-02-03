@@ -1,4 +1,9 @@
-import { fetcher } from '@/app/lib/fetcher';
+import { fetcherClient } from '@/app/lib/fetcher-client';
+import { fetcherServer } from '@/app/lib/fetcher-server';
+
+interface Fetcher {
+  <T>(url: string, options?: RequestInit): Promise<T>;
+}
 import type { MenuCategory } from '@/domain/Mypage/FavoriteMenuCard';
 
 export interface TopFavoriteMenu {
@@ -9,6 +14,7 @@ export interface TopFavoriteMenu {
 }
 
 class MenusService {
+  constructor(private fetcher: Fetcher) {}
   // 룰렛 메뉴 조회
   getMenusRoulette(params: Menu.GetMenuReq): Promise<Menu.GetMenuRes[]> {
     const queryObj: Record<string, string> = {};
@@ -29,17 +35,18 @@ class MenusService {
 
     const query = new URLSearchParams(queryObj).toString();
 
-    return fetcher<Menu.GetMenuRes[]>(`/menus/roulette?${query}`, {
+    return this.fetcher<Menu.GetMenuRes[]>(`/menus/roulette?${query}`, {
       method: 'GET',
     });
   }
 
   // 찜 메뉴 조회
   getTopFavoriteMenus(limit = 3): Promise<TopFavoriteMenu[]> {
-    return fetcher<TopFavoriteMenu[]>(`/menus/favorites/top?limit=${limit}`, {
+    return this.fetcher<TopFavoriteMenu[]>(`/menus/favorites/top?limit=${limit}`, {
       method: 'GET',
     });
   }
 }
 
-export const menusService = new MenusService();
+export const menusServiceClient = new MenusService(fetcherClient);
+export const menusServiceServer = new MenusService(fetcherServer);

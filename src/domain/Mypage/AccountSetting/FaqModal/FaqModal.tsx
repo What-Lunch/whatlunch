@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import Modal from '@/shared/components/Modal';
 import { BaseInput } from '@/shared/components/Input';
 
-import { faqService } from '@/app/services/backend/faq.api';
+import { faqServiceClient } from '@/app/services/backend/faq.api';
 import type { FaqModalProps } from './types';
 
 import styles from './FaqModal.module.scss';
@@ -33,7 +33,7 @@ export default function FaqModal({ isOpen, onClose }: FaqModalProps) {
           return;
         }
 
-        await faqService.postFaq({
+        await faqServiceClient.postFaq({
           name,
           email,
           message,

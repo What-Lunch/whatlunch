@@ -10,17 +10,21 @@ const getSocketUrl = (): string => {
   return url;
 };
 
-export const createSocket = (token: string): Socket | null => {
+export const createSocket = (): Socket | null => {
   if (socket?.connected) {
     return socket;
   }
 
+  if (socket) {
+    socket.removeAllListeners();
+    socket.disconnect();
+    socket = null;
+  }
+
   try {
     const apiUrl = getSocketUrl();
+
     socket = io(apiUrl, {
-      auth: {
-        token,
-      },
       path: '/socket.io',
       transports: ['websocket'],
       withCredentials: true,
@@ -28,7 +32,6 @@ export const createSocket = (token: string): Socket | null => {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       reconnectionAttempts: 5,
-      forceNew: false,
     });
 
     socket.on('connect_error', error => {
@@ -41,16 +44,18 @@ export const createSocket = (token: string): Socket | null => {
 
     return socket;
   } catch (error) {
-    console.error('[Socket] 생성 오류:', error);
+    console.error('[Socket] Socket 생성 오류:', error);
     return null;
   }
 };
 
 export const getSocket = (): Socket | null => socket;
+
 export const disconnectSocket = (): void => {
   if (socket?.connected) {
     socket.disconnect();
     socket = null;
   }
 };
+
 export const isSocketConnected = (): boolean => socket?.connected ?? false;

@@ -18,7 +18,7 @@ import { createSocket } from '@/app/lib/socket';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
 
-import { favoritesService } from '@/app/services/backend/favorites.api';
+import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
 import styles from './page.module.scss';
 
@@ -49,6 +49,24 @@ export default function RoomPage({ params }: RoomPageProps) {
     setRoomResults(getResults(roomId));
   }, [roomId, setCurrentRoom, getResults]);
 
+  useEffect(() => {
+    // 찜한 메뉴 불러오기
+    const fetchFavorites = async () => {
+      try {
+        const favorites = await favoritesServiceClient.getMyFavorites();
+        const favMap: Record<string, boolean> = {};
+        favorites.forEach(menu => {
+          favMap[menu._id] = true;
+        });
+        setFavoriteMap(favMap);
+      } catch (error) {
+        console.error('찜한 메뉴 불러오기 실패:', error);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
   // 룰렛 결과 실시간 동기화 핸들러
   const handleRouletteResult = useCallback((result: Menu.GetMenuRes) => {
     setRoomResults(prev => [result, ...prev]);
@@ -72,11 +90,9 @@ export default function RoomPage({ params }: RoomPageProps) {
   // ============ Socket 연결 (한 번만) ============
   useEffect(() => {
     if (!isValidRoom) return;
+    if (!user) return;
 
-    const token = localStorage.getItem('accessToken');
-    if (!token) return;
-
-    const socket = createSocket(token);
+    const socket = createSocket();
     if (!socket) return;
 
     const joinRoomIfNeeded = () => {
@@ -110,11 +126,11 @@ export default function RoomPage({ params }: RoomPageProps) {
       socket.off('joinError');
       joinedRoomRef.current = null;
     };
-  }, [roomId, isValidRoom, router]);
+  }, [roomId, isValidRoom, router, user]);
 
   // 찜 API
   const addFavoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesService.addFavorite(menuId),
+    mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
     },
@@ -127,7 +143,7 @@ export default function RoomPage({ params }: RoomPageProps) {
   });
 
   const removeFavoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesService.removeFavorite(menuId),
+    mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
     },

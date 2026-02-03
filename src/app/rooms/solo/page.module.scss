@@ -8,6 +8,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
+  overflow-x: hidden;
 
   &__header {
     @include m.flex-box(space-between, center);
@@ -73,6 +74,7 @@
 
   &__main-section {
     display: flex;
+    gap: 24px;
     width: 100%;
   }
 
