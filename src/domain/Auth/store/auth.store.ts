@@ -32,25 +32,29 @@ export const useAuthStore = create<AuthState>(set => ({
   clearUser: () => set({ user: null, isAuthLoading: false }),
   finishAuthCheck: () => set({ isAuthLoading: false }),
   updateNickname: nickname => {
+    let hasUser = false;
     set(state => {
       if (!state.user) return state;
+      hasUser = true;
       const nextUser = { ...state.user, nickname };
       // 상태 반영
       return { ...state, user: nextUser };
     });
     // 닉네임 변경 즉시 반영 이벤트
-    if (typeof window !== 'undefined' && nickname) {
+    if (hasUser && typeof window !== 'undefined' && nickname) {
       window.dispatchEvent(new CustomEvent('profile:nicknameUpdated', { detail: { nickname } }));
     }
   },
   updateProfileImage: profileImage => {
+    let hasUser = false;
     set(state => {
       if (!state.user) return state;
+      hasUser = true;
       const nextUser = { ...state.user, profileImage };
       return { ...state, user: nextUser };
     });
     // 프로필 이미지 변경 즉시 반영 이벤트
-    if (typeof window !== 'undefined') {
+    if (hasUser && typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('profile:imageUpdated', { detail: { profileImage } }));
     }
   },

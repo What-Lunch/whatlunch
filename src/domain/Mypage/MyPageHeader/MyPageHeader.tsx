@@ -123,13 +123,36 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
       setDisplayImage(previewUrl);
       updateProfileImage(previewUrl);
 
-      await uploadProfileImage(file);
+      // 서버 업로드 → 실제 URL 수신
+      const uploadedUrl = await uploadProfileImage(file);
+      if (!uploadedUrl) {
+        throw new Error('업로드 결과 URL 없음');
+      }
+
+      // 실제 URL로 교체
+      setDisplayImage(uploadedUrl);
+      updateProfileImage(uploadedUrl);
+
+      // blob URL 정리
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+      }
+
       toast.success('프로필 이미지가 변경되었습니다.');
+
       // 서버 데이터 갱신 요청
       await queryClient.invalidateQueries({ queryKey: ['users', 'me'] });
     } catch {
       toast.error('이미지 변경 실패. 잠시 후 다시 시도해주세요.');
-      // 실패 시 원래 이미지로 복구
+
+      // 실패 시 blob URL 정리
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+      }
+
+      // 원래 이미지로 복구
       setDisplayImage(displayUser.profileImage);
       updateProfileImage(displayUser.profileImage || null);
     } finally {

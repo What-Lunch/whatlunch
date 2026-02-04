@@ -10,8 +10,8 @@ import FavoriteToggle from '@/shared/components/FavoriteToggle';
 import styles from './FavoriteMenuCard.module.scss';
 import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
-// 찜 추가 기준으로 정렬
-type FavoriteWithAddedAt = Favorite.GetMyFavoritesRes & { addedAt?: string };
+// 찜 추가 숫자 타임스탬프로 관리
+type FavoriteWithAddedAt = Favorite.GetMyFavoritesRes & { addedAt?: number };
 
 export default function FavoriteMenuCard({
   favoriteMenus,
@@ -28,21 +28,26 @@ export default function FavoriteMenuCard({
   const [localFavorites, setLocalFavorites] = useState<FavoriteWithAddedAt[]>([]);
 
   useEffect(() => {
-    // 초기 로드 시 createdAt을 addedAt으로 사용
+    // 초기 로드 시 createdAt을 숫자 타임스탬프로 변환
     const withAddedAt = favoriteMenus
       .filter(item => item != null)
-      .map(menu => ({ ...menu, addedAt: menu.createdAt || new Date().toISOString() }));
+      .map(menu => ({
+        ...menu,
+        addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
+      }));
     setLocalFavorites(withAddedAt);
+    const nextMap = favoriteMenus
+      .filter((menu): menu is Favorite.GetMyFavoritesRes => menu != null)
+      .reduce((acc, menu) => ({ ...acc, [menu._id]: true }), {} as Record<string, boolean>);
+    setFavoriteMap(nextMap);
   }, [favoriteMenus]);
 
-  // 찜 추가 시점(addedAt) 기준 최신순 정렬
   const sortedFavorites = useMemo(
     () =>
       localFavorites.slice().sort((a, b) => {
-        const aTime = a.addedAt || a.createdAt || '';
-        const bTime = b.addedAt || b.createdAt || '';
-        if (!aTime || !bTime) return 0;
-        return new Date(bTime).getTime() - new Date(aTime).getTime();
+        const aTime = a.addedAt ?? (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+        const bTime = b.addedAt ?? (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+        return bTime - aTime; // 최신순 정렬
       }),
     [localFavorites]
   );
@@ -51,12 +56,12 @@ export default function FavoriteMenuCard({
     mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
-      // 찜 추가 시 맨 위에 배치
+      // 찜 추가시 즉시 반영
       const foundMenu = favoriteMenus.find(menu => menu._id === menuId);
       if (foundMenu) {
         const newMenu: FavoriteWithAddedAt = {
           ...foundMenu,
-          addedAt: new Date().toISOString(),
+          addedAt: Date.now(), // 현재 시간으로 설정
         };
         setLocalFavorites(prev => [newMenu, ...prev.filter(menu => menu._id !== menuId)]);
       }
@@ -66,7 +71,10 @@ export default function FavoriteMenuCard({
       // 에러 시 원래대로 복구
       const withAddedAt = favoriteMenus
         .filter(item => item != null)
-        .map(menu => ({ ...menu, addedAt: menu.createdAt || new Date().toISOString() }));
+        .map(menu => ({
+          ...menu,
+          addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
+        }));
       setLocalFavorites(withAddedAt);
     },
     onSettled: () => {
@@ -86,7 +94,10 @@ export default function FavoriteMenuCard({
       // 에러 시 원래대로 복구
       const withAddedAt = favoriteMenus
         .filter(item => item != null)
-        .map(menu => ({ ...menu, addedAt: menu.createdAt || new Date().toISOString() }));
+        .map(menu => ({
+          ...menu,
+          addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
+        }));
       setLocalFavorites(withAddedAt);
     },
     onSettled: () => {
