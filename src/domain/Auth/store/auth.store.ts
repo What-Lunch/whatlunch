@@ -13,14 +13,47 @@ type AuthState = {
   setUser: (user: User) => void;
   clearUser: () => void;
   finishAuthCheck: () => void;
+  updateNickname: (nickname: string) => void;
+  updateProfileImage: (profileImage: string | null) => void;
 };
 
 export const useAuthStore = create<AuthState>(set => ({
   user: null,
   isAuthLoading: true,
-  setUser: user => set({ user, isAuthLoading: false }),
+  setUser: user => {
+    set({ user, isAuthLoading: false });
+    // 닉네임 변경 즉시 반영 이벤트
+    if (typeof window !== 'undefined' && user?.nickname) {
+      window.dispatchEvent(
+        new CustomEvent('profile:nicknameUpdated', { detail: { nickname: user.nickname } })
+      );
+    }
+  },
   clearUser: () => set({ user: null, isAuthLoading: false }),
   finishAuthCheck: () => set({ isAuthLoading: false }),
+  updateNickname: nickname => {
+    set(state => {
+      if (!state.user) return state;
+      const nextUser = { ...state.user, nickname };
+      // 상태 반영
+      return { ...state, user: nextUser };
+    });
+    // 닉네임 변경 즉시 반영 이벤트
+    if (typeof window !== 'undefined' && nickname) {
+      window.dispatchEvent(new CustomEvent('profile:nicknameUpdated', { detail: { nickname } }));
+    }
+  },
+  updateProfileImage: profileImage => {
+    set(state => {
+      if (!state.user) return state;
+      const nextUser = { ...state.user, profileImage };
+      return { ...state, user: nextUser };
+    });
+    // 프로필 이미지 변경 즉시 반영 이벤트
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('profile:imageUpdated', { detail: { profileImage } }));
+    }
+  },
 }));
 
 if (typeof window !== 'undefined') {
