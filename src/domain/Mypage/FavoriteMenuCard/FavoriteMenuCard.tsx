@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Modal from '@/shared/components/Modal';
@@ -119,12 +119,16 @@ export default function FavoriteMenuCard({
       <section aria-label="내가 찜한 메뉴" className={styles['meal-favorite']}>
         <header className={styles['meal-favorite__header']}>
           <h2 className={styles['meal-favorite__header__title']}>내가 찜한 메뉴</h2>
-          <Sparkles className={styles['meal-favorite__header__icon']} />
+          <Star className={styles['meal-favorite__header__icon']} fill="#FFD600" stroke="#FFD600" />
         </header>
 
         {sortedFavorites.length === 0 ? (
           <div className={styles['meal-favorite__empty']}>
-            <Sparkles className={styles['meal-favorite__empty__icon']} />
+            <Star
+              className={styles['meal-favorite__empty__icon']}
+              fill="#FFD600"
+              stroke="#FFD600"
+            />
             <p className={styles['meal-favorite__empty__text']}>아직 찜한 메뉴가 없어요!</p>
           </div>
         ) : (
