@@ -50,6 +50,10 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
+      if (res.accessToken) {
+        document.cookie = `accessToken=${res.accessToken}; path=/; max-age=86400; secure; samesite=lax`;
+      }
+
       setUser(res.user);
 
       toast.success('로그인에 성공했습니다.');
@@ -67,12 +71,16 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const googleLoginMutation = useMutation({
     mutationFn: (data: { idToken: string }) => authServiceClient.loginWithGoogle(data),
     onSuccess: res => {
-      // 백엔드가 Set-Cookie 헤더로 보내준 HttpOnly 쿠키가 브라우저에 자동 저장됩니다.
+      // 프론트엔드 도메인에서 강제로 쿠키를 저장합니다.
+      if (res.accessToken) {
+        document.cookie = `accessToken=${res.accessToken}; path=/; max-age=86400; secure; samesite=lax`;
+      }
+
       setUser(res.user);
       toast.success('구글 로그인에 성공했습니다.');
       onClose();
 
-      // 일반 로그인과 동일하게 부드러운 갱신 처리
+      // 로그인 상태 반영을 위해 새로고침
       setTimeout(() => {
         router.refresh();
       }, 100);
