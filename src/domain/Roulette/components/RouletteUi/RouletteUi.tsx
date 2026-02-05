@@ -156,18 +156,28 @@ export default function RouletteUi({
 
   // 화면 크기 변경 대응
   useEffect(() => {
+    let resizeTimeout: NodeJS.Timeout | null = null;
+
     const handleResize = () => {
+      if (spinning) return;
       const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
       const newSize = Math.floor(smallerDimension * 0.4);
-      setSize(newSize);
+      const clampedSize = Math.max(200, Math.min(600, newSize));
+      setSize(clampedSize);
     };
 
-    window.addEventListener('resize', handleResize);
+    const debouncedResize = () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleResize, 150);
+    };
+
+    window.addEventListener('resize', debouncedResize);
     handleResize();
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', debouncedResize);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
     };
-  }, []);
+  }, [spinning]);
 
   const canvasClass = spinning
     ? `${styles['roulette-ui__canvas']} ${styles['roulette-ui__canvas--spinning']}`

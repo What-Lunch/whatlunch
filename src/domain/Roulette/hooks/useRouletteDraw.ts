@@ -115,10 +115,8 @@ export function useRouletteDraw(items: Menu.GetMenuRes[], size: number, sectorCo
       canvasContext.lineTo(pointerSize / 2, edge);
       canvasContext.lineTo(0, edge + triangleHeight);
       canvasContext.closePath();
-
       canvasContext.fillStyle = ROULETTE_STYLE.pointer.color;
       canvasContext.fill();
-
       canvasContext.restore();
     },
     [radius, size]
