@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image'; // [추가] 이미지 사용을 위해 추가
+import Image from 'next/image';
 
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -43,8 +43,6 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [password, setPassword] = useState('');
 
   const router = useRouter();
-  // [추가] 구글 로그인 버튼 제어를 위한 Ref
-
   const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
   const { setUser } = useAuthStore();
@@ -52,10 +50,15 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
+      if (res.accessToken) {
+        document.cookie = `accessToken=${res.accessToken}; path=/; max-age=86400; secure; samesite=lax`;
+      }
+
       setUser(res.user);
 
       toast.success('로그인에 성공했습니다.');
       onClose();
+      // 데이터 갱신을 위한 새로고침
       setTimeout(() => {
         router.refresh();
       }, 100);
@@ -68,8 +71,19 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const googleLoginMutation = useMutation({
     mutationFn: (data: { idToken: string }) => authServiceClient.loginWithGoogle(data),
     onSuccess: res => {
+      // 프론트엔드 도메인에서 강제로 쿠키를 저장합니다.
+      if (res.accessToken) {
+        document.cookie = `accessToken=${res.accessToken}; path=/; max-age=86400; secure; samesite=lax`;
+      }
+
       setUser(res.user);
+      toast.success('구글 로그인에 성공했습니다.');
       onClose();
+
+      // 로그인 상태 반영을 위해 새로고침
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
     },
     onError: () => {
       toast.error('구글 로그인에 실패했습니다.');

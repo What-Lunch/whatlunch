@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google';
+import { useRouter } from 'next/navigation';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
@@ -22,7 +23,7 @@ import styles from '../AuthModal.module.scss';
 export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
   const nicknameRef = useRef<HTMLInputElement>(null);
-
+  const router = useRouter();
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
@@ -53,11 +54,19 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const googleSignupMutation = useMutation({
     mutationFn: (data: { idToken: string }) => authServiceClient.loginWithGoogle(data),
     onSuccess: res => {
+      // 프론트엔드 도메인에서 강제로 쿠키를 저장합니다.
+      if (res.accessToken) {
+        document.cookie = `accessToken=${res.accessToken}; path=/; max-age=86400; secure; samesite=lax`;
+      }
+
       // 성공 시 바로 로그인
       setUser(res.user);
 
       toast.success('구글 계정으로 회원가입 및 로그인되었습니다!');
       onClose();
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
     },
     onError: () => {
       toast.error('구글 회원가입에 실패했습니다.');
