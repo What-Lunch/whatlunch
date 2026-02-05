@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image'; // [추가] 이미지 사용을 위해 추가
+import Image from 'next/image';
 
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -43,8 +43,6 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [password, setPassword] = useState('');
 
   const router = useRouter();
-  // [추가] 구글 로그인 버튼 제어를 위한 Ref
-
   const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
   const { setUser } = useAuthStore();
@@ -56,6 +54,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
 
       toast.success('로그인에 성공했습니다.');
       onClose();
+      // 데이터 갱신을 위한 새로고침
       setTimeout(() => {
         router.refresh();
       }, 100);
@@ -68,8 +67,15 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const googleLoginMutation = useMutation({
     mutationFn: (data: { idToken: string }) => authServiceClient.loginWithGoogle(data),
     onSuccess: res => {
+      // 백엔드가 Set-Cookie 헤더로 보내준 HttpOnly 쿠키가 브라우저에 자동 저장됩니다.
       setUser(res.user);
+      toast.success('구글 로그인에 성공했습니다.');
       onClose();
+
+      // 일반 로그인과 동일하게 부드러운 갱신 처리
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
     },
     onError: () => {
       toast.error('구글 로그인에 실패했습니다.');

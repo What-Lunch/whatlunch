@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { GoogleLogin } from '@react-oauth/google';
+import { useRouter } from 'next/navigation';
 
 import Button from '@/shared/components/Button';
 import BaseInput from '@/shared/components/Input/BaseInput';
@@ -22,7 +23,7 @@ import styles from '../AuthModal.module.scss';
 export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
   const nicknameRef = useRef<HTMLInputElement>(null);
-
+  const router = useRouter();
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
@@ -58,6 +59,9 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
 
       toast.success('구글 계정으로 회원가입 및 로그인되었습니다!');
       onClose();
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
     },
     onError: () => {
       toast.error('구글 회원가입에 실패했습니다.');
