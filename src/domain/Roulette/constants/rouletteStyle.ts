@@ -3,7 +3,7 @@ export const ROULETTE_STYLE = {
     color: '#334155',
     large: '700 28px Pretendard, sans-serif',
     normal: '600 20px Pretendard, sans-serif',
-    offsetRatio: 0.45,
+    offsetRatio: 0.5,
   },
 
   stroke: {

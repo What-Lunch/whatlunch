@@ -3,9 +3,13 @@
 
 .roulette-ui {
   @include m.flex-box(center, center, column);
-  padding: 20px;
+  padding: 0px;
   position: relative;
   min-height: auto;
+
+  @include m.mq(md) {
+    padding: 20px;
+  }
 }
 
 .roulette-pointer {

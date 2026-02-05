@@ -7,7 +7,6 @@
     width: fit-content;
     margin: 0 auto;
     padding: 4px;
-
     background: f.color(gray-100);
     border-radius: 32px;
 
@@ -26,6 +25,7 @@
         width: 200px;
         height: 36px;
       }
+
       @include m.mq(lg) {
         @include m.text-style(lg, 600);
         width: 260px;
@@ -44,10 +44,14 @@
   &__options {
     margin-top: 20px;
     @include m.flex-box(center, center, row);
+    gap: 8px;
     flex-wrap: wrap;
-    gap: 12px;
     width: 100%;
     padding: 0 12px;
+
+    @include m.mq(md) {
+      gap: 12px;
+    }
 
     &__item {
       @include m.flex-box(center, center);
@@ -56,6 +60,12 @@
       height: 32px;
       padding: 0 12px;
       box-sizing: border-box;
+
+      @include m.mq(md) {
+        @include m.text-style(sm, 400);
+        height: 36px;
+        padding: 0 14px;
+      }
 
       @include m.mq(lg) {
         @include m.text-style(md, 400);

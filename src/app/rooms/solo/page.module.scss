@@ -83,10 +83,13 @@
     border-radius: 24px;
     border: 2px solid rgba(f.color(purple-600), 0.15);
     box-shadow: 0 8px 32px rgba(f.color(purple-600), 0.12);
-    padding: 32px;
+    padding: 0px;
     min-height: 500px;
     transition: all 0.3s ease;
 
+    @include m.mq(md) {
+      padding: 32px;
+    }
     &:hover {
       box-shadow: 0 12px 40px rgba(f.color(purple-600), 0.18);
       transform: translateY(-2px);

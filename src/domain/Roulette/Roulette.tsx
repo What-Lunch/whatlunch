@@ -170,12 +170,13 @@ export const Roulette = memo(function Roulette({
         )}
       </div>
 
-      <div className={styles['roulette__result-btn-wrapper']}>
+      <div className={styles['roulette__result-btn']}>
         <Button
           variant="neutral"
           mode="fill"
           disabled={!localResult}
           onClick={() => setModalOpen(true)}
+          className={styles['roulette__result-btn__button']}
         >
           결과 보기
         </Button>
