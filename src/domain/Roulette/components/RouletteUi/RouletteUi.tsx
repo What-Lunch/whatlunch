@@ -20,7 +20,7 @@ interface RouletteUiProps {
     context?: Context[];
   };
   userRole?: 'host' | 'guest' | null;
-  size?: number;
+  // size?: number;
   disabled?: boolean;
   menusReady?: boolean;
 }
@@ -31,13 +31,14 @@ export default function RouletteUi({
   onResult,
   filters = {},
   userRole,
-  size = 480,
+  // size = 480,
   disabled = false,
   menusReady = true,
 }: RouletteUiProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
+  const [size, setSize] = useState(480);
   const [angle, setAngle] = useState(0);
   const [spinning, setSpinning] = useState(false);
 
@@ -152,6 +153,21 @@ export default function RouletteUi({
     disabled,
     menusReady,
   ]);
+
+  // 화면 크기 변경 대응
+  useEffect(() => {
+    const handleResize = () => {
+      const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
+      const newSize = Math.floor(smallerDimension * 0.4);
+      setSize(newSize);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const canvasClass = spinning
     ? `${styles['roulette-ui__canvas']} ${styles['roulette-ui__canvas--spinning']}`

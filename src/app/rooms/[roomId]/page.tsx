@@ -54,7 +54,6 @@ export default function RoomPage({ params }: RoomPageProps) {
     const fetchFavorites = async () => {
       try {
         const favorites = await favoritesServiceClient.getMyFavorites();
-        console.log('찜한 메뉴:', favorites);
         const favMap: Record<string, boolean> = {};
         favorites.forEach(menu => {
           favMap[menu._id] = true;
@@ -192,16 +191,18 @@ export default function RoomPage({ params }: RoomPageProps) {
 
         <div className={styles['room__code']}>
           <span className={styles['room__code__label']}>방 코드</span>
-          <strong className={styles['room__code__value']}>{roomId}</strong>
-          <button
-            type="button"
-            aria-label="방 코드 복사"
-            className={styles['room__code__copy']}
-            onClick={copyRoomCode}
-          >
-            {copied ? <Check size={16} /> : <Copy size={16} />}
-            {copied ? '복사됨' : '복사'}
-          </button>
+          <div className={styles['room__code__value']}>
+            <strong className={styles['room__code__value__inner']}>{roomId}</strong>
+            <button
+              type="button"
+              aria-label="방 코드 복사"
+              className={styles['room__code__copy']}
+              onClick={copyRoomCode}
+            >
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+              {copied ? '복사됨' : '복사'}
+            </button>
+          </div>
         </div>
       </header>
 

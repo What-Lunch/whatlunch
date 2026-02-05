@@ -4,8 +4,31 @@ import { ROULETTE_STYLE } from '../constants/rouletteStyle';
 
 const FULL_ANGLE = Math.PI * 2;
 
+function getResponsiveTextStyle(size: number): { large: string; normal: string } {
+  if (size < 300) {
+    // 모바일
+    return {
+      large: '700 16px Pretendard, sans-serif',
+      normal: '600 12px Pretendard, sans-serif',
+    };
+  } else if (size < 450) {
+    // 태블릿
+    return {
+      large: '700 22px Pretendard, sans-serif',
+      normal: '600 16px Pretendard, sans-serif',
+    };
+  } else {
+    // 데스크톱
+    return {
+      large: '700 28px Pretendard, sans-serif',
+      normal: '600 20px Pretendard, sans-serif',
+    };
+  }
+}
+
 export function useRouletteDraw(items: Menu.GetMenuRes[], size: number, sectorColors: string[]) {
   const radius = useMemo(() => size / 2, [size]);
+  const responsiveText = useMemo(() => getResponsiveTextStyle(size), [size]);
 
   const stepAngle = useMemo(() => {
     return items.length > 0 ? FULL_ANGLE / items.length : 0;
@@ -22,13 +45,13 @@ export function useRouletteDraw(items: Menu.GetMenuRes[], size: number, sectorCo
       canvasContext.save();
       canvasContext.translate(radius, radius);
       canvasContext.fillStyle = ROULETTE_STYLE.text.color;
-      canvasContext.font = ROULETTE_STYLE.text.large;
+      canvasContext.font = responsiveText.large;
       canvasContext.textAlign = 'center';
       canvasContext.textBaseline = 'middle';
       canvasContext.fillText(items[0].name, 0, 0);
       canvasContext.restore();
     },
-    [items, sectorColors, radius]
+    [items, sectorColors, radius, responsiveText]
   );
 
   // 섹터 + 텍스트 렌더링
@@ -56,7 +79,7 @@ export function useRouletteDraw(items: Menu.GetMenuRes[], size: number, sectorCo
         canvasContext.rotate(start + stepAngle / 2);
 
         canvasContext.fillStyle = ROULETTE_STYLE.text.color;
-        canvasContext.font = ROULETTE_STYLE.text.normal;
+        canvasContext.font = responsiveText.normal;
         canvasContext.textAlign = 'center';
         canvasContext.textBaseline = 'middle';
 
@@ -67,22 +90,29 @@ export function useRouletteDraw(items: Menu.GetMenuRes[], size: number, sectorCo
         canvasContext.restore();
       });
     },
-    [items, sectorColors, radius, stepAngle]
+    [items, sectorColors, radius, stepAngle, responsiveText]
   );
 
-  // 포인터 렌더링
+  // 포인터 렌더링 (반응형 크기)
   const drawPointer = useCallback(
     (canvasContext: CanvasRenderingContext2D) => {
       canvasContext.save();
       canvasContext.translate(radius, radius);
 
-      const side = ROULETTE_STYLE.pointer.size;
+      // 반응형 포인터 크기
+      let pointerSize = ROULETTE_STYLE.pointer.responsive.mobile;
+      if (size >= 450) {
+        pointerSize = ROULETTE_STYLE.pointer.responsive.desktop;
+      } else if (size >= 300) {
+        pointerSize = ROULETTE_STYLE.pointer.responsive.tablet;
+      }
+
       const edge = -(radius - ROULETTE_STYLE.pointer.margin);
-      const triangleHeight = (side * Math.sqrt(3)) / 2;
+      const triangleHeight = (pointerSize * Math.sqrt(3)) / 2;
 
       canvasContext.beginPath();
-      canvasContext.moveTo(-side / 2, edge);
-      canvasContext.lineTo(side / 2, edge);
+      canvasContext.moveTo(-pointerSize / 2, edge);
+      canvasContext.lineTo(pointerSize / 2, edge);
       canvasContext.lineTo(0, edge + triangleHeight);
       canvasContext.closePath();
 
@@ -91,7 +121,7 @@ export function useRouletteDraw(items: Menu.GetMenuRes[], size: number, sectorCo
 
       canvasContext.restore();
     },
-    [radius]
+    [radius, size]
   );
 
   // 전체 draw 함수

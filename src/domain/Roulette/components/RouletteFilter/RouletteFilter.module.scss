@@ -12,28 +12,29 @@
     border-radius: 32px;
 
     &__tab {
-      width: 260px;
-      height: 48px;
-
+      width: 100px;
+      height: 36px;
       @include m.flex-box(center, center);
-      @include m.text-style(lg, 600);
-
+      @include m.text-style(md, 600);
       background: transparent;
-      border: none;
       border-radius: 32px;
-
       color: f.color(text-default);
-
       cursor: pointer;
-      transition:
-        background 0.25s ease,
-        color 0.25s ease,
-        transform 0.25s ease;
+      transition: all 0.2s ease;
+
+      @include m.mq(md) {
+        width: 200px;
+        height: 36px;
+      }
+      @include m.mq(lg) {
+        @include m.text-style(lg, 600);
+        width: 260px;
+        height: 48px;
+      }
 
       &--active {
         background: f.color(point-blue);
         color: f.color(text-inverse);
-
         box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         transform: translateY(-2px);
       }
@@ -42,22 +43,25 @@
 
   &__options {
     margin-top: 20px;
-
     @include m.flex-box(center, center, row);
     flex-wrap: wrap;
-
     gap: 12px;
     width: 100%;
     padding: 0 12px;
 
     &__item {
       @include m.flex-box(center, center);
-      @include m.text-style(md, 400);
-
       border-radius: 16px;
-      height: 40px;
-      padding: 0 18px;
+      @include m.text-style(xs, 400);
+      height: 32px;
+      padding: 0 12px;
       box-sizing: border-box;
+
+      @include m.mq(lg) {
+        @include m.text-style(md, 400);
+        height: 40px;
+        padding: 0 18px;
+      }
 
       &__icon {
         @include m.flex-box(center, center);
