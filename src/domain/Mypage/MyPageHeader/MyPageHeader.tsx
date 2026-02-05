@@ -4,10 +4,12 @@ import { useRef, useState, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Pencil, Star, Timer, Users, Utensils, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { ProfileImage } from '@/shared/components/ProfileImage';
 import Badge, { BadgeProps } from '@/shared/components/Badge';
 import { useProfileImageUpload } from '@/domain/Auth/hooks/useProfileImageUpload';
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './MyPageHeader.module.scss';
 
@@ -28,6 +30,8 @@ const BADGES: readonly BadgeProps[] = [
 
 const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
   const { uploadProfileImage, removeProfileImage, isUploading } = useProfileImageUpload();
+  const queryClient = useQueryClient();
+  const updateProfileImage = useAuthStore(state => state.updateProfileImage);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -85,10 +89,12 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
 
   const handleResetImage = async () => {
     if (isUploading) return;
-
     try {
       await removeProfileImage();
       toast.success('기본 이미지로 변경되었습니다.');
+      updateProfileImage(null);
+      // 서버 데이터 갱신 요청
+      queryClient.invalidateQueries({ queryKey: ['users', 'me'] });
     } catch {
       toast.error('이미지 변경에 실패했습니다.');
     } finally {
@@ -100,21 +106,99 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
     if (isUploading) return;
     const file = e.target.files?.[0];
     if (!file) return;
-
     if (!file.type.startsWith('image/')) {
       toast.error('이미지 파일만 업로드할 수 있습니다.');
       return;
     }
 
     try {
-      await uploadProfileImage(file);
+      // 이전 미리보기 URL 정리
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+      }
+      // 낙관적 업데이트
+      const previewUrl = URL.createObjectURL(file);
+      previewUrlRef.current = previewUrl;
+      setDisplayImage(previewUrl);
+      updateProfileImage(previewUrl);
+
+      // 서버 업로드 → 실제 URL 수신
+      const uploadedUrl = await uploadProfileImage(file);
+      if (!uploadedUrl) {
+        throw new Error('업로드 결과 URL 없음');
+      }
+
+      // 실제 URL로 교체
+      setDisplayImage(uploadedUrl);
+      updateProfileImage(uploadedUrl);
+
+      // blob URL 정리
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+      }
+
       toast.success('프로필 이미지가 변경되었습니다.');
+
+      // 서버 데이터 갱신 요청
+      await queryClient.invalidateQueries({ queryKey: ['users', 'me'] });
     } catch {
       toast.error('이미지 변경 실패. 잠시 후 다시 시도해주세요.');
+
+      // 실패 시 blob URL 정리
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+      }
+
+      // 원래 이미지로 복구
+      setDisplayImage(displayUser.profileImage);
+      updateProfileImage(displayUser.profileImage || null);
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
+
+  const [displayNickname, setDisplayNickname] = useState(displayUser.nickname);
+  const [displayImage, setDisplayImage] = useState(displayUser.profileImage);
+
+  // preview URL 관리 (메모리 누수 방지)
+  const previewUrlRef = useRef<string | null>(null);
+
+  // user가 바뀌면 동기화 (닉네임 & 이미지)
+  useEffect(() => {
+    setDisplayNickname(displayUser.nickname);
+    setDisplayImage(displayUser.profileImage);
+  }, [displayUser.nickname, displayUser.profileImage]);
+
+  // 실시간 업데이트 이벤트 리스너
+  useEffect(() => {
+    const nicknameHandler = (e: Event) => {
+      const customEvent = e as CustomEvent<{ nickname: string }>;
+      if (customEvent.detail?.nickname) setDisplayNickname(customEvent.detail.nickname);
+    };
+    const imageHandler = (e: Event) => {
+      const customEvent = e as CustomEvent<{ profileImage: string | null }>;
+      if (
+        customEvent.detail &&
+        Object.prototype.hasOwnProperty.call(customEvent.detail, 'profileImage')
+      ) {
+        setDisplayImage(customEvent.detail.profileImage);
+      }
+    };
+    window.addEventListener('profile:nicknameUpdated', nicknameHandler as EventListener);
+    window.addEventListener('profile:imageUpdated', imageHandler as EventListener);
+    return () => {
+      window.removeEventListener('profile:nicknameUpdated', nicknameHandler as EventListener);
+      window.removeEventListener('profile:imageUpdated', imageHandler as EventListener);
+      // 컴포넌트 언마운트 시 preview URL 정리
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+        previewUrlRef.current = null;
+      }
+    };
+  }, []);
 
   if (!user) return null;
 
@@ -130,7 +214,7 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
       />
 
       <div className={styles['profile-header__avatar']} ref={avatarRef}>
-        <ProfileImage src={displayUser.profileImage} variant="editable" priority />
+        <ProfileImage src={displayImage} variant="editable" priority />
 
         <button
           type="button"
@@ -169,7 +253,7 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
 
       <div className={styles['profile-header__body']}>
         <h1 className={styles['profile-header__title']} id="profile-header-title">
-          {displayUser.nickname}님의 마이페이지
+          {displayNickname}님의 마이페이지
         </h1>
         <p className={styles['profile-header__subtitle']}>오늘 기록이 여기에 정리돼요</p>
 

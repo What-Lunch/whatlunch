@@ -5,6 +5,14 @@ const nextConfig = {
   sassOptions: {
     includePaths: [join(process.cwd(), 'src', 'styles')],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/proxy/:path*',
+        destination: 'https://backend-piik.onrender.com/:path*',
+      },
+    ];
+  },
   async headers() {
     return [
       {

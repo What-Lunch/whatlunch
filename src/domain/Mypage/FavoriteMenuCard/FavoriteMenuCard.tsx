@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Sparkles } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Star } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Modal from '@/shared/components/Modal';
@@ -9,6 +9,9 @@ import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
 import styles from './FavoriteMenuCard.module.scss';
 import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
+
+// 찜 추가 숫자 타임스탬프로 관리
+type FavoriteWithAddedAt = Favorite.GetMyFavoritesRes & { addedAt?: number };
 
 export default function FavoriteMenuCard({
   favoriteMenus,
@@ -22,15 +25,57 @@ export default function FavoriteMenuCard({
       .filter((menu): menu is Favorite.GetMyFavoritesRes => menu != null)
       .reduce((acc, menu) => ({ ...acc, [menu._id]: true }), {} as Record<string, boolean>)
   );
-  const validFavorites = useMemo(() => favoriteMenus.filter(item => item != null), [favoriteMenus]);
+  const [localFavorites, setLocalFavorites] = useState<FavoriteWithAddedAt[]>([]);
+
+  useEffect(() => {
+    // 초기 로드 시 createdAt을 숫자 타임스탬프로 변환
+    const withAddedAt = favoriteMenus
+      .filter(item => item != null)
+      .map(menu => ({
+        ...menu,
+        addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
+      }));
+    setLocalFavorites(withAddedAt);
+    const nextMap = favoriteMenus
+      .filter((menu): menu is Favorite.GetMyFavoritesRes => menu != null)
+      .reduce((acc, menu) => ({ ...acc, [menu._id]: true }), {} as Record<string, boolean>);
+    setFavoriteMap(nextMap);
+  }, [favoriteMenus]);
+
+  const sortedFavorites = useMemo(
+    () =>
+      localFavorites.slice().sort((a, b) => {
+        const aTime = a.addedAt ?? (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+        const bTime = b.addedAt ?? (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+        return bTime - aTime; // 최신순 정렬
+      }),
+    [localFavorites]
+  );
 
   const favoriteMutation = useMutation({
     mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
+      // 찜 추가시 즉시 반영
+      const foundMenu = favoriteMenus.find(menu => menu._id === menuId);
+      if (foundMenu) {
+        const newMenu: FavoriteWithAddedAt = {
+          ...foundMenu,
+          addedAt: Date.now(), // 현재 시간으로 설정
+        };
+        setLocalFavorites(prev => [newMenu, ...prev.filter(menu => menu._id !== menuId)]);
+      }
     },
     onError: (_err, menuId) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
+      // 에러 시 원래대로 복구
+      const withAddedAt = favoriteMenus
+        .filter(item => item != null)
+        .map(menu => ({
+          ...menu,
+          addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
+        }));
+      setLocalFavorites(withAddedAt);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
@@ -41,9 +86,19 @@ export default function FavoriteMenuCard({
     mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
     onMutate: (menuId: string) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
+      // 찜 해제 시 제거
+      setLocalFavorites(prev => prev.filter(menu => menu._id !== menuId));
     },
     onError: (_err, menuId) => {
       setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
+      // 에러 시 원래대로 복구
+      const withAddedAt = favoriteMenus
+        .filter(item => item != null)
+        .map(menu => ({
+          ...menu,
+          addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
+        }));
+      setLocalFavorites(withAddedAt);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
@@ -64,18 +119,22 @@ export default function FavoriteMenuCard({
       <section aria-label="내가 찜한 메뉴" className={styles['meal-favorite']}>
         <header className={styles['meal-favorite__header']}>
           <h2 className={styles['meal-favorite__header__title']}>내가 찜한 메뉴</h2>
-          <Sparkles className={styles['meal-favorite__header__icon']} />
+          <Star className={styles['meal-favorite__header__icon']} fill="#FFD600" stroke="#FFD600" />
         </header>
 
-        {validFavorites.length === 0 ? (
+        {sortedFavorites.length === 0 ? (
           <div className={styles['meal-favorite__empty']}>
-            <Sparkles className={styles['meal-favorite__empty__icon']} />
+            <Star
+              className={styles['meal-favorite__empty__icon']}
+              fill="#FFD600"
+              stroke="#FFD600"
+            />
             <p className={styles['meal-favorite__empty__text']}>아직 찜한 메뉴가 없어요!</p>
           </div>
         ) : (
           <>
             <ul className={styles['meal-favorite__list']}>
-              {validFavorites.slice(0, 4).map(menu => (
+              {sortedFavorites.slice(0, 4).map(menu => (
                 <li key={menu._id} className={styles['meal-favorite__list__item']}>
                   <div className={styles['meal-favorite__list__item__info']}>
                     <span className={styles['meal-favorite__list__item__info__name']}>
@@ -95,7 +154,7 @@ export default function FavoriteMenuCard({
               ))}
             </ul>
 
-            {validFavorites.length > 4 && (
+            {sortedFavorites.length > 4 && (
               <div className={styles['meal-favorite__view-all']}>
                 <button
                   type="button"
@@ -119,7 +178,7 @@ export default function FavoriteMenuCard({
           innerClassName={styles['modal']}
         >
           <ul className={styles['modal__list']}>
-            {validFavorites.map(menu => (
+            {sortedFavorites.map(menu => (
               <li key={menu._id} className={styles['modal__list__item']}>
                 <div className={styles['modal__list__item__info']}>
                   <span className={styles['modal__list__item__info__name']}>{menu.name}</span>

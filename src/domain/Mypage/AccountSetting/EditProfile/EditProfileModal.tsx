@@ -15,6 +15,17 @@ export default function EditProfileModal({ isOpen, onClose }: EditProfileModalPr
 
   if (!user) return null;
 
+  // 닉네임 변경 후 처리
+  const handleSuccess = () => {
+    const currentNickname = useAuthStore.getState().user?.nickname;
+    if (typeof window !== 'undefined' && currentNickname) {
+      window.dispatchEvent(
+        new CustomEvent('profile:nicknameUpdated', { detail: { nickname: currentNickname } })
+      );
+    }
+    onClose();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -25,7 +36,7 @@ export default function EditProfileModal({ isOpen, onClose }: EditProfileModalPr
     >
       <EditProfileForm
         initialNickname={user.nickname}
-        onSubmitSuccess={onClose}
+        onSubmitSuccess={handleSuccess}
         onCancel={onClose}
       />
     </Modal>
