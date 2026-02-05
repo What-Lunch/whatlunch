@@ -18,7 +18,6 @@ import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { disconnectSocket } from '@/app/lib/socket';
 
 import WhatLunchLogo from '../../../../../public/icons/what-lunch-logo.svg';
-
 import styles from './Header.module.scss';
 
 export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes | null }) {
@@ -28,17 +27,21 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const { user: storeUser, clearUser, setUser } = useAuthStore();
+  const storeUser = useAuthStore(state => state.user);
+  const clearUser = useAuthStore(state => state.clearUser);
 
   useEffect(() => {
     if (initialUser) {
-      setUser(initialUser);
+      useAuthStore.setState(state => ({
+        ...state,
+        user: initialUser,
+      }));
     } else {
       clearUser();
     }
-  }, [initialUser, setUser, clearUser]);
+  }, [initialUser, clearUser]);
 
-  const displayUser = storeUser || initialUser;
+  const displayUser = storeUser ?? initialUser;
 
   const handleLogout = useCallback(async () => {
     try {
@@ -47,7 +50,6 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
       await authServiceClient.postLogout();
       disconnectSocket();
       queryClient.clear();
-
       clearUser();
 
       toast.success('로그아웃 되었습니다.');
