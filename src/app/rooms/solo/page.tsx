@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { DicesIcon, Clock } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import Roulette from '@/domain/Roulette/Roulette';
+import Roulette from '@/domain/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
 import { BaseInput } from '@/shared/components/Input';
 import Button from '@/shared/components/Button';

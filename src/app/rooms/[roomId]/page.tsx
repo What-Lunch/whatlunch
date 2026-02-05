@@ -8,9 +8,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
-import KakaoMap from '@/shared/components/KakaoMap/KakaoMap';
-import Button from '@/shared/components/Button/Button';
-import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
+import KakaoMap from '@/shared/components/KakaoMap';
+import Button from '@/shared/components/Button';
+import BaseInput from '@/shared/components/Input/BaseInput';
 import Loading from '@/shared/components/Loading';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';

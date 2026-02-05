@@ -93,6 +93,11 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
     (data: Kakao.PlacesSearchResult) => {
       setPlaces(data);
 
+      if (data.length > 0 && mapRef.current) {
+        const first = data[0];
+        const position = new window.kakao.maps.LatLng(Number(first.y), Number(first.x));
+        mapRef.current.setCenter(position);
+      }
       // 이전 리스너 제거
       markerClickListenersRef.current.forEach(({ marker, listener }) => {
         window.kakao.maps.event.removeListener(marker, 'click', listener);
