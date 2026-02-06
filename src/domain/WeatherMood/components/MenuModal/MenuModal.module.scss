@@ -1,0 +1,120 @@
+@use 'utils/mixins' as m;
+@use 'utils/functions' as f;
+
+.menu-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+
+  @include m.flex-box(center, center);
+
+  // 바깥 블러 처리
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    border: none;
+    cursor: default;
+  }
+
+  // 모달 컨테이너
+  &__container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 16px;
+    padding: 16px;
+
+    background: f.color(white);
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+
+    @include m.flex-box(flex-start, stretch, column);
+    gap: 12px;
+
+    z-index: 1;
+    animation: modalFadeIn 0.25s ease;
+  }
+
+  // 닫기 버튼
+  &__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+
+    @include m.flex-box(center, center);
+
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(f.color(gray-400), 0.3);
+    color: f.color(gray-700);
+
+    cursor: pointer;
+
+    &:hover {
+      background: f.color(white);
+      color: f.color(gray-900);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  // 이미지 영역
+  &__image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    overflow: hidden;
+    background: f.color(gray-100);
+  }
+
+  &__image {
+    object-fit: cover;
+  }
+
+  // 이미지 위 메뉴명
+  &__image-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding: 12px 14px;
+    text-align: center;
+
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+
+    @include m.text-style('lg', 700);
+    color: f.color(white);
+    letter-spacing: 0.02em;
+  }
+
+  // 설명 한 줄
+  &__description {
+    margin-top: 4px;
+    padding: 0 4px;
+    text-align: center;
+
+    @include m.text-style('sm', 400);
+    color: f.color(gray-600);
+    word-break: keep-all;
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

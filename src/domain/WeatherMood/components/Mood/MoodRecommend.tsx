@@ -8,16 +8,15 @@ import {
   type MoodId,
 } from '@/domain/WeatherMood/components/Mood/utils/moodRecommend';
 import { generateRecommendations } from '@/domain/WeatherMood/components/Mood/utils/recommendEngine';
+import { getCategoryByMenu } from '@/domain/WeatherMood/utils/getCategoryByMenu';
+import MenuModal from '@/domain/WeatherMood/components/MenuModal/MenuModal';
 
 import styles from './MoodRecommend.module.scss';
 
 const DEFAULT_MOOD: MoodId = 'happy';
 
 export default function MoodRecommend() {
-  // 현재 선택된 기분
   const [selectedMood, setSelectedMood] = useState<MoodId>(DEFAULT_MOOD);
-
-  // 추천된 메뉴 목록 (기분이 바뀔 때만 갱신)
   const [recommendedMenus, setRecommendedMenus] = useState<string[]>([]);
 
   // 기분 선택 시 상태 변경
@@ -25,7 +24,6 @@ export default function MoodRecommend() {
     setSelectedMood(moodId);
   }, []);
 
-  // 기분이 바뀔 때만 추천 메뉴 다시 생성
   useEffect(() => {
     const baseMenus = getMoodBaseMenus(selectedMood);
     const result = generateRecommendations(baseMenus);
@@ -33,9 +31,10 @@ export default function MoodRecommend() {
     setRecommendedMenus(result);
   }, [selectedMood]);
 
+  const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
+
   return (
     <div className={styles['mood-recommend']}>
-      {/* 기분 선택 버튼 */}
       <div className={styles['mood-recommend__list']}>
         {moodOptions.map(option => {
           const isActive = option.id === selectedMood;
@@ -56,18 +55,30 @@ export default function MoodRecommend() {
         })}
       </div>
 
-      {/* 추천 메뉴 영역 */}
       <div className={styles['mood-recommend__recommend']}>
         <h4>지금 당신에게 맞는 맛</h4>
 
         <div className={styles['mood-recommend__cards']}>
           {recommendedMenus.map(menu => (
-            <div key={menu} className={styles['mood-recommend__card']}>
+            <button
+              key={menu}
+              className={styles['mood-recommend__card']}
+              onClick={() => setSelectedMenu(menu)}
+              type="button"
+            >
               {menu}
-            </div>
+            </button>
           ))}
         </div>
       </div>
+
+      {selectedMenu && (
+        <MenuModal
+          menu={selectedMenu}
+          category={getCategoryByMenu(selectedMenu)}
+          onClose={() => setSelectedMenu(null)}
+        />
+      )}
     </div>
   );
 }
