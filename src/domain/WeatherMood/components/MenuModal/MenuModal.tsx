@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { X } from 'lucide-react';
 
@@ -13,6 +14,20 @@ export default function MenuModal({ menu, category, onClose }: MenuModalProps) {
   const imageSrc = getFoodImageByMenu(menu, category);
   const description = MENU_DESCRIPTION_MAP[menu] ?? '오늘 컨디션에 잘 어울리는 메뉴예요';
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
+
   return (
     <div className={styles['menu-modal']}>
       <button
@@ -22,7 +37,12 @@ export default function MenuModal({ menu, category, onClose }: MenuModalProps) {
         aria-label="메뉴 모달 닫기"
       />
 
-      <div className={styles['menu-modal__container']} role="dialog" aria-modal="true">
+      <div
+        className={styles['menu-modal__container']}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${menu} 상세 정보`}
+      >
         <button
           type="button"
           className={styles['menu-modal__close']}
