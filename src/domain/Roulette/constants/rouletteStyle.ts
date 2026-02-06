@@ -3,7 +3,7 @@ export const ROULETTE_STYLE = {
     color: '#334155',
     large: '700 28px Pretendard, sans-serif',
     normal: '600 20px Pretendard, sans-serif',
-    offsetRatio: 0.45,
+    offsetRatio: 0.5,
   },
 
   stroke: {
@@ -15,6 +15,11 @@ export const ROULETTE_STYLE = {
     color: '#ef4444',
     size: 48,
     margin: 4,
+    responsive: {
+      mobile: 24 as number,
+      tablet: 32 as number,
+      desktop: 48 as number,
+    },
   },
 
   wheel: {

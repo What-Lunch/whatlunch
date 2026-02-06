@@ -57,12 +57,6 @@
         }
       }
     }
-
-    &__stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
   }
 
   &__content {
@@ -74,21 +68,28 @@
 
   &__main-section {
     display: flex;
+    flex-direction: column;
     gap: 24px;
     width: 100%;
+
+    @include m.mq(xl) {
+      flex-direction: row;
+    }
   }
 
   &__left {
-    flex: 0 0 60%;
     @include m.flex-box(center, center);
     background: linear-gradient(135deg, #fdfcff 0%, #faf8ff 100%);
     border-radius: 24px;
     border: 2px solid rgba(f.color(purple-600), 0.15);
     box-shadow: 0 8px 32px rgba(f.color(purple-600), 0.12);
-    padding: 32px;
+    padding: 0px;
     min-height: 500px;
     transition: all 0.3s ease;
 
+    @include m.mq(md) {
+      padding: 32px;
+    }
     &:hover {
       box-shadow: 0 12px 40px rgba(f.color(purple-600), 0.18);
       transform: translateY(-2px);
@@ -96,7 +97,7 @@
   }
 
   &__right {
-    flex: 0 0 40%;
+    width: 100%;
   }
 
   &__map-section {

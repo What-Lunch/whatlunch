@@ -8,9 +8,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
-import KakaoMap from '@/shared/components/KakaoMap/KakaoMap';
-import Button from '@/shared/components/Button/Button';
-import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
+import KakaoMap from '@/shared/components/KakaoMap';
+import Button from '@/shared/components/Button';
+import BaseInput from '@/shared/components/Input/BaseInput';
 import Loading from '@/shared/components/Loading';
 
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
@@ -54,7 +54,6 @@ export default function RoomPage({ params }: RoomPageProps) {
     const fetchFavorites = async () => {
       try {
         const favorites = await favoritesServiceClient.getMyFavorites();
-        console.log('찜한 메뉴:', favorites);
         const favMap: Record<string, boolean> = {};
         favorites.forEach(menu => {
           favMap[menu._id] = true;
@@ -192,16 +191,18 @@ export default function RoomPage({ params }: RoomPageProps) {
 
         <div className={styles['room__code']}>
           <span className={styles['room__code__label']}>방 코드</span>
-          <strong className={styles['room__code__value']}>{roomId}</strong>
-          <button
-            type="button"
-            aria-label="방 코드 복사"
-            className={styles['room__code__copy']}
-            onClick={copyRoomCode}
-          >
-            {copied ? <Check size={16} /> : <Copy size={16} />}
-            {copied ? '복사됨' : '복사'}
-          </button>
+          <div className={styles['room__code__value']}>
+            <strong className={styles['room__code__value__inner']}>{roomId}</strong>
+            <button
+              type="button"
+              aria-label="방 코드 복사"
+              className={styles['room__code__copy']}
+              onClick={copyRoomCode}
+            >
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+              {copied ? '복사됨' : '복사'}
+            </button>
+          </div>
         </div>
       </header>
 

@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { StarIcon, DicesIcon, Clock } from 'lucide-react';
+import { DicesIcon, Clock } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import Roulette from '@/domain/Roulette/Roulette';
+import Roulette from '@/domain/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
-import Badge, { BadgeProps } from '@/shared/components/Badge';
 import { BaseInput } from '@/shared/components/Input';
 import Button from '@/shared/components/Button';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
@@ -17,10 +16,6 @@ import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './page.module.scss';
-
-const BADGES: BadgeProps[] = [
-  { id: 'top-menu', variant: 'green', Icon: StarIcon, text: '현재 1등 메뉴: 치킨' },
-];
 
 export default function SoloRoomPage() {
   const [isSpinning, setIsSpinning] = useState(false);
@@ -125,12 +120,6 @@ export default function SoloRoomPage() {
               <h2>혼자 메뉴 정하기</h2>
               <span>혼자서도 룰렛을 돌릴 수 있어요!</span>
             </div>
-          </div>
-
-          <div className={styles['solo__header__stats']}>
-            {BADGES.map(({ id, variant, Icon, text }) => (
-              <Badge key={id} id={id} variant={variant} Icon={Icon} text={text} />
-            ))}
           </div>
         </header>
 
