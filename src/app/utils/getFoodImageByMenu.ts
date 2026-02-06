@@ -1,7 +1,5 @@
 import { Category } from '@/types/enum';
-
-// 메뉴 카테고리 (ALL, BEST 제외)
-type MenuCategory = Exclude<Category, Category.ALL | Category.BEST>;
+import type { MenuCategory } from '@/domain/WeatherMood/components/MenuModal/types';
 
 const GLOBAL_FALLBACK_IMAGE = '/foods/noimg.png';
 
@@ -88,7 +86,12 @@ const FOOD_IMAGE_CONFIG: Record<MenuCategory, CategoryImageConfig> = {
   },
 };
 
-// 메뉴 이름과 카테고리에 따른 음식 이미지 경로 반환
+/**
+ * 메뉴 이름 + 카테고리를 기준으로 음식 이미지 경로를 반환한다.
+ *
+ * - 키워드 매칭 실패 시: 카테고리 기본 이미지
+ * - 카테고리 자체가 잘못된 경우: 글로벌 fallback 이미지
+ */
 export function getFoodImageByMenu(menuName: string, category: MenuCategory): string {
   const normalized = menuName.replace(/\s/g, '');
   const config = FOOD_IMAGE_CONFIG[category];
