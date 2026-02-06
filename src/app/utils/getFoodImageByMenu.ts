@@ -62,7 +62,7 @@ const FOOD_IMAGE_CONFIG: Record<MenuCategory, CategoryImageConfig> = {
   [Category.WESTERN]: {
     defaultSrc: '/foods/Western/noimg.png',
     rules: [
-      { keywords: ['피시'], src: '/foods/Western/FishandChips.png' },
+      { keywords: ['피시앤칩스'], src: '/foods/Western/FishandChips.png' },
       { keywords: ['리조또'], src: '/foods/Western/Risotto.png' },
       { keywords: ['라자냐'], src: '/foods/Western/Lasagna.png' },
       { keywords: ['샐러드'], src: '/foods/Western/Salad.png' },

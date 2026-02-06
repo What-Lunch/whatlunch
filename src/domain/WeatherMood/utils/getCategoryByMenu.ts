@@ -28,7 +28,7 @@ export function getCategoryByMenu(menu: string): MenuCategory {
   }
 
   if (
-    ['피자', '파스타', '리조또', '라자냐', '햄버거', '스테이크', '샐러드', '피쉬앤칩스'].some(m =>
+    ['피자', '파스타', '리조또', '라자냐', '햄버거', '스테이크', '샐러드', '피시앤칩스'].some(m =>
       menu.includes(m)
     )
   ) {
