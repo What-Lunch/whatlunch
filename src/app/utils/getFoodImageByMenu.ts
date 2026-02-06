@@ -49,7 +49,7 @@ const FOOD_IMAGE_CONFIG: Record<MenuCategory, CategoryImageConfig> = {
     defaultSrc: '/foods/Japanese/noimg.png',
     rules: [
       { keywords: ['초밥', '스시'], src: '/foods/Japanese/Sushi.png' },
-      { keywords: ['라멘'], src: '/foods/Japanese/Tonkotsu_Ramen.png' },
+      { keywords: ['돈코츠라멘'], src: '/foods/Japanese/Tonkotsu_Ramen.png' },
       { keywords: ['우동'], src: '/foods/Japanese/Udon.png' },
       { keywords: ['야키토리'], src: '/foods/Japanese/Yakitori.png' },
       { keywords: ['타코야키'], src: '/foods/Japanese/Takoyaki.png' },
@@ -65,7 +65,7 @@ const FOOD_IMAGE_CONFIG: Record<MenuCategory, CategoryImageConfig> = {
       { keywords: ['피시'], src: '/foods/Western/FishandChips.png' },
       { keywords: ['리조또'], src: '/foods/Western/Risotto.png' },
       { keywords: ['라자냐'], src: '/foods/Western/Lasagna.png' },
-      { keywords: ['샐러드'], src: '/foods/Western/Caesar_Salad.png' },
+      { keywords: ['샐러드'], src: '/foods/Western/Salad.png' },
       { keywords: ['햄버거'], src: '/foods/Western/Hamburger.png' },
       { keywords: ['피자'], src: '/foods/Western/Pizza.png' },
       { keywords: ['파스타'], src: '/foods/Western/Pasta.png' },

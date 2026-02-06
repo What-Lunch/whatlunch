@@ -88,17 +88,14 @@
   &__card {
     min-height: 48px;
     padding: 8px 12px;
-
     @include m.flex-box(center, center);
     text-align: center;
     white-space: nowrap;
     background: f.color(white);
     border: 1px solid f.color(gray-400);
     border-radius: 12px;
-
+    cursor: pointer;
     @include m.text-style(sm, 600);
     color: f.color(gray-700);
-
-    cursor: default;
   }
 }
