@@ -24,6 +24,11 @@ export const createSocket = (): Socket | null => {
   try {
     const apiUrl = getSocketUrl();
 
+    const accessToken = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('accessToken='))
+      ?.split('=')[1];
+
     socket = io(apiUrl, {
       path: '/socket.io',
       transports: ['websocket'],
@@ -32,6 +37,17 @@ export const createSocket = (): Socket | null => {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       reconnectionAttempts: 5,
+      auth: {
+        token: accessToken,
+      },
+
+      transportOptions: {
+        websocket: {
+          extraHeaders: {
+            Cookie: `accessToken=${accessToken}`,
+          },
+        },
+      },
     });
 
     socket.on('connect_error', error => {
