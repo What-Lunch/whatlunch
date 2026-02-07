@@ -23,7 +23,7 @@ export const createSocket = (): Socket | null => {
 
   try {
     const apiUrl = getSocketUrl();
-
+    console.log('[Socket] Connecting to', apiUrl);
     const rawToken =
       typeof document !== 'undefined'
         ? document.cookie
@@ -33,28 +33,27 @@ export const createSocket = (): Socket | null => {
             .slice(1)
             .join('=')
         : undefined;
-
+    console.log('[Socket] rawToken:', rawToken ? rawToken.substring(0, 10) + '...' : 'none');
     const accessToken = rawToken ? decodeURIComponent(rawToken) : undefined;
-
+    console.log(
+      '[Socket] accessToken:',
+      accessToken ? accessToken.substring(0, 10) + '...' : 'none'
+    );
     const socketOptions: Parameters<typeof io>[1] = {
       path: '/socket.io',
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       withCredentials: true,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       reconnectionAttempts: 5,
+      auth: {
+        token: accessToken,
+      },
     };
 
     if (accessToken) {
       socketOptions.auth = { token: accessToken };
-      socketOptions.transportOptions = {
-        websocket: {
-          extraHeaders: {
-            Cookie: `accessToken=${accessToken}`,
-          },
-        },
-      };
     }
 
     socket = io(apiUrl, socketOptions);
