@@ -23,7 +23,6 @@ export const createSocket = (): Socket | null => {
 
   try {
     const apiUrl = getSocketUrl();
-    console.log('[Socket] Connecting to', apiUrl);
     const rawToken =
       typeof document !== 'undefined'
         ? document.cookie
@@ -33,6 +32,9 @@ export const createSocket = (): Socket | null => {
             .slice(1)
             .join('=')
         : undefined;
+
+    const cookies = document.cookie.split('; ');
+    console.log(cookies);
     console.log('[Socket] rawToken:', rawToken ? rawToken.substring(0, 10) + '...' : 'none');
     const accessToken = rawToken ? decodeURIComponent(rawToken) : undefined;
     console.log(
