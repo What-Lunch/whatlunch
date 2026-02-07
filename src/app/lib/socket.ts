@@ -24,12 +24,19 @@ export const createSocket = (): Socket | null => {
   try {
     const apiUrl = getSocketUrl();
 
-    const accessToken = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('accessToken='))
-      ?.split('=')[1];
+    const rawToken =
+      typeof document !== 'undefined'
+        ? document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')
+            .slice(1)
+            .join('=')
+        : undefined;
 
-    socket = io(apiUrl, {
+    const accessToken = rawToken ? decodeURIComponent(rawToken) : undefined;
+
+    const socketOptions: Parameters<typeof io>[1] = {
       path: '/socket.io',
       transports: ['websocket'],
       withCredentials: true,
@@ -37,18 +44,20 @@ export const createSocket = (): Socket | null => {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       reconnectionAttempts: 5,
-      auth: {
-        token: accessToken,
-      },
+    };
 
-      transportOptions: {
+    if (accessToken) {
+      socketOptions.auth = { token: accessToken };
+      socketOptions.transportOptions = {
         websocket: {
           extraHeaders: {
             Cookie: `accessToken=${accessToken}`,
           },
         },
-      },
-    });
+      };
+    }
+
+    socket = io(apiUrl, socketOptions);
 
     socket.on('connect_error', error => {
       console.error('[Socket] 연결 오류:', error);
