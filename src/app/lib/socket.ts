@@ -24,15 +24,30 @@ export const createSocket = (): Socket | null => {
   try {
     const apiUrl = getSocketUrl();
 
-    socket = io(apiUrl, {
+    const accessToken =
+      typeof document !== 'undefined'
+        ? document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')
+            .slice(1)
+            .join('=')
+        : undefined;
+
+    const socketOptions: Parameters<typeof io>[1] = {
       path: '/socket.io',
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       withCredentials: true,
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       reconnectionAttempts: 5,
-    });
+      auth: {
+        token: accessToken,
+      },
+    };
+
+    socket = io(apiUrl, socketOptions);
 
     socket.on('connect_error', error => {
       console.error('[Socket] 연결 오류:', error);
