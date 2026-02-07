@@ -4,7 +4,7 @@ type MenuCategory = Exclude<Category, Category.ALL | Category.BEST>;
 
 export function getCategoryByMenu(menu: string): MenuCategory {
   if (
-    ['비빔밥', '김치찌개', '불고기', '삼겹살', '냉면', '잡채', '떡국', '순두부찌개'].some(m =>
+    ['비빔밥', '국밥', '불고기', '삼겹살', '냉면', '잡채', '떡국', '순두부찌개'].some(m =>
       menu.includes(m)
     )
   ) {

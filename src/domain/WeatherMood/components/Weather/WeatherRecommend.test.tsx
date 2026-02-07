@@ -83,7 +83,7 @@ describe('WeatherRecommend', () => {
 
     mockUseWeatherRecommend.mockReturnValue({
       loading: false,
-      menus: ['비빔밥', '김치찌개'],
+      menus: ['비빔밥', '국밥'],
     });
 
     render(<WeatherRecommend />);
@@ -102,6 +102,6 @@ describe('WeatherRecommend', () => {
 
     // 추천 메뉴
     expect(screen.getByText('비빔밥')).toBeInTheDocument();
-    expect(screen.getByText('김치찌개')).toBeInTheDocument();
+    expect(screen.getByText('국밥')).toBeInTheDocument();
   });
 });

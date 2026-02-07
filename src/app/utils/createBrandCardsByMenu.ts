@@ -3,7 +3,7 @@ import { CarouselStore } from '@/shared/components/Carousel/type';
 export const FIXED_BRANDS_BY_KEYWORD: Record<string, [string, string, string, string]> = {
   // ===== KOREAN =====
   비빔밥: ['한솥', '본도시락', '봄이보리밥', '전주비빔밥'],
-  김치찌개: ['놀부부대찌개', '백채김치찌개', '삼산회관', '오모가리'],
+  국밥: ['본전돼지국밥', '명품양평해장국', '은이국밥', '팔도국밥'],
   불고기: ['불고기브라더스', '경복궁', '한와담', '새마을식당'],
   삼겹살: ['명륜진사갈비', '하남돼지집', '육미제당', '마포갈매기'],
   냉면: ['필동면옥', '우래옥', '을밀대', '평양면옥'],
