@@ -23,7 +23,8 @@ export const createSocket = (): Socket | null => {
 
   try {
     const apiUrl = getSocketUrl();
-    const rawToken =
+
+    const accessToken =
       typeof document !== 'undefined'
         ? document.cookie
             .split('; ')
@@ -33,14 +34,11 @@ export const createSocket = (): Socket | null => {
             .join('=')
         : undefined;
 
-    const cookies = document.cookie.split('; ');
-    console.log(cookies);
-    console.log('[Socket] rawToken:', rawToken ? rawToken.substring(0, 10) + '...' : 'none');
-    const accessToken = rawToken ? decodeURIComponent(rawToken) : undefined;
     console.log(
       '[Socket] accessToken:',
       accessToken ? accessToken.substring(0, 10) + '...' : 'none'
     );
+
     const socketOptions: Parameters<typeof io>[1] = {
       path: '/socket.io',
       transports: ['websocket', 'polling'],
@@ -54,11 +52,11 @@ export const createSocket = (): Socket | null => {
       },
     };
 
-    if (accessToken) {
-      socketOptions.auth = { token: accessToken };
-    }
-
     socket = io(apiUrl, socketOptions);
+
+    socket.on('connect', () => {
+      console.log('[Socket] 웹소켓 연결 성공');
+    });
 
     socket.on('connect_error', error => {
       console.error('[Socket] 연결 오류:', error);
