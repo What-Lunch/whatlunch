@@ -4,7 +4,7 @@ import { favoritesServiceServer } from '@/app/services/backend/favorites.api';
 import { getMyFoodDotsServer } from '@/app/services/backend/users.api';
 
 import MyPageHeader from '@/domain/Mypage/MyPageHeader';
-import RecentMenuDecisionCard from '@/domain/Mypage/RecentMenuDecisionCard';
+import RecentMenuDecisionCard from '@/domain/Mypage/FoodDotSelectionCard/FoodDotSelectionCard';
 import FavoriteMenuCard from '@/domain/Mypage/FavoriteMenuCard';
 import MenuSummaryCard from '@/domain/Mypage/MenuSummaryCard';
 import AccountSetting from '@/domain/Mypage/AccountSetting';

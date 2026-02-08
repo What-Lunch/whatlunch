@@ -11,22 +11,18 @@ import { addFoodDot, removeFoodDot } from '@/app/services/backend/users.api';
 import { FOOD_DOTS } from '@/domain/Mypage/constants/foodDots';
 import { useFoodDotStore } from '@/domain/Mypage/store/foodDot.store';
 
-import styles from './RecentMenuDecisionCard.module.scss';
+import styles from './FoodDotSelectionCard.module.scss';
 
-// 최대 선택 가능 개수
 const MAX_SELECTABLE = 9;
 
-interface RecentMenuDecisionCardProps {
+interface FoodDotSelectionCardProps {
   initialSelectedDotIds: string[];
 }
 
-export default function RecentMenuDecisionCard({
-  initialSelectedDotIds,
-}: RecentMenuDecisionCardProps) {
+export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotSelectionCardProps) {
   const { selectedDotIds, setSelectedDotIds, addDotId, removeDotId } = useFoodDotStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 서버에서 받아온 값
   useEffect(() => {
     setSelectedDotIds(initialSelectedDotIds);
   }, [initialSelectedDotIds, setSelectedDotIds]);
@@ -34,13 +30,11 @@ export default function RecentMenuDecisionCard({
   const handleToggleDot = async (dotId: string) => {
     const isSelected = selectedDotIds.includes(dotId);
 
-    // 프론트에서 개수 제한
     if (!isSelected && selectedDotIds.length >= MAX_SELECTABLE) {
       toast.info('음식 뱃지는 최대 9개까지 선택할 수 있어요');
       return;
     }
 
-    // 즉시 반영
     if (isSelected) {
       removeDotId(dotId);
     } else {
@@ -48,14 +42,12 @@ export default function RecentMenuDecisionCard({
     }
 
     try {
-      // 서버 반영
       if (isSelected) {
         await removeFoodDot(dotId);
       } else {
         await addFoodDot(dotId);
       }
     } catch {
-      // 실패 시 롤백
       if (isSelected) {
         addDotId(dotId);
       } else {
