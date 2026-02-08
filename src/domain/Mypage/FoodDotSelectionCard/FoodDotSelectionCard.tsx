@@ -22,11 +22,21 @@ export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotS
 
   // 서버 초기값 동기화
   useEffect(() => {
+    const current = useFoodDotStore.getState().selectedDotIds;
+
+    const isSame =
+      current.length === initialSelectedDotIds.length &&
+      current.every(id => initialSelectedDotIds.includes(id));
+
+    if (isSame) return;
+
     setSelectedDotIds(initialSelectedDotIds);
   }, [initialSelectedDotIds, setSelectedDotIds]);
 
   const handleToggleDot = async (dotId: string) => {
-    // 최신 상태 기준 토글
+    const { selectedDotIds: before } = useFoodDotStore.getState();
+    const wasSelected = before.includes(dotId);
+
     const { blocked } = toggleDotId(dotId);
 
     if (blocked) {
@@ -34,15 +44,10 @@ export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotS
       return;
     }
 
-    const isSelectedAfterToggle = selectedDotIds.includes(dotId) === false;
-
     try {
-      // 서버 반영
-      const nextDotIds = isSelectedAfterToggle
-        ? await addFoodDot(dotId)
-        : await removeFoodDot(dotId);
+      const nextDotIds = wasSelected ? await removeFoodDot(dotId) : await addFoodDot(dotId);
 
-      // 서버 기준으로 재동기화
+      // 서버 기준으로 최종 동기화
       setSelectedDotIds(nextDotIds);
     } catch {
       // 실패 시 다시 토글하여 롤백
