@@ -1,24 +1,37 @@
 import { create } from 'zustand';
 
+// 최대 선택 가능한 음식 도트 수
+const MAX_SELECTABLE = 9;
+
 type FoodDotState = {
   selectedDotIds: string[];
   setSelectedDotIds: (ids: string[]) => void;
-  addDotId: (id: string) => void;
-  removeDotId: (id: string) => void;
+  toggleDotId: (id: string) => { blocked: boolean };
 };
 
-export const useFoodDotStore = create<FoodDotState>((set, get) => ({
+export const useFoodDotStore = create<FoodDotState>(set => ({
   selectedDotIds: [],
 
-  setSelectedDotIds: (ids: string[]) => set({ selectedDotIds: ids }),
+  setSelectedDotIds: ids => set(() => ({ selectedDotIds: ids })),
 
-  addDotId: (id: string) => {
-    const current = get().selectedDotIds;
-    if (current.includes(id)) return;
-    set({ selectedDotIds: [...current, id] });
-  },
+  toggleDotId: id => {
+    let blocked = false;
 
-  removeDotId: (id: string) => {
-    set({ selectedDotIds: get().selectedDotIds.filter(dotId => dotId !== id) });
+    set(state => {
+      const exists = state.selectedDotIds.includes(id);
+
+      if (!exists && state.selectedDotIds.length >= MAX_SELECTABLE) {
+        blocked = true;
+        return state;
+      }
+
+      return {
+        selectedDotIds: exists
+          ? state.selectedDotIds.filter(dotId => dotId !== id)
+          : [...state.selectedDotIds, id],
+      };
+    });
+
+    return { blocked };
   },
 }));
