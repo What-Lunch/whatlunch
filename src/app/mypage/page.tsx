@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { authServiceServer } from '@/app/services/backend/auth.api';
 import { favoritesServiceServer } from '@/app/services/backend/favorites.api';
+import { getMyFoodDotsServer } from '@/app/services/backend/users.api';
 
 import MyPageHeader from '@/domain/Mypage/MyPageHeader';
 import RecentMenuDecisionCard from '@/domain/Mypage/RecentMenuDecisionCard';
@@ -16,6 +17,7 @@ export default async function Page() {
   try {
     const user = await authServiceServer.getMe();
     const favoriteMenus = await favoritesServiceServer.getMyFavorites();
+    const foodDotIds = await getMyFoodDotsServer();
 
     return (
       <div className={styles['mypage']}>
@@ -23,7 +25,7 @@ export default async function Page() {
 
         <main className={styles['mypage__content']}>
           <div className={styles['mypage__top']}>
-            <RecentMenuDecisionCard />
+            <RecentMenuDecisionCard initialSelectedDotIds={foodDotIds} />
             <FavoriteMenuCard favoriteMenus={favoriteMenus} />
           </div>
 
