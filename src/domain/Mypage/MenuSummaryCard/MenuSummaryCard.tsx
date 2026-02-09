@@ -1,8 +1,6 @@
 'use client';
 
 import { useMemo } from 'react';
-
-import { useQuery } from '@tanstack/react-query';
 import type { LucideIcon } from 'lucide-react';
 import { ClipboardList, TrendingUp, Layers, Clock, CookingPot, Users } from 'lucide-react';
 
@@ -19,12 +17,9 @@ const ITEM_ICON_MAP: Record<MenuSummaryItemType, LucideIcon> = {
   style: Users,
 };
 
-export default function MenuSummaryCard() {
-  const { data: preference, isLoading } = useQuery({
-    queryKey: ['my', 'recent-preference'],
-    queryFn: () => favoritesServiceClient.getMyPreference(),
-  });
+type PreferenceResponse = Awaited<ReturnType<typeof favoritesServiceClient.getMyPreference>>;
 
+export default function MenuSummaryCard({ preference }: { preference?: PreferenceResponse }) {
   const { items } = MENU_SUMMARY_MOCK;
 
   // 가장 선호하는 카테고리 항목 생성
@@ -37,8 +32,8 @@ export default function MenuSummaryCard() {
       };
     }
 
-    const values = preference.distribution ? Object.values(preference.distribution) : []; // 분포 값들
-    const percentage = values.length > 0 ? Math.max(...values) : undefined; // 최댓값
+    const values = preference.distribution ? Object.values(preference.distribution) : [];
+    const percentage = values.length > 0 ? Math.max(...(values as number[])) : undefined;
 
     return {
       type: 'category',
@@ -64,9 +59,7 @@ export default function MenuSummaryCard() {
         </div>
       </header>
 
-      {isLoading ? (
-        <div className={styles['menu-summary__loading']}>로딩 중...</div>
-      ) : isEmpty ? (
+      {isEmpty ? (
         <div className={styles['menu-summary__empty']} aria-live="polite">
           <ClipboardList className={styles['menu-summary__empty-icon']} aria-hidden="true" />
           <p className={styles['menu-summary__empty-title']}>최근 메뉴 기록이 아직 없어요</p>
