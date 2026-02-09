@@ -5,9 +5,7 @@
   width: 100%;
   background: f.color(white);
   border-radius: 28px;
-  box-shadow:
-    0 4px 24px 0 rgba(16, 185, 129, 0.08),
-    0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08);
   border: 1.5px solid f.color(gray-100);
   display: flex;
   flex-direction: column;
@@ -48,6 +46,7 @@
     display: flex;
     gap: 16px;
     margin-bottom: 24px;
+
     @include m.mq(sm) {
       gap: 24px;
       margin-bottom: 32px;
@@ -57,22 +56,18 @@
     flex: 1;
     height: 48px;
     border-radius: 999px;
-    background: f.color(gray-100);
-    border: 1.5px solid f.color(gray-200);
+    border: 1.5px solid f.color(orange-200);
     cursor: pointer;
-    @include m.text-style-extended('lg', 600, gray-700);
+    @include m.text-style-extended('lg', 600, orange-800);
     transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 4px 0 rgba(16, 185, 129, 0.04); // brand-primary
+
     &:hover {
-      background: f.color(gray-200);
-      color: f.color(brand-primary);
-      border-color: f.color(brand-primary);
-    }
-    &--active {
-      background: f.color(brand-primary);
+      background: f.color(orange-800);
       color: f.color(white);
-      border-color: f.color(brand-primary);
-      box-shadow: 0 2px 8px 0 rgba(16, 185, 129, 0.1);
+    }
+
+    &--active {
+      color: f.color(orange-800);
     }
   }
 
@@ -80,22 +75,22 @@
     margin-bottom: 28px;
     padding: 24px 18px;
     border-radius: 18px;
-    background: rgba(f.color(brand-primary), 0.07);
+    background: f.color(orange-50);
     text-align: center;
-    @include m.text-style-extended('md', 500, gray-700);
+    @include m.text-style-extended('lg', 600, orange-800);
     box-shadow: 0 1px 4px 0 rgba(16, 185, 129, 0.04);
 
     @include m.mq(sm) {
-      padding: 32px 32px;
+      padding: 32px;
       font-size: 18px;
       margin-bottom: 36px;
     }
     &__main {
-      @include m.text-style-extended('md', 500, gray-700);
+      @include m.text-style-extended('lg', 600, orange-800);
       margin-bottom: 6px;
     }
     &__sub {
-      @include m.text-style-extended('sm', 500, gray-600);
+      @include m.text-style-extended('md', 600, orange-800);
       line-height: 1.6;
     }
   }
@@ -103,10 +98,10 @@
   &__description-box--solo {
     margin-bottom: 28px;
     padding: 20px 16px;
-    background: rgba(f.color(brand-primary), 0.07);
+    background: f.color(orange-50);
     border-radius: 18px;
     text-align: center;
-    @include m.text-style-extended('md', 500, gray-700);
+    @include m.text-style-extended('lg', 600, orange-800);
     box-shadow: 0 1px 4px 0 rgba(16, 185, 129, 0.04);
 
     @include m.mq(sm) {

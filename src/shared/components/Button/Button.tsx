@@ -3,7 +3,6 @@
 import React from 'react';
 
 import { ButtonProps } from './types';
-
 import styles from './Button.module.scss';
 
 export default function Button({

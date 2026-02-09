@@ -10,7 +10,7 @@ import WeatherRecommend from './components/Weather/WeatherRecommend';
 
 import type { TopTabItem } from '@/shared/components/TopTabs';
 
-import styles from './WeatherMood.module.scss';
+// import styles from './WeatherMood.module.scss';
 
 const TAB_LIST = [
   { value: 'weather', label: '날씨에 따른', icon: <CloudSun size={18} /> },
@@ -27,18 +27,16 @@ export default function WeatherMood() {
   const [activeTab, setActiveTab] = useState<TabValue>(DEFAULT_TAB);
 
   return (
-    <section className={styles['wrapper']}>
-      <TopTabs
-        items={TAB_LIST}
-        value={activeTab}
-        onChange={next => {
-          if (isTabValue(next)) setActiveTab(next);
-        }}
-        renderPanel={active => {
-          if (active === 'weather') return <WeatherRecommend />;
-          return <MoodRecommend />;
-        }}
-      />
-    </section>
+    <TopTabs
+      items={TAB_LIST}
+      value={activeTab}
+      onChange={next => {
+        if (isTabValue(next)) setActiveTab(next);
+      }}
+      renderPanel={active => {
+        if (active === 'weather') return <WeatherRecommend />;
+        return <MoodRecommend />;
+      }}
+    />
   );
 }

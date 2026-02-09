@@ -120,8 +120,8 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                       브랜드
                     </h2>
 
-                    <div className={styles['ratingBadge']}>
-                      <span className={styles['ratingBadge__text']}>
+                    <div className={styles['rating-badge']}>
+                      <span className={styles['rating-badge__text']}>
                         {item.favoriteCount > 0
                           ? `${item.favoriteCount}명이 찜했어요`
                           : '아직 찜한 사람이 없어요'}

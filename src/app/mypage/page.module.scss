@@ -1,37 +1,10 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
 
-// 카드가 들어가는 영역의 경계선
-@mixin card-boundary {
-  @include m.flex-box(flex-start, stretch);
-  width: 100%;
-  padding: 18px 20px;
-  border: 1px solid f.color(gray-300);
-  box-sizing: border-box;
-  background: f.color(white);
-  border-radius: 14px;
-  overflow: hidden;
-  min-height: 0;
-}
-
 .mypage {
   @include m.flex-box(flex-start, stretch, column);
   gap: 40px;
   width: 100%;
-  margin: 0 auto;
-  padding: 0 16px;
-
-  // 태블릿
-  @include m.mq(md) {
-    max-width: 960px;
-    padding: 0 20px;
-  }
-
-  // 데스크탑
-  @include m.mq(lg) {
-    max-width: 1200px;
-    padding: 0 24px;
-  }
 
   &__top {
     display: grid;

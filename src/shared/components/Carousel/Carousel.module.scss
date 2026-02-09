@@ -14,9 +14,7 @@
   overflow: hidden;
   border-radius: 24px;
   border: 1.5px solid f.color(gray-100);
-  box-shadow:
-    0 4px 24px 0 rgba(16, 185, 129, 0.08),
-    0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
   transition:
     box-shadow 0.2s,
     border-color 0.2s;
@@ -148,19 +146,15 @@
   }
 }
 
-.ratingBadge {
+.rating-badge {
   @include m.flex-box(center, center);
   gap: 6px;
   padding: 6px 16px;
   border-radius: 99px;
-  background: f.color(red-100);
-  flex-shrink: 0;
-  box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.08);
-  margin-left: auto;
+  background: f.color(orange-50);
 
   &__text {
-    @include m.text-style(sm, 700);
-    color: f.color(red-500);
+    @include m.text-style-extended(sm, 700, orange-800);
   }
 }
 

@@ -76,7 +76,12 @@ export default function RoomEntryCard() {
                 방을 만들면 6자리 코드가 생성돼요
               </span>
             </div>
-            <Button variant="orange" size="lg" className="Button" onClick={handleTogetherClick}>
+            <Button
+              variant="orange"
+              size="lg"
+              className={styles['room-entry__button']}
+              onClick={handleTogetherClick}
+            >
               <Users size={18} aria-hidden="true" />
               같이 정하기
             </Button>
@@ -91,8 +96,7 @@ export default function RoomEntryCard() {
             <Button
               variant="orange"
               size="lg"
-              mode="outline"
-              className="Button"
+              className={styles['room-entry__button']}
               onClick={() => router.push('/rooms/solo')}
             >
               <User size={18} aria-hidden="true" />

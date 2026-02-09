@@ -5,7 +5,6 @@
 .weather-recommend {
   width: 100%;
   padding: 16px 18px;
-
   @include m.flex-box(flex-start, stretch, column);
 
   &__text {
@@ -19,7 +18,7 @@
     flex-wrap: wrap;
     padding: 16px;
     margin-bottom: 20px;
-    background: f.color(blue-50);
+    background: f.color(orange-50);
     border-radius: 14px;
   }
 
@@ -103,16 +102,20 @@
   &__item {
     min-height: 48px;
     padding: 8px 12px;
-
     @include m.flex-box(center, center);
     text-align: center;
     word-break: keep-all;
     background: f.color(white);
-    border: 1px solid f.color(gray-400);
+    border: 1px solid f.color(orange-100);
     border-radius: 12px;
+    @include m.text-style-extended(sm, 600, black);
+    transition: all 0.2s ease;
 
-    @include m.text-style(sm, 600);
-    color: f.color(gray-700);
+    &:hover {
+      background: f.color(orange-600);
+      color: f.color(white);
+      cursor: pointer;
+    }
   }
 }
 

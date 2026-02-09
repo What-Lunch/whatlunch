@@ -149,6 +149,8 @@
   .header {
     padding: 10px 20px;
     @include m.text-style-extended('2lg', 600, gray-800);
+    border-bottom: 1px solid f.color(orange-300);
+    box-shadow: inset 0 -2px 0 0 f.color(orange-300);
 
     &__menu {
       gap: 24px;

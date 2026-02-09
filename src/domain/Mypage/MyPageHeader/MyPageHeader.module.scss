@@ -10,7 +10,7 @@
   min-height: 200px;
   background: f.color(white);
   border-radius: 14px;
-  border: 1.5px solid f.color(gray-300);
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
 
   &__avatar {
     position: relative;
