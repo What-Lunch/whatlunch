@@ -18,6 +18,7 @@ export default async function Page() {
     const user = await authServiceServer.getMe();
     const favoriteMenus = await favoritesServiceServer.getMyFavorites();
     const foodDotIds = await getMyFoodDotsServer();
+    const preference = await favoritesServiceServer.getMyPreference();
 
     return (
       <div className={styles['mypage']}>
@@ -30,7 +31,7 @@ export default async function Page() {
           </div>
 
           <div className={styles['mypage__bottom']}>
-            <MenuSummaryCard />
+            <MenuSummaryCard preference={preference} />
             <AccountSetting />
           </div>
         </main>

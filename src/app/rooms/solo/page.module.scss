@@ -18,11 +18,6 @@
       border-color 0.2s;
     transition: all 0.3s ease;
 
-    &:hover {
-      box-shadow: 0 12px 40px rgba(f.color(orange-600), 0.18);
-      transform: translateY(-2px);
-    }
-
     &__title {
       @include m.flex-box(center, center);
       gap: 16px;

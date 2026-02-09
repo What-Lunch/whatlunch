@@ -233,7 +233,7 @@ export default function RoomPage({ params }: RoomPageProps) {
               <h3>지도</h3>
               <p>결과에 따라 지도가 업데이트 돼요!</p>
             </div>
-            <div className={styles['room__map-header']}>
+            <div className={styles['room__map__search']}>
               <BaseInput
                 ref={searchRef}
                 placeholder="장소를 검색해보세요"

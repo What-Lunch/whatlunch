@@ -14,6 +14,13 @@ class FavoritesService {
     });
   }
 
+  // 찜 기반 선호도 분석 조회
+  getMyPreference(): Promise<Favorite.PreferenceResult> {
+    return this.fetcher<Favorite.PreferenceResult>('/favorites/preference', {
+      method: 'GET',
+    });
+  }
+
   // 찜 추가
   addFavorite(menuId: string): Promise<{ isFavorite: boolean }> {
     return this.fetcher<{ isFavorite: boolean }>('/favorites/add', {
