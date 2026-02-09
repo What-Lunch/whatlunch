@@ -141,7 +141,7 @@ export default function SoloRoomPage() {
                   <p>결과에 따라 지도가 업데이트 돼요!</p>
                 </div>
 
-                <div className={styles['solo__map-header']}>
+                <div className={styles['solo__map-header__search']}>
                   <BaseInput
                     ref={searchRef}
                     placeholder="장소를 검색해보세요"
@@ -168,7 +168,7 @@ export default function SoloRoomPage() {
 
           <div className={styles['solo__stats-section']}>
             <div className={styles['solo__stats-header']}>
-              <h3>🎲 결과 내역</h3>
+              <h3 className={styles['solo__stats-header__title']}>🎲 결과 내역</h3>
             </div>
 
             <div className={styles['solo__top-menu']}>

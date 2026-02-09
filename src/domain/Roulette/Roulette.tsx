@@ -153,7 +153,7 @@ export const Roulette = memo(function Roulette({
   return (
     <div className={styles['roulette']}>
       <p className={styles['roulette__today']}>
-        오늘의 메뉴 {localResult ? <span>{localResult.name}</span> : <span>?</span>}
+        오늘의 메뉴 {localResult ? <span>{localResult.name} !</span> : <span>?</span>}
       </p>
 
       <div className={styles['roulette__wheel-wrapper']}>
@@ -172,8 +172,6 @@ export const Roulette = memo(function Roulette({
 
       <div className={styles['roulette__result-btn']}>
         <Button
-          variant="neutral"
-          mode="fill"
           disabled={!localResult}
           onClick={() => setModalOpen(true)}
           className={styles['roulette__result-btn__button']}
