@@ -19,7 +19,7 @@ const FOOD_IMAGE_CONFIG: Record<MenuCategory, CategoryImageConfig> = {
     defaultSrc: '/foods/Korean/noimg.png',
     rules: [
       { keywords: ['비빔밥'], src: '/foods/Korean/Bibimbap.png' },
-      { keywords: ['김치찌개'], src: '/foods/Korean/Kimchi_Jjigae.png' },
+      { keywords: ['국밥'], src: '/foods/Korean/Gukbap.png' },
       { keywords: ['불고기'], src: '/foods/Korean/Bulgogi.png' },
       { keywords: ['삼겹살'], src: '/foods/Korean/Samgyeopsal.png' },
       { keywords: ['냉면'], src: '/foods/Korean/Naengmyeon.png' },

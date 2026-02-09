@@ -2,14 +2,19 @@
 
 import { useRef, useState, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+
+import Image from 'next/image';
+
 import { Pencil, Star, Timer, Users, Utensils, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '@/domain/Auth/store/auth.store';
+import { useFoodDotStore } from '@/domain/Mypage/store/foodDot.store';
+import { useProfileImageUpload } from '@/domain/Auth/hooks/useProfileImageUpload';
 
 import { ProfileImage } from '@/shared/components/ProfileImage';
 import Badge, { BadgeProps } from '@/shared/components/Badge';
-import { useProfileImageUpload } from '@/domain/Auth/hooks/useProfileImageUpload';
-import { useAuthStore } from '@/domain/Auth/store/auth.store';
+import { FOOD_DOTS } from '@/domain/Mypage/constants/foodDots';
 
 import styles from './MyPageHeader.module.scss';
 
@@ -32,6 +37,10 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
   const { uploadProfileImage, removeProfileImage, isUploading } = useProfileImageUpload();
   const queryClient = useQueryClient();
   const updateProfileImage = useAuthStore(state => state.updateProfileImage);
+  const selectedDotIds = useFoodDotStore(state => state.selectedDotIds);
+  const selectedDots = selectedDotIds
+    .map(id => FOOD_DOTS.find(dot => dot.id === id))
+    .filter((dot): dot is typeof FOOD_DOTS[number] => dot !== undefined);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -262,6 +271,15 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
             <Badge key={id} id={id} variant={variant} Icon={Icon} text={text} />
           ))}
         </div>
+        {selectedDots.length > 0 && (
+          <div className={styles['profile-header__food-dots']}>
+            {selectedDots.map(dot => (
+              <div key={dot.id} className={styles['profile-header__food-dot']}>
+                <Image src={dot.src} alt={dot.label} width={28} height={28} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

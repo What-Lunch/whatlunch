@@ -1,4 +1,4 @@
-export interface MealDecisionItem {
+export interface FoodDotSelectionItem {
   id: string;
   menuName: string;
   decidedAt: string;
