@@ -62,6 +62,13 @@ namespace Favorite {
     _id: string;
     createdAt: string;
   }
+
+  interface PreferenceResult {
+    status: 'CONFIDENT' | 'WEAK' | 'HINT' | 'EMPTY';
+    topCategories: string[];
+    distribution?: Record<string, number>;
+    summary: string;
+  }
 }
 
 namespace Faq {
