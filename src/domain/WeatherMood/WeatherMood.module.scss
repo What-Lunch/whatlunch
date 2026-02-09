@@ -4,10 +4,12 @@
 
 .weather-mood {
   width: 100%;
-  height: auto;
+  height: 100%;
   min-height: 0;
   max-width: 100%;
   padding: 20px 16px;
+  border: 1px solid f.color(gray-200);
+  border-radius: 16px;
   @include m.flex-box(flex-start, stretch, column);
 
   @include m.mq(lg) {
@@ -30,18 +32,19 @@
     border-radius: 8px;
 
     @include m.text-style(lg, 500);
-    color: f.color(text-default);
+    color: f.color(point-blue);
     cursor: pointer;
 
     &:hover {
-      background: f.color(gray-200);
+      background: f.color(yellow-100);
+      color: f.color(point-yellow);
     }
 
     &--active {
-      background: f.color(white);
-      color: f.color(black);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-      border-bottom: 3px solid f.color(point-blue);
+      background: f.color(point-blue);
+      color: f.color(white);
+      box-shadow: 0 1px 4px rgba(59, 130, 246, 0.08);
+      border-bottom: 3px solid f.color(point-yellow);
     }
   }
 

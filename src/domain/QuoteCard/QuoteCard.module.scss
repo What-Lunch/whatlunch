@@ -4,7 +4,10 @@
 .quote-card {
   width: 100%;
   padding: 8px 24px;
-
+  height: 140px;
+  background-color: f.color(white);
+  border: 1px solid f.color(gray-200);
+  border-radius: 16px;
   @include m.flex-box(center, center, column);
 
   &::before {
@@ -13,7 +16,7 @@
     height: 4px;
     margin-bottom: 14px;
 
-    background-color: f.color(orange-200);
+    background-color: f.color(point-yellow);
     border-radius: 2px;
   }
 

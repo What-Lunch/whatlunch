@@ -27,7 +27,7 @@ export default function WeatherMood() {
   const [activeTab, setActiveTab] = useState<TabValue>(DEFAULT_TAB);
 
   return (
-    <div className={styles['wrapper']}>
+    <section className={styles['wrapper']}>
       <TopTabs
         items={TAB_LIST}
         value={activeTab}
@@ -39,6 +39,6 @@ export default function WeatherMood() {
           return <MoodRecommend />;
         }}
       />
-    </div>
+    </section>
   );
 }

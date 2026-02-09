@@ -69,11 +69,14 @@ export default function RoomEntryCard() {
         {mode === 'together' && (
           <>
             <div className={styles['room-entry__description-box']}>
-              <p>친구들과 실시간으로 룰렛과 채팅을 할 수 있어요</p>
-              <span>방을 만들면 6자리 코드가 생성돼요</span>
+              <p className={styles['room-entry__description-box__main']}>
+                친구들과 실시간으로 룰렛과 채팅을 할 수 있어요
+              </p>
+              <span className={styles['room-entry__description-box__sub']}>
+                방을 만들면 6자리 코드가 생성돼요
+              </span>
             </div>
-
-            <Button variant="orange" size="lg" onClick={handleTogetherClick}>
+            <Button variant="orange" size="lg" className="Button" onClick={handleTogetherClick}>
               <Users size={18} aria-hidden="true" />
               같이 정하기
             </Button>
@@ -85,11 +88,11 @@ export default function RoomEntryCard() {
             <div className={styles['room-entry__description-box--solo']}>
               로그인 없이 바로 메뉴를 추천받을 수 있어요
             </div>
-
             <Button
               variant="orange"
               size="lg"
               mode="outline"
+              className="Button"
               onClick={() => router.push('/rooms/solo')}
             >
               <User size={18} aria-hidden="true" />

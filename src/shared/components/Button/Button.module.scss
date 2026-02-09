@@ -3,7 +3,7 @@
 @use 'utils/variables' as v;
 
 $variant-colors: (
-  primary: brand-primary,
+  primary: brand-orange,
   secondary: brand-secondary,
   tertiary: brand-tertiary,
   neutral: gray-700,
@@ -20,14 +20,17 @@ $variant-colors: (
   background: f.color($color);
   color: fill-text-color($variant);
   border: 2px solid f.color($color);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover:not(.button--disabled) {
-    background: darken(f.color($color), 8%);
-    border-color: darken(f.color($color), 8%);
+    background: darken(f.color($color), 6%);
+    border-color: darken(f.color($color), 6%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
 
   &:active:not(.button--disabled) {
-    background: darken(f.color($color), 15%);
+    background: darken(f.color($color), 12%);
+    border-color: darken(f.color($color), 12%);
   }
 
   &:focus-visible {
@@ -37,19 +40,20 @@ $variant-colors: (
 
 @mixin outline-style($variant, $color) {
   background: transparent;
-  border: 1px solid f.color($color);
-  color: f.color(black);
+  border: 2px solid f.color($color);
+  color: f.color($color);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover:not(.button--disabled) {
-    background: transparent;
+    background: rgba(f.color($color), 0.06);
     border-color: f.color($color);
-    color: f.color(black);
+    color: darken(f.color($color), 6%);
   }
 
   &:active:not(.button--disabled) {
-    $dark: darken(f.color($color), 15%);
-    border-color: $dark;
-    color: f.color(black);
+    background: rgba(f.color($color), 0.12);
+    border-color: darken(f.color($color), 6%);
+    color: darken(f.color($color), 6%);
   }
 
   &:focus-visible {
@@ -59,28 +63,36 @@ $variant-colors: (
 
 .button {
   @include m.flex-box(center, center);
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 500;
-  border: none;
+  font-weight: 600;
+  border: 1.5px solid transparent;
+  font-size: 16px;
+  min-height: 44px;
+  box-shadow: 0 2px 8px rgba(239, 108, 0, 0.04);
   transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    opacity 0.2s ease;
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease,
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &--sm {
-    padding: 6px 14px;
+    padding: 8px 16px;
     font-size: map-get(map-get(v.$typography, xs), fontSize);
+    min-height: 36px;
   }
 
   &--md {
-    padding: 10px 20px;
+    padding: 12px 20px;
     font-size: map-get(map-get(v.$typography, md), fontSize);
+    min-height: 44px;
   }
 
   &--lg {
-    padding: 14px 24px;
+    padding: 16px 24px;
     font-size: map-get(map-get(v.$typography, lg), fontSize);
+    min-height: 48px;
   }
 
   &--disabled {

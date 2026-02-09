@@ -59,24 +59,13 @@ export default function HomePage() {
     <div className={styles['container']}>
       <div className={styles['container__left']}>
         <Carousel duration={4000} items={carouselItems} />
-
-        <div className={styles['container__left__main']}>
-          <section className={styles['container__left__main__room-entry']}>
-            <RoomEntryCard />
-          </section>
-        </div>
+        <RoomEntryCard />
       </div>
 
       <div className={styles['container__right']}>
-        <section className={styles['container__right__clock']}>
-          <Clock />
-        </section>
-        <section className={styles['container__right__weather']}>
-          <WeatherMood />
-        </section>
-        <section className={styles['container__right__quote']}>
-          <QuoteCard />
-        </section>
+        <Clock />
+        <WeatherMood />
+        <QuoteCard />
       </div>
     </div>
   );
