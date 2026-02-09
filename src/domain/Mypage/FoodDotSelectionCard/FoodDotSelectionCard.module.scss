@@ -6,19 +6,20 @@
   width: 100%;
   height: 100%;
   padding: 18px 20px;
-  border-radius: 14px;
-  border: 1.5px solid f.color(gray-300);
-  box-shadow: 2px 2px 0px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  border: 1.5px solid f.color(gray-100);
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
   @include m.flex-box(flex-start, stretch, column);
 
   &__header {
+    @include m.flex-box(space-between, center);
+    padding-bottom: 8px;
+    border-bottom: 1px solid f.color(orange-100);
     margin-bottom: 16px;
   }
 
   &__title {
-    margin: 0 0 4px 0;
-    @include m.text-style('xl', 600);
-    color: f.color(black);
+    @include m.text-style-extended('xl', 600, orange-700);
   }
 
   &__desc {
@@ -46,17 +47,23 @@
     gap: 6px;
     width: 100%;
     padding: 10px;
-    background: f.color(gray-100);
-    border: 1px solid f.color(gray-200);
+    background: f.color(orange-50);
+    cursor: pointer;
+    border: 1px solid f.color(orange-200);
     border-radius: 10px;
     transition: all 0.2s ease;
 
     &:hover {
-      background: f.color(orange-50);
-      border-color: f.color(orange-200);
+      background: f.color(orange-100);
+      border-color: f.color(orange-300);
+
+      img {
+        transform: scale(1.15);
+        transition: transform 0.2s;
+      }
     }
 
-    img {
+    &-img {
       width: 44px;
       height: 44px;
       object-fit: contain;
@@ -64,8 +71,7 @@
   }
 
   &__label {
-    @include m.text-style(xs, 500);
-    color: f.color(text-default);
+    @include m.text-style-extended(xs, 500, text-default);
     text-align: center;
   }
 
@@ -96,18 +102,13 @@
 
   &__view-all {
     background: transparent;
-    border: 1px solid f.color(gray-300);
-    border-radius: 8px;
-    padding: 8px 16px;
-    @include m.text-style(sm, 500);
-    color: f.color(text-default);
+    margin-top: 12px;
+    @include m.text-style-extended(lg, 500, text-default);
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      border-color: f.color(orange-400);
-      color: f.color(orange-600);
-      background: f.color(orange-50);
+      color: f.color(orange-700);
     }
   }
 }

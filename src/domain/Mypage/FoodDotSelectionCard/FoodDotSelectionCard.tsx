@@ -78,7 +78,13 @@ export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotS
             {selectedDots.map(dot => (
               <li key={dot.id} className={styles['food-dot-card__item']}>
                 <div className={styles['food-dot-card__selected']}>
-                  <Image src={dot.src} alt={dot.label} width={40} height={40} />
+                  <Image
+                    src={dot.src}
+                    alt={dot.label}
+                    width={40}
+                    height={40}
+                    className={styles['food-dot-card__selected-img']}
+                  />
                   <span className={styles['food-dot-card__label']}>{dot.label}</span>
                 </div>
               </li>
