@@ -20,7 +20,7 @@ const ITEM_ICON_MAP: Record<MenuSummaryItemType, LucideIcon> = {
 };
 
 export default function MenuSummaryCard() {
-  const { data: preference } = useQuery({
+  const { data: preference, isLoading } = useQuery({
     queryKey: ['my', 'recent-preference'],
     queryFn: () => favoritesServiceClient.getMyPreference(),
   });
@@ -64,7 +64,9 @@ export default function MenuSummaryCard() {
         </div>
       </header>
 
-      {isEmpty ? (
+      {isLoading ? (
+        <div className={styles['menu-summary__loading']}>로딩 중...</div>
+      ) : isEmpty ? (
         <div className={styles['menu-summary__empty']} aria-live="polite">
           <ClipboardList className={styles['menu-summary__empty-icon']} aria-hidden="true" />
           <p className={styles['menu-summary__empty-title']}>최근 메뉴 기록이 아직 없어요</p>
