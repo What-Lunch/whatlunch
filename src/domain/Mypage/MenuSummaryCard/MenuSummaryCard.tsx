@@ -1,9 +1,15 @@
+'use client';
+
+import { useMemo } from 'react';
+
+import { useQuery } from '@tanstack/react-query';
 import type { LucideIcon } from 'lucide-react';
 import { ClipboardList, TrendingUp, Layers, Clock, CookingPot, Users } from 'lucide-react';
 
-import { MENU_SUMMARY_MOCK } from './mock';
-import type { MenuSummaryItemType } from './types';
+import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
+import { MENU_SUMMARY_MOCK } from './mock';
+import type { MenuSummaryItemType, MenuSummaryItem } from './types';
 import styles from './MenuSummaryCard.module.scss';
 
 const ITEM_ICON_MAP: Record<MenuSummaryItemType, LucideIcon> = {
@@ -14,8 +20,41 @@ const ITEM_ICON_MAP: Record<MenuSummaryItemType, LucideIcon> = {
 };
 
 export default function MenuSummaryCard() {
+  const { data: preference } = useQuery({
+    queryKey: ['my', 'recent-preference'],
+    queryFn: () => favoritesServiceClient.getMyPreference(),
+  });
+
   const { items } = MENU_SUMMARY_MOCK;
-  const isEmpty = items.length === 0;
+
+  // 가장 선호하는 카테고리 항목 생성
+  const categoryItem: MenuSummaryItem = useMemo(() => {
+    if (!preference || preference.status === 'EMPTY') {
+      return {
+        type: 'category',
+        title: '가장 선호하는 카테고리',
+        value: '데이터 없음',
+      };
+    }
+
+    const percentage = preference.distribution
+      ? Math.max(...Object.values(preference.distribution))
+      : undefined;
+
+    return {
+      type: 'category',
+      title: '가장 선호하는 카테고리',
+      value: preference.summary,
+      percentage,
+    };
+  }, [preference]);
+
+  // 목업 + category 교체
+  const displayItems = useMemo(() => {
+    return [categoryItem, ...items.filter(item => item.type !== 'category')];
+  }, [categoryItem, items]);
+
+  const isEmpty = !preference || preference.status === 'EMPTY';
 
   return (
     <section className={styles['menu-summary']} aria-label="최근 메뉴 성향 요약">
@@ -36,17 +75,18 @@ export default function MenuSummaryCard() {
         </div>
       ) : (
         <ul className={styles['menu-summary__list']}>
-          {items.map(item => {
-            const Icon = ITEM_ICON_MAP[item.type];
+          {displayItems.map(item => {
+            const Icon = ITEM_ICON_MAP[item.type] ?? Layers;
             const modifier = styles[`menu-summary__item--${item.type}`];
 
             const percent =
               typeof item.percentage === 'number'
                 ? Math.max(0, Math.min(100, item.percentage))
                 : undefined;
+
             return (
               <li
-                key={item.type}
+                key={`${item.type}-${item.title}`}
                 className={[styles['menu-summary__item'], modifier].filter(Boolean).join(' ')}
               >
                 <div className={styles['menu-summary__item-header']}>
@@ -54,22 +94,63 @@ export default function MenuSummaryCard() {
                   <span>{item.title}</span>
                 </div>
 
-                <p className={styles['menu-summary__value']}>{item.value}</p>
+                {item.type === 'category' ? (
+                  <>
+                    <p className={styles['menu-summary__value']}>{preference?.summary}</p>
 
-                {percent !== undefined && (
-                  <div
-                    className={styles['menu-summary__bar']}
-                    role="progressbar"
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={percent}
-                  >
-                    <div
-                      className={styles['menu-summary__bar-fill']}
-                      style={{ width: `${percent}%` }}
-                      aria-hidden="true"
-                    />
-                  </div>
+                    {preference?.status === 'CONFIDENT' && preference.topCategories?.[0] && (
+                      <div className={styles['menu-summary__category-detail']}>
+                        <div className={styles['menu-summary__category-row']}>
+                          <span className={styles['menu-summary__category-label']}>
+                            {preference.topCategories[0]}
+                          </span>
+                          <span className={styles['menu-summary__category-percent']}>
+                            {preference.distribution?.[preference.topCategories[0]] ?? 0}%
+                          </span>
+                        </div>
+
+                        <div
+                          className={styles['menu-summary__bar']}
+                          role="progressbar"
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={
+                            preference.distribution?.[preference.topCategories[0]] ?? 0
+                          }
+                        >
+                          <div
+                            className={styles['menu-summary__bar-fill']}
+                            style={{
+                              width: `${
+                                preference.distribution?.[preference.topCategories[0]] ?? 0
+                              }%`,
+                            }}
+                            aria-hidden="true"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <p className={styles['menu-summary__value']}>{item.value}</p>
+
+                    {percent !== undefined && (
+                      <div
+                        className={styles['menu-summary__bar']}
+                        role="progressbar"
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={percent}
+                      >
+                        <div
+                          className={styles['menu-summary__bar-fill']}
+                          style={{ width: `${percent}%` }}
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
               </li>
             );
