@@ -37,9 +37,8 @@ export default function MenuSummaryCard() {
       };
     }
 
-    const percentage = preference.distribution
-      ? Math.max(...Object.values(preference.distribution))
-      : undefined;
+    const values = preference.distribution ? Object.values(preference.distribution) : []; // 분포 값들
+    const percentage = values.length > 0 ? Math.max(...values) : undefined; // 최댓값
 
     return {
       type: 'category',
