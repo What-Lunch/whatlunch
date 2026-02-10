@@ -78,7 +78,7 @@
     background: f.color(orange-50);
     text-align: center;
     @include m.text-style-extended('lg', 600, orange-800);
-    box-shadow: 0 1px 4px 0 rgba(16, 185, 129, 0.04);
+    box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.04);
 
     @include m.mq(sm) {
       padding: 32px;
@@ -102,7 +102,7 @@
     border-radius: 18px;
     text-align: center;
     @include m.text-style-extended('lg', 600, orange-800);
-    box-shadow: 0 1px 4px 0 rgba(16, 185, 129, 0.04);
+    box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.04);
 
     @include m.mq(sm) {
       padding: 28px 28px;

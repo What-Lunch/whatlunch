@@ -41,6 +41,11 @@
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
       border-bottom: 3px solid f.color(orange-700);
     }
+
+    &:hover {
+      background: transparent;
+      color: f.color(orange-700);
+    }
   }
 
   &__icon {
