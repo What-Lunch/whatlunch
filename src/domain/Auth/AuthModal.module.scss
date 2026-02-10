@@ -49,11 +49,10 @@
     @include m.flex-box(center, center, column);
     gap: 10px;
     padding-top: 10px;
-    border-top: 1px solid f.color(gray-200);
+    border-top: 1px solid f.color(gray-300);
 
     &__or {
-      @include m.text-style('xs', 600);
-      color: f.color(gray-400);
+      @include m.text-style-extended('xs', 600, gray-700);
       opacity: 0.7;
       margin-bottom: 2px;
     }
@@ -66,19 +65,15 @@
         width: 100%;
         height: 44px;
         background: f.color(white);
-        border: 1.5px solid f.color(gray-200);
+        border: 1.5px solid f.color(gray-400);
         border-radius: 12px;
         cursor: pointer;
         @include m.flex-box(center, center);
         gap: 8px;
-        transition:
-          box-shadow 0.2s,
-          border-color 0.2s,
-          background 0.2s;
+        transition: all 0.2s ease;
 
         span {
-          @include m.text-style('md', 600);
-          color: f.color(gray-800);
+          @include m.text-style-extended('md', 600, gray-800);
         }
 
         img {
@@ -113,14 +108,12 @@
     }
 
     &__boolean {
-      @include m.text-style('sm', 400);
-      color: f.color(gray-500);
+      @include m.text-style-extended('sm', 400, gray-700);
       line-height: 1.5;
     }
 
     &__link {
-      @include m.text-style('sm', 600);
-      color: f.color(brand-orange);
+      @include m.text-style-extended('sm', 600, brand-orange);
       cursor: pointer;
       text-decoration: none;
       background: none;

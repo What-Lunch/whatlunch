@@ -4,7 +4,6 @@ import { useState } from 'react';
 import React from 'react';
 
 import BaseInput from '@/shared/components/Input/BaseInput';
-import ErrorWrapper from '@/shared/components/Input/ErrorWrapper';
 import PasswordInput from '@/shared/components/Input/PasswordInput';
 import SearchInput from '@/shared/components/Input/SearchInput';
 
@@ -26,10 +25,6 @@ export default function InputTestPage() {
   const handlePasswordChange = createChangeHandler(setPassword);
   const handleSearchChange = createChangeHandler(setSearch);
 
-  const isNicknameError = nickname.length > 0 && nickname.length < 2;
-  const isEmailError = email.length > 0 && !email.includes('@');
-  const isPasswordError = password.length > 0 && password.length < 6;
-
   return (
     <div
       style={{
@@ -47,41 +42,35 @@ export default function InputTestPage() {
         <p style={{ marginBottom: '8px', fontWeight: 600 }}>
           닉네임 input (타입 : text 및 ErrorWrapper 검증)
         </p>
-        <ErrorWrapper isError={isNicknameError} errorMessage="닉네임은 최소 2자 이상이어야 합니다.">
-          <BaseInput
-            type="text"
-            value={nickname}
-            onChange={handleNicknameChange}
-            placeholder="닉네임을 2자 이상 입력하세요"
-            name="nickname"
-            id="nickname"
-          />
-        </ErrorWrapper>
+        <BaseInput
+          type="text"
+          value={nickname}
+          onChange={handleNicknameChange}
+          placeholder="닉네임을 2자 이상 입력하세요"
+          name="nickname"
+          id="nickname"
+        />
       </section>
 
       {/* 이메일 Input (BaseInput 기반) */}
       <section>
         <p style={{ marginBottom: '8px', fontWeight: 600 }}>이메일 Input (타입 및 에러)</p>
-        <ErrorWrapper isError={isEmailError} errorMessage="올바른 이메일 형식이 아닙니다.">
-          <BaseInput
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="이메일을 입력해 주세요"
-          />
-        </ErrorWrapper>
+        <BaseInput
+          type="email"
+          value={email}
+          onChange={handleEmailChange}
+          placeholder="이메일을 입력해 주세요"
+        />
       </section>
 
       {/* 비밀번호 Input + Error 검증 (PasswordInput) */}
       <section>
         <p style={{ marginBottom: '8px', fontWeight: 600 }}>비밀번호 Input + Error</p>
-        <ErrorWrapper isError={isPasswordError} errorMessage="6자 이상 입력해야 합니다.">
-          <PasswordInput
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="6자 이상 입력"
-          />
-        </ErrorWrapper>
+        <PasswordInput
+          value={password}
+          onChange={handlePasswordChange}
+          placeholder="6자 이상 입력"
+        />
       </section>
 
       {/* 비활성화 (Disabled) 상태 검증 */}

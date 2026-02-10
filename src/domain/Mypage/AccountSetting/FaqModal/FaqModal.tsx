@@ -2,7 +2,8 @@ import { useCallback, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import Modal from '@/shared/components/Modal';
-import { BaseInput } from '@/shared/components/Input';
+import BaseInput from '@/shared/components/Input/BaseInput';
+import Button from '@/shared/components/Button';
 
 import { faqServiceClient } from '@/app/services/backend/faq.api';
 import type { FaqModalProps } from './types';
@@ -77,9 +78,9 @@ export default function FaqModal({ isOpen, onClose }: FaqModalProps) {
             rows={5}
           />
         </label>
-        <button type="submit" className={styles['faq-form__submit']} disabled={submitting}>
+        <Button type="submit" disabled={submitting}>
           {submitting ? '제출 중...' : '문의 제출하기'}
-        </button>
+        </Button>
       </form>
     </Modal>
   );

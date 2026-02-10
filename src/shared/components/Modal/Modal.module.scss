@@ -45,7 +45,7 @@
 
   &__header {
     &__title {
-      margin: 12px auto 6px auto;
+      margin: 12px 10px 6px 10px;
       @include m.text-style-extended('xl', 700, orange-600);
       white-space: nowrap;
       overflow: hidden;
@@ -77,7 +77,8 @@
   }
 
   &__description {
-    margin-top: 8px;
+    // width: 80%;
+    margin: 8px 10px;
     text-align: center;
     @include m.text-style-extended('sm', 400, gray-600);
     line-height: 20px;

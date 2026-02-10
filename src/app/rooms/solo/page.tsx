@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 import Roulette from '@/domain/Roulette';
 import KakaoMap from '@/shared/components/KakaoMap';
-import { BaseInput } from '@/shared/components/Input';
+import BaseInput from '@/shared/components/Input/BaseInput';
 import Button from '@/shared/components/Button';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 import GlobalToast from '@/shared/components/Toast/GlobalToast';

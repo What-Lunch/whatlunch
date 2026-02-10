@@ -64,23 +64,11 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
       innerClassName={styles['logout-modal']}
     >
       <div className={styles['logout-modal__actions']}>
-        <Button
-          variant="neutral"
-          mode="outline"
-          type="button"
-          onClick={onClose}
-          disabled={isLoading}
-        >
+        <Button mode="outline" type="button" onClick={onClose} disabled={isLoading}>
           취소
         </Button>
 
-        <Button
-          variant="danger"
-          mode="fill"
-          type="button"
-          onClick={handleLogout}
-          disabled={isLoading}
-        >
+        <Button mode="fill" type="button" onClick={handleLogout} disabled={isLoading}>
           {isLoading ? '로그아웃 중...' : '로그아웃'}
         </Button>
       </div>

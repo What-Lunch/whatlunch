@@ -175,7 +175,6 @@ export default function EditProfileForm({
 
       <div className={styles['edit-profile__actions']}>
         <Button
-          variant="blue"
           mode="outline"
           type="button"
           disabled={updateMeMutation.isPending}
@@ -184,7 +183,7 @@ export default function EditProfileForm({
           취소
         </Button>
 
-        <Button variant="blue" mode="fill" type="submit" disabled={isSubmitDisabled}>
+        <Button mode="fill" type="submit" disabled={isSubmitDisabled}>
           {updateMeMutation.isPending ? '변경 중...' : '변경하기'}
         </Button>
       </div>

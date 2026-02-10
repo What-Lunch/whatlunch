@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useId } from 'react';
 import { createPortal } from 'react-dom';
-import { XIcon, CircleXIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 
 import { useModalClose, useEscClose } from '@/shared/hooks/useEscClose';
 import { ModalProps } from './types';

@@ -150,6 +150,7 @@
       width: 100%;
 
       @include m.mq(lg) {
+        grid-template-rows: 0fr;
         grid-template-columns: 1fr 1fr;
       }
     }
