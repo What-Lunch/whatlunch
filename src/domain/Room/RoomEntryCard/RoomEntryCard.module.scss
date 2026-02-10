@@ -2,68 +2,121 @@
 @use 'utils/functions' as f;
 
 .room-entry {
-  padding: 32px 28px;
+  width: 100%;
   background: f.color(white);
   border-radius: 28px;
-  border: 1px solid rgba(f.color(gray-300), 0.6);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08);
+  border: 1.5px solid f.color(gray-100);
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  padding: 32px 32px 24px 32px;
+  box-sizing: border-box;
+  gap: 0;
+
+  @include m.mq(sm) {
+    padding: 32px 32px 24px 32px;
+  }
 
   &__header {
+    @include m.flex-box(center, flex-start, column);
+    margin-bottom: 18px;
+    gap: 0;
+
     &__title {
-      @include m.text-style('xl', 700);
+      @include m.text-style-extended('xl', 700, gray-900);
       margin-bottom: 6px;
+      letter-spacing: -0.01em;
+      text-align: left;
+      @include m.mq(sm) {
+        @include m.text-style-extended('2xl', 700, gray-900);
+      }
     }
+
     &__description {
-      @include m.text-style('lg', 400);
-      color: f.color(gray-600);
+      @include m.text-style-extended('md', 400, gray-600);
+      text-align: left;
+      margin-bottom: 0;
+      @include m.mq(sm) {
+        @include m.text-style-extended('lg', 400, gray-600);
+      }
     }
   }
 
   &__tabs {
     display: flex;
-    gap: 12px;
+    gap: 16px;
+    margin-bottom: 24px;
+
+    @include m.mq(sm) {
+      gap: 24px;
+      margin-bottom: 32px;
+    }
   }
   &__tab {
     flex: 1;
     height: 48px;
     border-radius: 999px;
-    background: f.color(gray-200);
-    border: none;
+    border: 1.5px solid f.color(orange-200);
     cursor: pointer;
-    color: f.color(gray-600);
-    @include m.text-style('lg', 500);
-    transition: all 0.2s ease;
-    &--active {
-      background: f.color(brand-orange);
+    @include m.text-style-extended('lg', 600, orange-800);
+    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      background: f.color(orange-800);
       color: f.color(white);
+    }
+
+    &--active {
+      color: f.color(orange-800);
     }
   }
 
   &__description-box {
-    padding: 20px;
-    border-radius: 16px;
-    background: rgba(f.color(brand-orange), 0.08);
+    margin-bottom: 28px;
+    padding: 24px 18px;
+    border-radius: 18px;
+    background: f.color(orange-50);
     text-align: center;
+    @include m.text-style-extended('lg', 600, orange-800);
+    box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.04);
+
+    @include m.mq(sm) {
+      padding: 32px;
+      font-size: 18px;
+      margin-bottom: 36px;
+    }
     &__main {
-      @include m.text-style('lg', 500);
-      color: f.color(gray-700);
+      @include m.text-style-extended('lg', 600, orange-800);
       margin-bottom: 6px;
     }
     &__sub {
-      @include m.text-style('md', 500);
-      color: f.color(gray-600);
+      @include m.text-style-extended('md', 600, orange-800);
       line-height: 1.6;
     }
   }
 
   &__description-box--solo {
-    padding: 18px;
-    background: rgba(f.color(brand-orange), 0.08);
-    border-radius: 16px;
+    margin-bottom: 28px;
+    padding: 20px 16px;
+    background: f.color(orange-50);
+    border-radius: 18px;
     text-align: center;
-    @include m.text-style('lg', 500);
-    color: f.color(gray-700);
+    @include m.text-style-extended('lg', 600, orange-800);
+    box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.04);
+
+    @include m.mq(sm) {
+      padding: 28px 28px;
+      font-size: 18px;
+      margin-bottom: 36px;
+    }
+  }
+
+  // 버튼 스타일 정렬
+  .Button {
+    margin-top: 8px;
+    width: 100%;
+    @include m.mq(sm) {
+      margin-top: 12px;
+    }
   }
 }

@@ -2,34 +2,44 @@
 @use 'utils/functions' as f;
 
 .modal {
-  width: 320px;
+  width: 380px;
+  max-width: 95vw;
+  background: f.color(white);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(239, 108, 0, 0.08);
+  padding: 16px 13px;
+  @include m.mq(md) {
+    width: 420px;
+  }
 }
 
 .auth {
-  padding-top: 10px;
   width: 100%;
-  @include m.flex-box(center, center, column);
+  @include m.flex-box(center, flex-start, column);
   gap: 20px;
 
   &__title {
-    @include m.text-style-extended('xl', 700, bg-primary);
-    margin-bottom: 4px;
+    @include m.text-style('2xl', 700);
+    color: f.color(gray-800);
+    margin-bottom: 12px;
     text-align: center;
+    letter-spacing: -0.02em;
   }
 
   &__body {
     width: 100%;
-    @include m.flex-box(center, center, column);
-    gap: 16px;
+    @include m.flex-box(center, flex-start, column);
+    gap: 12px;
 
     &-group {
       width: 100%;
-      @include m.flex-box(center, flex-start, column);
+      @include m.flex-box(flex-start, flex-start, column);
       gap: 6px;
 
       &__label {
-        @include m.text-style-extended('md', 500, bg-tertiary);
-        margin-left: 2px;
+        @include m.text-style('md', 600);
+        color: f.color(gray-600);
+        margin-bottom: 2px;
       }
     }
   }
@@ -37,35 +47,48 @@
   &__social {
     width: 100%;
     @include m.flex-box(center, center, column);
-    gap: 12px;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid f.color(gray-300);
 
     &__or {
-      @include m.text-style-extended('xs', 500, bg-primary);
-      opacity: 0.6;
+      @include m.text-style-extended('xs', 600, gray-700);
+      opacity: 0.7;
+      margin-bottom: 2px;
     }
 
     &__oauth {
       width: 100%;
       @include m.flex-box(center, center);
 
-      // 구글 버튼
       &--google {
         width: 100%;
         height: 44px;
-        background-color: white;
-        border: 1px solid #ddd;
-        border-radius: 6px;
+        background: f.color(white);
+        border: 1.5px solid f.color(gray-400);
+        border-radius: 12px;
         cursor: pointer;
-
         @include m.flex-box(center, center);
         gap: 8px;
+        transition: all 0.2s ease;
 
         span {
-          @include m.text-style-extended('sm', 500, bg-primary);
+          @include m.text-style-extended('md', 600, gray-800);
+        }
+
+        img {
+          width: 20px;
+          height: 20px;
         }
 
         &:hover {
-          background-color: #f5f5f5;
+          border-color: f.color(brand-orange);
+          background: f.color(orange-50);
+          box-shadow: 0 2px 8px rgba(239, 108, 0, 0.08);
+        }
+
+        &:active {
+          background: f.color(gray-100);
         }
       }
     }
@@ -74,32 +97,36 @@
   &__actions {
     width: 100%;
     @include m.flex-box(center, center, column);
-    gap: 16px;
-    margin-top: 8px;
+    gap: 12px;
+    padding-top: 12px;
 
     &__text-group {
       @include m.flex-box(center, center);
-      gap: 6px;
+      gap: 4px;
+      flex-wrap: wrap;
+      text-align: center;
     }
 
     &__boolean {
-      @include m.text-style-extended('sm', 400, bg-secondary);
+      @include m.text-style-extended('sm', 400, gray-700);
       line-height: 1.5;
     }
 
     &__link {
-      @include m.text-style-extended('sm', 600, blue-700);
+      @include m.text-style-extended('sm', 600, brand-orange);
       cursor: pointer;
-      text-decoration: underline;
+      text-decoration: none;
       background: none;
       border: none;
       padding: 0;
       margin: 0;
       line-height: 1.5;
       vertical-align: middle;
+      transition: color 0.2s;
 
       &:hover {
-        opacity: 0.8;
+        color: f.color(point-orange);
+        text-decoration: underline;
       }
     }
 
@@ -109,10 +136,13 @@
       gap: 10px;
 
       &__button {
-        width: 100%;
+        flex: 1;
         height: 44px;
-        border-radius: 6px;
+        border-radius: 12px;
         font-weight: 600;
+        min-height: 44px;
+        font-size: 16px;
+        box-shadow: 0 2px 8px rgba(239, 108, 0, 0.04);
       }
     }
   }

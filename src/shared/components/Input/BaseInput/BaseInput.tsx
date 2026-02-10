@@ -1,4 +1,6 @@
-import { forwardRef, ChangeEvent, useState, FocusEvent } from 'react';
+'use client';
+
+import { forwardRef, ChangeEvent, useState, FocusEvent, useCallback } from 'react';
 import { BaseInputProps } from './types';
 import styles from './BaseInput.module.scss';
 
@@ -26,15 +28,21 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
     const [isFocused, setIsFocused] = useState(false);
     const isError = ariaInvalid === true;
 
-    const handleFocus = (e: FocusEvent<HTMLInputElement>) => {
-      setIsFocused(true);
-      onFocus?.(e);
-    };
+    const handleFocus = useCallback(
+      (e: FocusEvent<HTMLInputElement>) => {
+        setIsFocused(true);
+        onFocus?.(e);
+      },
+      [onFocus]
+    );
 
-    const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
-      setIsFocused(false);
-      onBlur?.(e);
-    };
+    const handleBlur = useCallback(
+      (e: FocusEvent<HTMLInputElement>) => {
+        setIsFocused(false);
+        onBlur?.(e);
+      },
+      [onBlur]
+    );
 
     const inputWrapperClass = [
       styles['wrapper'],
@@ -50,9 +58,12 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
       .filter(Boolean)
       .join(' ');
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      onChange?.(e);
-    };
+    const handleChange = useCallback(
+      (e: ChangeEvent<HTMLInputElement>) => {
+        onChange?.(e);
+      },
+      [onChange]
+    );
 
     return (
       <div className={inputWrapperClass}>

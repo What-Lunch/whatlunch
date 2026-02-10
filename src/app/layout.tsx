@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Header from '@/shared/components/layout/Header';
 import Main from '@/shared/components/layout/Main';
+import Footer from '@/shared/components/layout/Footer';
 import TanstackProvider from '@/shared/context/TanstackProvider';
 
 import GlobalToast from '@/shared/components/Toast/GlobalToast';
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: LayoutProps) {
           <TanstackProvider>
             <Header />
             <Main>{children}</Main>
+            <Footer />
           </TanstackProvider>
           <GlobalToast />
         </GoogleProvider>

@@ -66,7 +66,7 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
 
   const createInfoWindowContent = useCallback((place: Kakao.PlaceItem) => {
     return `
-      <div style="padding: 12px; min-width: 200px;">
+      <div style="padding: 12px; min-width: 200px; ">
        <h4 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #333;">
         <a href="${escapeHtml(place.place_url)}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">
           ${escapeHtml(place.place_name)}

@@ -1,17 +1,19 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
 
-@mixin bordered-box {
-  width: 100%;
-  border: 1px solid f.color(gray-300);
-  border-radius: 16px;
-}
-
 .container {
-  @include m.flex-box(center, flex-start, row);
-  gap: 40px;
   width: 100%;
-  overflow: hidden;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+  @include m.mq(md) {
+    flex-direction: row;
+    gap: 32px;
+    min-height: auto;
+  }
 
   &__left {
     @include m.flex-box(center, center, column);
@@ -20,87 +22,31 @@
     min-width: 0;
     order: 1;
 
+    @include m.mq(md) {
+      width: 100%;
+      min-width: 0;
+      gap: 24px;
+    }
+
     &__slice {
       @include m.flex-box(center, center, column);
       width: 100%;
       height: 200px;
-      border: 1px solid f.color(black);
-    }
-
-    &__main {
-      @include m.flex-box(center, center, column);
-      width: 100%;
-      gap: 30px;
-
-      &__room-entry {
-        width: 100%;
-      }
-
-      &__option {
-        @include bordered-box;
-        height: 90px;
-      }
+      border: 1.5px solid f.color(gray-100);
     }
   }
 
   &__right {
-    @include m.flex-box(center, center, column);
+    @include m.flex-box(flex-start, center, column);
     gap: 30px;
     flex: 3;
     min-width: 0;
     order: 2;
 
-    &__clock {
-      @include bordered-box;
-      height: 120px;
-    }
-
-    &__weather {
-      @include bordered-box;
-      min-height: 360px;
-      @include m.mq(md) {
-        height: auto;
-      }
-    }
-    &__quote {
+    @include m.mq(md) {
       width: 100%;
-      height: 140px;
-      background-color: f.color(orange-50);
-      border: 1px solid f.color(gray-200);
-      border-radius: 16px;
-
-      @include m.flex-box(center, center, column);
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    gap: 32px;
-
-    &__left {
-      order: 1;
-      width: 100%;
+      min-width: 0;
       gap: 32px;
-
-      &__main {
-        gap: 24px;
-      }
-    }
-
-    &__right {
-      order: 2;
-      width: 100%;
-      gap: 20px;
-
-      &__clock {
-        height: 100px;
-      }
-
-      &__weather {
-        height: auto;
-      }
     }
   }
 }

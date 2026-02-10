@@ -26,20 +26,4 @@
     background-color: f.color(gray-100);
     resize: none;
   }
-
-  &__submit {
-    width: 100%;
-    padding: 12px 0;
-    background-color: f.color(purple-600);
-    color: f.color(white);
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  &__submit:hover {
-    background-color: f.color(purple-700);
-  }
 }

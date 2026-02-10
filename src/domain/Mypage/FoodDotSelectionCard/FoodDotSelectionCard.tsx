@@ -78,7 +78,13 @@ export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotS
             {selectedDots.map(dot => (
               <li key={dot.id} className={styles['food-dot-card__item']}>
                 <div className={styles['food-dot-card__selected']}>
-                  <Image src={dot.src} alt={dot.label} width={40} height={40} />
+                  <Image
+                    src={dot.src}
+                    alt={dot.label}
+                    width={40}
+                    height={40}
+                    className={styles['food-dot-card__selected-img']}
+                  />
                   <span className={styles['food-dot-card__label']}>{dot.label}</span>
                 </div>
               </li>
@@ -106,7 +112,8 @@ export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotS
         <Modal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          title={`음식 뱃지 전체 보기 (${selectedDotIds.length}/9)`}
+          title={`음식 뱃지 전체 보기 (${selectedDotIds.length}/9) 🥐`}
+          description="좋아하는 음식 뱃지를 클릭해보세요!"
           innerClassName={styles['food-dot-modal']}
         >
           <ul className={styles['food-dot-modal__list']}>

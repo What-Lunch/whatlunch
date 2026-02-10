@@ -7,17 +7,16 @@
     width: fit-content;
     margin: 0 auto;
     padding: 4px;
-    background: f.color(gray-100);
+    background: f.color(orange-50);
     border-radius: 32px;
 
     &__tab {
       width: 100px;
       height: 36px;
       @include m.flex-box(center, center);
-      @include m.text-style(md, 600);
+      @include m.text-style-extended(md, 600, orange-700);
       background: transparent;
       border-radius: 32px;
-      color: f.color(text-default);
       cursor: pointer;
       transition: all 0.2s ease;
 
@@ -33,9 +32,9 @@
       }
 
       &--active {
-        background: f.color(point-blue);
+        background: f.color(orange-700);
         color: f.color(text-inverse);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        box-shadow: 0 4px 12px rgba(185, 145, 16, 0.3);
         transform: translateY(-2px);
       }
     }

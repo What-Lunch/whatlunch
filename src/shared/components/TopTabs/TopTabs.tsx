@@ -26,7 +26,7 @@ function TopTabs({ items, value, onChange, renderPanel, className, lazyMount }: 
   if (items.length === 0) return null;
 
   return (
-    <div className={[styles['top-tabs'], className].filter(Boolean).join(' ')}>
+    <section className={[styles['top-tabs'], className].filter(Boolean).join(' ')}>
       <div className={styles['top-tabs__list']} role="tablist">
         {items.map((item, index) => {
           const isSelected = item.value === activeValue;
@@ -90,7 +90,7 @@ function TopTabs({ items, value, onChange, renderPanel, className, lazyMount }: 
           </div>
         );
       })}
-    </div>
+    </section>
   );
 }
 

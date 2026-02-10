@@ -3,216 +3,193 @@
 
 .container {
   width: 100%;
-  padding: 16px;
-  border-radius: 24px;
-  background: f.color(white);
-  border: 1px solid f.color(gray-100);
-
-  @include m.flex-box(center, center, column);
-  gap: 16px;
-  overflow: hidden;
-
-  @include m.mq(sm) {
-    padding: 24px;
-  }
+  @include m.flex-box(center, flex-start, column);
+  align-self: flex-start;
+  box-sizing: border-box;
 }
 
 .carousel {
   width: 100%;
+  min-width: 300px;
   overflow: hidden;
+  border-radius: 24px;
+  border: 1.5px solid f.color(gray-100);
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
 
   &__track {
     display: flex;
     width: 100%;
+    height: 100%;
     will-change: transform;
   }
 }
 
 .card {
   flex: 0 0 100%;
+  background: f.color(white);
   @include m.flex-box(flex-start, stretch, column);
-  gap: 20px;
-  padding: 0 2px;
+  gap: 24px;
+  padding: 32px 32px 24px 32px;
+  position: relative;
+
+  @include m.mq(sm) {
+    gap: 32px;
+  }
+
+  &:hover {
+    box-shadow:
+      0 8px 32px 0 rgba(239, 108, 0, 0.13),
+      0 2px 8px 0 rgba(0, 0, 0, 0.06);
+  }
 
   &__header {
-    @include m.flex-box(flex-start, flex-start, column);
-    gap: 8px;
-    padding-right: 4px;
+    @include m.flex-box(space-between, flex-end, row);
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 8px;
   }
 
   &__rankBadge {
-    padding: 2px 8px;
-    background: f.color(gray-900);
-    color: f.color(white);
-    border-radius: 6px;
-    @include m.text-style(xs, 700);
-
-    @include m.mq(sm) {
-      padding: 2px 10px;
-    }
+    width: auto;
+    min-width: 55px;
+    padding: 4px 16px;
+    background: f.color(orange-50);
+    border-radius: 99px;
+    @include m.text-style-extended(sm, 700, orange-800);
+    box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.08);
+    letter-spacing: 0.01em;
   }
 
   &__titleRow {
     width: 100%;
-    @include m.flex-box(space-between, center);
-    gap: 10px;
+    @include m.flex-box(space-between, flex-end);
+    gap: 12px;
   }
 
   &__title {
-    @include m.text-style('lg', 700);
+    @include m.text-style('xl', 700);
     color: f.color(gray-900);
-    white-space: nowrap;
-
-    @include m.mq(sm) {
-      @include m.text-style('xl', 700);
-    }
+    white-space: pre-line;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
   }
 
   &__menuName {
-    @include m.text-style(md, 600);
-    color: f.color(orange-800);
-
-    @include m.mq(sm) {
-      @include m.text-style('xl', 600);
-    }
+    @include m.text-style('xl', 700);
+    color: f.color(brand-orange);
+    font-family: inherit;
+    letter-spacing: -0.01em;
   }
 
   &__images {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 16px;
     width: 100%;
+    margin-top: 8px;
+    min-width: 0;
 
     @include m.mq(sm) {
-      gap: 12px;
+      gap: 24px;
     }
   }
 
   &__imageContainer {
-    @include m.flex-box(flex-start, stretch, column);
-    gap: 6px;
+    @include m.flex-box(center, flex-start, column);
+    gap: 8px;
     min-width: 0;
-
-    @include m.mq(sm) {
-      gap: 8px;
-    }
   }
 
   &__image {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
     background: f.color(gray-100);
+    box-shadow: 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
 
     @include m.mq(sm) {
-      border-radius: 16px;
+      border-radius: 20px;
     }
 
     .img {
       object-fit: cover;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     &:hover .img {
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
   }
 
   &__storeInfo {
-    @include m.flex-box(flex-start, flex-start, column);
-    gap: 0px;
+    @include m.flex-box(center, center, row);
+    gap: 4px;
     width: 100%;
     overflow: hidden;
-
-    @include m.mq(sm) {
-      gap: 2px;
-    }
+    margin-top: 2px;
   }
 
   &__storeName {
-    @include m.text-style(sm, 600);
+    @include m.text-style(md, 600);
     color: f.color(gray-800);
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    @include m.mq(sm) {
-      @include m.text-style(md, 600);
-    }
-  }
-
-  &__storeLoc {
-    @include m.flex-box(flex-start, center);
-    gap: 2px;
-
-    @include m.text-style(xs, 400);
-    color: f.color(gray-500);
-
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    @include m.mq(sm) {
-      gap: 4px;
-    }
   }
 }
 
-.ratingBadge {
+.rating-badge {
   @include m.flex-box(center, center);
-  gap: 4px;
-  padding: 4px 10px;
+  gap: 6px;
+  padding: 6px 16px;
   border-radius: 99px;
-  background: f.color(red-100);
-  flex-shrink: 0;
-
-  @include m.mq(sm) {
-    gap: 6px;
-    padding: 6px 14px;
-  }
+  background: f.color(orange-50);
 
   &__text {
-    @include m.text-style(xs, 600);
-    color: f.color(red-500);
-
-    @include m.mq(sm) {
-      @include m.text-style(sm, 600);
-    }
+    @include m.text-style-extended(sm, 700, orange-800);
   }
 }
 
 .dots {
   @include m.flex-box(center, center);
-  gap: 8px;
+  gap: 10px;
+  margin-top: 18px;
+  width: 100%;
+
+  @include m.mq(sm) {
+    gap: 14px;
+  }
 
   button {
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    border: none;
-    padding: 0;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
 
     @include m.mq(sm) {
-      width: 8px;
-      height: 8px;
+      width: 12px;
+      height: 12px;
     }
   }
 
   &__active {
-    background: f.color(gray-800);
-    transform: scale(1.2);
+    background: f.color(orange-200);
+    transform: scale(1.25);
+    box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.12);
   }
 
   &__inactive {
     background: f.color(gray-200);
+
     &:hover {
-      background: f.color(gray-400);
+      background: f.color(orange-200);
     }
   }
 }

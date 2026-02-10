@@ -8,16 +8,14 @@
   padding: 20px 0;
 
   &__today {
-    font-size: 22px;
-    font-weight: 700;
+    @include m.text-style-extended('2xl', 600, gray-700);
     text-align: center;
-    color: #222;
 
     span {
-      color: f.color(brand-primary);
-      font-weight: 800;
+      @include m.text-style-extended('2xl', 800, orange-700);
     }
   }
+
   &__wheel-wrapper {
     position: relative;
     width: fit-content;
@@ -31,12 +29,21 @@
 
     &__button {
       width: 100px;
-      @include m.text-style('xs', 700);
+      background-color: f.color(white);
+      border-radius: 24px;
+      border: 1.5px solid f.color(orange-200);
+      @include m.text-style-extended('xs', 700, orange-700);
       padding: 8px;
 
       @include m.mq(md) {
-        @include m.text-style('md', 700);
+        @include m.text-style-extended('md', 700, orange-700);
         padding: 8px;
+      }
+
+      &:hover:not(:disabled) {
+        background-color: f.color(orange-700);
+        border-color: f.color(orange-300);
+        color: f.color(white);
       }
     }
   }

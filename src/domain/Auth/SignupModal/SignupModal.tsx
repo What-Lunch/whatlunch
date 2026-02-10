@@ -54,11 +54,6 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
   const googleSignupMutation = useMutation({
     mutationFn: (data: { idToken: string }) => authServiceClient.loginWithGoogle(data),
     onSuccess: res => {
-      // 프론트엔드 도메인에서 강제로 쿠키를 저장합니다.
-      if (res.accessToken) {
-        document.cookie = `accessToken=${res.accessToken}; path=/; max-age=86400; secure; samesite=lax`;
-      }
-
       // 성공 시 바로 로그인
       setUser(res.user);
 

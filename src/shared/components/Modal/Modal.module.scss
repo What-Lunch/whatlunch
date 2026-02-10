@@ -4,9 +4,8 @@
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.98);
+    transform: translateY(16px) scale(0.96);
   }
-
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -17,64 +16,79 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(f.color(bg-primary), 0.5);
-  padding: 20%;
+  background-color: rgba(0, 0, 0, 0.18);
+  padding: 0;
   position: fixed;
   inset: 0;
   z-index: 999;
 }
 
 .modal {
-  background-color: f.color(bg-inverse);
-  padding: 20px 18px;
-  border-radius: 16px;
+  background: f.color(white);
+  padding: 0;
+  border-radius: 24px;
   text-align: center;
   overflow: hidden;
-  animation: fade-in 0.25s ease;
-
+  animation: fade-in 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(239, 108, 0, 0.08);
+  border: none;
+  min-width: 320px;
   @include m.mq(md) {
-    padding: 28px 24px;
+    min-width: 380px;
+  }
+
+  &__top {
+    @include m.flex-box(flex-end, center);
+    padding: 16px 16px 0 16px;
+    width: 100%;
   }
 
   &__header {
-    @include m.flex-box(space-between, center);
-    margin-bottom: 15px;
-
     &__title {
-      margin: 0;
-      @include m.text-style('xl', 600);
-      color: f.color(black);
+      margin: 12px 10px 6px 10px;
+      @include m.text-style-extended('xl', 700, orange-600);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      letter-spacing: -0.02em;
 
       @include m.mq(md) {
-        @include m.text-style('2xl', 600);
+        @include m.text-style-extended('2xl', 700, orange-600);
       }
     }
 
     &__close {
-      width: 100%;
-      @include m.flex-box(flex-end, center);
+      @include m.flex-box(center, center);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(f.color(gray-400), 0.3);
+      color: f.color(gray-700);
+      transition: all 0.2s ease;
 
-      svg {
-        cursor: pointer;
+      &:hover {
+        background: f.color(white);
+        color: f.color(gray-900);
+      }
+
+      &:active {
+        transform: scale(0.95);
       }
     }
   }
 
   &__description {
-    margin-top: 8px;
-    text-align: left;
-    @include m.text-style('md', 600);
+    // width: 80%;
+    margin: 8px 10px;
+    text-align: center;
+    @include m.text-style-extended('sm', 400, gray-600);
     line-height: 20px;
     overflow: hidden;
     display: -webkit-box;
     line-clamp: 3;
     -webkit-box-orient: vertical;
-
+    margin-bottom: 24px;
     @include m.mq(md) {
-      @include m.text-style('lg', 600);
+      @include m.text-style-extended('md', 400, gray-600);
     }
   }
 
@@ -82,6 +96,9 @@
     overflow: auto;
     height: 100%;
     max-height: 90vh;
-    padding-bottom: 32px;
+    padding: 0 24px 24px 24px;
+    background: f.color(white);
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
   }
 }
