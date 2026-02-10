@@ -115,13 +115,7 @@
 
 // 음식 도트 모달
 .food-dot-modal {
-  width: 400px;
-  height: 500px;
-
   &__list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;

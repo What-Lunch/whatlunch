@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useId } from 'react';
 import { createPortal } from 'react-dom';
-import { XIcon } from 'lucide-react';
+import { XIcon, CircleXIcon } from 'lucide-react';
 
 import { useModalClose, useEscClose } from '@/shared/hooks/useEscClose';
 import { ModalProps } from './types';
@@ -75,22 +75,23 @@ export default function Modal({
       onClick={handleOverlayClick}
     >
       <div className={`${styles['modal']}${innerClassName ? ` ${innerClassName}` : ''}`}>
-        <header className={styles['modal__header']}>
-          {title && (
-            <h2 id={titleId} className={styles['modal__header__title']}>
-              {title}
-            </h2>
-          )}
-
+        <div className={styles['modal__top']}>
           <button
             type="button"
             aria-label="닫기"
             onClick={onClose}
-            className={title ? undefined : styles['modal__header__close']}
+            className={styles['modal__header__close']}
           >
-            <XIcon aria-hidden="true" />
+            <XIcon aria-hidden="true" size={20} />
           </button>
-        </header>
+        </div>
+
+        {title && (
+          <h2 id={titleId} className={styles['modal__header__title']}>
+            {title}
+          </h2>
+        )}
+
         {description && (
           <p id={descId} className={styles['modal__description']}>
             {description}

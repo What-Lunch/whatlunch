@@ -37,67 +37,57 @@
     min-width: 380px;
   }
 
-  &__header {
-    @include m.flex-box(end, center);
-    background: f.color(white);
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    margin-bottom: 0;
+  &__top {
+    @include m.flex-box(flex-end, center);
+    padding: 16px 16px 0 16px;
+    width: 100%;
+  }
 
+  &__header {
     &__title {
-      margin: 0;
-      @include m.text-style('2xl', 700);
-      color: f.color(gray-800);
+      margin: 12px auto 6px auto;
+      @include m.text-style-extended('xl', 700, orange-600);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       letter-spacing: -0.02em;
+
       @include m.mq(md) {
-        @include m.text-style('3xl', 700);
+        @include m.text-style-extended('2xl', 700, orange-600);
       }
     }
 
     &__close {
       @include m.flex-box(center, center);
-      width: 40px;
-      height: 40px;
-      background: f.color(gray-100);
-      border: 1.5px solid f.color(gray-200);
       border-radius: 50%;
-      cursor: pointer;
-      padding: 0;
-      color: f.color(gray-400);
-      transition:
-        background 0.2s,
-        color 0.2s,
-        border-color 0.2s;
-
-      svg {
-        width: 24px;
-        height: 24px;
-        stroke-width: 2.2;
-      }
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(f.color(gray-400), 0.3);
+      color: f.color(gray-700);
+      transition: all 0.2s ease;
 
       &:hover {
-        background: f.color(orange-50);
-        color: f.color(brand-orange);
-        border-color: f.color(brand-orange);
+        background: f.color(white);
+        color: f.color(gray-900);
+      }
+
+      &:active {
+        transform: scale(0.95);
       }
     }
   }
 
   &__description {
     margin-top: 8px;
-    text-align: left;
-    @include m.text-style('md', 600);
-    color: f.color(gray-600);
+    text-align: center;
+    @include m.text-style-extended('sm', 400, gray-600);
     line-height: 20px;
     overflow: hidden;
     display: -webkit-box;
     line-clamp: 3;
     -webkit-box-orient: vertical;
+    margin-bottom: 24px;
     @include m.mq(md) {
-      @include m.text-style('lg', 600);
+      @include m.text-style-extended('md', 400, gray-600);
     }
   }
 

@@ -112,7 +112,8 @@ export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotS
         <Modal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          title={`음식 뱃지 전체 보기 (${selectedDotIds.length}/9)`}
+          title={`음식 뱃지 전체 보기 (${selectedDotIds.length}/9) 🥐`}
+          description="좋아하는 음식 뱃지를 클릭해보세요!"
           innerClassName={styles['food-dot-modal']}
         >
           <ul className={styles['food-dot-modal__list']}>
