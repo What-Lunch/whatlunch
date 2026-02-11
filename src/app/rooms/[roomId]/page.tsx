@@ -131,7 +131,7 @@ export default function RoomPage({ params }: RoomPageProps) {
         if (menus?.length) setInitialMenus(menus);
       };
 
-      const handleJoinError = (err?: any) => {
+      const handleJoinError = () => {
         if (!mounted) return;
 
         // 타임아웃 클리어
