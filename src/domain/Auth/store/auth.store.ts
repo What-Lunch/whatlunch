@@ -1,7 +1,9 @@
 import { create } from 'zustand';
+import { resetSocket } from '@/app/lib/socket';
 
 // 유저 정보 타입
 type User = {
+  id: string;
   email: string;
   nickname: string;
   profileImage: string | null;
@@ -22,6 +24,8 @@ export const useAuthStore = create<AuthState>(set => ({
   isAuthLoading: true,
   setUser: user => {
     set({ user, isAuthLoading: false });
+    resetSocket(); // 소켓 재설정
+
     // 닉네임 변경 즉시 반영 이벤트
     if (typeof window !== 'undefined' && user?.nickname) {
       window.dispatchEvent(
@@ -29,7 +33,10 @@ export const useAuthStore = create<AuthState>(set => ({
       );
     }
   },
-  clearUser: () => set({ user: null, isAuthLoading: false }),
+  clearUser: () => {
+    set({ user: null, isAuthLoading: false });
+    resetSocket(); // 소켓 재설정
+  },
   finishAuthCheck: () => set({ isAuthLoading: false }),
   updateNickname: nickname => {
     let hasUser = false;
@@ -40,7 +47,7 @@ export const useAuthStore = create<AuthState>(set => ({
       // 상태 반영
       return { ...state, user: nextUser };
     });
-    // 닉네임 변경 즉시 반영 이벤트
+
     if (hasUser && typeof window !== 'undefined' && nickname) {
       window.dispatchEvent(new CustomEvent('profile:nicknameUpdated', { detail: { nickname } }));
     }

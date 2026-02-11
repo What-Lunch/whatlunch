@@ -27,7 +27,6 @@ export default function Chat({ roomCode }: ChatProps) {
   const [input, setInput] = useState('');
   const socketRef = useRef<Socket | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const hasJoinedRef = useRef(false);
 
   useEffect(() => {
     const socket = getSocket();
@@ -35,20 +34,11 @@ export default function Chat({ roomCode }: ChatProps) {
 
     socketRef.current = socket;
 
-    const joinRoom = () => {
-      if (hasJoinedRef.current) return;
-      hasJoinedRef.current = true;
+    const handleConnect = () => {
       socket.emit('joinRoom', { roomCode });
     };
 
-    if (socket.connected) {
-      joinRoom();
-    } else {
-      socket.once('connect', joinRoom);
-    }
-
-    // 시스템 메시지
-    socket.on('systemMessage', ({ message }) => {
+    const handleSystemMessage = ({ message }: { message: string }) => {
       setMessages(prev => [
         ...prev,
         {
@@ -59,10 +49,13 @@ export default function Chat({ roomCode }: ChatProps) {
           isSystem: true,
         },
       ]);
-    });
+    };
 
-    // 일반 메시지 수신
-    socket.on('messageReceived', payload => {
+    const handleMessageReceived = (payload: {
+      message: string;
+      userName: string;
+      profileImage?: string;
+    }) => {
       setMessages(prev => [
         ...prev,
         {
@@ -73,11 +66,20 @@ export default function Chat({ roomCode }: ChatProps) {
           isUser: false,
         },
       ]);
-    });
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('systemMessage', handleSystemMessage);
+    socket.on('messageReceived', handleMessageReceived);
+
+    if (socket.connected) {
+      handleConnect();
+    }
 
     return () => {
-      socket.off('systemMessage');
-      socket.off('messageReceived');
+      socket.off('connect', handleConnect);
+      socket.off('systemMessage', handleSystemMessage);
+      socket.off('messageReceived', handleMessageReceived);
     };
   }, [roomCode]);
 
@@ -116,6 +118,15 @@ export default function Chat({ roomCode }: ChatProps) {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     sendMessage();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.nativeEvent.isComposing) return;
+
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   return (
@@ -188,14 +199,7 @@ export default function Chat({ roomCode }: ChatProps) {
           onChange={e => setInput(e.target.value)}
           placeholder="메시지를 입력하세요"
           className={styles['chat__input__field']}
-          onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.nativeEvent.isComposing) return;
-
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
+          onKeyDown={handleKeyDown}
         />
 
         <button

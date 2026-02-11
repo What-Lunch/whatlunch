@@ -17,6 +17,7 @@ import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { createSocket } from '@/app/lib/socket';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useRoomLogic } from './useRoomLogic';
+import type { Socket } from 'socket.io-client';
 
 import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
@@ -35,7 +36,6 @@ export default function RoomPage({ params }: RoomPageProps) {
   const { getResults, setCurrentRoom } = useRouletteResultStore();
   const [roomResults, setRoomResults] = useState<Menu.GetMenuRes[]>([]);
   const [initialMenus, setInitialMenus] = useState<Menu.GetMenuRes[]>([]);
-  const joinedRoomRef = useRef<string | null>(null);
   const { user, isAuthLoading } = useAuthStore();
   const router = useRouter();
   const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
@@ -49,24 +49,6 @@ export default function RoomPage({ params }: RoomPageProps) {
     setRoomResults(getResults(roomId));
   }, [roomId, setCurrentRoom, getResults]);
 
-  useEffect(() => {
-    // 찜한 메뉴 불러오기
-    const fetchFavorites = async () => {
-      try {
-        const favorites = await favoritesServiceClient.getMyFavorites();
-        const favMap: Record<string, boolean> = {};
-        favorites.forEach(menu => {
-          favMap[menu._id] = true;
-        });
-        setFavoriteMap(favMap);
-      } catch (error) {
-        console.error('찜한 메뉴 불러오기 실패:', error);
-      }
-    };
-
-    fetchFavorites();
-  }, []);
-
   // 룰렛 결과 실시간 동기화 핸들러
   const handleRouletteResult = useCallback((result: Menu.GetMenuRes) => {
     setRoomResults(prev => [result, ...prev]);
@@ -78,7 +60,6 @@ export default function RoomPage({ params }: RoomPageProps) {
     }
   }, []);
 
-  // ============ 인증 확인 ============
   useEffect(() => {
     if (isAuthLoading) return;
     if (!user) {
@@ -87,46 +68,137 @@ export default function RoomPage({ params }: RoomPageProps) {
     }
   }, [user, router, isAuthLoading]);
 
-  // ============ Socket 연결 (한 번만) ============
+  // 소켓 연결 및 이벤트 핸들러
   useEffect(() => {
-    if (!isValidRoom) return;
-    if (!user) return;
+    if (isValidRoom === null) {
+      return;
+    }
+    if (!isValidRoom) {
+      return;
+    }
+    if (!user) {
+      return;
+    }
 
-    const socket = createSocket();
-    if (!socket) return;
+    let mounted = true;
+    let currentSocket: Socket | null = null;
+    let roleAssignedTimeout: NodeJS.Timeout | null = null;
 
-    const joinRoomIfNeeded = () => {
-      if (joinedRoomRef.current === roomId) return;
+    const connectSocket = async () => {
+      // 소켓 생성 (토큰 대기 포함)
+      const socket = await createSocket();
 
-      if (joinedRoomRef.current) {
-        socket.emit('leaveRoom', { roomCode: joinedRoomRef.current });
+      if (!mounted) return;
+
+      if (!socket) {
+        console.error('[RoomPage] 소켓 생성 실패: 토큰 없음');
+        router.push('/');
+        return;
       }
 
-      socket.emit('joinRoom', { roomCode: roomId });
-      joinedRoomRef.current = roomId;
+      currentSocket = socket;
+      const handleConnect = () => {};
+
+      const handleAuthenticated = () => {
+        if (!mounted) return;
+        socket.emit('joinRoom', { roomCode: roomId });
+
+        // roleAssigned 타임아웃 설정 (5초)
+        roleAssignedTimeout = setTimeout(() => {
+          if (!mounted) return;
+          console.error('[RoomPage] roleAssigned 타임아웃 - 다시 joinRoom 시도');
+          socket.emit('joinRoom', { roomCode: roomId });
+        }, 5000);
+      };
+
+      const handleRoleAssigned = ({
+        role,
+        menus,
+      }: {
+        role: 'host' | 'guest';
+        menus: Menu.GetMenuRes[];
+      }) => {
+        if (!mounted) return;
+
+        // 타임아웃 클리어
+        if (roleAssignedTimeout) {
+          clearTimeout(roleAssignedTimeout);
+          roleAssignedTimeout = null;
+        }
+
+        setUserRole(role);
+        setSocketReady(true);
+        if (menus?.length) setInitialMenus(menus);
+      };
+
+      const handleJoinError = (err?: any) => {
+        if (!mounted) return;
+
+        // 타임아웃 클리어
+        if (roleAssignedTimeout) {
+          clearTimeout(roleAssignedTimeout);
+          roleAssignedTimeout = null;
+        }
+        router.push('/');
+      };
+
+      // 기존 리스너 제거 (중복 방지)
+      socket.off('connect', handleConnect);
+      socket.off('connected', handleAuthenticated);
+      socket.off('roleAssigned', handleRoleAssigned);
+      socket.off('joinError', handleJoinError);
+
+      // 새로운 리스너 등록
+      socket.on('connect', handleConnect);
+      socket.on('connected', handleAuthenticated);
+      socket.on('roleAssigned', handleRoleAssigned);
+      socket.on('joinError', handleJoinError);
+
+      if (socket.connected) {
+        socket.emit('joinRoom', { roomCode: roomId });
+
+        // 타임아웃 설정
+        roleAssignedTimeout = setTimeout(() => {
+          if (!mounted) return;
+          console.error('[RoomPage] roleAssigned 타임아웃 - 다시 joinRoom 시도');
+          socket.emit('joinRoom', { roomCode: roomId });
+        }, 5000);
+      }
+
+      // 정리 함수 반환
+      return () => {
+        socket.off('connect', handleConnect);
+        socket.off('connected', handleAuthenticated);
+        socket.off('roleAssigned', handleRoleAssigned);
+        socket.off('joinError', handleJoinError);
+      };
     };
 
-    socket.on('connected', joinRoomIfNeeded);
+    let cleanupListeners: (() => void) | undefined;
 
-    socket.on('roleAssigned', ({ role, menus }) => {
-      setUserRole(role);
-      setSocketReady(true);
-      localStorage.setItem(`role_${roomId}`, role);
-      if (menus?.length) setInitialMenus(menus);
-    });
-
-    socket.on('joinError', () => {
-      localStorage.removeItem('accessToken');
-      router.push('/');
+    connectSocket().then(cleanup => {
+      cleanupListeners = cleanup;
     });
 
     return () => {
-      socket.off('connected');
-      socket.off('roleAssigned');
-      socket.off('joinError');
-      joinedRoomRef.current = null;
+      mounted = false;
+
+      // 타임아웃 클리어
+      if (roleAssignedTimeout) {
+        clearTimeout(roleAssignedTimeout);
+      }
+
+      // 방 퇴장 이벤트 전송
+      if (currentSocket) {
+        currentSocket.emit('leaveRoom', { roomCode: roomId });
+      }
+
+      // 리스너 제거 (메모리 누수 방지)
+      if (cleanupListeners) {
+        cleanupListeners();
+      }
     };
-  }, [roomId, isValidRoom, router, user]);
+  }, [roomId, isValidRoom, user, router]);
 
   // 찜 API
   const addFavoriteMutation = useMutation({
