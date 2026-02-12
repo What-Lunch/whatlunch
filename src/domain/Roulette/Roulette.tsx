@@ -59,7 +59,10 @@ export const Roulette = memo(function Roulette({
     if (!socket) return;
 
     // 연결 성공 시 사용자 ID 저장
-    const handleConnected = ({ user }: { user: { _id?: string; id?: string } }) => {
+    const handleConnected = (payload?: { user?: { _id?: string; id?: string } }) => {
+      if (!payload?.user) return;
+
+      const { user } = payload;
       const userId = user.id || user._id;
       if (userId) {
         setCurrentUserId(userId);

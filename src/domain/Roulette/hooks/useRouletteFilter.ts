@@ -70,19 +70,21 @@ export function useRouletteFilter(
   const { data: fetchedMenus = [], isLoading } = useQuery({
     queryKey: ['roulette-menus', roomId, mode, activeFilter],
     queryFn: async () => {
-      if (mode === 'category') {
-        if (selectedFoodTypes && selectedFoodTypes !== Category.ALL) {
+      try {
+        if (mode === 'category' && selectedFoodTypes && selectedFoodTypes !== Category.ALL) {
           const result = await rouletteApi.getMenusByCategory(selectedFoodTypes, roomId);
           return result.slice(0, 6);
-        } else {
+        } else if (mode === 'category') {
           const result = await rouletteApi.getAllMenus(roomId);
           return result.slice(0, 6);
+        } else if (mode === 'context' && selectedSituation) {
+          const result = await rouletteApi.getMenusByContext(selectedSituation, roomId);
+          return result.slice(0, 6);
         }
-      } else if (mode === 'context' && selectedSituation) {
-        const result = await rouletteApi.getMenusByContext(selectedSituation, roomId);
-        return result.slice(0, 6);
+        return [];
+      } catch {
+        return [];
       }
-      return [];
     },
     staleTime: 5 * 60 * 1000,
     enabled: !!roomId,
