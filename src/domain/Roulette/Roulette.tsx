@@ -30,12 +30,15 @@ export const Roulette = memo(function Roulette({
     context?: Context[];
   }>({});
   const [localResult, setLocalResult] = useState<Menu.GetMenuRes | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   // 게스트용 동기화된 필터 상태
   const [syncedFilterState, setSyncedFilterState] = useState<{
     mode: 'category' | 'context';
     selectedFoodTypes: Category | null;
     selectedSituation: Context | null;
+    timestamp?: number;
+    updatedBy?: string;
   } | null>(null);
 
   const params = useParams();
@@ -49,20 +52,43 @@ export const Roulette = memo(function Roulette({
     }
   }, [initialMenus]);
 
-  // ============ WebSocket 이벤트 리스너 ============
   useEffect(() => {
     if (isSoloMode) return;
 
     const socket = getSocket();
     if (!socket) return;
 
-    // 메뉴 동기화 이벤트 (서버에서 직접 메뉴 목록 받음)
+    // 연결 성공 시 사용자 ID 저장
+    const handleConnected = (payload?: { user?: { _id?: string; id?: string } }) => {
+      if (!payload?.user) return;
+
+      const { user } = payload;
+      const userId = user.id || user._id;
+      if (userId) {
+        setCurrentUserId(userId);
+      }
+    };
+
     const handleMenusSync = ({ menus }: { menus: Menu.GetMenuRes[] }) => {
       setMenus(menus);
     };
 
-    // 역할 할당 이벤트 - 초기 메뉴 설정
-    const handleRoleAssigned = ({ menus }: { role: string; menus: Menu.GetMenuRes[] }) => {
+    // 역할 할당 이벤트 (호스트/게스트 역할 부여)
+    const handleRoleAssigned = ({
+      menus,
+      user,
+    }: {
+      role: string;
+      menus: Menu.GetMenuRes[];
+      user?: { _id?: string; id?: string };
+    }) => {
+      // 사용자 ID 저장
+      if (user) {
+        const userId = user.id || user._id;
+        if (userId) {
+          setCurrentUserId(userId);
+        }
+      }
       if (menus && menus.length > 0) {
         setMenus(menus);
       }
@@ -74,6 +100,8 @@ export const Roulette = memo(function Roulette({
       mode,
       selectedFoodTypes,
       selectedSituation,
+      updatedBy,
+      timestamp,
       menus,
     }: {
       filters: { category?: Category[]; context?: Context[] };
@@ -81,25 +109,33 @@ export const Roulette = memo(function Roulette({
       selectedFoodTypes: Category | null;
       selectedSituation: Context | null;
       updatedBy: string;
+      timestamp?: number;
       menus: Menu.GetMenuRes[];
     }) => {
       setFilters(filters);
-      setSyncedFilterState({ mode, selectedFoodTypes, selectedSituation });
-      setMenus(menus); // 호스트도 서버에서 받은 메뉴 목록 사용
+      setSyncedFilterState({
+        mode,
+        selectedFoodTypes,
+        selectedSituation,
+        timestamp,
+        updatedBy,
+      });
+      setMenus(menus);
     };
 
+    socket.on('connected', handleConnected);
     socket.on('menusSync', handleMenusSync);
     socket.on('roleAssigned', handleRoleAssigned);
     socket.on('rouletteFiltersUpdated', handleFiltersUpdated);
 
     return () => {
+      socket.off('connected', handleConnected);
       socket.off('menusSync', handleMenusSync);
       socket.off('roleAssigned', handleRoleAssigned);
       socket.off('rouletteFiltersUpdated', handleFiltersUpdated);
     };
   }, [isSoloMode]);
 
-  // ============ 필터 변경 ============
   const handleFiltersChange = useCallback(
     (
       newFilters: { category?: Category[]; context?: Context[] },
@@ -108,7 +144,7 @@ export const Roulette = memo(function Roulette({
       selectedSituation: Context | null
     ) => {
       setFilters(newFilters);
-      // 서버에서 받은 menus 배열을 그대로 사용 (섞거나 정렬하지 않음)
+      // 호스트가 필터를 변경할 때만 소켓으로 전송
       if (!isSoloMode && userRole === 'host') {
         const socket = getSocket();
         if (socket) {
@@ -125,7 +161,6 @@ export const Roulette = memo(function Roulette({
     [roomCode, isSoloMode, userRole]
   );
 
-  // ============ 룰렛 결과 ============
   const handleResult = useCallback(
     (item: Menu.GetMenuRes) => {
       setLocalResult(item);
@@ -136,7 +171,6 @@ export const Roulette = memo(function Roulette({
     [onSpinResult]
   );
 
-  // ============ 스핀 시작 시 결과 초기화 ============
   const handleSpinStart = useCallback(() => {
     setLocalResult(null);
     setModalOpen(false);
@@ -145,7 +179,6 @@ export const Roulette = memo(function Roulette({
     setSpinning(true);
   }, [onSpinStart, onSpinResult]);
 
-  // ============ 모달 제어 ============
   const handleCloseModal = useCallback(() => {
     setModalOpen(false);
   }, []);
@@ -186,6 +219,7 @@ export const Roulette = memo(function Roulette({
           onFiltersChange={userRole === 'host' || isSoloMode ? handleFiltersChange : undefined}
           disabled={(userRole !== 'host' && !isSoloMode) || spinning || isSpinning}
           syncedFilterState={syncedFilterState}
+          currentUserId={currentUserId}
           isVisible={true}
         />
       )}
