@@ -115,6 +115,11 @@
   }
 
   &__button {
+    &--active {
+      background: f.color(orange-800);
+      color: f.color(white);
+    }
+
     &:active {
       background: f.color(orange-800);
       color: f.color(white);

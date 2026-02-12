@@ -79,11 +79,7 @@ export default function RoomEntryCard() {
             <Button
               variant="orange"
               size="lg"
-              className={
-                mode === 'together'
-                  ? styles['room-entry__button--active']
-                  : styles['room-entry__button']
-              }
+              className={styles['room-entry__button--active']}
               onClick={handleTogetherClick}
             >
               <Users size={18} aria-hidden="true" />
@@ -100,11 +96,7 @@ export default function RoomEntryCard() {
             <Button
               variant="orange"
               size="lg"
-              className={
-                mode === 'solo'
-                  ? styles['room-entry__button--active']
-                  : styles['room-entry__button']
-              }
+              className={styles['room-entry__button--active']}
               onClick={() => router.push('/rooms/solo')}
             >
               <User size={18} aria-hidden="true" />

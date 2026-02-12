@@ -14,7 +14,7 @@
     padding: 24px 28px;
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition: all 0.3s ease;
 
     @include m.mq(md) {
@@ -127,7 +127,7 @@
   &__roulette-section {
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -156,7 +156,7 @@
     @include m.flex-box(flex-start, stretch, column);
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -170,7 +170,7 @@
     @include m.flex-box(flex-start, stretch, column);
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -310,6 +310,8 @@
         @include m.flex-box(flex-start, center, column);
         gap: 5px;
         max-height: 560px;
+        overflow-y: auto;
+        overflow-x: hidden;
 
         &::-webkit-scrollbar {
           width: 8px;
@@ -325,7 +327,7 @@
           border-radius: 999px;
 
           &:hover {
-            background: rgba(f.color(gray-600), 0.2);
+            background: rgba(f.color(gray-600), 0.5);
           }
         }
         &__item {
@@ -410,7 +412,7 @@
     min-height: 0; // grid 자식이 overflow 처리하도록 설정
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
