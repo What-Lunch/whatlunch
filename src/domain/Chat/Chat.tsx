@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { SendHorizontalIcon, UserIcon } from 'lucide-react';
+import Image from 'next/image';
 
 import type { Socket } from 'socket.io-client';
 
@@ -12,7 +13,9 @@ interface ChatMessage {
   id: string;
   text: string;
   sender: string;
+  profileImage?: string | null;
   isUser: boolean;
+  isSystem?: boolean; // 시스템 메시지 여부
 }
 
 interface ChatProps {
@@ -27,14 +30,15 @@ export default function Chat({ roomCode }: ChatProps) {
 
   useEffect(() => {
     const socket = getSocket();
-    if (!socket) {
-      return;
-    }
+    if (!socket) return;
 
     socketRef.current = socket;
 
-    // 시스템 메시지
-    socket.on('systemMessage', ({ message }) => {
+    const handleConnect = () => {
+      socket.emit('joinRoom', { roomCode });
+    };
+
+    const handleSystemMessage = ({ message }: { message: string }) => {
       setMessages(prev => [
         ...prev,
         {
@@ -42,26 +46,40 @@ export default function Chat({ roomCode }: ChatProps) {
           text: message,
           sender: 'system',
           isUser: false,
+          isSystem: true,
         },
       ]);
-    });
+    };
 
-    // 일반 메시지 수신
-    socket.on('messageReceived', ({ userName, message }) => {
+    const handleMessageReceived = (payload: {
+      message: string;
+      userName: string;
+      profileImage?: string;
+    }) => {
       setMessages(prev => [
         ...prev,
         {
           id: crypto.randomUUID(),
-          text: message,
-          sender: userName,
+          text: payload.message,
+          sender: payload.userName,
+          profileImage: payload.profileImage,
           isUser: false,
         },
       ]);
-    });
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('systemMessage', handleSystemMessage);
+    socket.on('messageReceived', handleMessageReceived);
+
+    if (socket.connected) {
+      handleConnect();
+    }
 
     return () => {
-      socket.off('systemMessage');
-      socket.off('messageReceived');
+      socket.off('connect', handleConnect);
+      socket.off('systemMessage', handleSystemMessage);
+      socket.off('messageReceived', handleMessageReceived);
     };
   }, [roomCode]);
 
@@ -71,9 +89,7 @@ export default function Chat({ roomCode }: ChatProps) {
     }
   }, [messages]);
 
-  // 메시지 전송
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const sendMessage = () => {
     if (!input.trim()) return;
 
     const socket = socketRef.current;
@@ -99,6 +115,20 @@ export default function Chat({ roomCode }: ChatProps) {
     setInput('');
   };
 
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    sendMessage();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.nativeEvent.isComposing) return;
+
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
   return (
     <section className={styles['chat']}>
       <span className={styles['chat__title']}>실시간 채팅</span>
@@ -108,43 +138,70 @@ export default function Chat({ roomCode }: ChatProps) {
             아직 대화가 없어요. 메시지를 보내보세요!
           </div>
         )}
-        {messages.map(message => (
-          <div
-            key={message.id}
-            className={
-              message.isUser
-                ? styles['chat__content__message-wrapper--user']
-                : styles['chat__content__message-wrapper--bot']
-            }
-          >
-            {!message.isUser && (
-              <div className={styles['chat__content__profile']}>
-                <UserIcon size={24} />
+        {messages.map(message => {
+          if (message.isSystem) {
+            return (
+              <div key={message.id} className={styles['chat__content__message-wrapper--system']}>
+                <div className={styles['chat__content__system-banner']}>{message.text}</div>
               </div>
-            )}
+            );
+          }
+
+          return (
             <div
+              key={message.id}
               className={
                 message.isUser
-                  ? styles['chat__content__message--user']
-                  : styles['chat__content__message--bot']
+                  ? styles['chat__content__message-wrapper--user']
+                  : styles['chat__content__message-wrapper--other']
               }
             >
-              {message.sender !== 'system' && (
-                <div className={styles['chat__content__sender']}>{message.sender}</div>
+              {!message.isUser && (
+                <div className={styles['chat__content__profile']}>
+                  {message.profileImage ? (
+                    <Image
+                      src={message.profileImage}
+                      alt={message.sender}
+                      width={32}
+                      height={32}
+                      className={styles['chat__content__profile-image']}
+                    />
+                  ) : (
+                    <UserIcon size={20} />
+                  )}
+                </div>
               )}
-              {message.text}
+
+              <div className={styles['chat__content__bubble-group']}>
+                {!message.isUser && (
+                  <div className={styles['chat__content__nickname']}>{message.sender}</div>
+                )}
+
+                <div
+                  className={
+                    message.isUser
+                      ? styles['chat__content__message--user']
+                      : styles['chat__content__message--other']
+                  }
+                >
+                  {message.text}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
       <form className={styles['chat__input']} onSubmit={onSubmit}>
-        <input
-          type="text"
+        <textarea
+          rows={1}
           value={input}
           onChange={e => setInput(e.target.value)}
           placeholder="메시지를 입력하세요"
           className={styles['chat__input__field']}
+          onKeyDown={handleKeyDown}
         />
+
         <button
           type="submit"
           aria-label="메시지 전송"
