@@ -7,7 +7,7 @@
   height: 100%;
   border-radius: 50%;
   overflow: hidden;
-  background-color: f.color(orange-50);
+  background-color: f.color(white);
   flex-shrink: 0;
 
   &__img {
@@ -15,6 +15,6 @@
   }
 
   &--editable {
-    border: 1px solid f.color(orange-100);
+    border: 1.5px solid f.color(gray-400);
   }
 }

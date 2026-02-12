@@ -10,8 +10,6 @@ import WeatherRecommend from './components/Weather/WeatherRecommend';
 
 import type { TopTabItem } from '@/shared/components/TopTabs';
 
-// import styles from './WeatherMood.module.scss';
-
 const TAB_LIST = [
   { value: 'weather', label: '날씨에 따른', icon: <CloudSun size={18} /> },
   { value: 'mood', label: '기분에 따른', icon: <Smile size={18} /> },

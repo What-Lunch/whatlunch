@@ -168,7 +168,8 @@ export default function SoloRoomPage() {
 
           <div className={styles['solo__stats-section']}>
             <div className={styles['solo__stats-header']}>
-              <h3 className={styles['solo__stats-header__title']}>🎲 결과 내역</h3>
+              <div>🎲</div>
+              <h3 className={styles['solo__stats-header__title']}> 결과 내역</h3>
             </div>
 
             <div className={styles['solo__top-menu']}>

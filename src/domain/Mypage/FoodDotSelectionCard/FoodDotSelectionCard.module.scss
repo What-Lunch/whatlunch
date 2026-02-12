@@ -14,12 +14,12 @@
   &__header {
     @include m.flex-box(space-between, center);
     padding-bottom: 8px;
-    border-bottom: 1px solid f.color(orange-100);
+    border-bottom: 2px solid f.color(gray-300);
     margin-bottom: 16px;
   }
 
   &__title {
-    @include m.text-style-extended('xl', 600, orange-700);
+    @include m.text-style-extended('xl', 600, gray-900);
   }
 
   &__desc {
@@ -47,15 +47,15 @@
     gap: 6px;
     width: 100%;
     padding: 10px;
-    background: f.color(orange-50);
+    background: f.color(gray-100);
     cursor: pointer;
-    border: 1px solid f.color(orange-200);
+    border: 1px solid f.color(gray-300);
     border-radius: 10px;
     transition: all 0.2s ease;
 
     &:hover {
-      background: f.color(orange-100);
-      border-color: f.color(orange-300);
+      background: f.color(orange-50);
+      border-color: f.color(orange-200);
 
       img {
         transform: scale(1.15);

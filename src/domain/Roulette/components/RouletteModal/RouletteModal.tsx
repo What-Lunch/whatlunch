@@ -52,13 +52,12 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
         />
         <p className={styles['modal__name']}>{menu?.name}</p>
         <div className={styles['modal__buttons']}>
-          <Button variant="primary" size="md" onClick={handleShareClick} disabled={!menu}>
+          <Button variant="primary" onClick={handleShareClick} disabled={!menu}>
             공유하기
           </Button>
 
           <Button
-            variant="neutral"
-            size="md"
+            variant="primary"
             disabled={!menu}
             onClick={() =>
               window.open(
@@ -70,7 +69,7 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
             지도 보기
           </Button>
 
-          <Button variant="danger" size="md" onClick={onClose}>
+          <Button variant="primary" mode="outline" onClick={onClose}>
             닫기
           </Button>
         </div>

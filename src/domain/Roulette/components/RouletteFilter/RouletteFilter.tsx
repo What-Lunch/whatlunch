@@ -100,7 +100,7 @@ export default function RouletteFilter({
             <Button
               key={opt.value}
               disabled={disabled}
-              variant="primary"
+              variant="blue"
               mode={opt.isActive ? 'fill' : 'outline'}
               padding="8px 18px"
               fontSize="14px"
@@ -117,7 +117,7 @@ export default function RouletteFilter({
             <Button
               key={opt.value}
               disabled={disabled}
-              variant="primary"
+              variant="blue"
               mode={opt.isActive ? 'fill' : 'outline'}
               padding="8px 18px"
               fontSize="14px"

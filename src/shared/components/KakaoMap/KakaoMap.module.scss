@@ -47,16 +47,16 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: rgba(f.color(orange-600), 0.05);
+      background: rgba(f.color(gray-600), 0.05);
       border-radius: 999px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(f.color(orange-600), 0.3);
+      background: rgba(f.color(gray-600), 0.3);
       border-radius: 999px;
 
       &:hover {
-        background: rgba(f.color(orange-600), 0.5);
+        background: rgba(f.color(gray-600), 0.5);
       }
     }
 
@@ -71,14 +71,13 @@
         cursor: pointer;
         background: f.color(white);
         border-radius: 12px;
-        border: 2px solid rgba(f.color(orange-600), 0.1);
+        border: 2px solid rgba(f.color(gray-600), 0.1);
         transition: all 0.2s ease;
 
         &:hover {
-          background: linear-gradient(135deg, f.color(orange-50) 0%, f.color(white) 100%);
           border-color: rgba(f.color(orange-600), 0.3);
-          transform: translateX(4px);
-          box-shadow: 0 4px 12px rgba(f.color(orange-600), 0.15);
+          transform: translate(1.5px, 1.5px);
+          box-shadow: 0 4px 12px rgba(f.color(gray-600), 0.15);
         }
 
         &:active {
@@ -90,13 +89,13 @@
           align-items: center;
 
           padding-bottom: 8px;
-          border-bottom: 1px solid f.color(orange-100);
+          border-bottom: 2px solid f.color(gray-300);
           margin-bottom: 16px;
         }
 
         &__name {
           @include m.text-style('lg', 600);
-          color: f.color(orange-700);
+          color: f.color(gray-700);
           display: block;
         }
 

@@ -18,8 +18,6 @@
 .header {
   z-index: 100;
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   @include m.flex-box(space-between, center, row);
   padding: 6px 8px;
@@ -27,6 +25,7 @@
   border-bottom: 1px solid #e5e7eb;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   @include m.text-style-extended('lg', 600, gray-800);
+
   &__menu {
     @include menu-auth;
     gap: 8px;
@@ -149,8 +148,6 @@
   .header {
     padding: 10px 20px;
     @include m.text-style-extended('2lg', 600, gray-800);
-    border-bottom: 1px solid f.color(orange-300);
-    box-shadow: inset 0 -2px 0 0 f.color(orange-300);
 
     &__menu {
       gap: 24px;

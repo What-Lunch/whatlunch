@@ -44,11 +44,11 @@
   &__header {
     @include m.flex-box(space-between, center);
     padding-bottom: 8px;
-    border-bottom: 1px solid f.color(orange-100);
+    border-bottom: 2px solid f.color(gray-300);
     margin-bottom: 16px;
 
     &__title {
-      @include m.text-style-extended('xl', 600, orange-700);
+      @include m.text-style-extended('xl', 600, gray-900);
     }
 
     &__icon {

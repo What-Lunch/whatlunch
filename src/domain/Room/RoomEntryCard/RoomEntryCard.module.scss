@@ -67,7 +67,9 @@
     }
 
     &--active {
-      color: f.color(orange-800);
+      background: f.color(orange-800);
+      color: f.color(white);
+      border-color: f.color(orange-800);
     }
   }
 
@@ -86,11 +88,12 @@
       margin-bottom: 36px;
     }
     &__main {
-      @include m.text-style-extended('lg', 600, orange-800);
+      @include m.text-style-extended('lg', 600, text-default);
       margin-bottom: 6px;
     }
+
     &__sub {
-      @include m.text-style-extended('md', 600, orange-800);
+      @include m.text-style-extended('md', 600, text-default);
       line-height: 1.6;
     }
   }
@@ -101,7 +104,7 @@
     background: f.color(orange-50);
     border-radius: 18px;
     text-align: center;
-    @include m.text-style-extended('lg', 600, orange-800);
+    @include m.text-style-extended('md', 600, text-default);
     box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.04);
 
     @include m.mq(sm) {
@@ -111,12 +114,10 @@
     }
   }
 
-  // 버튼 스타일 정렬
-  .Button {
-    margin-top: 8px;
-    width: 100%;
-    @include m.mq(sm) {
-      margin-top: 12px;
+  &__button {
+    &:active {
+      background: f.color(orange-800);
+      color: f.color(white);
     }
   }
 }

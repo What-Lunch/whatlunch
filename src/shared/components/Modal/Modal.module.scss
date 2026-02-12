@@ -46,14 +46,14 @@
   &__header {
     &__title {
       margin: 12px 10px 6px 10px;
-      @include m.text-style-extended('xl', 700, orange-600);
+      @include m.text-style-extended('xl', 700, gray-900);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       letter-spacing: -0.02em;
 
       @include m.mq(md) {
-        @include m.text-style-extended('2xl', 700, orange-600);
+        @include m.text-style-extended('2xl', 700, gray-900);
       }
     }
 
@@ -66,8 +66,8 @@
       transition: all 0.2s ease;
 
       &:hover {
-        background: f.color(white);
-        color: f.color(gray-900);
+        background: f.color(gray-100);
+        color: f.color(orange-900);
       }
 
       &:active {
@@ -77,7 +77,6 @@
   }
 
   &__description {
-    // width: 80%;
     margin: 8px 10px;
     text-align: center;
     @include m.text-style-extended('sm', 400, gray-600);

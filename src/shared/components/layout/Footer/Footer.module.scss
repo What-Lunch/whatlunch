@@ -4,10 +4,7 @@
 .footer {
   width: 100%;
   background: f.color(white);
-  border-top: 1.5px solid f.color(gray-100);
-  box-shadow:
-    0 -4px 24px 0 rgba(239, 108, 0, 0.06),
-    0 -1px 6px 0 rgba(0, 0, 0, 0.02);
+  border-top: 2px solid f.color(gray-100);
   margin-top: 80px;
 
   @include m.mq(sm) {

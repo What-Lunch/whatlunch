@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useState, useRef, memo } from 'react';
-import FavoriteToggle from '../FavoriteToggle';
 import styles from './KakaoMap.module.scss';
 import { KakaoMapProps } from './types';
 
@@ -374,19 +373,6 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
     [createInfoWindowContent]
   );
 
-  // 즐겨찾기 토글 상태
-  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
-
-  const handleFavoriteToggle = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>, placeId: string) => {
-      e.stopPropagation();
-      setFavoriteMap(prev => ({
-        ...prev,
-        [placeId]: !prev[placeId],
-      }));
-    },
-    []
-  );
   return (
     <div className={`${styles['map-wrapper']}${className ? ` ${className}` : ''}`}>
       {error && <div className={styles['error-message']}>{error}</div>}
@@ -395,7 +381,6 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
       {list && (
         <div className={styles['map__place-list']}>
           {places.map(place => {
-            const isActive = !!favoriteMap[place.id];
             return (
               <li
                 key={place.id}
@@ -406,12 +391,6 @@ function KakaoMap({ keyword, list = true, className = '' }: KakaoMapProps) {
                   <span className={styles['map__place-list__list__item__name']}>
                     {place.place_name}
                   </span>
-                  <FavoriteToggle
-                    isActive={isActive}
-                    onToggle={e => handleFavoriteToggle(e, place.id)}
-                    size={18}
-                    ariaLabel={`${place.place_name} ${isActive ? '찜 해제' : '찜하기'}`}
-                  />
                 </div>
                 <div className={styles['map__place-list__list__item__address']}>
                   {place.road_address_name || place.address_name}
