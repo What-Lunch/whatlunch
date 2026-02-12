@@ -326,7 +326,8 @@ export default function RoomPage({ params }: RoomPageProps) {
 
           <div className={styles['room__result-section']}>
             <div className={styles['room__stats-header']}>
-              <h3>🎲 결과 내역</h3>
+              <div>🎲</div>
+              <h3>결과 내역</h3>
             </div>
 
             <div className={styles['room__top-menu']}>

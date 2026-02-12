@@ -4,17 +4,17 @@
 .chat {
   width: 100%;
   height: 100%;
-  min-height: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
 
   &__title {
+    border-bottom: 1.5px solid f.color(gray-200);
     display: inline-flex;
     @include m.flex-box(center, center);
     padding: 20px 20px 16px 20px;
     @include m.text-style('xl', 700);
-    background: linear-gradient(135deg, f.color(orange-700) 0%, f.color(orange-500) 100%);
+    background: linear-gradient(135deg, f.color(gray-700) 0%, f.color(gray-500) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -23,7 +23,7 @@
 
   &__content {
     flex: 1;
-    min-height: 0;
+    min-height: 200px;
     overflow-y: auto;
     padding: 20px;
     @include m.flex-box(flex-start, stretch, column);
@@ -31,25 +31,22 @@
     background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
 
-    @include m.mq(lg) {
-      min-height: 300px;
-    }
     /* Custom scrollbar */
     &::-webkit-scrollbar {
       width: 6px;
     }
 
     &::-webkit-scrollbar-track {
-      background: rgba(f.color(orange-600), 0.05);
+      background: rgba(f.color(gray-600), 0.05);
       border-radius: 999px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(f.color(orange-600), 0.3);
+      background: rgba(f.color(gray-600), 0.3);
       border-radius: 999px;
 
       &:hover {
-        background: rgba(f.color(orange-600), 0.5);
+        background: rgba(f.color(gray-600), 0.5);
       }
     }
 
@@ -86,8 +83,7 @@
       padding: 4px 12px;
       border-radius: 12px;
       background: rgba(f.color(gray-200), 0.6);
-      color: f.color(gray-600);
-      @include m.text-style(xs, 500);
+      @include m.text-style-extended(xs, 500, gray-600);
       backdrop-filter: blur(4px);
     }
 
@@ -130,8 +126,8 @@
       flex-shrink: 0;
       border-radius: 50%;
       overflow: hidden;
-      background: linear-gradient(135deg, f.color(orange-300) 0%, f.color(orange-400) 100%);
-      box-shadow: 0 2px 8px rgba(f.color(orange-700), 0.25);
+      background: linear-gradient(135deg, f.color(gray-300) 0%, f.color(gray-400) 100%);
+      box-shadow: 0 2px 8px rgba(f.color(gray-700), 0.25);
       @include m.flex-box(center, center);
 
       &-image {
@@ -146,7 +142,7 @@
     %message-bubble {
       padding: 12px 18px;
       max-width: 100%;
-      @include m.text-style(md, 500);
+      @include m.text-style-extended(md, 500, gray-800);
       width: fit-content;
       word-break: break-word;
       white-space: pre-wrap;
@@ -154,8 +150,8 @@
 
     &__message--user {
       @extend %message-bubble;
-      background: linear-gradient(135deg, f.color(orange-700) 0%, f.color(orange-500) 100%);
-      color: f.color(white);
+      background: linear-gradient(135deg, f.color(orange-200) 0%, f.color(orange-100) 100%);
+      color: f.color(gray-900);
       border-radius: 18px 18px 4px 18px;
       box-shadow: 0 4px 12px rgba(f.color(orange-700), 0.3);
     }
@@ -164,16 +160,16 @@
       @extend %message-bubble;
       background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(10px);
-      color: f.color(gray-800);
+      color: f.color(black);
       border-radius: 18px 18px 18px 4px;
-      box-shadow: 0 4px 12px rgba(f.color(orange-600), 0.15);
-      border: 2px solid rgba(f.color(orange-600), 0.2);
+      box-shadow: 0 4px 12px rgba(f.color(gray-600), 0.15);
+      border: 2px solid rgba(f.color(gray-600), 0.2);
     }
 
     &__empty {
       @include m.flex-box(center, center, column);
       @include m.text-style('md', 500);
-      color: rgba(f.color(orange-600), 0.6);
+      color: rgba(f.color(gray-600), 0.6);
       gap: 10px;
       padding: 60px 20px;
       text-align: center;
@@ -181,6 +177,7 @@
   }
 
   &__input {
+    flex-shrink: 0;
     padding: 16px 20px 20px 20px;
     @include m.flex-box(center, center, row);
     gap: 12px;
@@ -196,9 +193,7 @@
       border-radius: 24px;
       border: 1px solid f.color(orange-500);
       background: rgba(255, 255, 255, 0.9);
-
-      @include m.text-style(md, 500);
-      color: f.color(gray-800);
+      @include m.text-style-extended(md, 500, gray-800);
       resize: none;
       outline: none;
       box-sizing: border-box;
@@ -214,6 +209,12 @@
       color: white;
       cursor: pointer;
       @include m.flex-box(center, center);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, f.color(orange-700) 0%, f.color(orange-500) 100%);
+        box-shadow: 0 4px 12px rgba(f.color(orange-700), 0.3);
+      }
     }
   }
 }

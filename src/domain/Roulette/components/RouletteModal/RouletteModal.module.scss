@@ -26,9 +26,8 @@
   }
 
   &__name {
-    @include m.text-style('2xl', 700);
+    @include m.text-style-extended('2xl', 700, orange-700);
     margin: 12px 0 22px;
-    color: f.color(black);
   }
 
   &__buttons {

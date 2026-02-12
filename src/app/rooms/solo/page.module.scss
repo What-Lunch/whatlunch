@@ -12,7 +12,7 @@
     padding: 24px 28px;
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -73,7 +73,7 @@
     @include m.flex-box(center, center);
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -95,7 +95,7 @@
     @include m.flex-box(flex-start, stretch, column);
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -108,12 +108,12 @@
     @include m.flex-box(space-between, center);
     gap: 12px;
     padding-bottom: 8px;
-    border-bottom: 1px solid f.color(orange-100);
+    border-bottom: 1px solid f.color(gray-300);
     margin-bottom: 16px;
 
     h3 {
       @include m.text-style('lg', 700);
-      background: linear-gradient(135deg, f.color(orange-700) 0%, f.color(orange-500) 100%);
+      background: linear-gradient(135deg, f.color(gray-800) 0%, f.color(gray-700) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -158,7 +158,7 @@
     @include m.flex-box(flex-start, stretch, column);
     border-radius: 24px;
     border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -168,13 +168,15 @@
   }
 
   &__stats-header {
+    @include m.flex-box(flex-start, center);
+    gap: 12px;
     padding-bottom: 8px;
-    border-bottom: 1px solid f.color(orange-100);
+    border-bottom: 1px solid f.color(gray-300);
     margin-bottom: 16px;
 
     h3 {
       @include m.text-style('xl', 700);
-      background-color: f.color(orange-700);
+      background-color: f.color(gray-700);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -189,16 +191,16 @@
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(f.color(orange-600), 0.1);
+    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
 
     &__icon {
       font-size: 36px;
       width: 56px;
       height: 56px;
       @include m.flex-box(center, center);
-      background: linear-gradient(135deg, f.color(orange-300) 0%, f.color(orange-400) 100%);
+      background: linear-gradient(135deg, f.color(gray-300) 0%, f.color(gray-400) 100%);
       border-radius: 14px;
-      box-shadow: 0 4px 12px rgba(f.color(orange-700), 0.25);
+      box-shadow: 0 4px 12px rgba(f.color(gray-700), 0.25);
     }
 
     &__info {
@@ -208,13 +210,13 @@
 
     &__name {
       @include m.text-style('lg', 600);
-      color: rgba(f.color(orange-700), 0.8);
+      color: rgba(f.color(gray-700), 0.8);
     }
 
     &__count {
       @include m.text-style('md', 700);
-      color: f.color(orange-700);
-      background: rgba(f.color(orange-700), 0.1);
+      color: f.color(gray-700);
+      background: rgba(f.color(gray-700), 0.1);
       padding: 6px 16px;
       border-radius: 999px;
     }
@@ -226,7 +228,7 @@
 
     h4 {
       @include m.text-style('md', 600);
-      color: rgba(f.color(orange-700), 0.8);
+      color: rgba(f.color(gray-700), 0.8);
     }
 
     &__list {
@@ -238,16 +240,16 @@
       }
 
       &::-webkit-scrollbar-track {
-        background: rgba(f.color(orange-600), 0.05);
+        background: rgba(f.color(gray-600), 0.05);
         border-radius: 999px;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: rgba(f.color(orange-600), 0.3);
+        background: rgba(f.color(gray-600), 0.3);
         border-radius: 999px;
 
         &:hover {
-          background: rgba(f.color(orange-600), 0.5);
+          background: rgba(f.color(gray-600), 0.5);
         }
       }
 
@@ -262,15 +264,15 @@
           @include m.flex-box(flex-start, center);
           gap: 12px;
           @include m.text-style('md', 600);
-          color: rgba(f.color(orange-700), 0.8);
+          color: rgba(f.color(gray-700), 0.8);
           padding: 14px 16px;
           background-color: f.color(white);
           border-radius: 12px;
-          border: 2px solid rgba(f.color(orange-600), 0.15);
+          border: 2px solid rgba(f.color(gray-600), 0.15);
           transition: all 0.2s ease;
 
           &:hover {
-            box-shadow: 0 4px 12px rgba(f.color(orange-600), 0.2);
+            box-shadow: 0 4px 12px rgba(f.color(gray-600), 0.2);
           }
 
           &__badge {
@@ -285,12 +287,12 @@
           }
 
           &--empty {
-            @include m.text-style-extended('lg', 500, orange-700);
+            @include m.text-style-extended('lg', 500, gray-700);
             text-align: center;
             padding: 40px 20px;
-            border: 2px dashed rgba(f.color(orange-600), 0.2);
+            border: 2px dashed rgba(f.color(gray-600), 0.2);
             border-radius: 12px;
-            background: f.color(orange-50);
+            background: f.color(gray-100);
           }
         }
       }
