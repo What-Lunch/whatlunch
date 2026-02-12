@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 
 import Button from '@/shared/components/Button';
@@ -24,7 +24,10 @@ interface RouletteFilterProps {
     mode: 'category' | 'context';
     selectedFoodTypes: Category | null;
     selectedSituation: Context | null;
+    timestamp?: number;
+    updatedBy?: string;
   } | null;
+  currentUserId?: string | null;
   isVisible?: boolean;
 }
 
@@ -33,41 +36,47 @@ export default function RouletteFilter({
   onFiltersChange,
   disabled = false,
   syncedFilterState = null,
+  currentUserId = null,
   isVisible = true,
 }: RouletteFilterProps) {
-  const {
-    state: { mode, selectedFoodTypes, selectedSituation, menus },
-    actions: { changeMode, toggleFoodType, toggleSituation },
-  } = useRouletteFilter(syncedFilterState);
-
-  const { foodOptions, situationOptions } = useFilterOptions(selectedFoodTypes, selectedSituation);
-
   const params = useParams();
   const roomCode = (params?.roomId as string) || 'solo';
   const isSoloMode = roomCode === 'solo';
 
-  // ============ 메뉴 변경 감지 ============
+  // 사용자 액션 시 즉시 소켓으로 필터 변경 전송
+  const handleUserAction = useCallback(
+    (newMode: 'category' | 'context', newFood: Category | null, newSituation: Context | null) => {
+      // 솔로 모드에서는 소켓 전송 안 함
+      if (isSoloMode) return;
+
+      // 같이정하기 모드에서만 소켓으로 필터 변경 전송
+      onFiltersChange?.(
+        {
+          category: newFood && newFood !== Category.ALL ? [newFood] : undefined,
+          context: newSituation ? [newSituation] : undefined,
+        },
+        newMode,
+        newFood,
+        newSituation
+      );
+    },
+    [isSoloMode, onFiltersChange]
+  );
+
+  // 같이 정하기 모드에서 동기화된 필터 상태 사용
+  const {
+    state: { mode, selectedFoodTypes, selectedSituation, menus },
+    actions: { changeMode, toggleFoodType, toggleSituation },
+  } = useRouletteFilter(syncedFilterState, currentUserId ?? undefined, handleUserAction);
+
+  const { foodOptions, situationOptions } = useFilterOptions(selectedFoodTypes, selectedSituation);
+
   useEffect(() => {
     if (!menus || menus.length === 0) return;
     if (isSoloMode) {
       onChange(menus);
     }
   }, [menus, onChange, isSoloMode, roomCode]);
-
-  // ============ 필터 변경 감지 ============
-  useEffect(() => {
-    if (isSoloMode) return;
-
-    onFiltersChange?.(
-      {
-        category: selectedFoodTypes ? [selectedFoodTypes] : undefined,
-        context: selectedSituation ? [selectedSituation] : undefined,
-      },
-      mode,
-      selectedFoodTypes,
-      selectedSituation
-    );
-  }, [selectedFoodTypes, selectedSituation, mode, isSoloMode, onFiltersChange]);
 
   const modeClass = (isActive: boolean) =>
     `${styles['filter__mode__tab']} ${isActive ? styles['filter__mode__tab--active'] : ''}`;
