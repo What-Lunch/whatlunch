@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 
 import { shareContent } from '../../utils/shareContent';
 
@@ -41,13 +40,10 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
   return (
     <Modal isOpen={true} onClose={onClose} description="오늘은 이 메뉴로 가볼까요?">
       <div className={styles['modal__content']}>
-        <Image
+        <img
           src={imageSrc}
           alt={menu ? `${menu.name} 음식 이미지` : '선택된 메뉴 이미지'}
-          width={300}
-          height={200}
-          priority
-          unoptimized
+          loading="eager"
           className={styles['modal__image']}
           onError={() => setIsImageError(true)}
         />
