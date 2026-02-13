@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
-import Image from 'next/image';
 
 import { getFoodImageByMenu } from '@/app/utils/getFoodImageByMenu';
 import { MENU_DESCRIPTION_MAP } from './menuDescriptionMap';
@@ -53,14 +52,7 @@ export default function MenuModal({ menu, category, onClose }: MenuModalProps) {
         </button>
 
         <div className={styles['menu-modal__image-wrap']}>
-          <Image
-            src={imageSrc}
-            alt={menu}
-            fill
-            priority
-            sizes="(max-width: 640px) 90vw, 500px"
-            className={styles['menu-modal__image']}
-          />
+          <img src={imageSrc} alt={menu} loading="eager" className={styles['menu-modal__image']} />
 
           <div className={styles['menu-modal__image-title']}>{menu}</div>
         </div>
