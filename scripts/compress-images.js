@@ -40,22 +40,29 @@ async function compressImages() {
           })
           .toFile(outputPath + '.tmp');
 
-        // 임시 파일을 원본으로 교체
-        fs.renameSync(outputPath + '.tmp', outputPath);
-
-        const newSize = fs.statSync(outputPath).size;
+        const newSize = fs.statSync(outputPath + '.tmp').size;
         const saved = originalSize - newSize;
-        totalSaved += saved;
-        processedCount++;
 
-        console.log(
-          `✅ ${category}/${file}: ${(originalSize / 1024).toFixed(0)}KB → ${(newSize / 1024).toFixed(0)}KB (${(saved / 1024).toFixed(0)}KB 절약)`
-        );
+        if (saved > 0) {
+          // 임시 파일을 원본으로 교체
+          fs.renameSync(outputPath + '.tmp', outputPath);
+          totalSaved += saved;
+          processedCount++;
+          console.log(
+            `${category}/${file}: ${(originalSize / 1024).toFixed(0)}KB → ${(newSize / 1024).toFixed(0)}KB (${(saved / 1024).toFixed(0)}KB 절약)`
+          );
+        } else {
+          // 압축 효과 없음 — 원본 유지
+          fs.unlinkSync(outputPath + '.tmp');
+          console.log(
+            `${category}/${file}: 압축 효과 없음 (${(originalSize / 1024).toFixed(0)}KB), 건너뜀`
+          );
+        }
 
         // 백업 삭제
         fs.unlinkSync(backupPath);
       } catch (error) {
-        console.error(`❌ ${category}/${file} 압축 실패:`, error.message);
+        console.error(`${category}/${file} 압축 실패:`, error.message);
         // 에러 발생 시 백업에서 복구
         if (fs.existsSync(backupPath)) {
           fs.copyFileSync(backupPath, inputPath);
@@ -66,7 +73,7 @@ async function compressImages() {
   }
 
   console.log(
-    `\n🎉 완료! ${processedCount}개 파일 처리, 총 ${(totalSaved / 1024 / 1024).toFixed(2)}MB 절약`
+    `\n완료! ${processedCount}개 파일 처리, 총 ${(totalSaved / 1024 / 1024).toFixed(2)}MB 절약`
   );
 }
 

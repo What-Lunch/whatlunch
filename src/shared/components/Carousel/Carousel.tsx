@@ -139,10 +139,9 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                           src={store.image}
                           alt={store.name || item.menuName}
                           fill
-                          unoptimized
+                          priority={index === currentIndex}
+                          sizes="(max-width: 640px) 25vw, 15vw"
                           className={styles['img']}
-                          sizes="25vw"
-                          priority={index === 0 && currentIndex === 0}
                           draggable={false}
                         />
                       </div>

@@ -275,7 +275,7 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
           <div className={styles['profile-header__food-dots']}>
             {selectedDots.map(dot => (
               <div key={dot.id} className={styles['profile-header__food-dot']}>
-                <Image src={dot.src} alt={dot.label} width={28} height={28} unoptimized />
+                <Image src={dot.src} alt={dot.label} width={28} height={28} />
               </div>
             ))}
           </div>

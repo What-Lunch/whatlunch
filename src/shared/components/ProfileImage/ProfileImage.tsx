@@ -36,7 +36,6 @@ export default function ProfileImage({
         src={imageSrc}
         alt={alt}
         fill
-        unoptimized
         sizes="(max-width: 768px) 100px, 120px"
         className={styles['profile-image__img']}
         priority={priority}

@@ -154,7 +154,7 @@ export default function SignupModal({ onClose, onLoginOpen }: SignupModalProps) 
                 }, 0);
               }}
             >
-              <Image src={Google} alt="Google Logo" width={20} height={20} unoptimized />
+              <Image src={Google} alt="Google Logo" width={20} height={20} />
               <span>Google 계정으로 시작하기</span>
             </button>
             <div ref={googleLoginButtonRef} style={{ display: 'none' }}>

@@ -22,7 +22,6 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     formats: ['image/webp'],
     minimumCacheTTL: 60,
-    unoptimized: false, // 로컬 이미지는 컴포넌트 레벨에서 unoptimized 처리
     remotePatterns: [
       {
         protocol: 'https',
