@@ -58,6 +58,7 @@ export default function MenuModal({ menu, category, onClose }: MenuModalProps) {
             alt={menu}
             fill
             priority
+            unoptimized
             sizes="(max-width: 480px) 90vw, 360px"
             className={styles['menu-modal__image']}
           />

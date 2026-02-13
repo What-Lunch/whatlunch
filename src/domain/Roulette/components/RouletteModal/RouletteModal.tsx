@@ -47,6 +47,7 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
           width={300}
           height={200}
           priority
+          unoptimized
           className={styles['modal__image']}
           onError={() => setIsImageError(true)}
         />

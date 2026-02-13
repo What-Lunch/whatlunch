@@ -80,7 +80,14 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
       </div>
 
       <Link href="/" className={styles['header__logo']}>
-        <Image src={WhatLunchLogo} alt="What Lunch Logo" width={60} height={60} priority />
+        <Image
+          src={WhatLunchLogo}
+          alt="What Lunch Logo"
+          width={60}
+          height={60}
+          priority
+          unoptimized
+        />
         <span>What Lunch</span>
       </Link>
 

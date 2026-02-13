@@ -139,6 +139,7 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                           src={store.image}
                           alt={store.name || item.menuName}
                           fill
+                          unoptimized
                           className={styles['img']}
                           sizes="25vw"
                           priority={index === 0 && currentIndex === 0}

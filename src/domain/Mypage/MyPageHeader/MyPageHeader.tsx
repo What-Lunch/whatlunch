@@ -40,7 +40,7 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
   const selectedDotIds = useFoodDotStore(state => state.selectedDotIds);
   const selectedDots = selectedDotIds
     .map(id => FOOD_DOTS.find(dot => dot.id === id))
-    .filter((dot): dot is typeof FOOD_DOTS[number] => dot !== undefined);
+    .filter((dot): dot is (typeof FOOD_DOTS)[number] => dot !== undefined);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -275,7 +275,7 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
           <div className={styles['profile-header__food-dots']}>
             {selectedDots.map(dot => (
               <div key={dot.id} className={styles['profile-header__food-dot']}>
-                <Image src={dot.src} alt={dot.label} width={28} height={28} />
+                <Image src={dot.src} alt={dot.label} width={28} height={28} unoptimized />
               </div>
             ))}
           </div>

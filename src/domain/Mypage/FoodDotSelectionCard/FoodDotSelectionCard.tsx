@@ -83,6 +83,7 @@ export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotS
                     alt={dot.label}
                     width={40}
                     height={40}
+                    unoptimized
                     className={styles['food-dot-card__selected-img']}
                   />
                   <span className={styles['food-dot-card__label']}>{dot.label}</span>
@@ -125,7 +126,7 @@ export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotS
                   onClick={() => handleToggleDot(dot.id)}
                   aria-pressed={selectedDotIds.includes(dot.id)}
                 >
-                  <Image src={dot.src} alt={dot.label} width={56} height={56} />
+                  <Image src={dot.src} alt={dot.label} width={56} height={56} unoptimized />
                   {selectedDotIds.includes(dot.id) && (
                     <span className={styles['food-dot-modal__check']}>
                       <Check size={18} />
