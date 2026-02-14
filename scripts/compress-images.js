@@ -60,6 +60,11 @@ async function compressImages() {
         fs.unlinkSync(backupPath);
       } catch (error) {
         console.error(`${category}/${file} 압축 실패:`, error.message);
+        // 임시 파일 정리
+        const tmpPath = outputPath + '.tmp';
+        if (fs.existsSync(tmpPath)) {
+          fs.unlinkSync(tmpPath);
+        }
         // 에러 발생 시 백업에서 복구
         if (fs.existsSync(backupPath)) {
           fs.copyFileSync(backupPath, inputPath);
