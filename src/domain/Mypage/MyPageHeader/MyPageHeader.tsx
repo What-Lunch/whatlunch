@@ -40,7 +40,7 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
   const selectedDotIds = useFoodDotStore(state => state.selectedDotIds);
   const selectedDots = selectedDotIds
     .map(id => FOOD_DOTS.find(dot => dot.id === id))
-    .filter((dot): dot is typeof FOOD_DOTS[number] => dot !== undefined);
+    .filter((dot): dot is (typeof FOOD_DOTS)[number] => dot !== undefined);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
