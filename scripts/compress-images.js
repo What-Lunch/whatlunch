@@ -54,9 +54,6 @@ async function compressImages() {
         } else {
           // 압축 효과 없음 — 원본 유지
           fs.unlinkSync(outputPath + '.tmp');
-          console.log(
-            `${category}/${file}: 압축 효과 없음 (${(originalSize / 1024).toFixed(0)}KB), 건너뜀`
-          );
         }
 
         // 백업 삭제
