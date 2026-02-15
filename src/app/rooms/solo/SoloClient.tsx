@@ -10,8 +10,6 @@ import BaseInput from '@/shared/components/Input/BaseInput';
 import Button from '@/shared/components/Button';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
-import GlobalToast from '@/shared/components/Toast/GlobalToast';
-
 import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 import { useRouletteResultStore } from '@/shared/stores/rouletteResultStore';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
@@ -40,7 +38,7 @@ export default function SoloClient() {
         const favorites = await favoritesServiceClient.getMyFavorites();
         const favMap: Record<string, boolean> = {};
         favorites.forEach(menu => {
-          favMap[menu._id] = true;
+          favMap[menu.id] = true;
         });
         setFavoriteMap(favMap);
       } catch (error) {
@@ -108,10 +106,7 @@ export default function SoloClient() {
   };
 
   return (
-    <>
-      <GlobalToast />
-
-      <main className={styles['solo']}>
+    <div className={styles['solo']}>
         <header className={styles['solo__header']}>
           <div
             className={styles['solo__header__title']}
@@ -233,7 +228,6 @@ export default function SoloClient() {
             </div>
           </div>
         </div>
-      </main>
-    </>
+    </div>
   );
 }

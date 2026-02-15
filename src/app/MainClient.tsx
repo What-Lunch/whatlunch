@@ -54,7 +54,7 @@ export default function MainClient() {
       : FALLBACK_ITEMS;
 
   return (
-    <main className={styles['container']}>
+    <div className={styles['container']}>
       <section className={styles['container__left']}>
         <h2 className="sr-only">메뉴 추천</h2>
         <Carousel duration={4000} items={carouselItems} />
@@ -67,6 +67,6 @@ export default function MainClient() {
         <WeatherMood />
         <QuoteCard />
       </section>
-    </main>
+    </div>
   );
 }

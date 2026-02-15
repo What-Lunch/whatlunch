@@ -24,9 +24,11 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     siteName: '오늘 뭐먹지?',
   },
-  other: {
-    'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
-  },
+  other: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? {
+        'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      }
+    : undefined,
 };
 
 interface LayoutProps {
