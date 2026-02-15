@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import Header from '@/shared/components/layout/Header';
 import Main from '@/shared/components/layout/Main';
 import Footer from '@/shared/components/layout/Footer';
@@ -10,10 +11,24 @@ import GoogleProvider from '@/shared/components/Providers/GoogleProvider';
 import '@/styles/main.scss';
 
 export const metadata: Metadata = {
-  title: '오늘 뭐먹지?',
+  title: {
+    default: '오늘 뭐먹지?',
+    template: '%s | 오늘 뭐먹지?',
+  },
+  description: '매일 반복되는 점심 고민, 룰렛으로 해결하세요.',
   icons: {
     icon: '/icons/what-lunch-logo.svg',
   },
+  openGraph: {
+    type: 'website',
+    locale: 'ko_KR',
+    siteName: '오늘 뭐먹지?',
+  },
+  other: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? {
+        'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      }
+    : undefined,
 };
 
 interface LayoutProps {
@@ -39,6 +54,7 @@ export default function RootLayout({ children }: LayoutProps) {
           </TanstackProvider>
           <GlobalToast />
         </GoogleProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
