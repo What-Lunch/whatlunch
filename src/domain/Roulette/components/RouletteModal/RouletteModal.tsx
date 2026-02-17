@@ -49,12 +49,12 @@ export default function RouletteModal({ menu, onClose }: RouletteModalProps) {
         />
         <p className={styles['modal__name']}>{menu?.name}</p>
         <div className={styles['modal__buttons']}>
-          <Button variant="primary" onClick={handleShareClick} disabled={!menu}>
+          <Button variant="orange" onClick={handleShareClick} disabled={!menu}>
             공유하기
           </Button>
 
           <Button
-            variant="primary"
+            variant="blue"
             disabled={!menu}
             onClick={() =>
               window.open(
