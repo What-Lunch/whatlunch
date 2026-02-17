@@ -5,7 +5,7 @@
   width: 100%;
   background: f.color(white);
   border-top: 1px solid f.color(orange-100);
-  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 24px rgba(0, 0, 0, 0.1);
   margin-top: 80px;
 
   @include m.mq(sm) {
@@ -16,15 +16,15 @@
     background-color: f.color(orange-50);
     width: 100%;
     margin: 0 auto;
-    padding: 32px 0px;
+    padding: 32px;
     box-sizing: border-box;
 
     @include m.mq(lg) {
-      padding: 64px 0px;
+      padding: 64px;
     }
 
     @include m.mq(md) {
-      padding: 56px 0px;
+      padding: 56px;
     }
 
     @include m.mq(sm) {
@@ -141,7 +141,6 @@
   }
 
   &__bottom {
-    height: 100%;
     text-align: center;
   }
 
