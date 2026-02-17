@@ -15,10 +15,12 @@ import styles from './page.module.scss';
  */
 export default async function Page() {
   try {
-    const user = await authServiceServer.getMe();
-    const favoriteMenus = await favoritesServiceServer.getMyFavorites();
-    const foodDotIds = await getMyFoodDotsServer();
-    const preference = await favoritesServiceServer.getMyPreference();
+    const [user, favoriteMenus, foodDotIds, preference] = await Promise.all([
+      authServiceServer.getMe(),
+      favoritesServiceServer.getMyFavorites(),
+      getMyFoodDotsServer(),
+      favoritesServiceServer.getMyPreference(),
+    ]);
 
     return (
       <div className={styles['mypage']}>

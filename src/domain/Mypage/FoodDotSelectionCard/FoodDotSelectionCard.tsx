@@ -19,7 +19,6 @@ interface FoodDotSelectionCardProps {
 export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotSelectionCardProps) {
   const { selectedDotIds, setSelectedDotIds, toggleDotId } = useFoodDotStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   // 서버 초기값 동기화
   useEffect(() => {
     const current = useFoodDotStore.getState().selectedDotIds;
