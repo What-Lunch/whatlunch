@@ -6,6 +6,7 @@
   gap: 14px;
   width: 100%;
   padding: 20px 0;
+  height: 870px;
 
   &__today {
     @include m.text-style-extended('2xl', 600, gray-700);
