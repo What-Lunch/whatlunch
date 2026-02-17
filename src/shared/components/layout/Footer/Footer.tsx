@@ -13,7 +13,6 @@ export default function Footer() {
     <footer className={styles['footer']}>
       <div className={styles['footer__container']}>
         <div className={styles['footer__content']}>
-          {/* 프로젝트 정보 */}
           <section className={styles['footer__section']}>
             <h3 className={styles['footer__section__title']}>WhatLunch</h3>
             <p className={styles['footer__project__desc']}>
@@ -30,7 +29,6 @@ export default function Footer() {
             </a>
           </section>
 
-          {/* 팀원 */}
           <section className={styles['footer__section']}>
             <h3 className={styles['footer__section__title']}>Team Members</h3>
             <nav className={styles['footer__nav']}>
