@@ -30,7 +30,7 @@ export default function Footer() {
           </section>
 
           <section className={styles['footer__section']}>
-            <h3 className={styles['footer__section__title']}>Team Members</h3>
+            <h3 className={styles['footer__section__title']}>BUILT BY</h3>
             <nav className={styles['footer__nav']}>
               {teamMembers.map(member => (
                 <a
