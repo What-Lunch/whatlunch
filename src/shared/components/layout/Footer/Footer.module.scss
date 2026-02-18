@@ -4,8 +4,6 @@
 .footer {
   width: 100%;
   background: f.color(white);
-  border-top: 1px solid f.color(orange-100);
-  box-shadow: 0 -2px 24px rgba(0, 0, 0, 0.1);
   margin-top: 80px;
 
   @include m.mq(sm) {
@@ -38,7 +36,7 @@
     width: fit-content;
     margin: auto;
     padding-bottom: 48px;
-    border-bottom: 1px solid f.color(gray-300);
+    border-bottom: 1px solid f.color(orange-100);
 
     @include m.mq(lg) {
       gap: 40px;
