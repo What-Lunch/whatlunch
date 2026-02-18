@@ -131,6 +131,59 @@ export default function Carousel({ items, duration = 3000 }: CarouselProps) {
                   </div>
                 </div>
 
+                <div className={styles['delivery-icons']}>
+                  <a
+                    href={`https://www.yogiyo.co.kr/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles['delivery-icons__link']}
+                  >
+                    <Image
+                      src="/icons/yogiyo.png"
+                      alt="요기요"
+                      width={24}
+                      height={24}
+                      className={styles['delivery-icons__image']}
+                      draggable={false}
+                    />
+                    <span className={styles['delivery-icons__text']}>요기요</span>
+                  </a>
+                  <span className={styles['delivery-icons__divider']}>|</span>
+                  <a
+                    href="https://www.baemin.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles['delivery-icons__link']}
+                  >
+                    <Image
+                      src="/icons/baemin.png"
+                      alt="배달의민족"
+                      width={24}
+                      height={24}
+                      className={styles['delivery-icons__image']}
+                      draggable={false}
+                    />
+                    <span className={styles['delivery-icons__text']}>배달의민족</span>
+                  </a>
+                  <span className={styles['delivery-icons__divider']}>|</span>
+                  <a
+                    href="https://www.coupangeats.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles['delivery-icons__link']}
+                  >
+                    <Image
+                      src="/icons/coupang_eats.png"
+                      alt="쿠팡이츠"
+                      width={24}
+                      height={24}
+                      className={styles['delivery-icons__image']}
+                      draggable={false}
+                    />
+                    <span className={styles['delivery-icons__text']}>쿠팡이츠</span>
+                  </a>
+                </div>
+
                 <div className={styles['card__images']}>
                   {safeStores.map(store => (
                     <div key={store.id} className={styles['card__imageContainer']}>

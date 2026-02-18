@@ -12,12 +12,16 @@
   width: 100%;
   min-width: 300px;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 16px;
   border: 1.5px solid f.color(gray-100);
   box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
   transition:
     box-shadow 0.2s,
     border-color 0.2s;
+
+  @include m.mq(sm) {
+    border-radius: 24px;
+  }
 
   &__track {
     display: flex;
@@ -31,12 +35,13 @@
   flex: 0 0 100%;
   background: f.color(white);
   @include m.flex-box(flex-start, stretch, column);
-  gap: 24px;
-  padding: 32px 32px 24px 32px;
+  gap: 12px;
+  padding: 16px 16px 16px 16px;
   position: relative;
 
   @include m.mq(sm) {
-    gap: 32px;
+    gap: 20px;
+    padding: 32px 32px 24px 32px;
   }
 
   &:hover {
@@ -46,74 +51,112 @@
   }
 
   &__header {
-    @include m.flex-box(space-between, flex-end, row);
-    gap: 12px;
+    @include m.flex-box(flex-start, flex-start, column);
+    gap: 8px;
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 0;
   }
 
   &__rankBadge {
     width: auto;
-    min-width: 55px;
-    padding: 4px 16px;
+    min-width: 45px;
+    padding: 2px 10px;
     background: f.color(orange-50);
     border-radius: 99px;
-    @include m.text-style-extended(sm, 700, orange-800);
+    font-size: 10px;
+    font-weight: 700;
+    color: f.color(orange-800);
     box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.08);
     letter-spacing: 0.01em;
+
+    @include m.mq(sm) {
+      min-width: 55px;
+      padding: 4px 16px;
+      @include m.text-style-extended(sm, 700, orange-800);
+    }
   }
 
   &__titleRow {
     width: 100%;
-    @include m.flex-box(space-between, flex-end);
-    gap: 12px;
+    @include m.flex-box(space-between, center, row);
+    gap: 8px;
+    min-width: 0;
+
+    @include m.mq(sm) {
+      @include m.flex-box(space-between, flex-end, row);
+      gap: 12px;
+    }
   }
 
   &__title {
-    @include m.text-style('xl', 700);
+    font-size: 13px;
+    font-weight: 700;
     color: f.color(gray-900);
-    white-space: pre-line;
-    line-height: 1.4;
+    white-space: nowrap;
+    line-height: 1.3;
     letter-spacing: -0.01em;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+
+    @include m.mq(sm) {
+      @include m.text-style('xl', 700);
+      line-height: 1.4;
+      white-space: pre-line;
+      overflow: visible;
+      text-overflow: clip;
+    }
   }
 
   &__menuName {
-    @include m.text-style('xl', 700);
+    font-size: 13px;
+    font-weight: 700;
     color: f.color(brand-orange);
     font-family: inherit;
     letter-spacing: -0.01em;
+
+    @include m.mq(sm) {
+      @include m.text-style('xl', 700);
+    }
   }
 
   &__images {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    gap: 8px;
     width: 100%;
-    margin-top: 8px;
+    margin-top: 4px;
     min-width: 0;
 
     @include m.mq(sm) {
-      gap: 24px;
+      gap: 16px;
+      margin-top: 8px;
     }
   }
 
   &__imageContainer {
     @include m.flex-box(center, flex-start, column);
-    gap: 8px;
+    gap: 4px;
     min-width: 0;
+
+    @include m.mq(sm) {
+      gap: 8px;
+    }
   }
 
   &__image {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
     background: f.color(gray-100);
     box-shadow: 0 1.5px 6px 0 rgba(0, 0, 0, 0.04);
 
     @include m.mq(sm) {
-      border-radius: 20px;
+      border-radius: 16px;
     }
 
     .img {
@@ -128,31 +171,143 @@
 
   &__storeInfo {
     @include m.flex-box(center, center, row);
-    gap: 4px;
+    gap: 2px;
     width: 100%;
     overflow: hidden;
-    margin-top: 2px;
+    margin-top: 0;
+
+    @include m.mq(sm) {
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+
+      @include m.mq(sm) {
+        width: 16px;
+        height: 16px;
+      }
+    }
   }
 
   &__storeName {
-    @include m.text-style(md, 600);
+    font-size: 10px;
+    font-weight: 600;
     color: f.color(gray-800);
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.2;
+
+    @include m.mq(sm) {
+      @include m.text-style(md, 600);
+    }
   }
 }
 
 .rating-badge {
-  @include m.flex-box(center, center);
-  gap: 6px;
-  padding: 6px 16px;
+  @include m.flex-box(flex-start, center);
+  gap: 3px;
+  padding: 2px 8px;
   border-radius: 99px;
   background: f.color(orange-50);
+  flex-shrink: 0;
+  width: fit-content;
+
+  @include m.mq(sm) {
+    gap: 6px;
+    padding: 6px 16px;
+  }
 
   &__text {
-    @include m.text-style-extended(sm, 700, orange-800);
+    font-size: 10px;
+    font-weight: 700;
+    color: f.color(orange-800);
+    white-space: nowrap;
+
+    @include m.mq(sm) {
+      @include m.text-style-extended(sm, 700, orange-800);
+    }
+  }
+
+  svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+
+    @include m.mq(sm) {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.delivery-icons {
+  @include m.flex-box(flex-start, center, row);
+  gap: 6px;
+  width: 100%;
+  padding: 6px 0 4px 0;
+
+  @include m.mq(sm) {
+    gap: 16px;
+    padding: 8px 0 4px 0;
+  }
+
+  &__link {
+    @include m.flex-box(center, center, row);
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 8px;
+    background: f.color(gray-100);
+    transition: all 0.2s ease;
+    text-decoration: none;
+
+    @include m.mq(sm) {
+      padding: 6px 12px;
+    }
+
+    &:hover {
+      background: f.color(orange-50);
+    }
+  }
+
+  &__image {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex-shrink: 0;
+
+    @include m.mq(sm) {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__text {
+    @include m.text-style(xs, 500);
+    color: f.color(gray-700);
+    white-space: nowrap;
+    display: none;
+
+    @include m.mq(sm) {
+      display: inline;
+      @include m.text-style(sm, 500);
+    }
+  }
+
+  &__divider {
+    @include m.text-style(sm, 300);
+    color: f.color(gray-300);
+    user-select: none;
+    margin: 0 2px;
+
+    @include m.mq(sm) {
+      margin: 0 4px;
+    }
   }
 }
 
