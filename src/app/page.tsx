@@ -22,9 +22,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return (
-    <>
-      <MainClient />
-    </>
-  );
+  return <MainClient />;
 }
