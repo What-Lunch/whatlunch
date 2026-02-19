@@ -11,6 +11,7 @@ import GoogleProvider from '@/shared/components/Providers/GoogleProvider';
 import '@/styles/main.scss';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://whatlunch.vercel.app'),
   title: {
     default: '오늘 뭐먹지?',
     template: '%s | 오늘 뭐먹지?',
