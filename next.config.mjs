@@ -6,31 +6,6 @@ const nextConfig = {
     includePaths: [join(process.cwd(), 'src', 'styles')],
   },
 
-  async redirects() {
-    return [
-      {
-        source: '/점메추-룰렛',
-        destination: '/lunch-roulette',
-        permanent: true,
-      },
-      {
-        source: '/오늘-뭐먹지',
-        destination: '/today-what-to-eat',
-        permanent: true,
-      },
-      {
-        source: '/점심-메뉴-추천',
-        destination: '/lunch-menu-recommendation',
-        permanent: true,
-      },
-      {
-        source: '/혼밥-메뉴-추천',
-        destination: '/solo-lunch-recommendation',
-        permanent: true,
-      },
-    ];
-  },
-
   async rewrites() {
     return [
       {
