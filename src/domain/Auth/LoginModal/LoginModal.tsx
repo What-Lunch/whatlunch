@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 import { useMutation } from '@tanstack/react-query';
@@ -43,21 +43,43 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const [password, setPassword] = useState('');
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
   const { setUser } = useAuthStore();
+
+  // redirect 값 검증 (내부 경로만 허용)
+  const getValidRedirectUrl = (): string | null => {
+    const redirectUrl = searchParams?.get('redirect');
+    if (!redirectUrl) return null;
+    // 내부 경로만 허용: "/"로 시작, "://" 포함 금지
+    if (redirectUrl.startsWith('/') && !redirectUrl.includes('://')) {
+      return redirectUrl;
+    }
+    return null;
+  };
+
+  // 로그인 성공 후 리다이렉트 처리
+  const handleLoginSuccess = () => {
+    const redirectUrl = getValidRedirectUrl();
+    if (redirectUrl) {
+      // URL에서 redirect 쿼리 제거 후 이동
+      router.replace(redirectUrl);
+    } else {
+      // 데이터 갱신을 위한 새로고침
+      setTimeout(() => {
+        router.refresh();
+      }, 100);
+    }
+  };
 
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
       setUser(res.user);
-
       toast.success('로그인에 성공했습니다.');
       onClose();
-      // 데이터 갱신을 위한 새로고침
-      setTimeout(() => {
-        router.refresh();
-      }, 100);
+      handleLoginSuccess();
     },
     onError: (error: unknown) => {
       toast.error(getLoginErrorMessage(error));
@@ -70,11 +92,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
       setUser(res.user);
       toast.success('구글 로그인에 성공했습니다.');
       onClose();
-
-      // 로그인 상태 반영을 위해 새로고침
-      setTimeout(() => {
-        router.refresh();
-      }, 100);
+      handleLoginSuccess();
     },
     onError: () => {
       toast.error('구글 로그인에 실패했습니다.');
