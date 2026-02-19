@@ -1,36 +1,36 @@
 import { MetadataRoute } from 'next';
 
-const lastModified = new Date('2026-02-19');
+const BASE_URL = 'https://whatlunch.vercel.app';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://whatlunch.vercel.app',
-      lastModified,
+      url: BASE_URL,
+      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1.0,
     },
     {
-      url: 'https://whatlunch.vercel.app/점메추-룰렛',
-      lastModified,
+      url: `${BASE_URL}/lunch-roulette`,
+      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: 'https://whatlunch.vercel.app/오늘-뭐먹지',
-      lastModified,
+      url: `${BASE_URL}/today-what-to-eat`,
+      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: 'https://whatlunch.vercel.app/점심-메뉴-추천',
-      lastModified,
+      url: `${BASE_URL}/lunch-menu-recommendation`,
+      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: 'https://whatlunch.vercel.app/혼밥-메뉴-추천',
-      lastModified,
+      url: `${BASE_URL}/solo-lunch-recommendation`,
+      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },

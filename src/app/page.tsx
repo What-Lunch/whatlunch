@@ -41,10 +41,10 @@ export default function HomePage() {
         </p>
 
         <nav style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 24 }}>
-          <Link href="/점메추-룰렛">점메추 룰렛</Link>
-          <Link href="/오늘-뭐먹지">오늘 뭐먹지</Link>
-          <Link href="/점심-메뉴-추천">점심 메뉴 추천</Link>
-          <Link href="/혼밥-메뉴-추천">혼밥 메뉴 추천</Link>
+          <Link href="/lunch-roulette">점메추 룰렛</Link>
+          <Link href="/today-what-to-eat">오늘 뭐먹지</Link>
+          <Link href="/lunch-menu-recommendation">점심 메뉴 추천</Link>
+          <Link href="/solo-lunch-recommendation">혼밥 메뉴 추천</Link>
         </nav>
       </section>
     </>

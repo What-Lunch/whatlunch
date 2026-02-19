@@ -1,23 +1,25 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+const BASE_URL = 'https://whatlunch.vercel.app';
+
 export const metadata: Metadata = {
   title: '혼밥 메뉴 추천 | 혼자 먹기 좋은 점심 메뉴',
   description:
     '혼밥 메뉴 추천으로 혼자서도 맛있는 점심을 즐기세요. 1인분 주문 가능한 메뉴부터 간편식까지, 혼밥러를 위한 점심 메뉴 추천 서비스입니다.',
   alternates: {
-    canonical: 'https://whatlunch.vercel.app/혼밥-메뉴-추천',
+    canonical: `${BASE_URL}/solo-lunch-recommendation`,
   },
   openGraph: {
     title: '혼밥 메뉴 추천 | 혼자 먹기 좋은 점심 메뉴',
     description:
       '혼밥 메뉴 추천으로 혼자서도 맛있는 점심을 즐기세요. 1인분 주문 가능한 메뉴부터 간편식까지, 혼밥러를 위한 점심 메뉴 추천 서비스입니다.',
-    url: 'https://whatlunch.vercel.app/혼밥-메뉴-추천',
+    url: `${BASE_URL}/solo-lunch-recommendation`,
     type: 'website',
   },
 };
 
-export default function SoloMealRecommendPage() {
+export default function SoloLunchRecommendPage() {
   return (
     <article style={{ maxWidth: 720, margin: '0 auto', padding: '32px 16px 48px' }}>
       <h1>혼밥 메뉴 추천 — 혼자서도 맛있게</h1>
@@ -50,9 +52,9 @@ export default function SoloMealRecommendPage() {
 
       <nav style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 32 }}>
         <Link href="/">홈으로</Link>
-        <Link href="/점메추-룰렛">점메추 룰렛</Link>
-        <Link href="/오늘-뭐먹지">오늘 뭐먹지</Link>
-        <Link href="/점심-메뉴-추천">점심 메뉴 추천</Link>
+        <Link href="/lunch-roulette">점메추 룰렛</Link>
+        <Link href="/today-what-to-eat">오늘 뭐먹지</Link>
+        <Link href="/lunch-menu-recommendation">점심 메뉴 추천</Link>
       </nav>
     </article>
   );

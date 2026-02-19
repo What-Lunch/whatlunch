@@ -1,18 +1,20 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+const BASE_URL = 'https://whatlunch.vercel.app';
+
 export const metadata: Metadata = {
   title: '오늘 뭐먹지? | 점심 메뉴 추천 룰렛 서비스',
   description:
     '오늘 뭐먹지 고민될 때 룰렛으로 빠르게 점심 메뉴를 결정하세요. 직장인, 학생 모두를 위한 점심 메뉴 추천 서비스입니다.',
   alternates: {
-    canonical: 'https://whatlunch.vercel.app/오늘-뭐먹지',
+    canonical: `${BASE_URL}/today-what-to-eat`,
   },
   openGraph: {
     title: '오늘 뭐먹지? | 점심 메뉴 추천 룰렛 서비스',
     description:
       '오늘 뭐먹지 고민될 때 룰렛으로 빠르게 점심 메뉴를 결정하세요. 직장인, 학생 모두를 위한 점심 메뉴 추천 서비스입니다.',
-    url: 'https://whatlunch.vercel.app/오늘-뭐먹지',
+    url: `${BASE_URL}/today-what-to-eat`,
     type: 'website',
   },
 };
@@ -51,9 +53,9 @@ export default function TodayWhatToEatPage() {
 
       <nav style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 32 }}>
         <Link href="/">홈으로</Link>
-        <Link href="/점메추-룰렛">점메추 룰렛</Link>
-        <Link href="/점심-메뉴-추천">점심 메뉴 추천</Link>
-        <Link href="/혼밥-메뉴-추천">혼밥 메뉴 추천</Link>
+        <Link href="/lunch-roulette">점메추 룰렛</Link>
+        <Link href="/lunch-menu-recommendation">점심 메뉴 추천</Link>
+        <Link href="/solo-lunch-recommendation">혼밥 메뉴 추천</Link>
       </nav>
     </article>
   );
