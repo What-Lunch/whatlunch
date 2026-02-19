@@ -46,7 +46,7 @@
     @include m.mq(md) {
       width: 100%;
       @include m.flex-box(space-evenly, center, row);
-      gap: 32px;
+      gap: 220px;
       padding-bottom: 32px;
     }
   }
