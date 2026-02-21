@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Star } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import Modal from '@/shared/components/Modal';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
@@ -13,112 +14,66 @@ import {
   favoritesServiceServer,
 } from '@/app/services/backend/favorites.api';
 
-// 찜 추가 숫자 타임스탬프로 관리
-type FavoriteWithAddedAt = Favorite.GetMyFavoritesRes & { addedAt?: number };
-
 export default function FavoriteMenuCard() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data: favoriteMenus = [] } = useQuery({
-    queryKey: ['favoriteMenus'],
+  const { data: favoriteMenusRaw = [] } = useQuery({
+    queryKey: ['favorites'],
     queryFn: () => favoritesServiceServer.getMyFavorites(),
   });
 
-  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>(() =>
-    favoriteMenus
-      .filter((menu): menu is Favorite.GetMyFavoritesRes => menu != null)
-      .reduce((acc, menu) => ({ ...acc, [menu._id]: true }), {} as Record<string, boolean>)
-  );
-  const [localFavorites, setLocalFavorites] = useState<FavoriteWithAddedAt[]>([]);
+  const favoriteMenus = favoriteMenusRaw.filter(menu => menu != null);
 
-  useEffect(() => {
-    // 초기 로드 시 createdAt을 숫자 타임스탬프로 변환
-    const withAddedAt = favoriteMenus
-      .filter(item => item != null)
-      .map(menu => ({
-        ...menu,
-        addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
-      }));
-    setLocalFavorites(withAddedAt);
-    const nextMap = favoriteMenus
-      .filter((menu): menu is Favorite.GetMyFavoritesRes => menu != null)
-      .reduce((acc, menu) => ({ ...acc, [menu._id]: true }), {} as Record<string, boolean>);
-    setFavoriteMap(nextMap);
-  }, [favoriteMenus]);
+  const addFavoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    },
+    onError: () => {
+      toast.error('찜 추가에 실패했습니다.');
+    },
+  });
+
+  const removeFavoriteMutation = useMutation({
+    mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    },
+    onError: () => {
+      toast.error('찜 삭제에 실패했습니다.');
+    },
+  });
 
   const sortedFavorites = useMemo(
     () =>
-      localFavorites.slice().sort((a, b) => {
-        const aTime = a.addedAt ?? (a.createdAt ? new Date(a.createdAt).getTime() : 0);
-        const bTime = b.addedAt ?? (b.createdAt ? new Date(b.createdAt).getTime() : 0);
-        return bTime - aTime; // 최신순 정렬
-      }),
-    [localFavorites]
+      favoriteMenus
+        .map(menu => ({
+          ...menu,
+          addedAt: menu?.createdAt ? new Date(menu?.createdAt).getTime() : Date.now(),
+        }))
+        .sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0)),
+    [favoriteMenus]
   );
 
-  const favoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
-    onMutate: (menuId: string) => {
-      setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
-      // 찜 추가시 즉시 반영
-      const foundMenu = favoriteMenus.find(menu => menu._id === menuId);
-      if (foundMenu) {
-        const newMenu: FavoriteWithAddedAt = {
-          ...foundMenu,
-          addedAt: Date.now(), // 현재 시간으로 설정
-        };
-        setLocalFavorites(prev => [newMenu, ...prev.filter(menu => menu._id !== menuId)]);
-      }
-    },
-    onError: (_err, menuId) => {
-      setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
-      // 에러 시 원래대로 복구
-      const withAddedAt = favoriteMenus
-        .filter(item => item != null)
-        .map(menu => ({
-          ...menu,
-          addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
-        }));
-      setLocalFavorites(withAddedAt);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
-    },
-  });
-
-  const unfavoriteMutation = useMutation({
-    mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
-    onMutate: (menuId: string) => {
-      setFavoriteMap(prev => ({ ...prev, [menuId]: false }));
-      // 찜 해제 시 제거
-      setLocalFavorites(prev => prev.filter(menu => menu._id !== menuId));
-    },
-    onError: (_err, menuId) => {
-      setFavoriteMap(prev => ({ ...prev, [menuId]: true }));
-      // 에러 시 원래대로 복구
-      const withAddedAt = favoriteMenus
-        .filter(item => item != null)
-        .map(menu => ({
-          ...menu,
-          addedAt: menu.createdAt ? new Date(menu.createdAt).getTime() : Date.now(),
-        }));
-      setLocalFavorites(withAddedAt);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', 'me'] });
-    },
-  });
-
   const handleFavoriteToggle = (menuId: string) => {
-    const isActive = favoriteMap[menuId] ?? false;
+    const isActive = favoriteMenus.some(menu => menu?._id === menuId);
+
     if (isActive) {
-      unfavoriteMutation.mutate(menuId);
+      removeFavoriteMutation.mutate(menuId);
     } else {
-      favoriteMutation.mutate(menuId);
+      addFavoriteMutation.mutate(menuId);
     }
   };
 
+  const favoriteMap = useMemo(
+    () =>
+      favoriteMenus.reduce(
+        (acc, menu) => ({ ...acc, [menu?._id]: true }),
+        {} as Record<string, boolean>
+      ),
+    [favoriteMenus]
+  );
   return (
     <>
       <section aria-label="내가 찜한 메뉴" className={styles['meal-favorite']}>

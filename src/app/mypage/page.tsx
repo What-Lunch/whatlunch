@@ -37,13 +37,6 @@ export default async function Page() {
       }),
     ]);
 
-    // const [user, favoriteMenus, foodDotIds, preference] = await Promise.all([
-    //   authServiceServer.getMe(),
-    //   favoritesServiceServer.getMyFavorites(),
-    //   getMyFoodDotsServer(),
-    //   favoritesServiceServer.getMyPreference(),
-    // ]);
-
     return (
       <div className={styles['mypage']}>
         <HydrationBoundary state={dehydrate(queryClient)}>

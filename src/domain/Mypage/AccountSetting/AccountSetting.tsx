@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   UserIcon,
   MailIcon,
@@ -13,10 +14,10 @@ import {
 import EditProfileModal from '../AccountSetting/EditProfile';
 import LogoutModal from '../AccountSetting/LogoutModal';
 import FaqModal from '../AccountSetting/FaqModal';
-import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './AccountSetting.module.scss';
 import Button from '@/shared/components/Button/Button';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 
 // 활성화된 모달 타입
 type AccountSettingActiveModal = 'edit-profile' | 'logout' | null;
@@ -35,7 +36,10 @@ export default function AccountSetting() {
   const [activeModal, setActiveModal] = useState<AccountSettingActiveModal>(null);
   const [faqModal, setFaqModal] = useState(false);
 
-  const user = useAuthStore(state => state.user);
+  const { data: user } = useQuery({
+    queryKey: ['me'],
+    queryFn: authServiceClient.getMe,
+  });
 
   const settingMenus: AccountSettingMenuItem[] = [
     {
