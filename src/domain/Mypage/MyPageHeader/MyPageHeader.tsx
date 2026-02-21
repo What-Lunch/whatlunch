@@ -2,15 +2,15 @@
 
 import { useRef, useState, useEffect, ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
-
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-
 import { Pencil, Star, Timer, Users, Utensils, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
+
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 import { useFoodDotStore } from '@/domain/Mypage/store/foodDot.store';
 import { useProfileImageUpload } from '@/domain/Auth/hooks/useProfileImageUpload';
+import { authServiceClient } from '@/app/services/backend/auth.api';
 
 import { ProfileImage } from '@/shared/components/ProfileImage';
 import Badge, { BadgeProps } from '@/shared/components/Badge';
@@ -33,7 +33,7 @@ const BADGES: readonly BadgeProps[] = [
   { id: 'avg-time', variant: 'orange', Icon: Timer, text: '평균 결정 시간 6초' },
 ] as const;
 
-const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
+const MyPageHeader = () => {
   const { uploadProfileImage, removeProfileImage, isUploading } = useProfileImageUpload();
   const queryClient = useQueryClient();
   const updateProfileImage = useAuthStore(state => state.updateProfileImage);
@@ -46,6 +46,12 @@ const MyPageHeader = ({ user }: { user: Auth.MeRes | null }) => {
   const avatarRef = useRef<HTMLDivElement>(null);
   const firstMenuItemRef = useRef<HTMLButtonElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { data: user } = useQuery({
+    queryKey: ['me'],
+    queryFn: authServiceClient.getMe,
+  });
+
   const displayUser = user || DEFAULT_USER_FALLBACK;
   const isDefaultImage =
     !displayUser.profileImage || displayUser.profileImage === DEFAULT_PROFILE_IMAGE_PATH;

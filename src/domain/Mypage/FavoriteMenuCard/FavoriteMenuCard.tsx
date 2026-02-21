@@ -2,24 +2,29 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { Star } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import Modal from '@/shared/components/Modal';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
 import styles from './FavoriteMenuCard.module.scss';
-import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
+import {
+  favoritesServiceClient,
+  favoritesServiceServer,
+} from '@/app/services/backend/favorites.api';
 
 // 찜 추가 숫자 타임스탬프로 관리
 type FavoriteWithAddedAt = Favorite.GetMyFavoritesRes & { addedAt?: number };
 
-export default function FavoriteMenuCard({
-  favoriteMenus,
-}: {
-  favoriteMenus: Favorite.GetMyFavoritesRes[];
-}) {
+export default function FavoriteMenuCard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
+
+  const { data: favoriteMenus = [] } = useQuery({
+    queryKey: ['favoriteMenus'],
+    queryFn: () => favoritesServiceServer.getMyFavorites(),
+  });
+
   const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>(() =>
     favoriteMenus
       .filter((menu): menu is Favorite.GetMyFavoritesRes => menu != null)

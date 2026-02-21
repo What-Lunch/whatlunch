@@ -2,35 +2,38 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Check, Utensils } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 
 import Modal from '@/shared/components/Modal';
-import { addFoodDot, removeFoodDot } from '@/app/services/backend/users.api';
+import { addFoodDot, getMyFoodDotsServer, removeFoodDot } from '@/app/services/backend/users.api';
+
 import { FOOD_DOTS } from '@/domain/Mypage/constants/foodDots';
 import { useFoodDotStore } from '@/domain/Mypage/store/foodDot.store';
 
 import styles from './FoodDotSelectionCard.module.scss';
 
-interface FoodDotSelectionCardProps {
-  initialSelectedDotIds: string[];
-}
-
-export default function FoodDotSelectionCard({ initialSelectedDotIds }: FoodDotSelectionCardProps) {
+export default function FoodDotSelectionCard() {
   const { selectedDotIds, setSelectedDotIds, toggleDotId } = useFoodDotStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   // 서버 초기값 동기화
+
+  const { data: foodDotIds } = useQuery({
+    queryKey: ['foodDots'],
+    queryFn: () => getMyFoodDotsServer(),
+  });
+
   useEffect(() => {
     const current = useFoodDotStore.getState().selectedDotIds;
 
     const isSame =
-      current.length === initialSelectedDotIds.length &&
-      current.every(id => initialSelectedDotIds.includes(id));
+      current.length === foodDotIds?.length && current.every(id => foodDotIds?.includes(id));
 
     if (isSame) return;
 
-    setSelectedDotIds(initialSelectedDotIds);
-  }, [initialSelectedDotIds, setSelectedDotIds]);
+    setSelectedDotIds(foodDotIds || []);
+  }, [foodDotIds, setSelectedDotIds]);
 
   const handleToggleDot = async (dotId: string) => {
     const { selectedDotIds: before } = useFoodDotStore.getState();
