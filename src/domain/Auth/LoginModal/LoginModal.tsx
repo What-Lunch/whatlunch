@@ -41,34 +41,29 @@ function getLoginErrorMessage(error: unknown): string {
 // redirect 검증: 내부 경로만 허용
 function getValidRedirectUrl(raw: string | null): string | null {
   if (!raw) return null;
-  if (raw.startsWith('/') && !raw.startsWith('//') && !raw.includes('://')) {
-    return raw;
-  }
-
+  if (raw.startsWith('/') && !raw.startsWith('//')) return raw;
   return null;
 }
 
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
+  const googleLoginButtonRef = useRef<HTMLDivElement>(null);
+
   const [password, setPassword] = useState('');
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const googleLoginButtonRef = useRef<HTMLDivElement>(null);
 
   const { setUser } = useAuthStore();
 
+  const redirectRaw = searchParams?.get('redirect') ?? null;
+
   const redirectUrl = useMemo(() => {
-    const raw = searchParams?.get('redirect') ?? null;
-    return getValidRedirectUrl(raw);
-  }, [searchParams]);
+    return getValidRedirectUrl(redirectRaw);
+  }, [redirectRaw]);
 
   const handleLoginSuccess = () => {
-    if (redirectUrl) {
-      router.replace(redirectUrl);
-      return;
-    }
-    router.refresh();
+    router.replace(redirectUrl ?? '/');
   };
 
   const loginMutation = useMutation({
@@ -109,10 +104,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
       return;
     }
 
-    loginMutation.mutate({
-      email,
-      password,
-    });
+    loginMutation.mutate({ email, password });
   };
 
   const triggerGoogleLogin = () => {
