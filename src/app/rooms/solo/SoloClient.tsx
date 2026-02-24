@@ -41,7 +41,7 @@ export default function SoloClient() {
           favMap[menu.id] = true;
         });
         setFavoriteMap(favMap);
-      } catch (error) {}
+      } catch {}
     };
 
     fetchFavorites();

@@ -99,7 +99,7 @@ export const createSocket = async (forceNew = false): Promise<Socket | null> => 
       lastToken = currentToken;
 
       return socket;
-    } catch (error) {
+    } catch {
       return null;
     }
   }
