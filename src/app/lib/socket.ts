@@ -82,12 +82,6 @@ export const createSocket = async (forceNew = false): Promise<Socket | null> => 
     try {
       const apiUrl = getSocketUrl();
 
-      console.log('[Socket] 새 소켓 생성:', {
-        hasToken: true,
-        tokenLength: currentToken.length,
-        forceNew,
-      });
-
       const socketOptions: Parameters<typeof io>[1] = {
         path: '/socket.io',
         transports: ['websocket', 'polling'],
@@ -104,27 +98,12 @@ export const createSocket = async (forceNew = false): Promise<Socket | null> => 
       socket = io(apiUrl, socketOptions);
       lastToken = currentToken;
 
-      socket.on('connect', () => {
-        console.log('[Socket] 연결됨');
-      });
-
-      socket.on('connect_error', error => {
-        console.error('[Socket] 연결 오류:', error);
-      });
-
-      socket.on('disconnect', reason => {
-        console.log('[Socket] 연결 해제:', reason);
-      });
-
       return socket;
     } catch (error) {
-      console.error('[Socket] Socket 생성 오류:', error);
       return null;
     }
   }
 
-  // 기존 소켓 반환 (토큰 동일)
-  console.log('[Socket] 기존 소켓 반환, connected:', socket.connected);
   return socket;
 };
 
@@ -137,7 +116,6 @@ export const disconnectSocket = (): void => {
     socket.disconnect();
     socket = null;
     lastToken = undefined;
-    console.log('[Socket] 소켓 완전히 제거됨');
   }
 };
 

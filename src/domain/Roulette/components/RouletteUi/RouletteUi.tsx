@@ -103,7 +103,6 @@ export default function RouletteUi({
 
   useEffect(() => {
     if (spinning) {
-      console.warn('[룰렛] spinning 중에 items가 변경됨! 결과가 어긋날 수 있음');
     }
   }, [items, spinning]);
 

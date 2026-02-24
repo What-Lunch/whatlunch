@@ -41,9 +41,7 @@ export default function SoloClient() {
           favMap[menu.id] = true;
         });
         setFavoriteMap(favMap);
-      } catch (error) {
-        console.error('찜한 메뉴 불러오기 실패:', error);
-      }
+      } catch (error) {}
     };
 
     fetchFavorites();
@@ -107,127 +105,123 @@ export default function SoloClient() {
 
   return (
     <div className={styles['solo']}>
-        <header className={styles['solo__header']}>
-          <div
-            className={styles['solo__header__title']}
-            aria-label="혼자 메뉴 정하기 - 혼자서도 룰렛을 돌릴 수 있어요!"
-          >
-            <DicesIcon
-              size={40}
-              className={styles['solo__header__title__icon']}
-              aria-hidden="true"
-            />
-            <div className={styles['solo__header__title__text']}>
-              <h1>혼자 메뉴 정하기</h1>
-              <span>혼자서도 룰렛을 돌릴 수 있어요!</span>
-            </div>
-          </div>
-        </header>
-
-        <div className={styles['solo__content']}>
-          <div className={styles['solo__main-section']}>
-            <section className={styles['solo__left']} aria-label="룰렛 영역">
-              <Roulette
-                isSpinning={isSpinning}
-                onSpinStart={handleSpinStart}
-                onSpinResult={handleSpinResult}
-                result={result}
-              />
-            </section>
-
-            <section className={styles['solo__right']} aria-label="지도 영역">
-              <div className={styles['solo__map-section']}>
-                <div className={styles['solo__map-header']}>
-                  <h2>지도</h2>
-                  <p>결과에 따라 지도가 업데이트 돼요!</p>
-                </div>
-
-                <div className={styles['solo__map-header__search']}>
-                  <BaseInput
-                    ref={searchRef}
-                    placeholder="장소를 검색해보세요"
-                    onKeyDown={e => {
-                      if (e.key === 'Enter') handleSearch();
-                    }}
-                  />
-                  <Button
-                    type="button"
-                    className={styles['solo__map-header__search-btn']}
-                    onClick={handleSearch}
-                    aria-label="검색"
-                  >
-                    검색
-                  </Button>
-                </div>
-
-                <div className={styles['solo__map']}>
-                  <KakaoMap keyword={searchKeyword} list />
-                </div>
-              </div>
-            </section>
-          </div>
-
-          <div className={styles['solo__stats-section']}>
-            <div className={styles['solo__stats-header']}>
-              <div>🎲</div>
-              <h3 className={styles['solo__stats-header__title']}> 결과 내역</h3>
-            </div>
-
-            <div className={styles['solo__top-menu']}>
-              <div className={styles['solo__top-menu__icon']}>📊</div>
-              <div className={styles['solo__top-menu__info']}>
-                <span className={styles['solo__top-menu__name']}>돌린횟수</span>
-                <span className={styles['solo__top-menu__count']}>{roomResults.length} 회</span>
-              </div>
-            </div>
-
-            <div className={styles['solo__mood-stats']}>
-              <h4>최근 룰렛 결과</h4>
-
-              <ul className={styles['solo__mood-stats__list__items']} role="list">
-                {roomResults.slice(0, 8).map((item, idx) => {
-                  const isActive = favoriteMap[item.id] ?? false;
-
-                  return (
-                    <li
-                      key={`${item.id}-${idx}`}
-                      className={styles['solo__mood-stats__list__items__item']}
-                    >
-                      <span className={styles['solo__mood-stats__list__items__item__badge']}>
-                        {idx + 1}
-                      </span>
-
-                      <span>{item.name}</span>
-
-                      <FavoriteToggle
-                        isActive={isActive}
-                        onToggle={() => handleFavoriteToggle(item.id)}
-                        size={18}
-                        ariaLabel={`${item.name} ${isActive ? '찜 해제' : '찜하기'}`}
-                      />
-                    </li>
-                  );
-                })}
-
-                {roomResults.length === 0 && (
-                  <li className={styles['solo__mood-stats__list__items__item--empty']}>
-                    🎰 룰렛을 돌려보세요!
-                  </li>
-                )}
-              </ul>
-            </div>
-
-            <div className={styles['solo__time-info']}>
-              <Clock size={18} />
-              <span>
-                {new Date().toLocaleTimeString('ko-KR', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </span>
-            </div>
+      <header className={styles['solo__header']}>
+        <div
+          className={styles['solo__header__title']}
+          aria-label="혼자 메뉴 정하기 - 혼자서도 룰렛을 돌릴 수 있어요!"
+        >
+          <DicesIcon size={40} className={styles['solo__header__title__icon']} aria-hidden="true" />
+          <div className={styles['solo__header__title__text']}>
+            <h1>혼자 메뉴 정하기</h1>
+            <span>혼자서도 룰렛을 돌릴 수 있어요!</span>
           </div>
         </div>
+      </header>
+
+      <div className={styles['solo__content']}>
+        <div className={styles['solo__main-section']}>
+          <section className={styles['solo__left']} aria-label="룰렛 영역">
+            <Roulette
+              isSpinning={isSpinning}
+              onSpinStart={handleSpinStart}
+              onSpinResult={handleSpinResult}
+              result={result}
+            />
+          </section>
+
+          <section className={styles['solo__right']} aria-label="지도 영역">
+            <div className={styles['solo__map-section']}>
+              <div className={styles['solo__map-header']}>
+                <h2>지도</h2>
+                <p>결과에 따라 지도가 업데이트 돼요!</p>
+              </div>
+
+              <div className={styles['solo__map-header__search']}>
+                <BaseInput
+                  ref={searchRef}
+                  placeholder="장소를 검색해보세요"
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') handleSearch();
+                  }}
+                />
+                <Button
+                  type="button"
+                  className={styles['solo__map-header__search-btn']}
+                  onClick={handleSearch}
+                  aria-label="검색"
+                >
+                  검색
+                </Button>
+              </div>
+
+              <div className={styles['solo__map']}>
+                <KakaoMap keyword={searchKeyword} list />
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div className={styles['solo__stats-section']}>
+          <div className={styles['solo__stats-header']}>
+            <div>🎲</div>
+            <h3 className={styles['solo__stats-header__title']}> 결과 내역</h3>
+          </div>
+
+          <div className={styles['solo__top-menu']}>
+            <div className={styles['solo__top-menu__icon']}>📊</div>
+            <div className={styles['solo__top-menu__info']}>
+              <span className={styles['solo__top-menu__name']}>돌린횟수</span>
+              <span className={styles['solo__top-menu__count']}>{roomResults.length} 회</span>
+            </div>
+          </div>
+
+          <div className={styles['solo__mood-stats']}>
+            <h4>최근 룰렛 결과</h4>
+
+            <ul className={styles['solo__mood-stats__list__items']} role="list">
+              {roomResults.slice(0, 8).map((item, idx) => {
+                const isActive = favoriteMap[item.id] ?? false;
+
+                return (
+                  <li
+                    key={`${item.id}-${idx}`}
+                    className={styles['solo__mood-stats__list__items__item']}
+                  >
+                    <span className={styles['solo__mood-stats__list__items__item__badge']}>
+                      {idx + 1}
+                    </span>
+
+                    <span>{item.name}</span>
+
+                    <FavoriteToggle
+                      isActive={isActive}
+                      onToggle={() => handleFavoriteToggle(item.id)}
+                      size={18}
+                      ariaLabel={`${item.name} ${isActive ? '찜 해제' : '찜하기'}`}
+                    />
+                  </li>
+                );
+              })}
+
+              {roomResults.length === 0 && (
+                <li className={styles['solo__mood-stats__list__items__item--empty']}>
+                  🎰 룰렛을 돌려보세요!
+                </li>
+              )}
+            </ul>
+          </div>
+
+          <div className={styles['solo__time-info']}>
+            <Clock size={18} />
+            <span>
+              {new Date().toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

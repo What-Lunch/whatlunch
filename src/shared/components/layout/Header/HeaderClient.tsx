@@ -44,6 +44,8 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
   const displayUser = storeUser ?? initialUser;
 
   const handleLogout = useCallback(async () => {
+    if (isLoggingOut) return;
+
     try {
       setIsLoggingOut(true);
 
@@ -54,16 +56,14 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
 
       toast.success('로그아웃 되었습니다.');
 
-      setTimeout(() => {
-        router.refresh();
-      }, 100);
+      router.refresh();
     } catch (error) {
       console.error('[Header] 로그아웃 실패:', error);
       toast.error('로그아웃에 실패했습니다.');
     } finally {
       setIsLoggingOut(false);
     }
-  }, [router, queryClient, clearUser]);
+  }, [router, queryClient, clearUser, isLoggingOut]);
 
   return (
     <header className={styles['header']}>
@@ -73,7 +73,7 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
         </Link>
 
         {displayUser && (
-          <Link href={`/mypage?refresh=${Date.now()}`}>
+          <Link href="/mypage">
             <span>마이페이지</span>
           </Link>
         )}
@@ -151,6 +151,7 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
                   홈
                 </Link>
               </li>
+
               {displayUser && (
                 <li>
                   <Link href="/mypage" onClick={() => setIsMobileMenuOpen(false)}>

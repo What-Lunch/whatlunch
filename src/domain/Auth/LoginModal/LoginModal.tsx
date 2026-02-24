@@ -63,7 +63,11 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   }, [redirectRaw]);
 
   const handleLoginSuccess = () => {
-    router.replace(redirectUrl ?? '/');
+    if (redirectUrl) {
+      router.replace(redirectUrl);
+    } else {
+      router.refresh();
+    }
   };
 
   const loginMutation = useMutation({
