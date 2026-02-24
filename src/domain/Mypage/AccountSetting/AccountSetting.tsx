@@ -38,7 +38,7 @@ export default function AccountSetting() {
 
   const { data: user } = useQuery({
     queryKey: ['me'],
-    queryFn: authServiceClient.getMe,
+    queryFn: () => authServiceClient.getMe(),
   });
 
   const settingMenus: AccountSettingMenuItem[] = [

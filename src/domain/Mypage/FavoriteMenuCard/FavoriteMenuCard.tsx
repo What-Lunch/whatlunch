@@ -9,10 +9,7 @@ import Modal from '@/shared/components/Modal';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
 import styles from './FavoriteMenuCard.module.scss';
-import {
-  favoritesServiceClient,
-  favoritesServiceServer,
-} from '@/app/services/backend/favorites.api';
+import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
 
 export default function FavoriteMenuCard() {
   const queryClient = useQueryClient();
@@ -20,10 +17,13 @@ export default function FavoriteMenuCard() {
 
   const { data: favoriteMenusRaw = [] } = useQuery({
     queryKey: ['favorites'],
-    queryFn: () => favoritesServiceServer.getMyFavorites(),
+    queryFn: () => favoritesServiceClient.getMyFavorites(),
   });
 
-  const favoriteMenus = favoriteMenusRaw.filter(menu => menu != null);
+  const favoriteMenus = useMemo(
+    () => favoriteMenusRaw.filter(menu => menu != null),
+    [favoriteMenusRaw]
+  );
 
   const addFavoriteMutation = useMutation({
     mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),

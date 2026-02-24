@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 import Modal from '@/shared/components/Modal';
 
-import { addFoodDot, getMyFoodDotsServer, removeFoodDot } from '@/app/services/backend/users.api';
+import { addFoodDot, getMyFoodDots, removeFoodDot } from '@/app/services/backend/users.api';
 
 import { FOOD_DOTS } from '@/domain/Mypage/constants/foodDots';
 
@@ -20,7 +20,7 @@ export default function FoodDotSelectionCard() {
 
   const { data: foodDotIds = [] } = useQuery({
     queryKey: ['foodDots'],
-    queryFn: () => getMyFoodDotsServer(),
+    queryFn: () => getMyFoodDots(),
   });
 
   const toggleMutation = useMutation({
