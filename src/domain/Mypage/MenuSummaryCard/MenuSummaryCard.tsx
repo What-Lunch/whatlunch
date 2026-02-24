@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import type { LucideIcon } from 'lucide-react';
 import { ClipboardList, TrendingUp, Layers, Clock, CookingPot, Users } from 'lucide-react';
 
@@ -17,10 +18,13 @@ const ITEM_ICON_MAP: Record<MenuSummaryItemType, LucideIcon> = {
   style: Users,
 };
 
-type PreferenceResponse = Awaited<ReturnType<typeof favoritesServiceClient.getMyPreference>>;
-
-export default function MenuSummaryCard({ preference }: { preference?: PreferenceResponse }) {
+export default function MenuSummaryCard() {
   const { items } = MENU_SUMMARY_MOCK;
+
+  const { data: preference } = useQuery({
+    queryKey: ['preference'],
+    queryFn: () => favoritesServiceClient.getMyPreference(),
+  });
 
   // 가장 선호하는 카테고리 항목 생성
   const categoryItem: MenuSummaryItem = useMemo(() => {

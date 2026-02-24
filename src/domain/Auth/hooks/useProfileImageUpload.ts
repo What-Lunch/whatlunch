@@ -1,45 +1,49 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { authServiceClient } from '@/app/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 export function useProfileImageUpload() {
   const { user, setUser } = useAuthStore();
   const [isUploading, setIsUploading] = useState(false);
-  const uploadProfileImage = async (file: File) => {
-    if (!user) return;
 
-    setIsUploading(true);
-    try {
-      const { uploadUrl, fileUrl } = await authServiceClient.createProfileImagePresign(file.type);
+  const uploadProfileImage = useCallback(
+    async (file: File) => {
+      if (!user) return;
 
-      const uploadResponse = await fetch(uploadUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': file.type,
-        },
-        body: file,
-      });
+      setIsUploading(true);
+      try {
+        const { uploadUrl, fileUrl } = await authServiceClient.createProfileImagePresign(file.type);
 
-      if (!uploadResponse.ok) {
-        throw new Error(`S3 upload failed: ${uploadResponse.statusText}`);
+        const uploadResponse = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': file.type,
+          },
+          body: file,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`S3 upload failed: ${uploadResponse.statusText}`);
+        }
+
+        const updatedUser = await authServiceClient.updateMe({
+          profileImage: fileUrl,
+        });
+
+        setUser(updatedUser);
+
+        return fileUrl;
+      } catch (error) {
+        console.error('[ProfileImageUpload]', error);
+        throw error;
+      } finally {
+        setIsUploading(false);
       }
+    },
+    [user, setUser]
+  );
 
-      const updatedUser = await authServiceClient.updateMe({
-        profileImage: fileUrl,
-      });
-
-      setUser(updatedUser);
-
-      return fileUrl;
-    } catch (error) {
-      console.error('[ProfileImageUpload]', error);
-      throw error;
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const removeProfileImage = async () => {
+  const removeProfileImage = useCallback(async () => {
     if (!user) return;
 
     setIsUploading(true);
@@ -50,7 +54,7 @@ export function useProfileImageUpload() {
     } finally {
       setIsUploading(false);
     }
-  };
+  }, [user, setUser]);
 
   return {
     uploadProfileImage,
