@@ -224,7 +224,9 @@ export const Roulette = memo(function Roulette({
         />
       )}
 
-      {modalOpen && localResult && <RouletteModal menu={localResult} onClose={handleCloseModal} />}
+      {modalOpen && localResult && (
+        <RouletteModal menu={localResult} onClose={handleCloseModal} roomCode={roomCode} />
+      )}
     </div>
   );
 });

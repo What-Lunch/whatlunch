@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useRef, useMemo } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 import { useMutation } from '@tanstack/react-query';
@@ -38,26 +38,45 @@ function getLoginErrorMessage(error: unknown): string {
   return '로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
 }
 
+// redirect 검증: 내부 경로만 허용
+function getValidRedirectUrl(raw: string | null): string | null {
+  if (!raw) return null;
+  if (raw.startsWith('/') && !raw.startsWith('//')) return raw;
+  return null;
+}
+
 export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
   const emailRef = useRef<HTMLInputElement>(null);
+  const googleLoginButtonRef = useRef<HTMLDivElement>(null);
+
   const [password, setPassword] = useState('');
 
   const router = useRouter();
-  const googleLoginButtonRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
 
   const { setUser } = useAuthStore();
+
+  const redirectRaw = searchParams?.get('redirect') ?? null;
+
+  const redirectUrl = useMemo(() => {
+    return getValidRedirectUrl(redirectRaw);
+  }, [redirectRaw]);
+
+  const handleLoginSuccess = () => {
+    if (redirectUrl) {
+      router.replace(redirectUrl);
+    } else {
+      router.refresh();
+    }
+  };
 
   const loginMutation = useMutation({
     mutationFn: (data: Auth.LoginReq) => authServiceClient.postLogin(data),
     onSuccess: res => {
       setUser(res.user);
-
       toast.success('로그인에 성공했습니다.');
+      handleLoginSuccess();
       onClose();
-      // 데이터 갱신을 위한 새로고침
-      setTimeout(() => {
-        router.refresh();
-      }, 100);
     },
     onError: (error: unknown) => {
       toast.error(getLoginErrorMessage(error));
@@ -69,32 +88,39 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
     onSuccess: res => {
       setUser(res.user);
       toast.success('구글 로그인에 성공했습니다.');
+      handleLoginSuccess();
       onClose();
-
-      // 로그인 상태 반영을 위해 새로고침
-      setTimeout(() => {
-        router.refresh();
-      }, 100);
     },
     onError: () => {
       toast.error('구글 로그인에 실패했습니다.');
     },
   });
 
-  const isLoading = loginMutation.isPending;
+  const isLoading = loginMutation.isPending || googleLoginMutation.isPending;
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!emailRef.current?.value || !password) {
+    const email = emailRef.current?.value?.trim();
+
+    if (!email || !password) {
       toast.warn('이메일과 비밀번호를 입력해주세요.');
       return;
     }
 
-    loginMutation.mutate({
-      email: emailRef.current.value,
-      password,
-    });
+    loginMutation.mutate({ email, password });
+  };
+
+  const triggerGoogleLogin = () => {
+    if (isLoading) return;
+
+    const btn = googleLoginButtonRef.current?.querySelector('div[role="button"]');
+    if (btn && typeof (btn as HTMLElement).click === 'function') {
+      (btn as HTMLElement).click();
+      return;
+    }
+
+    toast.error('구글 버튼을 찾을 수 없습니다. 새로고침 후 다시 시도해주세요.');
   };
 
   return (
@@ -122,29 +148,24 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
               <button
                 type="button"
                 className={styles['auth__social__oauth--google']}
-                onClick={() => {
-                  setTimeout(() => {
-                    const btn = googleLoginButtonRef.current?.querySelector('div[role="button"]');
-                    if (btn && typeof (btn as HTMLElement).click === 'function') {
-                      (btn as HTMLElement).click();
-                    } else {
-                      toast.error('구글 버튼을 찾을 수 없습니다. 새로고침 후 다시 시도해주세요.');
-                    }
-                  }, 0);
-                }}
+                onClick={triggerGoogleLogin}
+                disabled={isLoading}
+                aria-disabled={isLoading}
               >
                 <Image src={Google} alt="Google Logo" width={20} height={20} />
                 <span>Google 계정으로 시작하기</span>
               </button>
 
+              {/* 구글 로그인 버튼 숨김 */}
               <div ref={googleLoginButtonRef} style={{ display: 'none' }}>
                 <GoogleLogin
                   onSuccess={credentialResponse => {
-                    if (credentialResponse.credential) {
-                      googleLoginMutation.mutate({ idToken: credentialResponse.credential });
-                    } else {
+                    const credential = credentialResponse.credential;
+                    if (!credential) {
                       toast.error('구글 로그인에 실패했습니다.');
+                      return;
                     }
+                    googleLoginMutation.mutate({ idToken: credential });
                   }}
                   onError={() => {
                     toast.error('구글 로그인에 실패했습니다.');
@@ -164,6 +185,7 @@ export default function LoginModal({ onClose, onSignupOpen }: LoginModalProps) {
                 type="button"
                 className={styles['auth__actions__link']}
                 onClick={onSignupOpen}
+                disabled={isLoading}
               >
                 회원가입하기
               </button>

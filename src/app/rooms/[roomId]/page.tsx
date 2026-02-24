@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Copy, Check, Clock, Users } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 import RoomTabs from '@/shared/components/RoomTabs';
 import Chat from '@/domain/Chat';
@@ -63,10 +64,12 @@ export default function RoomPage({ params }: RoomPageProps) {
   useEffect(() => {
     if (isAuthLoading) return;
     if (!user) {
-      router.push('/');
+      // 쿼리 파라미터로 redirect 전달
+      toast.warn('로그인이 필요합니다. 로그인 후 자동으로 방에 입장합니다.');
+      router.push(`/?redirect=/rooms/${roomId}`);
       return;
     }
-  }, [user, router, isAuthLoading]);
+  }, [user, router, isAuthLoading, roomId]);
 
   // 소켓 연결 및 이벤트 핸들러
   useEffect(() => {

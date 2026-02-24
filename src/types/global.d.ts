@@ -3,9 +3,47 @@ declare global {
     kakao: {
       maps: typeof kakao.maps;
     };
+    Kakao: typeof Kakao;
   }
 
   namespace Kakao {
+    function init(appKey: string): void;
+    function isInitialized(): boolean;
+
+    namespace Share {
+      interface LinkObject {
+        webUrl?: string;
+        mobileWebUrl?: string;
+      }
+
+      interface ContentObject {
+        title: string;
+        description?: string;
+        imageUrl?: string;
+        link: LinkObject;
+      }
+
+      interface SocialObject {
+        likeCount?: number;
+        commentCount?: number;
+        sharedCount?: number;
+      }
+
+      interface ButtonObject {
+        title: string;
+        link: LinkObject;
+      }
+
+      interface FeedSettings {
+        objectType: 'feed';
+        content: ContentObject;
+        social?: SocialObject;
+        buttons?: ButtonObject[];
+      }
+
+      function sendDefault(settings: FeedSettings): void;
+    }
+
     type Status = 'OK' | 'ZERO_RESULT' | 'ERROR';
 
     interface PlaceItem {
