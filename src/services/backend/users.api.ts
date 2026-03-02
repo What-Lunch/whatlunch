@@ -1,14 +1,14 @@
-import { fetcherClient } from '@/app/lib/fetcher-client';
-import { fetcherServer } from '@/app/lib/fetcher-server';
+import { fetcherClient } from '@/lib/fetcher-client';
+import { fetcherServer } from '@/lib/fetcher-server';
 
-// 서버 사이드에서 호출하는 함수
+// 음식 도트 조회 (서버)
 export const getMyFoodDotsServer = async (): Promise<string[]> => {
   return fetcherServer<string[]>('/users/me/food-dots', {
     method: 'GET',
   });
 };
 
-// 클라이언트 사이드에서 호출하는 함수
+// 음식 도트 조회 (클라이언트)
 export const getMyFoodDots = async (): Promise<string[]> => {
   return fetcherClient<string[]>('/users/me/food-dots', {
     method: 'GET',

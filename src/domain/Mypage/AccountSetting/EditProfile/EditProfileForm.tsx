@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
@@ -8,7 +8,7 @@ import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
 import PasswordInput from '@/shared/components/Input/PasswordInput/PasswordInput';
 import Button from '@/shared/components/Button/Button';
 
-import { authServiceClient } from '@/app/services/backend/auth.api';
+import { authServiceClient } from '@/services/backend/auth.api';
 import { useAuthStore } from '@/domain/Auth/store/auth.store';
 
 import styles from './EditProfileForm.module.scss';

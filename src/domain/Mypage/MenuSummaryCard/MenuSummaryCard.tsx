@@ -1,11 +1,11 @@
-'use client';
+﻿'use client';
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { LucideIcon } from 'lucide-react';
 import { ClipboardList, TrendingUp, Layers, Clock, CookingPot, Users } from 'lucide-react';
 
-import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
+import { favoritesServiceClient } from '@/services/backend/favorites.api';
 
 import { MENU_SUMMARY_MOCK } from './mock';
 import type { MenuSummaryItemType, MenuSummaryItem } from './types';

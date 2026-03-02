@@ -1,8 +1,8 @@
 import type { AirPollutionData } from '@/types/api/airPollution';
 import type { WeatherData } from '@/types/api/weather';
 
-import { getWeatherApiKey } from './config';
-import { toLocKeyParts } from './timeSlotCache';
+import { getWeatherApiKey } from '@/services/weather/config';
+import { toLocKeyParts } from '@/services/weather/timeSlotCache';
 
 const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
