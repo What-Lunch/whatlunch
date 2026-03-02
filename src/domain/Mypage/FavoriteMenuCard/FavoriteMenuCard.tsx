@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo } from 'react';
 import { Star } from 'lucide-react';
@@ -9,7 +9,7 @@ import Modal from '@/shared/components/Modal';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
 import styles from './FavoriteMenuCard.module.scss';
-import { favoritesServiceClient } from '@/app/services/backend/favorites.api';
+import { favoritesServiceClient } from '@/services/backend/favorites.api';
 
 export default function FavoriteMenuCard() {
   const queryClient = useQueryClient();
