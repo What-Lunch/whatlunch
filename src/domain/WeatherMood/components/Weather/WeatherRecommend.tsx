@@ -8,6 +8,8 @@ import { useWeather } from '@/domain/WeatherMood/hooks/useWeather';
 import { useWeatherRecommend } from '@/domain/WeatherMood/hooks/useWeatherRecommend';
 import { getShortDescription } from '@/domain/WeatherMood/components/Weather/utils/shortWeather';
 import { getCategoryByMenu } from '@/domain/WeatherMood/utils/getCategoryByMenu';
+import { getFoodImageByMenu } from '@/shared/utils/getFoodImageByMenu';
+import { preloadFoodImages } from '@/domain/WeatherMood/utils/preloadFoodImages';
 import MenuModal from '@/domain/WeatherMood/components/MenuModal/MenuModal';
 
 import styles from './WeatherRecommend.module.scss';
@@ -97,16 +99,22 @@ export default function WeatherRecommend() {
 
         <h4 className={styles['weather-recommend__title']}>오늘은 이거지!</h4>
         <div className={styles['weather-recommend__list']}>
-          {menus.map(menu => (
-            <button
-              key={menu}
-              type="button"
-              className={styles['weather-recommend__item']}
-              onClick={() => setSelectedMenu(menu)}
-            >
-              {menu}
-            </button>
-          ))}
+          {menus.map(menu => {
+            const category = getCategoryByMenu(menu);
+            const imageSrc = getFoodImageByMenu(menu, category);
+            return (
+              <button
+                key={menu}
+                type="button"
+                className={styles['weather-recommend__item']}
+                onClick={() => setSelectedMenu(menu)}
+                onMouseEnter={() => preloadFoodImages([imageSrc])}
+                onPointerDown={() => preloadFoodImages([imageSrc])}
+              >
+                {menu}
+              </button>
+            );
+          })}
         </div>
       </div>
 

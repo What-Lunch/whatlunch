@@ -1,7 +1,7 @@
 import { Category } from '@/types/enum';
 import type { MenuCategory } from '@/domain/WeatherMood/components/MenuModal/types';
 
-const GLOBAL_FALLBACK_IMAGE = '/foods/noimg.png';
+const GLOBAL_FALLBACK_IMAGE = '/foods/noimg.webp';
 
 type FoodImageRule = {
   keywords: string[];
@@ -16,72 +16,72 @@ type CategoryImageConfig = {
 // 카테고리별 이미지 설정
 const FOOD_IMAGE_CONFIG: Record<MenuCategory, CategoryImageConfig> = {
   [Category.KOREAN]: {
-    defaultSrc: '/foods/Korean/noimg.png',
+    defaultSrc: '/foods/Korean/noimg.webp',
     rules: [
-      { keywords: ['비빔밥'], src: '/foods/Korean/Bibimbap.png' },
-      { keywords: ['국밥'], src: '/foods/Korean/Gukbap.png' },
-      { keywords: ['불고기'], src: '/foods/Korean/Bulgogi.png' },
-      { keywords: ['삼겹살'], src: '/foods/Korean/Samgyeopsal.png' },
-      { keywords: ['냉면'], src: '/foods/Korean/Naengmyeon.png' },
-      { keywords: ['잡채'], src: '/foods/Korean/Japchae.png' },
-      { keywords: ['떡국'], src: '/foods/Korean/Tteokguk.png' },
-      { keywords: ['순두부'], src: '/foods/Korean/Sundubu_Jjigae.png' },
+      { keywords: ['비빔밥'], src: '/foods/Korean/Bibimbap.webp' },
+      { keywords: ['국밥'], src: '/foods/Korean/Gukbap.webp' },
+      { keywords: ['불고기'], src: '/foods/Korean/Bulgogi.webp' },
+      { keywords: ['삼겹살'], src: '/foods/Korean/Samgyeopsal.webp' },
+      { keywords: ['냉면'], src: '/foods/Korean/Naengmyeon.webp' },
+      { keywords: ['잡채'], src: '/foods/Korean/Japchae.webp' },
+      { keywords: ['떡국'], src: '/foods/Korean/Tteokguk.webp' },
+      { keywords: ['순두부'], src: '/foods/Korean/Sundubu_Jjigae.webp' },
     ],
   },
 
   [Category.CHINESE]: {
-    defaultSrc: '/foods/Chinese/noimg.png',
+    defaultSrc: '/foods/Chinese/noimg.webp',
     rules: [
-      { keywords: ['짜장'], src: '/foods/Chinese/Jajangmyeon.png' },
-      { keywords: ['짬뽕'], src: '/foods/Chinese/Jjamppong.png' },
-      { keywords: ['탕수육'], src: '/foods/Chinese/Tangsuyuk.png' },
-      { keywords: ['마파'], src: '/foods/Chinese/Mapo_Tofu.png' },
-      { keywords: ['양장피'], src: '/foods/Chinese/Yangjangpi.png' },
-      { keywords: ['유산슬'], src: '/foods/Chinese/Yusanseul.png' },
-      { keywords: ['깐풍'], src: '/foods/Chinese/Kkanpunggi.png' },
-      { keywords: ['동파'], src: '/foods/Chinese/Dongpo_Pork.png' },
+      { keywords: ['짜장'], src: '/foods/Chinese/Jajangmyeon.webp' },
+      { keywords: ['짬뽕'], src: '/foods/Chinese/Jjamppong.webp' },
+      { keywords: ['탕수육'], src: '/foods/Chinese/Tangsuyuk.webp' },
+      { keywords: ['마파'], src: '/foods/Chinese/Mapo_Tofu.webp' },
+      { keywords: ['양장피'], src: '/foods/Chinese/Yangjangpi.webp' },
+      { keywords: ['유산슬'], src: '/foods/Chinese/Yusanseul.webp' },
+      { keywords: ['깐풍'], src: '/foods/Chinese/Kkanpunggi.webp' },
+      { keywords: ['동파'], src: '/foods/Chinese/Dongpo_Pork.webp' },
     ],
   },
 
   [Category.JAPANESE]: {
-    defaultSrc: '/foods/Japanese/noimg.png',
+    defaultSrc: '/foods/Japanese/noimg.webp',
     rules: [
-      { keywords: ['초밥', '스시'], src: '/foods/Japanese/Sushi.png' },
-      { keywords: ['돈코츠라멘'], src: '/foods/Japanese/Tonkotsu_Ramen.png' },
-      { keywords: ['우동'], src: '/foods/Japanese/Udon.png' },
-      { keywords: ['야키토리'], src: '/foods/Japanese/Yakitori.png' },
-      { keywords: ['타코야키'], src: '/foods/Japanese/Takoyaki.png' },
-      { keywords: ['튀김'], src: '/foods/Japanese/Tempura.png' },
-      { keywords: ['규동'], src: '/foods/Japanese/Gyudon.png' },
-      { keywords: ['오코노미'], src: '/foods/Japanese/Okonomiyaki.png' },
+      { keywords: ['초밥', '스시'], src: '/foods/Japanese/Sushi.webp' },
+      { keywords: ['돈코츠라멘', '라멘'], src: '/foods/Japanese/Tonkotsu_Ramen.webp' },
+      { keywords: ['우동'], src: '/foods/Japanese/Udon.webp' },
+      { keywords: ['야키토리'], src: '/foods/Japanese/Yakitori.webp' },
+      { keywords: ['타코야키'], src: '/foods/Japanese/Takoyaki.webp' },
+      { keywords: ['튀김'], src: '/foods/Japanese/Tempura.webp' },
+      { keywords: ['규동'], src: '/foods/Japanese/Gyudon.webp' },
+      { keywords: ['오코노미'], src: '/foods/Japanese/Okonomiyaki.webp' },
     ],
   },
 
   [Category.WESTERN]: {
-    defaultSrc: '/foods/Western/noimg.png',
+    defaultSrc: '/foods/Western/noimg.webp',
     rules: [
-      { keywords: ['피시앤칩스'], src: '/foods/Western/FishandChips.png' },
-      { keywords: ['리조또'], src: '/foods/Western/Risotto.png' },
-      { keywords: ['라자냐'], src: '/foods/Western/Lasagna.png' },
-      { keywords: ['샐러드'], src: '/foods/Western/Salad.png' },
-      { keywords: ['햄버거'], src: '/foods/Western/Hamburger.png' },
-      { keywords: ['피자'], src: '/foods/Western/Pizza.png' },
-      { keywords: ['파스타'], src: '/foods/Western/Pasta.png' },
-      { keywords: ['스테이크'], src: '/foods/Western/Steak.png' },
+      { keywords: ['피시앤칩스'], src: '/foods/Western/FishandChips.webp' },
+      { keywords: ['리조또'], src: '/foods/Western/Risotto.webp' },
+      { keywords: ['라자냐'], src: '/foods/Western/Lasagna.webp' },
+      { keywords: ['샐러드'], src: '/foods/Western/Salad.webp' },
+      { keywords: ['햄버거'], src: '/foods/Western/Hamburger.webp' },
+      { keywords: ['피자'], src: '/foods/Western/Pizza.webp' },
+      { keywords: ['파스타'], src: '/foods/Western/Pasta.webp' },
+      { keywords: ['스테이크'], src: '/foods/Western/Steak.webp' },
     ],
   },
 
   [Category.SNACK]: {
-    defaultSrc: '/foods/Snack/noimg.png',
+    defaultSrc: '/foods/Snack/noimg.webp',
     rules: [
-      { keywords: ['떡볶이'], src: '/foods/Snack/Tteokbokki.png' },
-      { keywords: ['김밥'], src: '/foods/Snack/Gimbap.png' },
-      { keywords: ['라면'], src: '/foods/Snack/Ramyeon.png' },
-      { keywords: ['토스트'], src: '/foods/Snack/Street_Toast.png' },
-      { keywords: ['핫도그'], src: '/foods/Snack/Corn_Dog.png' },
-      { keywords: ['만두'], src: '/foods/Snack/Assorted_Mandu.png' },
-      { keywords: ['닭강정'], src: '/foods/Snack/Dakgangjeong.png' },
-      { keywords: ['순대'], src: '/foods/Snack/Sundae.png' },
+      { keywords: ['떡볶이'], src: '/foods/Snack/Tteokbokki.webp' },
+      { keywords: ['김밥'], src: '/foods/Snack/Gimbap.webp' },
+      { keywords: ['라면'], src: '/foods/Snack/Ramyeon.webp' },
+      { keywords: ['토스트'], src: '/foods/Snack/Street_Toast.webp' },
+      { keywords: ['핫도그'], src: '/foods/Snack/Corn_Dog.webp' },
+      { keywords: ['만두'], src: '/foods/Snack/Assorted_Mandu.webp' },
+      { keywords: ['닭강정'], src: '/foods/Snack/Dakgangjeong.webp' },
+      { keywords: ['순대'], src: '/foods/Snack/Sundae.webp' },
     ],
   },
 };

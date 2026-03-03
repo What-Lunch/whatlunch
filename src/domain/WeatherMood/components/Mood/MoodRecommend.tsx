@@ -9,6 +9,8 @@ import {
 } from '@/domain/WeatherMood/components/Mood/utils/moodRecommend';
 import { generateRecommendations } from '@/domain/WeatherMood/components/Mood/utils/recommendEngine';
 import { getCategoryByMenu } from '@/domain/WeatherMood/utils/getCategoryByMenu';
+import { getFoodImageByMenu } from '@/shared/utils/getFoodImageByMenu';
+import { preloadFoodImages } from '@/domain/WeatherMood/utils/preloadFoodImages';
 import MenuModal from '@/domain/WeatherMood/components/MenuModal/MenuModal';
 
 import styles from './MoodRecommend.module.scss';
@@ -59,16 +61,22 @@ export default function MoodRecommend() {
         <h4>지금 당신에게 맞는 맛</h4>
 
         <div className={styles['mood-recommend__cards']}>
-          {recommendedMenus.map(menu => (
-            <button
-              key={menu}
-              className={styles['mood-recommend__card']}
-              onClick={() => setSelectedMenu(menu)}
-              type="button"
-            >
-              {menu}
-            </button>
-          ))}
+          {recommendedMenus.map(menu => {
+            const category = getCategoryByMenu(menu);
+            const imageSrc = getFoodImageByMenu(menu, category);
+            return (
+              <button
+                key={menu}
+                className={styles['mood-recommend__card']}
+                onClick={() => setSelectedMenu(menu)}
+                onMouseEnter={() => preloadFoodImages([imageSrc])}
+                onPointerDown={() => preloadFoodImages([imageSrc])}
+                type="button"
+              >
+                {menu}
+              </button>
+            );
+          })}
         </div>
       </div>
 
