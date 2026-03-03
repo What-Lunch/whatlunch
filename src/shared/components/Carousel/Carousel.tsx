@@ -9,7 +9,7 @@ import FavoriteToggle from '../FavoriteToggle';
 
 import styles from './Carousel.module.scss';
 
-const DEFAULT_IMAGE = '/foods/Korean/noimg.png';
+const DEFAULT_IMAGE = '/foods/Korean/noimg.webp';
 
 export default function Carousel({ items, duration = 3000 }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);

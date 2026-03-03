@@ -1,1 +1,1 @@
-export const DEFAULT_IMAGE = '/foods/noimg.png';
+export const DEFAULT_IMAGE = '/foods/noimg.webp';
