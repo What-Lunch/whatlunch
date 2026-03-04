@@ -6,8 +6,14 @@
   height: 100%;
   padding: 18px 20px;
   border-radius: 24px;
-  border: 1.5px solid f.color(gray-100);
-  box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  color: var(--text);
+
+  svg {
+    stroke: currentColor;
+  }
   transition:
     box-shadow 0.2s,
     border-color 0.2s;
@@ -15,18 +21,19 @@
 
   &__header {
     padding-bottom: 8px;
-    border-bottom: 2px solid f.color(gray-300);
+    border-bottom: 1px solid var(--border);
     margin-bottom: 16px;
     @include m.flex-box(space-between, center);
 
     &__title {
       @include m.text-style-extended('xl', 600, gray-900);
+      color: var(--text);
     }
 
     &__icon {
       width: 20px;
       height: 20px;
-      color: f.color(gray-600);
+      color: var(--text-secondary);
     }
   }
 
@@ -38,9 +45,9 @@
       width: 100%;
       padding: 12px;
       @include m.flex-box(space-between, center);
-      background-color: f.color(white);
+      background-color: var(--surface-2);
       border-radius: 10px;
-      border: 1px solid f.color(gray-300);
+      border: 1px solid var(--border);
       transition:
         background-color 0.15s ease,
         transform 0.1s ease;
@@ -49,7 +56,7 @@
         cursor: pointer;
 
         &:hover {
-          background-color: f.color(gray-200);
+          background-color: var(--surface);
         }
 
         &:active {
@@ -70,24 +77,24 @@
           width: 20px;
           height: 20px;
           @include m.flex-box(center, center);
-          color: f.color(gray-700);
+          color: var(--text-secondary);
         }
 
         &__title {
           @include m.text-style('lg', 600);
-          color: f.color(gray-800);
+          color: var(--text);
         }
 
         &__description {
           @include m.text-style('md', 500);
-          color: f.color(gray-600);
+          color: var(--text-secondary);
         }
       }
 
       &__chevron {
         width: 20px;
         height: 20px;
-        color: f.color(gray-600);
+        color: var(--text-secondary);
       }
 
       &--logout {
@@ -102,18 +109,18 @@
       @include m.flex-box(flex-start, flex-start);
       gap: 10px;
       padding: 12px 8px;
-      background-color: f.color(blue-50);
+      background-color: var(--surface-2);
       border-radius: 10px;
-      border: 1px solid f.color(blue-400);
+      border: 1px solid var(--border);
 
       &__icon {
         width: 28px;
         height: 28px;
-        color: f.color(blue-700);
+        color: var(--text-secondary);
         padding: 4px;
         border-radius: 10px;
-        border: 1px solid f.color(blue-300);
-        background-color: f.color(blue-100);
+        border: 1px solid var(--border);
+        background-color: var(--surface);
       }
 
       &__content {
@@ -126,12 +133,12 @@
 
           &__title {
             @include m.text-style('md', 600);
-            color: f.color(blue-800);
+            color: var(--text);
           }
 
           &__description {
             @include m.text-style('sm', 400);
-            color: f.color(blue-700);
+            color: var(--text-secondary);
           }
         }
       }

@@ -3,15 +3,25 @@
 
 .footer {
   width: 100%;
-  background: f.color(white);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
   margin-top: 80px;
 
   @include m.mq(sm) {
     margin-top: 48px;
   }
 
+  svg {
+    stroke: currentColor;
+  }
+
   &__container {
-    background-color: f.color(orange-50);
+    background: var(--surface);
+    color: var(--text);
     width: 100%;
     margin: 0 auto;
     padding: 32px;
@@ -36,7 +46,7 @@
     width: fit-content;
     margin: auto;
     padding-bottom: 48px;
-    border-bottom: 1px solid f.color(orange-100);
+    border-bottom: 1px solid var(--border);
 
     @include m.mq(lg) {
       gap: 40px;
@@ -64,6 +74,7 @@
     &__title {
       margin: 0;
       @include m.text-style-extended('lg', 600, black);
+      color: var(--text);
       font-size: 18px;
 
       @include m.mq(sm) {
@@ -76,7 +87,7 @@
     &__desc {
       margin: 0 0 12px 0;
       @include m.text-style(md, 400);
-      color: f.color(gray-700);
+      color: var(--text-secondary);
       line-height: 1.6;
     }
   }
@@ -113,6 +124,7 @@
     @include m.flex-box(flex-start, center);
     gap: 6px;
     @include m.text-style-extended(lg, 500, gray-800);
+    color: var(--text);
     text-decoration: none;
     transition: all 0.2s ease;
 
@@ -130,7 +142,7 @@
   &__divider {
     width: 100%;
     height: 1px;
-    background-color: f.color(orange-50);
+    background-color: var(--border);
     padding-bottom: 32px;
 
     @include m.mq(sm) {
@@ -145,7 +157,7 @@
   &__copyright {
     margin: 0;
     @include m.text-style(sm, 400);
-    color: f.color(gray-600);
+    color: var(--text-secondary);
 
     @include m.mq(sm) {
       font-size: 12px;

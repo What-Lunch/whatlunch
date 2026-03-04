@@ -14,6 +14,7 @@
   &__label {
     @include m.flex-box(center, flex-start, column);
     @include m.text-style('lg', 500);
+    color: var(--text-secondary);
     gap: 6px;
   }
 

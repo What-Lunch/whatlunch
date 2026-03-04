@@ -11,8 +11,10 @@
     width: 100%;
     padding: 24px 28px;
     border-radius: 24px;
-    border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    color: var(--text);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -38,14 +40,12 @@
 
         h2 {
           @include m.text-style('xl', 700);
-          background: linear-gradient(135deg, f.color(orange-700) 0%, f.color(orange-500) 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: var(--text);
         }
 
         span {
           @include m.text-style-extended('md', 500, gray-700);
+          color: var(--text-secondary);
         }
       }
     }
@@ -71,9 +71,10 @@
 
   &__left {
     @include m.flex-box(center, center);
+    background: var(--surface);
     border-radius: 24px;
-    border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -93,9 +94,11 @@
   &__map-section {
     height: 100%;
     @include m.flex-box(flex-start, stretch, column);
+    background: var(--surface);
+    color: var(--text);
     border-radius: 24px;
-    border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -108,20 +111,18 @@
     @include m.flex-box(space-between, center);
     gap: 12px;
     padding-bottom: 8px;
-    border-bottom: 1px solid f.color(gray-300);
+    border-bottom: 1px solid var(--border);
     margin-bottom: 16px;
 
     h3 {
       @include m.text-style('lg', 700);
-      background: linear-gradient(135deg, f.color(gray-800) 0%, f.color(gray-700) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--text);
       margin: 0;
     }
 
     p {
       @include m.text-style-extended('sm', 500, gray-700);
+      color: var(--text-secondary);
     }
 
     &__search-btn {
@@ -156,9 +157,11 @@
 
   &__stats-section {
     @include m.flex-box(flex-start, stretch, column);
+    background: var(--surface);
+    color: var(--text);
     border-radius: 24px;
-    border: 1.5px solid f.color(gray-100);
-    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
     transition:
       box-shadow 0.2s,
       border-color 0.2s;
@@ -171,15 +174,12 @@
     @include m.flex-box(flex-start, center);
     gap: 12px;
     padding-bottom: 8px;
-    border-bottom: 1px solid f.color(gray-300);
+    border-bottom: 1px solid var(--border);
     margin-bottom: 16px;
 
     h3 {
       @include m.text-style('xl', 700);
-      background-color: f.color(gray-700);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--text);
       margin: 0;
     }
   }
@@ -188,19 +188,22 @@
     @include m.flex-box(flex-start, center);
     gap: 16px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.8);
+    background: color-mix(in srgb, var(--surface-2) 85%, transparent);
     backdrop-filter: blur(10px);
     border-radius: 16px;
-    box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+    border: 2px solid color-mix(in srgb, var(--border) 60%, transparent);
+    box-shadow: var(--shadow);
 
     &__icon {
       font-size: 36px;
       width: 56px;
       height: 56px;
       @include m.flex-box(center, center);
-      background: linear-gradient(135deg, f.color(gray-300) 0%, f.color(gray-400) 100%);
+      background: var(--surface-2);
       border-radius: 14px;
-      box-shadow: 0 4px 12px rgba(f.color(gray-700), 0.25);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      color: var(--text-secondary);
     }
 
     &__info {
@@ -210,13 +213,13 @@
 
     &__name {
       @include m.text-style('lg', 600);
-      color: rgba(f.color(gray-700), 0.8);
+      color: var(--text-secondary);
     }
 
     &__count {
       @include m.text-style('md', 700);
-      color: f.color(gray-700);
-      background: rgba(f.color(gray-700), 0.1);
+      color: var(--text-secondary);
+      background: color-mix(in srgb, var(--border) 30%, transparent);
       padding: 6px 16px;
       border-radius: 999px;
     }
@@ -228,7 +231,7 @@
 
     h4 {
       @include m.text-style('md', 600);
-      color: rgba(f.color(gray-700), 0.8);
+      color: var(--text-secondary);
     }
 
     &__list {
@@ -240,16 +243,16 @@
       }
 
       &::-webkit-scrollbar-track {
-        background: rgba(f.color(gray-600), 0.05);
+        background: color-mix(in srgb, var(--border) 20%, transparent);
         border-radius: 999px;
       }
 
       &::-webkit-scrollbar-thumb {
-        background: rgba(f.color(gray-600), 0.3);
+        background: color-mix(in srgb, var(--border) 60%, transparent);
         border-radius: 999px;
 
         &:hover {
-          background: rgba(f.color(gray-600), 0.5);
+          background: color-mix(in srgb, var(--border) 80%, transparent);
         }
       }
 
@@ -264,15 +267,15 @@
           @include m.flex-box(flex-start, center);
           gap: 12px;
           @include m.text-style('md', 600);
-          color: rgba(f.color(gray-700), 0.8);
+          color: var(--text-secondary);
           padding: 14px 16px;
-          background-color: f.color(white);
+          background-color: var(--surface-2);
           border-radius: 12px;
-          border: 2px solid rgba(f.color(gray-600), 0.15);
+          border: 2px solid color-mix(in srgb, var(--border) 60%, transparent);
           transition: all 0.2s ease;
 
           &:hover {
-            box-shadow: 0 4px 12px rgba(f.color(gray-600), 0.2);
+            box-shadow: var(--shadow);
           }
 
           &__badge {
@@ -281,18 +284,19 @@
             height: 28px;
             @include m.text-style('sm', 700);
             background: linear-gradient(135deg, f.color(orange-700) 0%, f.color(orange-500) 100%);
-            color: f.color(white);
+            color: var(--text);
             border-radius: 8px;
             padding: 0 8px;
           }
 
           &--empty {
             @include m.text-style-extended('lg', 500, gray-700);
+            color: var(--text-secondary);
             text-align: center;
             padding: 40px 20px;
-            border: 2px dashed rgba(f.color(gray-600), 0.2);
+            border: 2px dashed color-mix(in srgb, var(--border) 60%, transparent);
             border-radius: 12px;
-            background: f.color(gray-100);
+            background: var(--surface-2);
           }
         }
       }
@@ -303,12 +307,13 @@
     @include m.flex-box(center, center);
     gap: 10px;
     padding: 14px 20px;
-    background: rgba(255, 255, 255, 0.8);
+    background: color-mix(in srgb, var(--surface-2) 85%, transparent);
     backdrop-filter: blur(10px);
     border-radius: 12px;
+    border: 2px solid color-mix(in srgb, var(--border) 60%, transparent);
 
     svg {
-      color: f.color(gray-700);
+      color: var(--text-secondary);
       animation: pulse 2s ease-in-out infinite;
     }
 
@@ -324,6 +329,7 @@
 
     span {
       @include m.text-style-extended('sm', 600, gray-700);
+      color: var(--text-secondary);
     }
   }
 }

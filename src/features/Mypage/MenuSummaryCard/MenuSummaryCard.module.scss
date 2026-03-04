@@ -7,8 +7,14 @@
   padding: 18px 20px;
   border-radius: 24px;
   overflow: hidden;
-  border: 1.5px solid f.color(gray-100);
-  box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  color: var(--text);
+
+  svg {
+    stroke: currentColor;
+  }
   transition:
     box-shadow 0.2s,
     border-color 0.2s;
@@ -16,24 +22,25 @@
 
   &__header {
     padding-bottom: 8px;
-    border-bottom: 2px solid f.color(gray-300);
+    border-bottom: 1px solid var(--border);
     margin-bottom: 16px;
   }
 
   &__header-inner {
     @include m.flex-box(space-between, center);
     width: 100%;
-    color: f.color(gray-900);
+    color: var(--text);
   }
 
   &__title {
     @include m.text-style-extended('xl', 600, gray-900);
+    color: var(--text);
   }
 
   &__header-icon {
     width: 22px;
     height: 22px;
-    color: f.color(gray-600);
+    color: var(--text-secondary);
     flex-shrink: 0;
   }
 
@@ -67,7 +74,7 @@
 
   &__value {
     @include m.text-style('lg', 400);
-    color: f.color(gray-900);
+    color: var(--text);
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -75,7 +82,7 @@
   // Preference Bar
   &__bar {
     height: 8px;
-    background: f.color(gray-300);
+    background: var(--border);
     border-radius: 32px;
     overflow: hidden;
   }
@@ -116,17 +123,17 @@
   &__empty-icon {
     width: 40px;
     height: 40px;
-    color: f.color(gray-400);
+    color: var(--text-secondary);
   }
 
   &__empty-title {
     @include m.text-style('lg', 500);
-    color: f.color(gray-700);
+    color: var(--text-secondary);
   }
 
   &__empty-desc {
     @include m.text-style('md', 400);
-    color: f.color(gray-600);
+    color: var(--text-secondary);
   }
 
   &__item--category {

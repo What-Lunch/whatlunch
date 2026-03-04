@@ -5,10 +5,16 @@
   width: 100%;
   padding: 8px 24px;
   height: 140px;
+  background: var(--surface);
+  color: var(--text);
   border-radius: 24px;
-  border: 1.5px solid f.color(gray-100);
-  box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
   @include m.flex-box(center, center, column);
+
+  svg {
+    stroke: currentColor;
+  }
 
   &::before {
     content: '';
@@ -23,6 +29,7 @@
   &__text {
     width: 100%;
     @include m.text-style-extended('lg', 600, gray-700);
+    color: var(--text);
     text-align: center;
   }
 

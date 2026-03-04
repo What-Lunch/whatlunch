@@ -8,6 +8,7 @@ import TanstackProvider from '@/shared/context/TanstackProvider';
 
 import GlobalToast from '@/shared/components/Toast/GlobalToast';
 import GoogleProvider from '@/shared/components/Providers/GoogleProvider';
+import ThemeProvider from '@/shared/components/Providers/ThemeProvider';
 
 import '@/styles/main.scss';
 
@@ -37,7 +38,7 @@ interface LayoutProps {
 
 export default function RootLayout({ children }: LayoutProps) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       {process.env.NODE_ENV === 'development' ? (
         <head>
           {/* eslint-disable-next-line @next/next/no-sync-scripts */}
@@ -46,21 +47,23 @@ export default function RootLayout({ children }: LayoutProps) {
       ) : null}
 
       <body>
-        <Script
-          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
-          integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-        <GoogleProvider>
-          <TanstackProvider>
-            <Header />
-            <Main>{children}</Main>
-            <Footer />
-          </TanstackProvider>
-          <GlobalToast />
-        </GoogleProvider>
-        <SpeedInsights />
+        <ThemeProvider>
+          <Script
+            src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js"
+            integrity="sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p"
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+          <GoogleProvider>
+            <TanstackProvider>
+              <Header />
+              <Main>{children}</Main>
+              <Footer />
+            </TanstackProvider>
+            <GlobalToast />
+          </GoogleProvider>
+          <SpeedInsights />
+        </ThemeProvider>
       </body>
     </html>
   );
