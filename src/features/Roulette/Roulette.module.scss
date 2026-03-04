@@ -10,6 +10,7 @@
 
   &__today {
     @include m.text-style-extended('2xl', 600, gray-700);
+    color: var(--text);
     text-align: center;
 
     span {

@@ -5,7 +5,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, Moon, Sun, X } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { toast } from 'react-toastify';
 
 import Button from '@/shared/components/Button';
@@ -23,9 +24,11 @@ import styles from './Header.module.scss';
 export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes | null }) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { theme, systemTheme, setTheme } = useTheme();
   const [modalType, setModalType] = useState<'login' | 'signup' | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const storeUser = useAuthStore(state => state.user);
   const clearUser = useAuthStore(state => state.clearUser);
@@ -41,7 +44,18 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
     }
   }, [initialUser, clearUser]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const displayUser = storeUser ?? initialUser;
+  const currentTheme = theme === 'system' ? systemTheme : theme;
+  const isDarkMode = currentTheme === 'dark';
+
+  const handleThemeToggle = useCallback(() => {
+    if (!mounted) return;
+    setTheme(isDarkMode ? 'light' : 'dark');
+  }, [mounted, isDarkMode, setTheme]);
 
   const handleLogout = useCallback(async () => {
     if (isLoggingOut) return;
@@ -85,7 +99,14 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
       </Link>
 
       <div className={styles['header__auth']}>
-        <div style={{ width: '80px', height: '40px' }} />
+        <button
+          type="button"
+          className={styles['header__theme-toggle']}
+          onClick={handleThemeToggle}
+          aria-label={mounted && isDarkMode ? '라이트 모드로 전환' : '다크 모드로 전환'}
+        >
+          {mounted && isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
         {displayUser ? (
           <>
             <div className={styles['header__user']}>

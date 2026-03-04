@@ -6,6 +6,11 @@
   width: 100%;
   padding: 16px 18px;
   @include m.flex-box(flex-start, stretch, column);
+  color: var(--text);
+
+  svg {
+    stroke: currentColor;
+  }
 
   &__list {
     @include m.flex-box(space-between, stretch);
@@ -20,19 +25,21 @@
     @include m.flex-box(center, center, column);
     gap: 6px;
     border-radius: 18px;
-    border: 1px solid f.color(gray-300);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
 
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
 
     &:hover {
-      border: 1px solid f.color(orange-600);
+      background: var(--surface-hover);
+      transform: translateY(-2px);
     }
   }
 
   &__button--active {
     border-color: f.color(orange-600);
-    background: f.color(white);
+    background: var(--surface-2);
 
     box-shadow:
       0 4px 20px 0 rgba(239, 108, 0, 0.13),
@@ -56,7 +63,7 @@
 
   &__label {
     @include m.text-style(sm, 500);
-    color: f.color(gray-700);
+    color: var(--text-secondary);
     white-space: nowrap;
   }
 
@@ -66,7 +73,7 @@
     h4 {
       @include m.text-style('2lg', 600);
       margin-bottom: 10px;
-      color: f.color(gray-800);
+      color: var(--text);
     }
   }
 
@@ -86,15 +93,16 @@
     @include m.flex-box(center, center);
     text-align: center;
     word-break: keep-all;
-    background: f.color(white);
-    border: 1px solid f.color(gray-300);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-radius: 12px;
     @include m.text-style-extended(sm, 600, gray-700);
+    color: var(--text-secondary);
     transition: all 0.2s ease;
 
     &:hover {
-      border: 1px solid f.color(orange-300);
-      background-color: f.color(orange-50);
+      background: var(--surface-hover);
+      transform: translateY(-2px);
       cursor: pointer;
     }
   }
