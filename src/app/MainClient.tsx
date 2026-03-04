@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import Carousel from '@/shared/components/Carousel';
 import type { CarouselItem } from '@/shared/components/Carousel';
 import Clock from '@/shared/components/Clock/Clock';
-import WeatherMood from '@/domain/WeatherMood/WeatherMood';
-import RoomEntryCard from '@/domain/Room/RoomEntryCard/RoomEntryCard';
-import QuoteCard from '@/domain/QuoteCard';
+import WeatherMood from '@/features/WeatherMood/WeatherMood';
+import RoomEntryCard from '@/features/Room/RoomEntryCard/RoomEntryCard';
+import QuoteCard from '@/features/QuoteCard';
 import { menusServiceClient } from '@/services/backend/menus.api';
 import { mapTopFavoritesToCarousel } from '@/shared/utils/mapTopFavoritesToCarousel';
 

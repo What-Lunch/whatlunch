@@ -4,11 +4,11 @@ import { authServiceServer } from '@/services/backend/auth.api';
 import { favoritesServiceServer } from '@/services/backend/favorites.api';
 import { getMyFoodDotsServer } from '@/services/backend/users.api';
 
-import MyPageHeader from '@/domain/Mypage/MyPageHeader';
-import FoodDotSelectionCard from '@/domain/Mypage/FoodDotSelectionCard/FoodDotSelectionCard';
-import FavoriteMenuCard from '@/domain/Mypage/FavoriteMenuCard';
-import MenuSummaryCard from '@/domain/Mypage/MenuSummaryCard';
-import AccountSetting from '@/domain/Mypage/AccountSetting';
+import MyPageHeader from '@/features/Mypage/MyPageHeader';
+import FoodDotSelectionCard from '@/features/Mypage/FoodDotSelectionCard/FoodDotSelectionCard';
+import FavoriteMenuCard from '@/features/Mypage/FavoriteMenuCard';
+import MenuSummaryCard from '@/features/Mypage/MenuSummaryCard';
+import AccountSetting from '@/features/Mypage/AccountSetting';
 import styles from './page.module.scss';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 
