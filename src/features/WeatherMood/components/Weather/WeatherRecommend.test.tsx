@@ -6,8 +6,8 @@ import { useWeatherRecommend } from '@/features/WeatherMood/hooks/useWeatherReco
 
 import WeatherRecommend from './WeatherRecommend';
 
-jest.mock('@/domain/WeatherMood/hooks/useWeather');
-jest.mock('@/domain/WeatherMood/hooks/useWeatherRecommend');
+jest.mock('@/features/WeatherMood/hooks/useWeather');
+jest.mock('@/features/WeatherMood/hooks/useWeatherRecommend');
 
 const mockUseWeather = useWeather as jest.Mock;
 const mockUseWeatherRecommend = useWeatherRecommend as jest.Mock;
