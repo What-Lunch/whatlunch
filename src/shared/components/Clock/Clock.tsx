@@ -3,7 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { Clock as ClockIcon } from 'lucide-react';
 
-import { getBeforeLunchMessage, getAfterLunchMessage, getDinnerTimeMessage } from './clockMessages';
+import {
+  getBeforeLunchMessage,
+  getAfterLunchMessage,
+  getDinnerTimeMessage,
+  loadingMessage,
+} from './clockMessages';
 
 import styles from './Clock.module.scss';
 
@@ -52,8 +57,8 @@ function formatCurrentTime(date: Date) {
 }
 
 export default function Clock() {
-  const [currentTime, setCurrentTime] = useState(formatCurrentTime(new Date()));
-  const [message, setMessage] = useState('');
+  const [currentTime, setCurrentTime] = useState<string>('');
+  const [message, setMessage] = useState(loadingMessage);
   const [phase, setPhase] = useState<MealPhase | null>(null);
 
   useEffect(() => {
@@ -64,16 +69,17 @@ export default function Clock() {
 
       setCurrentTime(formatCurrentTime(now));
 
+      // 시간대가 바뀔 때만 메시지 갱신
       if (phase !== nextPhase) {
         setPhase(nextPhase);
-      }
 
-      if (nextPhase === 'beforeLunch') {
-        setMessage(getBeforeLunchMessage(nextRemain));
-      } else if (nextPhase === 'afterLunch') {
-        setMessage(getAfterLunchMessage());
-      } else {
-        setMessage(getDinnerTimeMessage());
+        if (nextPhase === 'beforeLunch') {
+          setMessage(getBeforeLunchMessage(nextRemain));
+        } else if (nextPhase === 'afterLunch') {
+          setMessage(getAfterLunchMessage());
+        } else {
+          setMessage(getDinnerTimeMessage());
+        }
       }
     };
 
@@ -90,11 +96,12 @@ export default function Clock() {
           <span className={styles['clock__message']}>{message}</span>
         </div>
 
-        <div className={styles['clock__time-wrap']}>
-          <ClockIcon className={styles['clock__icon']} aria-hidden="true" />
-
-          <span className={styles['clock__time']}>{currentTime}</span>
-        </div>
+        {currentTime && (
+          <div className={styles['clock__time-wrap']}>
+            <ClockIcon className={styles['clock__icon']} aria-hidden="true" />
+            <span className={styles['clock__time']}>{currentTime}</span>
+          </div>
+        )}
       </div>
     </section>
   );
