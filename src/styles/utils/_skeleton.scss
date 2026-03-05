@@ -1,0 +1,22 @@
+@keyframes skeleton-loading {
+  0% {
+    background-position: -200px 0;
+  }
+
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+// CSS Modules 에서 안전하게 @extend 할 수 있도록 placeholder 로 정의
+%skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-highlight) 37%,
+    var(--skeleton-base) 63%
+  );
+  background-size: 400px 100%;
+  animation: skeleton-loading 1.4s infinite linear;
+  border-radius: 8px;
+}

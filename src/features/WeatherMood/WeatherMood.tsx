@@ -7,6 +7,7 @@ import TopTabs from '@/shared/components/TopTabs';
 
 import MoodRecommend from './components/Mood/MoodRecommend';
 import WeatherRecommend from './components/Weather/WeatherRecommend';
+import type { WeatherApiResponse } from './hooks/useWeather';
 
 import type { TopTabItem } from '@/shared/components/TopTabs';
 
@@ -21,7 +22,11 @@ const DEFAULT_TAB: TabValue = TAB_LIST[0].value;
 const isTabValue = (value: string): value is TabValue =>
   TAB_LIST.some(item => item.value === value);
 
-export default function WeatherMood() {
+interface WeatherMoodProps {
+  initialWeatherData?: WeatherApiResponse | null;
+}
+
+export default function WeatherMood({ initialWeatherData = null }: WeatherMoodProps) {
   const [activeTab, setActiveTab] = useState<TabValue>(DEFAULT_TAB);
 
   return (
@@ -32,7 +37,9 @@ export default function WeatherMood() {
         if (isTabValue(next)) setActiveTab(next);
       }}
       renderPanel={active => {
-        if (active === 'weather') return <WeatherRecommend />;
+        if (active === 'weather') {
+          return <WeatherRecommend initialWeatherData={initialWeatherData} />;
+        }
         return <MoodRecommend />;
       }}
     />
