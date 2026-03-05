@@ -52,7 +52,7 @@ function formatCurrentTime(date: Date) {
 }
 
 export default function Clock() {
-  const [currentTime, setCurrentTime] = useState('');
+  const [currentTime, setCurrentTime] = useState(formatCurrentTime(new Date()));
   const [message, setMessage] = useState('');
   const [phase, setPhase] = useState<MealPhase | null>(null);
 
@@ -83,27 +83,17 @@ export default function Clock() {
     return () => clearInterval(interval);
   }, [phase]);
 
-  const isLoading = !currentTime;
-
   return (
     <section className={styles['clock']}>
       <div className={styles['clock__wrapper']}>
         <div className={styles['clock__header']}>
-          <span className={styles['clock__message']}>
-            {isLoading ? '시간을 확인하는 중...' : message}
-          </span>
+          <span className={styles['clock__message']}>{message}</span>
         </div>
 
         <div className={styles['clock__time-wrap']}>
           <ClockIcon className={styles['clock__icon']} aria-hidden="true" />
 
-          <span
-            className={`${styles['clock__time']} ${
-              isLoading ? styles['clock__time--skeleton'] : ''
-            }`}
-          >
-            {isLoading ? '00:00:00' : currentTime}
-          </span>
+          <span className={styles['clock__time']}>{currentTime}</span>
         </div>
       </div>
     </section>
