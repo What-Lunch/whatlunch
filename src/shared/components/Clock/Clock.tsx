@@ -66,18 +66,14 @@ export default function Clock() {
 
       if (phase !== nextPhase) {
         setPhase(nextPhase);
+      }
 
-        if (nextPhase === 'beforeLunch') {
-          setMessage(getBeforeLunchMessage(nextRemain));
-        }
-
-        if (nextPhase === 'afterLunch') {
-          setMessage(getAfterLunchMessage());
-        }
-
-        if (nextPhase === 'dinnerTime') {
-          setMessage(getDinnerTimeMessage());
-        }
+      if (nextPhase === 'beforeLunch') {
+        setMessage(getBeforeLunchMessage(nextRemain));
+      } else if (nextPhase === 'afterLunch') {
+        setMessage(getAfterLunchMessage());
+      } else {
+        setMessage(getDinnerTimeMessage());
       }
     };
 
