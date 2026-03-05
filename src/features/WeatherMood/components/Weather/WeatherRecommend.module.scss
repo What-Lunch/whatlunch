@@ -134,6 +134,7 @@
 .weather-skeleton {
   &__icon {
     @extend %skeleton;
+
     width: 72px;
     height: 72px;
     border-radius: 999px;
@@ -141,6 +142,7 @@
 
   &__temp {
     @extend %skeleton;
+
     width: 48px;
     height: 24px;
     margin-left: 8px;
@@ -148,6 +150,7 @@
 
   &__text {
     @extend %skeleton;
+
     height: 16px;
     width: 60%;
     margin-bottom: 8px;
@@ -159,6 +162,7 @@
 
   &__menu {
     @extend %skeleton;
+
     height: 36px;
     width: 100%;
   }
