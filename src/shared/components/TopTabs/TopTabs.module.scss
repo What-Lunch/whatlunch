@@ -10,6 +10,7 @@
   background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: 0 6px 12px 0 rgb(0 0 0 / 8%);
+
   &__list {
     display: flex;
     width: 100%;
@@ -22,7 +23,11 @@
     padding: 12px 0;
     background: transparent;
     border-radius: 8px;
+
     @include m.text-style-extended('lg', 500, text-default);
+
+    color: var(--text-secondary);
+
     cursor: pointer;
     transition: all 0.2s ease;
 
@@ -32,19 +37,14 @@
     }
 
     &:hover {
-      background: f.color(orange-700);
-      color: f.color(white);
+      color: f.color(orange-700);
+      background: transparent;
     }
 
     &--active {
-      @include m.text-style-extended('lg', 500, orange-700);
+      color: f.color(orange-700);
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
       border-bottom: 3px solid f.color(orange-700);
-    }
-
-    &:hover {
-      background: transparent;
-      color: f.color(orange-700);
     }
   }
 
@@ -55,8 +55,9 @@
 
   &__label {
     @include m.text-style-extended('lg', 500, text-default);
-    color: var(--text-secondary);
+    color: inherit;
   }
+
   &__panel {
     flex: 1 1 auto;
     min-height: 0;
