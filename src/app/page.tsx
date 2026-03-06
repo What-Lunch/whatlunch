@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { CarouselItem } from '@/shared/components/Carousel';
-import { menusServiceServer, type TopFavoriteMenu } from '@/services/backend/menus.api';
+import { menusServiceServer } from '@/services/backend/menus.api';
 import { mapTopFavoritesToCarousel } from '@/shared/utils/mapTopFavoritesToCarousel';
 import { fetchAirPollution, fetchWeather } from '@/services/weather/openWeather';
 import { normalizeAir, normalizeWeather } from '@/services/weather/normalizeWeather';
