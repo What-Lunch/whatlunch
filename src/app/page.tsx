@@ -31,38 +31,28 @@ export const metadata: Metadata = {
 const SEOUL_LAT = 37.5665;
 const SEOUL_LON = 126.978;
 
-const FALLBACK_ITEMS: CarouselItem[] = [
-  {
-    id: 'fallback-1',
-    menuName: '추천 메뉴 준비중',
-    rank: 1,
-    favoriteCount: 0,
-    stores: [],
-  },
-  {
-    id: 'fallback-2',
-    menuName: '추천 메뉴 준비중',
-    rank: 2,
-    favoriteCount: 0,
-    stores: [],
-  },
-  {
-    id: 'fallback-3',
-    menuName: '추천 메뉴 준비중',
-    rank: 3,
-    favoriteCount: 0,
-    stores: [],
-  },
-];
+const FALLBACK_ITEMS: CarouselItem[] = Array.from({ length: 3 }, (_, i) => ({
+  id: `fallback-${i + 1}`,
+  menuName: '추천 메뉴 준비중',
+  rank: i + 1,
+  favoriteCount: 0,
+  stores: [],
+}));
 
 export default async function HomePage() {
   const revalidateSeconds = secondsUntilNextKstBoundary();
 
-  const [topMenus, weatherRaw, airRaw] = await Promise.all([
-    menusServiceServer.getTopFavoriteMenus(3).catch(() => [] as TopFavoriteMenu[]),
-    fetchWeather(SEOUL_LAT, SEOUL_LON, revalidateSeconds).catch(() => null),
-    fetchAirPollution(SEOUL_LAT, SEOUL_LON, revalidateSeconds).catch(() => undefined),
+  const [topMenusResult, weatherResult, airResult] = await Promise.allSettled([
+    menusServiceServer.getTopFavoriteMenus(3),
+    fetchWeather(SEOUL_LAT, SEOUL_LON, revalidateSeconds),
+    fetchAirPollution(SEOUL_LAT, SEOUL_LON, revalidateSeconds),
   ]);
+
+  const topMenus = topMenusResult.status === 'fulfilled' ? topMenusResult.value : [];
+
+  const weatherRaw = weatherResult.status === 'fulfilled' ? weatherResult.value : null;
+
+  const airRaw = airResult.status === 'fulfilled' ? airResult.value : undefined;
 
   const initialCarouselItems = topMenus.length
     ? mapTopFavoritesToCarousel(topMenus)
@@ -71,7 +61,7 @@ export default async function HomePage() {
   const initialWeatherData: WeatherApiResponse | null = weatherRaw
     ? {
         weather: normalizeWeather(weatherRaw),
-        air: normalizeAir(airRaw),
+        air: airRaw ? normalizeAir(airRaw) : null,
       }
     : null;
 

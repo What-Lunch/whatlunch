@@ -6,7 +6,7 @@ import type { WeatherData } from '@/types/api/weather';
 // API 응답 타입(날씨 + 대기)
 export interface WeatherApiResponse {
   weather: WeatherData;
-  air: NormalizedAirPollutionData;
+  air: NormalizedAirPollutionData | null;
 }
 
 interface UseWeatherOptions {
