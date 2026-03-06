@@ -1,6 +1,7 @@
 @use 'utils/mixins' as m;
 @use 'utils/functions' as f;
 @use 'utils/variables' as v;
+@use 'utils/skeleton';
 
 .weather-recommend {
   width: 100%;
@@ -26,7 +27,7 @@
     flex-wrap: wrap;
     padding: 16px;
     margin-bottom: 20px;
-    background: var(--surface);
+    background: var(--surface-2);
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
     border-radius: 14px;
@@ -127,6 +128,43 @@
       transform: translateY(-2px);
       cursor: pointer;
     }
+  }
+}
+
+.weather-skeleton {
+  &__icon {
+    @extend %skeleton;
+
+    width: 72px;
+    height: 72px;
+    border-radius: 999px;
+  }
+
+  &__temp {
+    @extend %skeleton;
+
+    width: 48px;
+    height: 24px;
+    margin-left: 8px;
+  }
+
+  &__text {
+    @extend %skeleton;
+
+    height: 16px;
+    width: 60%;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__menu {
+    @extend %skeleton;
+
+    height: 36px;
+    width: 100%;
   }
 }
 

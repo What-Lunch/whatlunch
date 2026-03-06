@@ -5,12 +5,14 @@ import { useState } from 'react';
 import { Wind, Droplet } from 'lucide-react';
 
 import { useWeather } from '@/features/WeatherMood/hooks/useWeather';
+import type { WeatherApiResponse } from '@/features/WeatherMood/hooks/useWeather';
 import { useWeatherRecommend } from '@/features/WeatherMood/hooks/useWeatherRecommend';
 import { getShortDescription } from '@/features/WeatherMood/components/Weather/utils/shortWeather';
 import { getCategoryByMenu } from '@/features/WeatherMood/utils/getCategoryByMenu';
 import { getFoodImageByMenu } from '@/shared/utils/getFoodImageByMenu';
 import { preloadFoodImages } from '@/features/WeatherMood/utils/preloadFoodImages';
 import MenuModal from '@/features/WeatherMood/components/MenuModal/MenuModal';
+import WeatherRecommendSkeleton from './WeatherRecommendSkeleton';
 
 import styles from './WeatherRecommend.module.scss';
 
@@ -32,8 +34,12 @@ function getAqiLabel(aqi: number) {
   }
 }
 
-export default function WeatherRecommend() {
-  const { weather, air, error, loading } = useWeather();
+interface WeatherRecommendProps {
+  initialWeatherData?: WeatherApiResponse | null;
+}
+
+export default function WeatherRecommend({ initialWeatherData = null }: WeatherRecommendProps) {
+  const { weather, air, error, loading } = useWeather({ initialData: initialWeatherData });
   const currentWeather = weather?.weather?.[0] ?? null;
   const mainWeather = currentWeather?.main ?? null;
   const feelsLike = weather ? Math.round(weather.main.feels_like) : null;
@@ -42,7 +48,7 @@ export default function WeatherRecommend() {
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
 
   if (loading || recommendLoading) {
-    return <p className={styles['weather-recommend__text']}>날씨 불러오는 중...</p>;
+    return <WeatherRecommendSkeleton />;
   }
 
   if (error) {
@@ -50,7 +56,7 @@ export default function WeatherRecommend() {
   }
 
   if (!weather || !currentWeather || !menus) {
-    return null;
+    return <WeatherRecommendSkeleton />;
   }
 
   const description = getShortDescription(currentWeather.description ?? '');

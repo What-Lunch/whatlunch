@@ -1,5 +1,7 @@
 import { formatRemain } from './formatRemain';
 
+export const loadingMessage = '지금 시간 불러오는 중...';
+
 const beforeLunchMessages = [
   (remain: string) => `점심시간까지 ${formatRemain(remain)} 남았다!`,
   (remain: string) => `오늘 뭐 먹을지 정했나? ${formatRemain(remain)} 남았어`,

@@ -8,6 +8,8 @@ import WeatherMood from '@/features/WeatherMood/WeatherMood';
 import RoomEntryCard from '@/features/Room/RoomEntryCard/RoomEntryCard';
 import QuoteCard from '@/features/QuoteCard';
 import { menusServiceClient } from '@/services/backend/menus.api';
+import type { TopFavoriteMenu } from '@/services/backend/menus.api';
+import type { WeatherApiResponse } from '@/features/WeatherMood/hooks/useWeather';
 import { mapTopFavoritesToCarousel } from '@/shared/utils/mapTopFavoritesToCarousel';
 
 import styles from './page.module.scss';
@@ -37,7 +39,17 @@ const FALLBACK_ITEMS: CarouselItem[] = [
   },
 ];
 
-export default function MainClient() {
+interface MainClientProps {
+  initialTopMenus: TopFavoriteMenu[];
+  initialCarouselItems: CarouselItem[];
+  initialWeatherData: WeatherApiResponse | null;
+}
+
+export default function MainClient({
+  initialTopMenus,
+  initialCarouselItems,
+  initialWeatherData,
+}: MainClientProps) {
   const {
     data: topMenus,
     isLoading,
@@ -45,13 +57,16 @@ export default function MainClient() {
   } = useQuery({
     queryKey: ['menus', 'favorites', 'top'],
     queryFn: () => menusServiceClient.getTopFavoriteMenus(3),
+    initialData: initialTopMenus,
     staleTime: 30_000,
   });
 
   const carouselItems: CarouselItem[] =
     !isLoading && !isError && topMenus?.length
       ? mapTopFavoritesToCarousel(topMenus)
-      : FALLBACK_ITEMS;
+      : initialCarouselItems.length
+        ? initialCarouselItems
+        : FALLBACK_ITEMS;
 
   return (
     <div className={styles['container']}>
@@ -64,7 +79,7 @@ export default function MainClient() {
       <section className={styles['container__right']}>
         <h2 className="sr-only">현재 정보</h2>
         <Clock />
-        <WeatherMood />
+        <WeatherMood initialWeatherData={initialWeatherData} />
         <QuoteCard />
       </section>
     </div>

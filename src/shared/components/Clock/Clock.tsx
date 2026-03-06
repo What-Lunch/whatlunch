@@ -3,7 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { Clock as ClockIcon } from 'lucide-react';
 
-import { getBeforeLunchMessage, getAfterLunchMessage, getDinnerTimeMessage } from './clockMessages';
+import {
+  getBeforeLunchMessage,
+  getAfterLunchMessage,
+  getDinnerTimeMessage,
+  loadingMessage,
+} from './clockMessages';
 
 import styles from './Clock.module.scss';
 
@@ -22,16 +27,18 @@ function getMealPhase(): MealPhase {
   dinner.setHours(DINNER_TIME.hour, DINNER_TIME.minute, 0, 0);
 
   if (now < lunch) return 'beforeLunch';
-  if (now >= lunch && now < dinner) return 'afterLunch';
+  if (now < dinner) return 'afterLunch';
   return 'dinnerTime';
 }
 
 function calcRemain() {
   const now = new Date();
+
   const lunch = new Date();
   lunch.setHours(LUNCH_TIME.hour, LUNCH_TIME.minute, 0, 0);
 
   const diff = lunch.getTime() - now.getTime();
+
   if (diff <= 0) return 'passed';
 
   const h = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2, '0');
@@ -45,51 +52,42 @@ function formatCurrentTime(date: Date) {
   const h = String(date.getHours()).padStart(2, '0');
   const m = String(date.getMinutes()).padStart(2, '0');
   const s = String(date.getSeconds()).padStart(2, '0');
+
   return `${h}:${m}:${s}`;
 }
 
 export default function Clock() {
-  const [currentTime, setCurrentTime] = useState('');
-  const [remain, setRemain] = useState('');
-  const [message, setMessage] = useState('');
+  const [currentTime, setCurrentTime] = useState<string>('');
+  const [message, setMessage] = useState(loadingMessage);
   const [phase, setPhase] = useState<MealPhase | null>(null);
 
   useEffect(() => {
     const tick = () => {
       const now = new Date();
+      const nextRemain = calcRemain();
+      const nextPhase = getMealPhase();
+
       setCurrentTime(formatCurrentTime(now));
-      setRemain(calcRemain());
+
+      // 시간대가 바뀔 때만 메시지 갱신
+      if (phase !== nextPhase) {
+        setPhase(nextPhase);
+
+        if (nextPhase === 'beforeLunch') {
+          setMessage(getBeforeLunchMessage(nextRemain));
+        } else if (nextPhase === 'afterLunch') {
+          setMessage(getAfterLunchMessage());
+        } else {
+          setMessage(getDinnerTimeMessage());
+        }
+      }
     };
 
     tick();
     const interval = setInterval(tick, 1000);
+
     return () => clearInterval(interval);
-  }, []);
-
-  // 상태 변화 시 메시지 1회 설정
-  useEffect(() => {
-    if (!remain) return;
-
-    const nextPhase = getMealPhase();
-    if (phase === nextPhase) return;
-
-    let nextMessage = '';
-
-    if (nextPhase === 'beforeLunch') {
-      nextMessage = getBeforeLunchMessage(remain);
-    }
-
-    if (nextPhase === 'afterLunch') {
-      nextMessage = getAfterLunchMessage();
-    }
-
-    if (nextPhase === 'dinnerTime') {
-      nextMessage = getDinnerTimeMessage();
-    }
-
-    setPhase(nextPhase);
-    setMessage(nextMessage);
-  }, [remain, phase]);
+  }, [phase]);
 
   return (
     <section className={styles['clock']}>
@@ -98,10 +96,12 @@ export default function Clock() {
           <span className={styles['clock__message']}>{message}</span>
         </div>
 
-        <div className={styles['clock__time-wrap']}>
-          <ClockIcon className={styles['clock__icon']} aria-hidden="true" />
-          <span className={styles['clock__time']}>{currentTime}</span>
-        </div>
+        {currentTime && (
+          <div className={styles['clock__time-wrap']}>
+            <ClockIcon className={styles['clock__icon']} aria-hidden="true" />
+            <span className={styles['clock__time']}>{currentTime}</span>
+          </div>
+        )}
       </div>
     </section>
   );

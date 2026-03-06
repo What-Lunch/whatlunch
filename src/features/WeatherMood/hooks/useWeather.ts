@@ -4,9 +4,13 @@ import type { NormalizedAirPollutionData } from '@/types/api/airPollution';
 import type { WeatherData } from '@/types/api/weather';
 
 // API 응답 타입(날씨 + 대기)
-interface WeatherApiResponse {
+export interface WeatherApiResponse {
   weather: WeatherData;
-  air: NormalizedAirPollutionData;
+  air: NormalizedAirPollutionData | null;
+}
+
+interface UseWeatherOptions {
+  initialData?: WeatherApiResponse | null;
 }
 
 // useWeather 훅이 외부로 반환하는 상태 타입
@@ -81,12 +85,14 @@ function buildWeatherApiUrl(params?: { lat: number; lon: number }): string {
   return queryString ? `/api/weather?${queryString}` : '/api/weather';
 }
 
-export function useWeather() {
+export function useWeather(options: UseWeatherOptions = {}) {
+  const { initialData = null } = options;
+
   const [state, setState] = useState<WeatherState>({
-    weather: null,
-    air: null,
+    weather: initialData?.weather ?? null,
+    air: initialData?.air ?? null,
     error: null,
-    loading: true,
+    loading: !initialData,
     usedUserLocation: false,
   });
 
@@ -110,6 +116,17 @@ export function useWeather() {
   }, []);
 
   useEffect(() => {
+    if (initialData) {
+      setState({
+        weather: initialData.weather,
+        air: initialData.air,
+        error: null,
+        loading: false,
+        usedUserLocation: false,
+      });
+      return;
+    }
+
     requestSequenceRef.current += 1;
     const currentRequestId = requestSequenceRef.current;
 
@@ -192,7 +209,7 @@ export function useWeather() {
     }
 
     loadWeather();
-  }, [fetchWeatherData]);
+  }, [fetchWeatherData, initialData]);
 
   return state;
 }

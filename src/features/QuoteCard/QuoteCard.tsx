@@ -23,7 +23,13 @@ export default function QuoteCard() {
     setQuote(QUOTES[index]);
   }, []);
 
-  if (!quote) return null;
+  if (!quote) {
+    return (
+      <section className={styles['quote-card']} aria-label="메시지 카드">
+        <p className={styles['quote-card__text']}>메시지를 준비하는 중이에요 😊</p>
+      </section>
+    );
+  }
 
   const sentences = quote.split('\n');
 
