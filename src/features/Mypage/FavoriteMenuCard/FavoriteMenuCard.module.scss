@@ -115,11 +115,13 @@
 .modal {
   width: 90vw;
   max-width: 400px;
-  height: 400px;
+  max-height: 80vh;
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
   transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
 
   :global([class*='modal__header__title']) {
     color: var(--text);
@@ -131,15 +133,23 @@
 
   :global([class*='modal__content']) {
     background: var(--surface);
+    height: auto;
+    max-height: calc(80vh - 120px);
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 28px;
+    -webkit-overflow-scrolling: touch;
   }
 
   @include m.mq(md) {
     width: 500px;
-    height: 600px;
+    max-height: 80vh;
   }
 
   &__list {
     gap: 10px;
+    padding-bottom: 8px;
     @include item-list-style();
   }
 }
