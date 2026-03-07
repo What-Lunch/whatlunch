@@ -24,14 +24,14 @@
 }
 
 .modal {
-  background: f.color(white);
+  background: var(--surface);
   padding: 0;
   border-radius: 24px;
   text-align: center;
   overflow: hidden;
   animation: fade-in 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 32px rgba(239, 108, 0, 0.08);
-  border: none;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   min-width: 320px;
   @include m.mq(md) {
     min-width: 380px;
@@ -46,27 +46,28 @@
   &__header {
     &__title {
       margin: 12px 10px 6px 10px;
-      @include m.text-style-extended('xl', 700, gray-900);
+      @include m.text-style('xl', 700);
+      color: var(--text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       letter-spacing: -0.02em;
 
       @include m.mq(md) {
-        @include m.text-style-extended('2xl', 700, gray-900);
+        @include m.text-style('2xl', 700);
       }
     }
 
     &__close {
       @include m.flex-box(center, center);
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(f.color(gray-400), 0.3);
-      color: f.color(gray-700);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
       transition: all 0.2s ease;
 
       &:hover {
-        background: f.color(gray-100);
+        background: var(--surface-hover);
         color: f.color(orange-900);
       }
 
@@ -79,7 +80,8 @@
   &__description {
     margin: 8px 10px;
     text-align: center;
-    @include m.text-style-extended('sm', 400, gray-600);
+    @include m.text-style('sm', 400);
+    color: var(--text-secondary);
     line-height: 20px;
     overflow: hidden;
     display: -webkit-box;
@@ -87,7 +89,7 @@
     -webkit-box-orient: vertical;
     margin-bottom: 24px;
     @include m.mq(md) {
-      @include m.text-style-extended('md', 400, gray-600);
+      @include m.text-style('md', 400);
     }
   }
 
@@ -96,7 +98,7 @@
     height: 100%;
     max-height: 90vh;
     padding: 0 24px 24px 24px;
-    background: f.color(white);
+    background: var(--surface);
     border-bottom-left-radius: 24px;
     border-bottom-right-radius: 24px;
   }
