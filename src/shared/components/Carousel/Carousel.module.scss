@@ -327,6 +327,7 @@
   button {
     width: 10px;
     height: 10px;
+    border: 1px solid var(--border);
     border-radius: 50%;
     transition: all 0.2s ease;
     cursor: pointer;
@@ -338,16 +339,17 @@
   }
 
   &__active {
-    background: f.color(orange-200);
+    background: f.color(brand-orange);
+    border-color: f.color(orange-800);
     transform: scale(1.25);
-    box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.12);
+    box-shadow: 0 1px 6px 0 rgba(239, 108, 0, 0.28);
   }
 
   &__inactive {
-    background: var(--surface-2);
+    background: var(--border);
 
     &:hover {
-      background: var(--surface-hover);
+      background: var(--text-secondary);
       transform: translateY(-2px);
     }
   }
