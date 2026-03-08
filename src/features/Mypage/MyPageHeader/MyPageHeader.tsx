@@ -43,7 +43,7 @@ const MyPageHeader = () => {
   const router = useRouter();
 
   const { data: user } = useQuery({
-    queryKey: ['me'],
+    queryKey: ['users', 'me'],
     queryFn: authServiceClient.getMe,
     retry: false,
   });
