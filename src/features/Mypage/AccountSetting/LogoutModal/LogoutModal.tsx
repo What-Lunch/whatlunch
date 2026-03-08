@@ -30,8 +30,7 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
     mutationFn: () => authServiceClient.postLogout(),
     onSuccess: async () => {
       disconnectSocket();
-      await queryClient.cancelQueries({ queryKey: ['me'] });
-      queryClient.removeQueries({ queryKey: ['me'] });
+      queryClient.clear();
 
       clearUser();
 
