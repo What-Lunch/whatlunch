@@ -45,14 +45,12 @@ const MyPageHeader = () => {
   const { data: user } = useQuery({
     queryKey: ['users', 'me'],
     queryFn: authServiceClient.getMe,
-    retry: false,
   });
 
   const { data: selectedDotIds = [] } = useQuery({
     queryKey: ['foodDots'],
     queryFn: () => getMyFoodDots(),
     enabled: !!user,
-    retry: false,
   });
 
   const selectedDots = selectedDotIds
