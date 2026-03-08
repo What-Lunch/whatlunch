@@ -70,8 +70,8 @@ export default function Modal({
       className={`${styles['overlay']}${contentClassName ? ` ${contentClassName}` : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={title ? 'modal-title' : undefined}
-      aria-describedby={description ? 'modal-description' : undefined}
+      aria-labelledby={title ? titleId : undefined}
+      aria-describedby={description ? descId : undefined}
       onClick={handleOverlayClick}
     >
       <div className={`${styles['modal']}${innerClassName ? ` ${innerClassName}` : ''}`}>

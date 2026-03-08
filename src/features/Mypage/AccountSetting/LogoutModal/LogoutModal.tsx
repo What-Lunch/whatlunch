@@ -28,7 +28,7 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
 
   const logoutMutation = useMutation({
     mutationFn: () => authServiceClient.postLogout(),
-    onSuccess: () => {
+    onSuccess: async () => {
       disconnectSocket();
       queryClient.clear();
 
@@ -37,11 +37,8 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
       toast.success('로그아웃 되었습니다.');
       onClose();
 
-      setTimeout(() => {
-        router.refresh();
-      }, 100);
-
       router.push('/');
+      router.refresh();
     },
     onError: error => {
       console.error('[LogoutModal] 로그아웃 실패:', error);

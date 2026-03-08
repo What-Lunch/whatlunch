@@ -4,7 +4,7 @@
 // 모달 전체 블록
 .modal {
   &__content {
-    background: f.color(white);
+    background: var(--surface);
     padding: 24px 24px 28px;
     border-radius: 16px;
     width: 320px;
@@ -14,7 +14,7 @@
   &__description {
     @include m.text-style('md', 500);
     margin-bottom: 14px;
-    color: f.color(gray-700);
+    color: var(--text-secondary);
   }
 
   &__image {
@@ -22,11 +22,12 @@
     height: 240px;
     object-fit: cover;
     border-radius: 14px;
-    background: #f3f3f3;
+    background: var(--surface-2);
   }
 
   &__name {
-    @include m.text-style-extended('2xl', 700, gray-800);
+    @include m.text-style('2xl', 700);
+    color: var(--text);
     margin: 12px 0 22px;
   }
 

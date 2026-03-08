@@ -29,26 +29,26 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isAuthStateSynced, setIsAuthStateSynced] = useState(false);
 
   const storeUser = useAuthStore(state => state.user);
+  const setUser = useAuthStore(state => state.setUser);
   const clearUser = useAuthStore(state => state.clearUser);
 
   useEffect(() => {
     if (initialUser) {
-      useAuthStore.setState(state => ({
-        ...state,
-        user: initialUser,
-      }));
+      setUser(initialUser);
     } else {
       clearUser();
     }
-  }, [initialUser, clearUser]);
+    setIsAuthStateSynced(true);
+  }, [initialUser, setUser, clearUser]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const displayUser = storeUser ?? initialUser;
+  const displayUser = isAuthStateSynced ? storeUser : (storeUser ?? initialUser);
   const currentTheme = theme === 'system' ? systemTheme : theme;
   const isDarkMode = currentTheme === 'dark';
 
@@ -65,11 +65,13 @@ export default function HeaderClient({ user: initialUser }: { user: Auth.MeRes |
 
       await authServiceClient.postLogout();
       disconnectSocket();
-      queryClient.clear();
+      await queryClient.cancelQueries({ queryKey: ['me'] });
+      queryClient.removeQueries({ queryKey: ['me'] });
       clearUser();
 
       toast.success('로그아웃 되었습니다.');
 
+      router.push('/');
       router.refresh();
     } catch (error) {
       console.error('[Header] 로그아웃 실패:', error);

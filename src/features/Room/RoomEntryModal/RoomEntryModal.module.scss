@@ -24,7 +24,8 @@
     width: 100%;
     max-width: 420px;
     padding: 24px 20px;
-    background: f.color(white);
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 24px 24px 0 0;
     animation: modal-slide-up-mobile 0.28s ease-out;
     @include m.mq(lg) {
@@ -41,7 +42,7 @@
 
   &__title {
     @include m.text-style('lg', 700);
-    color: f.color(gray-900);
+    color: var(--text);
   }
 
   &__close,
@@ -49,9 +50,9 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: f.color(gray-700);
+    color: var(--text-secondary);
     &:hover {
-      color: f.color(gray-900);
+      color: var(--text);
     }
   }
 
@@ -86,6 +87,8 @@
 
     span {
       @include m.text-style('sm', 400);
+
+      color: inherit;
       opacity: 0.9;
     }
 
@@ -107,9 +110,9 @@
   }
 
   &__option--secondary {
-    background: f.color(white);
+    background: var(--surface);
     border: 2px solid f.color(brand-orange);
-    color: f.color(gray-800);
+    color: var(--text);
     &:hover {
       background: rgba(f.color(brand-orange), 0.06);
     }
@@ -125,7 +128,9 @@
     height: 48px;
     padding: 0 14px;
     border-radius: 12px;
-    border: 1px solid rgba(f.color(gray-400), 0.6);
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
     @include m.text-style('sm', 400);
     transition: all 0.2s ease;
 
@@ -144,8 +149,8 @@
     @include m.text-style('md', 600);
     cursor: pointer;
     transition: all 0.2s ease;
-    background: f.color(gray-300);
-    color: f.color(gray-600);
+    background: var(--surface-2);
+    color: var(--text-secondary);
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);

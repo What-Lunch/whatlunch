@@ -8,15 +8,17 @@ import { toast } from 'react-toastify';
 import Modal from '@/shared/components/Modal';
 import FavoriteToggle from '@/shared/components/FavoriteToggle';
 
-import styles from './FavoriteMenuCard.module.scss';
 import { favoritesServiceClient } from '@/services/backend/favorites.api';
 
+import styles from './FavoriteMenuCard.module.scss';
+
 export default function FavoriteMenuCard() {
+  const favoritesQueryKey = ['favorites'] as const;
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: favoriteMenusRaw = [] } = useQuery({
-    queryKey: ['favorites'],
+    queryKey: favoritesQueryKey,
     queryFn: () => favoritesServiceClient.getMyFavorites(),
   });
 
@@ -27,8 +29,8 @@ export default function FavoriteMenuCard() {
 
   const addFavoriteMutation = useMutation({
     mutationFn: (menuId: string) => favoritesServiceClient.addFavorite(menuId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: favoritesQueryKey, exact: true });
     },
     onError: () => {
       toast.error('찜 추가에 실패했습니다.');
@@ -37,10 +39,23 @@ export default function FavoriteMenuCard() {
 
   const removeFavoriteMutation = useMutation({
     mutationFn: (menuId: string) => favoritesServiceClient.removeFavorite(menuId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+    onMutate: async menuId => {
+      await queryClient.cancelQueries({ queryKey: favoritesQueryKey });
+
+      const previousFavorites =
+        queryClient.getQueryData<Favorite.GetMyFavoritesRes[]>(favoritesQueryKey) ?? [];
+
+      queryClient.setQueryData<Favorite.GetMyFavoritesRes[]>(favoritesQueryKey, current => {
+        const safeCurrent = current ?? [];
+        return safeCurrent.filter(menu => menu?._id !== menuId);
+      });
+
+      return { previousFavorites };
     },
-    onError: () => {
+    onError: (_error, _menuId, context) => {
+      if (context?.previousFavorites) {
+        queryClient.setQueryData(favoritesQueryKey, context.previousFavorites);
+      }
       toast.error('찜 삭제에 실패했습니다.');
     },
   });
@@ -57,7 +72,7 @@ export default function FavoriteMenuCard() {
   );
 
   const handleFavoriteToggle = (menuId: string) => {
-    const isActive = favoriteMenus.some(menu => menu?._id === menuId);
+    const isActive = !!favoriteMap[menuId];
 
     if (isActive) {
       removeFavoriteMutation.mutate(menuId);
@@ -106,7 +121,7 @@ export default function FavoriteMenuCard() {
                   </div>
 
                   <FavoriteToggle
-                    isActive={favoriteMap[menu._id] ?? true}
+                    isActive={!!favoriteMap[menu._id]}
                     onToggle={() => handleFavoriteToggle(menu._id)}
                     size={18}
                   />
@@ -148,7 +163,7 @@ export default function FavoriteMenuCard() {
                 </div>
 
                 <FavoriteToggle
-                  isActive={favoriteMap[menu._id] ?? true}
+                  isActive={!!favoriteMap[menu._id]}
                   onToggle={() => handleFavoriteToggle(menu._id)}
                   size={18}
                 />
