@@ -116,7 +116,7 @@ export default function RouletteFilter({
               className={styles['filter__options__item']}
               onClick={() => toggleFoodType(opt.value as Category)}
             >
-              {opt.icon}
+              <span className={styles['filter__options__item__icon']}>{opt.icon}</span>
               {opt.label}
             </Button>
           ))}
@@ -133,7 +133,7 @@ export default function RouletteFilter({
               className={styles['filter__options__item']}
               onClick={() => toggleSituation(opt.value as Context)}
             >
-              {opt.icon}
+              <span className={styles['filter__options__item__icon']}>{opt.icon}</span>
               {opt.label}
             </Button>
           ))}
