@@ -1,5 +1,4 @@
-﻿import { redirect } from 'next/navigation';
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { authServiceServer } from '@/services/backend/auth.api';
 import { favoritesServiceServer } from '@/services/backend/favorites.api';
 import { getMyFoodDotsServer } from '@/services/backend/users.api';
