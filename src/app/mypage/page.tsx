@@ -29,49 +29,46 @@ export const metadata: Metadata = {
  * @description 이 페이지는 서버 컴포넌트입니다. 클라이언트 컴포넌트로 변경하지 마세요.
  */
 export default async function Page() {
-  try {
-    const user = await authServiceServer.getMe();
-    if (!user) redirect('/');
+  const queryClient = new QueryClient();
 
-    const queryClient = new QueryClient();
+  const user = await authServiceServer.getMe();
 
-    // 사용자 정보 캐싱
+  // middleware가 이미 보호하므로 null 처리만
+  if (user) {
     queryClient.setQueryData(['me'], user);
-
-    await Promise.allSettled([
-      queryClient.prefetchQuery({
-        queryKey: ['favorites'],
-        queryFn: () => favoritesServiceServer.getMyFavorites(),
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ['foodDots'],
-        queryFn: () => getMyFoodDotsServer(),
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ['preference'],
-        queryFn: () => favoritesServiceServer.getMyPreference(),
-      }),
-    ]);
-
-    return (
-      <div className={styles['mypage']}>
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <MyPageHeader />
-          <main className={styles['mypage__content']}>
-            <div className={styles['mypage__top']}>
-              <FoodDotSelectionCard />
-              <FavoriteMenuCard />
-            </div>
-
-            <div className={styles['mypage__bottom']}>
-              <MenuSummaryCard />
-              <AccountSetting />
-            </div>
-          </main>
-        </HydrationBoundary>
-      </div>
-    );
-  } catch {
-    redirect('/');
   }
+
+  await Promise.allSettled([
+    queryClient.prefetchQuery({
+      queryKey: ['favorites'],
+      queryFn: () => favoritesServiceServer.getMyFavorites(),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['foodDots'],
+      queryFn: () => getMyFoodDotsServer(),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ['preference'],
+      queryFn: () => favoritesServiceServer.getMyPreference(),
+    }),
+  ]);
+
+  return (
+    <div className={styles['mypage']}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <MyPageHeader />
+        <main className={styles['mypage__content']}>
+          <div className={styles['mypage__top']}>
+            <FoodDotSelectionCard />
+            <FavoriteMenuCard />
+          </div>
+
+          <div className={styles['mypage__bottom']}>
+            <MenuSummaryCard />
+            <AccountSetting />
+          </div>
+        </main>
+      </HydrationBoundary>
+    </div>
+  );
 }
