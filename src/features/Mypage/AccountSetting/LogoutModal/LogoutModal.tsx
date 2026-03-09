@@ -38,7 +38,6 @@ export default function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
       onClose();
 
       router.push('/');
-      router.refresh();
     },
     onError: error => {
       console.error('[LogoutModal] 로그아웃 실패:', error);

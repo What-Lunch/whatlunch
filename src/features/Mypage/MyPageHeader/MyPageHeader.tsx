@@ -40,36 +40,41 @@ const MyPageHeader = () => {
 
   const updateProfileImage = useAuthStore(state => state.updateProfileImage);
 
+  const router = useRouter();
+
+  const { data: user, isPending } = useQuery({
+    queryKey: ['me'],
+    queryFn: authServiceClient.getMe,
+  });
+
   const { data: selectedDotIds = [] } = useQuery({
     queryKey: ['foodDots'],
     queryFn: () => getMyFoodDots(),
+    enabled: !!user,
   });
 
   const selectedDots = selectedDotIds
     .map(id => FOOD_DOTS.find(dot => dot.id === id))
     .filter((dot): dot is (typeof FOOD_DOTS)[number] => dot !== undefined);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const avatarRef = useRef<HTMLDivElement>(null);
-  const firstMenuItemRef = useRef<HTMLButtonElement>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const { data: user } = useQuery({
-    queryKey: ['me'],
-    queryFn: authServiceClient.getMe,
-  });
-
   const displayUser = user || DEFAULT_USER_FALLBACK;
   const isDefaultImage =
     !displayUser.profileImage || displayUser.profileImage === DEFAULT_PROFILE_IMAGE_PATH;
 
-  const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const avatarRef = useRef<HTMLDivElement>(null);
+  const firstMenuItemRef = useRef<HTMLButtonElement>(null);
+  const previewUrlRef = useRef<string | null>(null);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [displayNickname, setDisplayNickname] = useState(displayUser.nickname);
+  const [displayImage, setDisplayImage] = useState(displayUser.profileImage);
 
   useEffect(() => {
-    if (!user) {
+    if (!isPending && !user) {
       router.replace('/');
     }
-  }, [user, router]);
+  }, [user, isPending, router]);
 
   useEscClose(isMenuOpen ? () => setIsMenuOpen(false) : undefined);
 
@@ -123,28 +128,26 @@ const MyPageHeader = () => {
     }
 
     try {
-      // 이전 미리보기 URL 정리
       if (previewUrlRef.current) {
         URL.revokeObjectURL(previewUrlRef.current);
         previewUrlRef.current = null;
       }
-      // 낙관적 업데이트
+
       const previewUrl = URL.createObjectURL(file);
       previewUrlRef.current = previewUrl;
+
       setDisplayImage(previewUrl);
       updateProfileImage(previewUrl);
 
-      // 서버 업로드 → 실제 URL 수신
       const uploadedUrl = await uploadProfileImage(file);
+
       if (!uploadedUrl) {
         throw new Error('업로드 결과 URL 없음');
       }
 
-      // 실제 URL로 교체
       setDisplayImage(uploadedUrl);
       updateProfileImage(uploadedUrl);
 
-      // blob URL 정리
       if (previewUrlRef.current) {
         URL.revokeObjectURL(previewUrlRef.current);
         previewUrlRef.current = null;
@@ -152,18 +155,15 @@ const MyPageHeader = () => {
 
       toast.success('프로필 이미지가 변경되었습니다.');
 
-      // 서버 데이터 갱신 요청
       await queryClient.invalidateQueries({ queryKey: ['users', 'me'] });
     } catch {
       toast.error('이미지 변경 실패. 잠시 후 다시 시도해주세요.');
 
-      // 실패 시 blob URL 정리
       if (previewUrlRef.current) {
         URL.revokeObjectURL(previewUrlRef.current);
         previewUrlRef.current = null;
       }
 
-      // 원래 이미지로 복구
       setDisplayImage(displayUser.profileImage);
       updateProfileImage(displayUser.profileImage || null);
     } finally {
@@ -171,23 +171,18 @@ const MyPageHeader = () => {
     }
   };
 
-  const [displayNickname, setDisplayNickname] = useState(displayUser.nickname);
-  const [displayImage, setDisplayImage] = useState(displayUser.profileImage);
-
-  // preview URL 관리 (메모리 누수 방지)
-  const previewUrlRef = useRef<string | null>(null);
-
-  // user가 바뀌면 동기화 (닉네임 & 이미지)
   useEffect(() => {
     setDisplayNickname(displayUser.nickname);
     setDisplayImage(displayUser.profileImage);
   }, [displayUser.nickname, displayUser.profileImage]);
 
-  // 실시간 업데이트 이벤트 리스너
+  // 실시간 닉네임/프로필 이미지 업데이트 감지
   useEffect(() => {
     const nicknameHandler = (e: Event) => {
       const customEvent = e as CustomEvent<{ nickname: string }>;
-      if (customEvent.detail?.nickname) setDisplayNickname(customEvent.detail.nickname);
+      if (customEvent.detail?.nickname) {
+        setDisplayNickname(customEvent.detail.nickname);
+      }
     };
     const imageHandler = (e: Event) => {
       const customEvent = e as CustomEvent<{ profileImage: string | null }>;
@@ -198,8 +193,10 @@ const MyPageHeader = () => {
         setDisplayImage(customEvent.detail.profileImage);
       }
     };
+
     window.addEventListener('profile:nicknameUpdated', nicknameHandler as EventListener);
     window.addEventListener('profile:imageUpdated', imageHandler as EventListener);
+
     return () => {
       window.removeEventListener('profile:nicknameUpdated', nicknameHandler as EventListener);
       window.removeEventListener('profile:imageUpdated', imageHandler as EventListener);
@@ -266,6 +263,7 @@ const MyPageHeader = () => {
         <h1 className={styles['profile-header__title']} id="profile-header-title">
           {displayNickname}님의 마이페이지
         </h1>
+
         <p className={styles['profile-header__subtitle']}>오늘 기록이 여기에 정리돼요</p>
 
         <div className={styles['profile-header__stats']}>
@@ -273,6 +271,7 @@ const MyPageHeader = () => {
             <Badge key={id} id={id} variant={variant} Icon={Icon} text={text} />
           ))}
         </div>
+
         {selectedDots.length > 0 && (
           <div className={styles['profile-header__food-dots']}>
             {selectedDots.map(dot => (
