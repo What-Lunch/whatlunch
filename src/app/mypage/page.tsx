@@ -9,8 +9,9 @@ import FoodDotSelectionCard from '@/features/Mypage/FoodDotSelectionCard/FoodDot
 import FavoriteMenuCard from '@/features/Mypage/FavoriteMenuCard';
 import MenuSummaryCard from '@/features/Mypage/MenuSummaryCard';
 import AccountSetting from '@/features/Mypage/AccountSetting';
-import styles from './page.module.scss';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
+
+import styles from './page.module.scss';
 
 export const metadata: Metadata = {
   title: '마이페이지',
@@ -29,13 +30,15 @@ export const metadata: Metadata = {
  */
 export default async function Page() {
   try {
+    const user = await authServiceServer.getMe();
+    if (!user) redirect('/');
+
     const queryClient = new QueryClient();
 
+    // 사용자 정보 캐싱
+    queryClient.setQueryData(['me'], user);
+
     await Promise.allSettled([
-      queryClient.prefetchQuery({
-        queryKey: ['me'],
-        queryFn: () => authServiceServer.getMe(),
-      }),
       queryClient.prefetchQuery({
         queryKey: ['favorites'],
         queryFn: () => favoritesServiceServer.getMyFavorites(),

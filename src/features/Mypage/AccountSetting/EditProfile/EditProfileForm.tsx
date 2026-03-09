@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useEffect, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
 import BaseInput from '@/shared/components/Input/BaseInput/BaseInput';
@@ -33,6 +33,7 @@ export default function EditProfileForm({
   onCancel,
 }: EditProfileFormProps) {
   const setUser = useAuthStore(state => state.setUser);
+  const queryClient = useQueryClient();
 
   const [formState, setFormState] = useState<EditProfileFormState>({
     nickname: '',
@@ -56,8 +57,13 @@ export default function EditProfileForm({
 
   const updateMeMutation = useMutation({
     mutationFn: (data: Auth.UpdateMeReq) => authServiceClient.updateMe(data),
-    onSuccess: updatedUser => {
+
+    // 성공 시 사용자 정보 갱신
+    onSuccess: async updatedUser => {
       setUser(updatedUser);
+
+      await queryClient.invalidateQueries({ queryKey: ['me'] });
+
       toast.success('회원 정보가 수정되었습니다.');
       onSubmitSuccess();
     },

@@ -42,8 +42,8 @@ const MyPageHeader = () => {
 
   const router = useRouter();
 
-  const { data: user } = useQuery({
-    queryKey: ['users', 'me'],
+  const { data: user, isPending } = useQuery({
+    queryKey: ['me'],
     queryFn: authServiceClient.getMe,
   });
 
@@ -71,10 +71,10 @@ const MyPageHeader = () => {
   const [displayImage, setDisplayImage] = useState(displayUser.profileImage);
 
   useEffect(() => {
-    if (!user) {
+    if (!isPending && !user) {
       router.replace('/');
     }
-  }, [user, router]);
+  }, [user, isPending, router]);
 
   useEscClose(isMenuOpen ? () => setIsMenuOpen(false) : undefined);
 
