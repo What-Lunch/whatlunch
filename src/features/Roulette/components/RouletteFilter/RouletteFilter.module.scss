@@ -7,36 +7,38 @@
     width: fit-content;
     margin: 0 auto;
     padding: 4px;
-    background: f.color(gray-100);
+    background: var(--surface);
     border-radius: 32px;
+  }
 
-    &__tab {
-      width: 100px;
+  &__mode__tab {
+    width: 100px;
+    height: 36px;
+    @include m.flex-box(center, center);
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: transparent;
+    border-radius: 32px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    @include m.mq(md) {
+      width: 200px;
       height: 36px;
-      @include m.flex-box(center, center);
-      @include m.text-style-extended(md, 600, gray-700);
-      background: transparent;
-      border-radius: 32px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    }
 
-      @include m.mq(md) {
-        width: 200px;
-        height: 36px;
-      }
+    @include m.mq(lg) {
+      @include m.text-style(lg, 600);
+      width: 260px;
+      height: 48px;
+    }
 
-      @include m.mq(lg) {
-        @include m.text-style(lg, 600);
-        width: 260px;
-        height: 48px;
-      }
-
-      &--active {
-        background: f.color(point-blue);
-        color: f.color(text-inverse);
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.18);
-        transform: translateY(-2px);
-      }
+    &--active {
+      background: f.color(point-blue);
+      color: f.color(text-inverse);
+      border: none;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.18);
     }
   }
 
@@ -51,31 +53,31 @@
     @include m.mq(md) {
       gap: 12px;
     }
+  }
 
-    &__item {
-      @include m.flex-box(center, center);
-      border-radius: 16px;
-      @include m.text-style(xs, 400);
-      height: 32px;
-      padding: 0 12px;
-      box-sizing: border-box;
+  &__options__item {
+    @include m.flex-box(center, center);
+    border-radius: 16px;
+    @include m.text-style(xs, 400);
+    height: 32px;
+    padding: 0 12px;
+    box-sizing: border-box;
 
-      @include m.mq(md) {
-        @include m.text-style(sm, 400);
-        height: 36px;
-        padding: 0 14px;
-      }
-
-      @include m.mq(lg) {
-        @include m.text-style(md, 400);
-        height: 40px;
-        padding: 0 18px;
-      }
-
-      &__icon {
-        @include m.flex-box(center, center);
-        margin-right: 6px;
-      }
+    @include m.mq(md) {
+      @include m.text-style(sm, 400);
+      height: 36px;
+      padding: 0 14px;
     }
+
+    @include m.mq(lg) {
+      @include m.text-style(md, 400);
+      height: 40px;
+      padding: 0 18px;
+    }
+  }
+
+  &__options__item__icon {
+    @include m.flex-box(center, center);
+    margin-right: 6px;
   }
 }
