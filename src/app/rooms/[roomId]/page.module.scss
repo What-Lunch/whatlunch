@@ -9,9 +9,10 @@
 
   &__header {
     flex-shrink: 0;
-    @include m.flex-box(space-between, center);
+    @include m.flex-box(flex-start, stretch, column);
     width: 100%;
-    padding: 24px 28px;
+    gap: 10px;
+    padding: 16px;
     border-radius: 24px;
     background: var(--surface);
     border: 1.5px solid var(--border);
@@ -19,29 +20,55 @@
     color: var(--text);
     transition: all 0.3s ease;
 
+    @include m.mq(sm) {
+      gap: 0;
+      padding: 24px 28px;
+      @include m.flex-box(space-between, center);
+    }
+
     @include m.mq(md) {
       @include m.flex-box(space-between, center);
     }
 
     &__left {
       @include m.flex-box(flex-start, center);
-      gap: 14px;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+
+      @include m.mq(sm) {
+        gap: 14px;
+      }
+
+      > div {
+        min-width: 0;
+      }
     }
 
     &__icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      padding: 10px;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      padding: 8px;
       background-color: f.color(orange-100);
       color: f.color(orange-700);
       box-shadow: 0 4px 12px rgba(f.color(orange-700), 0.25);
+
+      @include m.mq(sm) {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        padding: 10px;
+      }
     }
   }
 
   &__title {
     @include m.text-style('md', 700);
     color: var(--text);
+    min-width: 0;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 
     @include m.mq(md) {
       @include m.text-style('xl', 700);
@@ -52,6 +79,9 @@
     @include m.text-style-extended('xs', 500, gray-700);
     color: var(--text-secondary);
     margin-top: 4px;
+    min-width: 0;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 
     @include m.mq(md) {
       @include m.text-style('sm', 500);
@@ -60,48 +90,72 @@
 
   &__code {
     width: 100%;
+    max-width: 100%;
+    align-self: stretch;
     @include m.flex-box(space-between, center);
-    gap: 10px;
-    padding: 8px 16px;
+    gap: 8px;
+    padding: 6px 10px;
     border-radius: 999px;
     background: color-mix(in srgb, var(--surface-2) 85%, transparent);
     backdrop-filter: blur(10px);
     border: 2px solid color-mix(in srgb, var(--border) 60%, transparent);
     box-shadow: var(--shadow);
 
-    @include m.mq(md) {
+    @include m.mq(sm) {
       width: fit-content;
+      max-width: none;
+      align-self: auto;
+      gap: 10px;
+      padding: 8px 16px;
     }
 
     &__label {
       @include m.text-style-extended('xs', 600, gray-700);
       color: var(--text-secondary);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     &__value {
-      @include m.flex-box(space-between, center);
-      gap: 16px;
+      @include m.flex-box(flex-start, center);
+      gap: 8px;
+      min-width: 0;
+      flex-shrink: 0;
+
+      @include m.mq(sm) {
+        gap: 16px;
+      }
 
       &__inner {
         @include m.text-style-extended('sm', 700, gray-700);
         color: var(--text);
-        letter-spacing: 0.1em;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+
+        @include m.mq(sm) {
+          letter-spacing: 0.1em;
+        }
       }
     }
 
     &__copy {
       @include m.flex-box(center, center);
       gap: 4px;
-      padding: 6px 12px;
+      padding: 4px 8px;
       border-radius: 999px;
-      border: none;
+      border: 1px solid var(--border);
       background: var(--surface-2);
       cursor: pointer;
       @include m.text-style-extended('xs', 600, gray-700);
       color: var(--text-secondary);
       box-shadow: var(--shadow);
-      border: 1px solid var(--border);
       transition: all 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      @include m.mq(sm) {
+        padding: 6px 12px;
+      }
 
       &:hover {
         box-shadow: var(--shadow);
@@ -117,10 +171,14 @@
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-rows: 1fr 0.7fr;
-
-    gap: 20px;
+    grid-template-rows: minmax(360px, auto) minmax(460px, auto);
+    gap: 16px;
     width: 100%;
+
+    @include m.mq(sm) {
+      grid-template-rows: minmax(420px, auto) minmax(560px, auto);
+      gap: 20px;
+    }
 
     @include m.mq(lg) {
       grid-template-columns: 2fr 1fr;
@@ -165,12 +223,14 @@
     border-radius: 24px;
     border: 1.5px solid var(--border);
     box-shadow: var(--shadow);
-    transition:
-      box-shadow 0.2s,
-      border-color 0.2s;
-    padding: 24px;
-    gap: 16px;
+    padding: 16px;
+    gap: 12px;
     transition: all 0.3s ease;
+
+    @include m.mq(sm) {
+      padding: 24px;
+      gap: 16px;
+    }
   }
 
   &__result-section {
@@ -245,15 +305,21 @@
     box-shadow: var(--shadow);
 
     &__icon {
-      font-size: 36px;
-      width: 56px;
-      height: 56px;
-      @include m.flex-box(center, center);
-      background: var(--surface-2);
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      color: var(--text-secondary);
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      padding: 8px;
+      background-color: f.color(orange-100);
+      color: f.color(orange-700);
+      box-shadow: 0 4px 12px rgba(f.color(orange-700), 0.25);
+
+      @include m.mq(sm) {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        padding: 10px;
+      }
     }
 
     &__info {
@@ -417,7 +483,7 @@
   &__right {
     width: 100%;
     min-height: 0;
-    max-height: 870px;
+    max-height: 460px;
     background: var(--surface);
     border-radius: 24px;
     border: 1.5px solid var(--border);
@@ -428,6 +494,14 @@
     flex: 1 1 0%;
     overflow: hidden;
     transition: all 0.3s ease;
+
+    @include m.mq(sm) {
+      max-height: 760px;
+    }
+
+    @include m.mq(lg) {
+      max-height: 870px;
+    }
   }
 
   &__loading {

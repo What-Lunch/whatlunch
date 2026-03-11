@@ -111,8 +111,7 @@ export default function RouletteFilter({
               disabled={disabled}
               variant="blue"
               mode={opt.isActive ? 'fill' : 'outline'}
-              padding="8px 18px"
-              fontSize="14px"
+              size="sm"
               className={styles['filter__options__item']}
               onClick={() => toggleFoodType(opt.value as Category)}
             >
@@ -128,8 +127,7 @@ export default function RouletteFilter({
               disabled={disabled}
               variant="blue"
               mode={opt.isActive ? 'fill' : 'outline'}
-              padding="8px 18px"
-              fontSize="14px"
+              size="sm"
               className={styles['filter__options__item']}
               onClick={() => toggleSituation(opt.value as Context)}
             >

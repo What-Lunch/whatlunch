@@ -9,29 +9,44 @@
     padding: 4px;
     background: var(--surface);
     border-radius: 32px;
+
+    @include m.mq(sm) {
+      margin-top: 16px;
+      gap: 8px;
+      padding: 0 12px;
+    }
   }
 
   &__mode__tab {
-    width: 100px;
-    height: 36px;
     @include m.flex-box(center, center);
-    font-weight: 600;
+    width: 100px;
+    height: 30px;
+    padding: 0 8px;
     color: var(--text-secondary);
     background: transparent;
     border-radius: 32px;
     border: 1px solid var(--border);
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap;
+    @include m.text-style(xs, 600);
+
+    @include m.mq(sm) {
+      width: 100px;
+      height: 36px;
+      padding: 0 10px;
+    }
 
     @include m.mq(md) {
-      width: 200px;
+      width: 160px;
       height: 36px;
+      @include m.text-style(sm, 600);
     }
 
     @include m.mq(lg) {
       @include m.text-style(lg, 600);
-      width: 260px;
-      height: 48px;
+      width: 220px;
+      height: 44px;
     }
 
     &--active {
@@ -48,20 +63,32 @@
     gap: 8px;
     flex-wrap: wrap;
     width: 100%;
-    padding: 0 12px;
+
+    @include m.mq(sm) {
+      margin-top: 16px;
+      padding: 0 12px;
+    }
 
     @include m.mq(md) {
+      margin-top: 20px;
+      gap: 10px;
+    }
+
+    @include m.mq(lg) {
       gap: 12px;
     }
   }
 
   &__options__item {
     @include m.flex-box(center, center);
+    height: 22px;
     border-radius: 16px;
+    white-space: nowrap;
     @include m.text-style(xs, 400);
-    height: 32px;
-    padding: 0 12px;
-    box-sizing: border-box;
+    @include m.mq(sm) {
+      height: 32px;
+      padding: 0 12px;
+    }
 
     @include m.mq(md) {
       @include m.text-style(sm, 400);
@@ -78,6 +105,10 @@
 
   &__options__item__icon {
     @include m.flex-box(center, center);
-    margin-right: 6px;
+    margin-right: 2px;
+
+    @include m.mq(sm) {
+      margin-right: 6px;
+    }
   }
 }

@@ -18,10 +18,15 @@
     border-bottom: 1px solid var(--border);
     display: inline-flex;
     @include m.flex-box(center, center);
-    padding: 20px 20px 16px 20px;
-    @include m.text-style('xl', 700);
+    padding: 10px 16px 8px 16px;
+    @include m.text-style('lg', 700);
     color: var(--text);
     flex-shrink: 0;
+
+    @include m.mq(sm) {
+      padding: 20px 20px 16px 20px;
+      @include m.text-style('xl', 700);
+    }
   }
 
   &__content {
@@ -185,12 +190,18 @@
 
   &__input {
     flex-shrink: 0;
-    padding: 16px 20px 20px 20px;
+    // 모바일에서 입력영역 패딩 축소
+    padding: 8px 12px 10px 12px;
     @include m.flex-box(center, center, row);
-    gap: 12px;
+    gap: 8px;
     background: var(--surface);
     backdrop-filter: blur(10px);
     border-top: 1px solid var(--border);
+
+    @include m.mq(sm) {
+      padding: 16px 20px 20px 20px;
+      gap: 12px;
+    }
 
     &__field {
       flex: 1;
