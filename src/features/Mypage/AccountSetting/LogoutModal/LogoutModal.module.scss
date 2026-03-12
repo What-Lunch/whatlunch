@@ -2,7 +2,6 @@
 @use 'utils/functions' as f;
 
 .logout-modal {
-  min-width: 320px;
   max-width: 400px;
   width: 100%;
   border-radius: 20px;
@@ -10,11 +9,21 @@
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
 
+  @include m.mq(sm) {
+    min-width: 320px;
+  }
+
   &__actions {
-    margin-top: 32px;
-    padding-top: 20px;
+    margin-top: 20px;
+    padding-top: 14px;
     @include m.flex-box(space-between, center);
-    gap: 12px;
+    gap: 8px;
+
+    @include m.mq(sm) {
+      margin-top: 32px;
+      padding-top: 20px;
+      gap: 12px;
+    }
 
     button {
       flex: 1;

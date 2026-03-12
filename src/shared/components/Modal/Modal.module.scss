@@ -17,10 +17,14 @@
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.18);
-  padding: 0;
+  padding: 12px;
   position: fixed;
   inset: 0;
   z-index: 999;
+
+  @include m.mq(sm) {
+    padding: 0;
+  }
 }
 
 .modal {
@@ -32,26 +36,45 @@
   animation: fade-in 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
-  min-width: 320px;
+  min-width: 0;
+  width: 100%;
+  max-width: 340px;
+  box-sizing: border-box;
+
+  @include m.mq(sm) {
+    width: auto;
+    max-width: none;
+    min-width: 320px;
+  }
+
   @include m.mq(md) {
     min-width: 380px;
   }
 
   &__top {
     @include m.flex-box(flex-end, center);
-    padding: 16px 16px 0 16px;
+    padding: 12px 12px 0 12px;
     width: 100%;
+    box-sizing: border-box;
+
+    @include m.mq(sm) {
+      padding: 16px 16px 0 16px;
+    }
   }
 
   &__header {
     &__title {
-      margin: 12px 10px 6px 10px;
-      @include m.text-style('xl', 700);
+      margin: 8px 10px 4px 10px;
+      @include m.text-style(lg, 700);
       color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      word-break: keep-all;
+      overflow-wrap: break-word;
       letter-spacing: -0.02em;
+
+      @include m.mq(sm) {
+        margin: 12px 10px 6px 10px;
+        @include m.text-style(xl, 700);
+      }
 
       @include m.mq(md) {
         @include m.text-style('2xl', 700);
@@ -60,11 +83,19 @@
 
     &__close {
       @include m.flex-box(center, center);
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text-secondary);
       transition: all 0.2s ease;
+      flex-shrink: 0;
+
+      @include m.mq(sm) {
+        width: 36px;
+        height: 36px;
+      }
 
       &:hover {
         background: var(--surface-hover);
@@ -78,28 +109,42 @@
   }
 
   &__description {
-    margin: 8px 10px;
+    margin: 6px 10px 16px;
     text-align: center;
-    @include m.text-style('sm', 400);
+    @include m.text-style(xs, 400);
     color: var(--text-secondary);
-    line-height: 20px;
+    line-height: 18px;
     overflow: hidden;
     display: -webkit-box;
     line-clamp: 3;
     -webkit-box-orient: vertical;
-    margin-bottom: 24px;
+
+    @include m.mq(sm) {
+      margin: 8px 10px 24px;
+      @include m.text-style(sm, 400);
+      line-height: 20px;
+    }
+
     @include m.mq(md) {
-      @include m.text-style('md', 400);
+      @include m.text-style(md, 400);
     }
   }
 
   &__content {
     overflow: auto;
     height: 100%;
-    max-height: 90vh;
-    padding: 0 24px 24px 24px;
+    max-height: 80vh;
+    padding: 0 12px 16px 12px;
     background: var(--surface);
     border-bottom-left-radius: 24px;
     border-bottom-right-radius: 24px;
+    box-sizing: border-box;
+
+    @include m.mq(sm) {
+      max-height: 90vh;
+      padding: 0 24px 24px 24px;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+    }
   }
 }

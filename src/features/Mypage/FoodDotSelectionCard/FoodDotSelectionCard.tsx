@@ -102,13 +102,15 @@ export default function FoodDotSelectionCard() {
             {selectedDots.map(dot => (
               <li key={dot.id} className={styles['food-dot-card__item']}>
                 <div className={styles['food-dot-card__selected']}>
-                  <Image
-                    src={dot.src}
-                    alt={dot.label}
-                    width={40}
-                    height={40}
-                    className={styles['food-dot-card__selected-img']}
-                  />
+                  <div className={styles['food-dot-card__selected-thumb']}>
+                    <Image
+                      src={dot.src}
+                      alt={dot.label}
+                      width={40}
+                      height={40}
+                      className={styles['food-dot-card__selected-img']}
+                    />
+                  </div>
                   <span className={styles['food-dot-card__label']}>{dot.label}</span>
                 </div>
               </li>
@@ -152,7 +154,16 @@ export default function FoodDotSelectionCard() {
                     onClick={() => handleToggleDot(dot.id)}
                     aria-pressed={isSelected}
                   >
-                    <Image src={dot.src} alt={dot.label} width={56} height={56} />
+                    <div className={styles['food-dot-modal__thumb']}>
+                      <Image
+                        src={dot.src}
+                        alt={dot.label}
+                        width={56}
+                        height={56}
+                        className={styles['food-dot-modal__img']}
+                      />
+                    </div>
+
                     {isSelected && (
                       <span className={styles['food-dot-modal__check']}>
                         <Check size={18} />

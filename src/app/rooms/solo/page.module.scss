@@ -38,14 +38,24 @@
         @include m.flex-box(center, flex-start, column);
         gap: 4px;
 
+        h1,
         h2 {
-          @include m.text-style('xl', 700);
+          @include m.text-style('lg', 700);
           color: var(--text);
+
+          @include m.mq(sm) {
+            @include m.text-style('xl', 700);
+          }
         }
 
         span {
-          @include m.text-style-extended('md', 500, gray-700);
+          @include m.text-style-extended('sm', 500, gray-700);
           color: var(--text-secondary);
+
+          @include m.mq(sm) {
+            @include m.text-style('md', 500);
+            color: var(--text);
+          }
         }
       }
     }
@@ -115,21 +125,34 @@
     margin-bottom: 16px;
 
     h3 {
-      @include m.text-style('lg', 700);
+      @include m.text-style('md', 700);
       color: var(--text);
       margin: 0;
+
+      @include m.mq(sm) {
+        @include m.text-style('lg', 700);
+      }
     }
 
     p {
-      @include m.text-style-extended('sm', 500, gray-700);
+      @include m.text-style-extended('xs', 500, gray-700);
       color: var(--text-secondary);
+
+      @include m.mq(sm) {
+        @include m.text-style('sm', 500);
+        color: var(--text);
+      }
     }
 
     &__search-btn {
       height: 44px;
       min-width: 80px;
       padding: 0 20px;
-      @include m.text-style('md', 600);
+      @include m.text-style('sm', 600);
+
+      @include m.mq(sm) {
+        @include m.text-style('md', 600);
+      }
 
       color: white;
       border: none;
@@ -178,9 +201,13 @@
     margin-bottom: 16px;
 
     h3 {
-      @include m.text-style('xl', 700);
+      @include m.text-style('lg', 700);
       color: var(--text);
       margin: 0;
+
+      @include m.mq(sm) {
+        @include m.text-style('xl', 700);
+      }
     }
   }
 
@@ -212,16 +239,24 @@
     }
 
     &__name {
-      @include m.text-style('lg', 600);
+      @include m.text-style('md', 600);
       color: var(--text-secondary);
+
+      @include m.mq(sm) {
+        @include m.text-style('lg', 600);
+      }
     }
 
     &__count {
-      @include m.text-style('md', 700);
+      @include m.text-style('sm', 700);
       color: var(--text-secondary);
       background: color-mix(in srgb, var(--border) 30%, transparent);
       padding: 6px 16px;
       border-radius: 999px;
+
+      @include m.mq(sm) {
+        @include m.text-style('md', 700);
+      }
     }
   }
 
@@ -230,8 +265,12 @@
     gap: 12px;
 
     h4 {
-      @include m.text-style('md', 600);
+      @include m.text-style('sm', 600);
       color: var(--text-secondary);
+
+      @include m.mq(sm) {
+        @include m.text-style('md', 600);
+      }
     }
 
     &__list {
@@ -266,13 +305,17 @@
         &__item {
           @include m.flex-box(flex-start, center);
           gap: 12px;
-          @include m.text-style('md', 600);
+          @include m.text-style('sm', 600);
           color: var(--text-secondary);
           padding: 14px 16px;
           background-color: var(--surface-2);
           border-radius: 12px;
           border: 2px solid color-mix(in srgb, var(--border) 60%, transparent);
           transition: all 0.2s ease;
+
+          @include m.mq(sm) {
+            @include m.text-style('md', 600);
+          }
 
           &:hover {
             box-shadow: var(--shadow);
@@ -282,21 +325,30 @@
             @include m.flex-box(center, center);
             min-width: 28px;
             height: 28px;
-            @include m.text-style('sm', 700);
+            @include m.text-style('xs', 700);
             background: linear-gradient(135deg, f.color(orange-700) 0%, f.color(orange-500) 100%);
             color: var(--text);
             border-radius: 8px;
             padding: 0 8px;
+
+            @include m.mq(sm) {
+              @include m.text-style('sm', 700);
+            }
           }
 
           &--empty {
-            @include m.text-style-extended('lg', 500, gray-700);
+            @include m.text-style-extended('md', 500, gray-700);
             color: var(--text-secondary);
             text-align: center;
             padding: 40px 20px;
             border: 2px dashed color-mix(in srgb, var(--border) 60%, transparent);
             border-radius: 12px;
             background: var(--surface-2);
+
+            @include m.mq(sm) {
+              @include m.text-style('lg', 500);
+              color: var(--text);
+            }
           }
         }
       }
@@ -328,8 +380,13 @@
     }
 
     span {
-      @include m.text-style-extended('sm', 600, gray-700);
+      @include m.text-style-extended('xs', 600, gray-700);
       color: var(--text-secondary);
+
+      @include m.mq(sm) {
+        @include m.text-style('sm', 600);
+        color: var(--text);
+      }
     }
   }
 }

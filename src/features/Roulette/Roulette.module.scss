@@ -9,19 +9,29 @@
   max-height: 870px;
 
   &__today {
-    @include m.text-style-extended('2xl', 600, gray-700);
+    @include m.text-style-extended('lg', 600, gray-700);
     color: var(--text);
     text-align: center;
 
+    @include m.mq(sm) {
+      @include m.text-style-extended('2xl', 600, gray-700);
+      color: var(--text);
+    }
+
     span {
-      @include m.text-style-extended('2xl', 800, orange-700);
+      @include m.text-style-extended('lg', 800, orange-700);
+
+      @include m.mq(sm) {
+        @include m.text-style-extended('2xl', 800, orange-700);
+      }
     }
   }
 
   &__wheel-wrapper {
     position: relative;
-    width: fit-content;
+    width: 100%;
     margin: 0 auto;
+    @include m.flex-box(center, center);
   }
 
   &__result-btn {
@@ -30,16 +40,23 @@
     @include m.flex-box(center, center);
 
     &__button {
-      width: 100px;
+      min-width: 80px;
+      padding: 8px 14px;
       background-color: f.color(white);
       border-radius: 24px;
       border: 1.5px solid f.color(orange-200);
+      white-space: nowrap;
+
       @include m.text-style-extended('xs', 700, orange-700);
-      padding: 8px;
+
+      @include m.mq(sm) {
+        min-width: 100px;
+        padding: 10px 18px;
+        @include m.text-style-extended('sm', 700, orange-700);
+      }
 
       @include m.mq(md) {
         @include m.text-style-extended('md', 700, orange-700);
-        padding: 8px;
       }
 
       &:hover:not(:disabled) {

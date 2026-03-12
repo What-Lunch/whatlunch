@@ -24,7 +24,7 @@
     gap: 0;
 
     &__title {
-      @include m.text-style-extended('xl', 700, gray-900);
+      @include m.text-style-extended('lg', 700, gray-900);
       color: var(--text);
       margin-bottom: 6px;
       letter-spacing: -0.01em;
@@ -36,7 +36,7 @@
     }
 
     &__description {
-      @include m.text-style-extended('md', 400, gray-600);
+      @include m.text-style-extended('sm', 400, gray-600);
       color: var(--text);
       text-align: left;
       margin-bottom: 0;
@@ -64,7 +64,7 @@
     border: 1px solid var(--border);
     background: var(--surface-2);
     cursor: pointer;
-    @include m.text-style-extended('lg', 600, orange-800);
+    @include m.text-style-extended('md', 600, orange-800);
     color: var(--text-secondary);
     transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -86,7 +86,7 @@
     border-radius: 18px;
     background: var(--surface-2);
     text-align: center;
-    @include m.text-style-extended('lg', 600, orange-800);
+    @include m.text-style-extended('md', 600, orange-800);
     box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.04);
 
     @include m.mq(sm) {
@@ -95,13 +95,13 @@
       margin-bottom: 36px;
     }
     &__main {
-      @include m.text-style-extended('lg', 600, text-default);
+      @include m.text-style-extended('md', 600, text-default);
       color: var(--text);
       margin-bottom: 6px;
     }
 
     &__sub {
-      @include m.text-style-extended('md', 600, text-default);
+      @include m.text-style-extended('sm', 600, text-default);
       color: var(--text-secondary);
       line-height: 1.6;
     }
@@ -113,7 +113,7 @@
     background: var(--surface-2);
     border-radius: 18px;
     text-align: center;
-    @include m.text-style-extended('md', 600, text-default);
+    @include m.text-style-extended('sm', 600, text-default);
     color: var(--text-secondary);
     box-shadow: 0 1px 4px 0 rgba(239, 108, 0, 0.04);
 
