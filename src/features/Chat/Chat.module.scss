@@ -19,7 +19,9 @@
     display: inline-flex;
     @include m.flex-box(center, center);
     padding: 10px 16px 8px 16px;
+
     @include m.text-style('lg', 700);
+
     color: var(--text);
     flex-shrink: 0;
 
@@ -190,9 +192,9 @@
 
   &__input {
     flex-shrink: 0;
-    // 모바일에서 입력영역 패딩 축소
     padding: 8px 12px 10px 12px;
     @include m.flex-box(center, center, row);
+
     gap: 8px;
     background: var(--surface);
     backdrop-filter: blur(10px);
